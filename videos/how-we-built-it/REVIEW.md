@@ -6,15 +6,15 @@ every round was a fresh agent that had not seen the build or an earlier round, a
 round 5 attempt to run clarity and visuals on Opus was rejected by the workspace rate limit
 (HTTP 429, one input token a minute), so both were rerun on Sonnet.
 
-**Status: the five critics run all pass in round 10.** Consistency and engagement were not run.
+**Status: the five critics run all pass, on the build merged with `main` (rounds 11 and 12).** Consistency and engagement were not run.
 
-| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| accuracy | fail | fail | pass | fail | pass | pass | pass | pass | pass | pass |
-| clarity | fail | fail | fail | fail | fail | fail | pass | fail | fail | pass |
-| sync | fail | pass | fail | pass | pass | pass | pass | pass | fail | pass |
-| visuals | fail | fail | pass | fail | fail | pass | pass | fail | fail | pass |
-| pacing | | | | | | | fail | pass | fail | pass |
+| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 | R11 | R12 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| accuracy | fail | fail | pass | fail | pass | pass | pass | pass | pass | pass | fail | pass |
+| clarity | fail | fail | fail | fail | fail | fail | pass | fail | fail | pass | pass | |
+| sync | fail | pass | fail | pass | pass | pass | pass | pass | fail | pass | pass | pass |
+| visuals | fail | fail | pass | fail | fail | pass | pass | fail | fail | pass | pass | |
+| pacing | | | | | | | fail | pass | fail | pass | pass | pass |
 
 ## What the critics changed
 
@@ -45,6 +45,26 @@ round 5 attempt to run clarity and visuals on Opus was rejected by the workspace
 
 The builder's own look between rounds caught the heading-only openings and the "start time" line
 sitting against the chip box before any critic did.
+
+## After merging main (rounds 11 and 12)
+
+The branch was brought up to date with `main` (seven pull requests, #3 to #9) before review. The
+merge had no conflicts. `main` changed things this video depends on: speed is now a multiplier on
+a base pace (`"speed": 0.94` keeps the voice where it was tuned, Kokoro 0.80); the shared base
+styles add an ambient glow, a progress bar and a slow camera push; `video.json` takes `kind` and a
+`review` block; the review default is one round, at most two, until no blocking or objective major
+finding is left. All five critics were rerun on the merged build.
+
+- **Round 11.** Pacing, clarity, sync and visuals pass. Accuracy fails on two objective majors that
+  the merge exposed: "This project was built in two pull requests" and "there are seven critics" were
+  true at commit `cada3b6` but not on current `main`, which has more pull requests and an eighth
+  critic (`critic-decision`). Both are now scoped to the history the video describes ("the first
+  two pull requests"; "the second pull request added seven critics") and `sources.md` records what
+  has changed since. The same critic found that the Round 1 card said "209 words a minute" where the
+  narration said "up to 209" and the source says 176 to 209; the card now says "up to 209" and lands
+  as the number is spoken.
+- **Round 12.** Accuracy, pacing and sync, rerun on the fixes, pass. Clarity and visuals were not
+  rerun: the fix re-voiced two sentences and added no new layout, and both had passed in round 11.
 
 ## Clarity, round 6, and how it closed
 
@@ -80,16 +100,17 @@ takeaway with "turn each mistake into a warning or a written trap". Round 10 pas
 
 ## Accepted minors
 
-Left after round 10, not re-run. Accuracy: the AGENTS.md card shows paraphrases that read like
-quotes; "the usual way" to get start times is the narration's framing, not the repo's; "its critics
-passed" holds for the critics run in R6 (engagement was not re-run). Clarity: "the builder" and "the
-repo" are used as roles the viewer was not introduced to; the last takeaway is about this video, not
-an instruction; scene 2 spends more time on the speech-recognition timeout than on what a critic is.
-Sync: the Round 1 card shows 209 about 2 s before it is said; "six rounds" is highlighted before it
-is spoken; the seven chips appear before "seven critics"; the two pull-request chips land 0.6 s
-apart. Visuals: the title chip row sits off-centre while chips arrive; the loop scene is top-heavy
-before its cards arrive; some cards have empty space at the bottom. Pacing: none.
+Left after round 12, not re-run. From round 10 (accuracy, clarity, sync, visuals): the `AGENTS.md`
+card paraphrases the file; "the usual way" to get start times is the narration's framing; "the
+builder" and "the repo" are roles the viewer is not introduced to; "how it works" can be heard as
+a phrase, not a video's title; "traps" and "sources" are not defined in the narration; the last
+takeaway is about this video, not an instruction; the title chip row sits off-centre while chips
+arrive; several scenes are top-heavy and some cards have empty space at the bottom; "with Claude
+assisting" is the faintest text. From round 12: the warning fires only when a cue word repeats in a
+scene, which the narration does not say; the "six rounds" line lands about 4 s before "six" is
+spoken; the `AGENTS.md` card and "speed 1.0 to 0.85" show detail the voice does not read. The five
+critics' minors in rounds 7 to 11 are otherwise as listed in this file's earlier rounds.
 
 Tool change made during this review: `bin/build.mjs` now carries a trailing function word ("a",
-"to", "the"...) to the next caption line. The repo's tests pass; it was not re-checked by rebuilding
-`videos/how-it-works`, whose generated files are stale.
+"to", "the"...) to the next caption line. It merged with `main`'s own edits to that file without
+conflict, and the captions in the merged build's frames break at phrase boundaries.
