@@ -348,6 +348,7 @@ export function musicBed(dir, music, timing) {
   const tmp = join(dir, "assets", "music-source.wav");
   mkdirSync(join(dir, "assets"), { recursive: true });
   const r = spawnSync("ffmpeg", ["-v", "error", "-y", "-i", file, "-ac", "2", "-ar", String(rate), "-c:a", "pcm_s16le", tmp]);
+  if (r.error?.code === "ENOENT") die("music: ffmpeg is not installed; npm run doctor says how to get it");
   if (r.status !== 0) die(`music: ffmpeg could not read ${file}\n${r.stderr}`);
   const src = readWav(tmp).samples, frames = Math.ceil(timing.total * rate), out = new Int16Array(frames * 2);
   // Where the voice speaks, padded a little, so the bed dips before a sentence and returns after.
