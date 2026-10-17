@@ -13,6 +13,7 @@ import { REPO, config, die, norm, round, videoDir } from "./lib.mjs";
 
 const CUE_LEAD = 0.15;      // a piece lands just before its word, so the eye gets there with the ear
 const LINE_WORDS = 12;      // the longest caption line
+const WEAK = new Set(["a", "an", "the", "to", "of", "and", "or", "but", "in", "on", "at", "for", "with", "by", "as", "its", "their", "that"]); // never the last word of a line
 
 const dir = videoDir(process.argv[2]);
 const cfg = config(dir);
@@ -50,15 +51,17 @@ function cueTime(scene, cue, where) {
   return round(Math.max(scene.start + 0.1, hits[+nth - 1].at - CUE_LEAD));
 }
 
-/** A sentence cut into caption lines: at a comma once five words are in, and at LINE_WORDS. */
+/** A sentence cut into caption lines: at a comma once five words are in, and at LINE_WORDS (a line never ends on a function word). */
 function lines(text) {
   const out = [];
   let cur = [];
   for (const w of text.split(" ")) {
     cur.push(w);
     if ((w.endsWith(",") && cur.length >= 5) || cur.length >= LINE_WORDS) {
+      const carry = [];
+      while (cur.length > 3 && WEAK.has(norm(cur[cur.length - 1]))) carry.unshift(cur.pop());
       out.push(cur);
-      cur = [];
+      cur = carry;
     }
   }
   if (cur.length) cur.length < 3 && out.length ? out[out.length - 1].push(...cur) : out.push(cur);

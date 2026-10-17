@@ -1,1 +1,1 @@
-Coding agents read a file called AGENTS.md first. So what is written there is in front of the next agent from the start. The traps this project hit are in it, such as skipping speech recognition.
+A file called AGENTS.md tells coding agents where to start. So what is written there is in front of the next agent from the start. It lists the traps this project hit, pitfalls to avoid, such as adding speech recognition.
