@@ -20,15 +20,15 @@
 
   /* 02-pipeline */
   .flowrow { position: absolute; top: 270px; left: 140px; width: 1640px; justify-content: flex-start; }
-  .need { position: absolute; top: 405px; left: 140px; font-size: 38px; color: var(--muted); }
+  .need { position: absolute; top: 432px; left: 140px; font-size: 38px; color: var(--muted); }
   .need em { font-style: normal; color: var(--cool); font-weight: 700; }
   .tag { display: block; margin-top: 22px; font-size: 36px; color: var(--accent); font-weight: 700; }
-  .tried { top: 500px; left: 140px; width: 780px; height: 340px; }
+  .tried { top: 520px; left: 140px; width: 780px; height: 300px; }
   .tried .strike { color: var(--muted); text-decoration: line-through; }
-  .chose { top: 500px; left: 1000px; width: 780px; height: 340px; border-color: var(--accent); }
+  .chose { top: 520px; left: 1000px; width: 780px; height: 300px; border-color: var(--accent); }
 
   /* 03-traps */
-  .agents { top: 300px; left: 140px; width: 1640px; padding: 30px 44px 36px; }
+  .agents { top: 380px; left: 140px; width: 1640px; padding: 30px 44px 36px; }
   .agents .fname { font-size: 32px; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 18px; }
   .row { font-size: 42px; line-height: 1.35; padding: 12px 0; border-top: 2px solid var(--line); }
   .row mark { background: none; color: var(--accent); font-weight: 800; }
@@ -37,14 +37,15 @@
   .builder { top: 270px; left: 140px; width: 1640px; height: 150px; padding: 26px 44px; display: flex; align-items: center; gap: 36px; }
   .builder b { margin: 0; }
   .grid { position: absolute; top: 470px; left: 140px; width: 1640px; display: flex; flex-wrap: wrap; gap: 16px; }
-  .grid .chip { font-size: 36px; padding: 18px 26px; }
-  .fresh { top: 730px; left: 140px; width: 1640px; height: 130px; padding: 26px 44px; border-color: var(--accent); display: flex; align-items: center; gap: 36px; }
+  .grid .chip { font-size: 36px; padding: 18px 26px; position: relative; }
+  .ring { position: absolute; inset: -6px; border: 3px solid var(--accent); border-radius: 22px; }
+  .fresh { top: 620px; left: 140px; width: 1640px; height: 130px; padding: 26px 44px; border-color: var(--accent); display: flex; align-items: center; gap: 36px; }
   .fresh b { margin: 0; }
 
   /* 05-loop */
   .rounds { position: absolute; top: 270px; left: 140px; width: 1640px; display: flex; gap: 24px; }
   .rounds .chip { flex: 1; text-align: center; padding: 22px 0; }
-  .loopcards { position: absolute; top: 450px; left: 140px; width: 1640px; display: flex; gap: 32px; }
+  .loopcards { position: absolute; top: 490px; left: 140px; width: 1640px; display: flex; gap: 32px; }
   .loopcards .card { position: static; flex: 1; height: 300px; }
   .loopcards .card span { font-size: 38px; }
 
@@ -59,10 +60,10 @@
     <div class="kicker" data-cue="+0.2" data-anim="fade">A very meta explainer</div>
     <h1 data-cue="+0.4">How we built<br>this project</h1>
     <div class="flow">
-      <div class="chip" data-cue="pull">Pull request 1</div>
+      <div class="chip" data-cue="two">Pull request 1</div>
       <div class="chip hot" data-cue="pipeline" data-anim="pop">the pipeline</div>
       <div class="arrow" data-cue="then" data-anim="fade">&rarr;</div>
-      <div class="chip" data-cue="then">Pull request 2</div>
+      <div class="chip" data-cue="requests">Pull request 2</div>
       <div class="chip hot" data-cue="critics" data-anim="pop">the critics</div>
     </div>
     <div class="kicker" style="color: var(--muted)" data-cue="Claude" data-anim="fade">with Claude assisting</div>
@@ -77,7 +78,7 @@
     <div class="chip hot">narrated video</div>
   </div>
   <div class="need" data-cue="start#1" data-anim="fade">The pictures need each sentence's <em>start time</em></div>
-  <div class="card tried" data-cue="recognition"><b>Tried</b><span class="strike">Speech recognition</span><span class="sm" style="margin-top:18px">Timed out after 6 minutes</span></div>
+  <div class="card tried" data-cue="timed"><b>Tried</b><span class="strike">Speech recognition</span><span class="sm" style="margin-top:18px">Timed out after 6 minutes</span></div>
   <div class="card chose" data-cue="voices" data-anim="pop"><b>Chose</b><span>One take per sentence</span><span class="sm" style="margin-top:18px">Places each sentence on the track</span><span class="tag" data-cue="exactly" data-anim="fade">Start times known exactly</span></div>
 </section>
 
@@ -86,7 +87,7 @@
   <div class="card agents" data-cue="+0.3" data-anim="fade">
     <div class="fname mono">AGENTS.md &middot; the file agents read first</div>
     <div class="row" data-cue="traps">No speech recognition, <mark>on purpose</mark></div>
-    <div class="row" data-cue="Another"><span class="mono">espeak-ng</span> fails at <mark>160+</mark> characters of path; the error never names it</div>
+    <div class="row" data-cue="Another">Voice engine (<span class="mono">espeak-ng</span>) fails at <mark>160+</mark> characters of path; the error reports a missing file</div>
   </div>
 </section>
 
@@ -94,7 +95,7 @@
   <h2 data-cue="+0.1" data-anim="left">The critics</h2>
   <div class="card builder" data-cue="builds"><b>Builder</b><span>Makes the video. Never judges it.</span></div>
   <div class="grid" data-cue="+0.3" data-anim="pop">
-    <div class="chip">accuracy</div><div class="chip">clarity</div><div class="chip">pacing</div><div class="chip">sync</div>
+    <div class="chip">accuracy<i class="ring" data-cue="Accuracy" data-anim="fade"></i></div><div class="chip">clarity</div><div class="chip">pacing<i class="ring" data-cue="Pacing" data-anim="fade"></i></div><div class="chip">sync</div>
     <div class="chip">visuals</div><div class="chip">consistency</div><div class="chip">engagement</div>
   </div>
   <div class="card fresh" data-cue="fresh"><b>Every critic</b><span>A fresh agent that never saw the build</span></div>
@@ -111,9 +112,9 @@
   </div>
   <div class="loopcards">
     <div class="card" data-cue="found" data-anim="pop"><b>Round 1</b><span class="big">209</span><span class="sm">words a minute at most; speed 1.0 became 0.85</span></div>
-    <div class="card cool" data-cue="Between" data-anim="pop"><b>Between rounds</b><span>The pipeline warns when a picture's word appears more than once in a scene, so it cannot land on the wrong one</span></div>
+    <div class="card cool" data-cue="Between" data-anim="pop"><b>Between rounds</b><span>The pipeline warns when a picture's word appears more than once in a scene</span></div>
   </div>
-  <div class="takeaway" style="top: 810px; color: var(--muted)" data-cue="six" data-anim="fade">The first video: <em>six rounds</em>, then its critics passed</div>
+  <div class="takeaway" style="top: 390px; color: var(--muted)" data-cue="six" data-anim="fade">The first video: <em>six rounds</em>, then its critics passed</div>
 </section>
 
 <section data-scene="06-close">
