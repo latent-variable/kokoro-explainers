@@ -16,8 +16,9 @@ sets, words a minute per scene, every pause, every cue's time and how long its t
 against its reading time.
 
 The person chose the speed (`video.json`, their `local/config.json`, or `--speed`), so judge
-against the target it sets: about 160 words a minute times the speed. A faster video is what
-they asked for, not a defect.
+against the target it sets: about 210 syllables a minute times the speed (the packet states
+it). Judge by syllables, not words: words a minute runs high on short words, so a punchy line
+looks fast by words and is not by ear. A faster video is what they asked for, not a defect.
 
 ## Criteria
 

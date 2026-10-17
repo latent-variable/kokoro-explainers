@@ -12,7 +12,7 @@
 // and assets/theme/ (the theme's fonts and images).
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
-import { REPO, config, die, flairCss, norm, round, seedFor, themeCss, videoDir } from "./lib.mjs";
+import { REPO, config, die, flairCss, musicBed, norm, round, seedFor, themeCss, videoDir } from "./lib.mjs";
 
 const CUE_LEAD = 0.15;      // a piece lands just before its word, so the eye gets there with the ear
 const LINE_WORDS = 12;      // the longest caption line
@@ -113,7 +113,9 @@ const sections = [...src.matchAll(/<section([^>]*)>([\s\S]*?)<\/section>/g)].map
 const missing = timing.scenes.filter((s) => !seen.has(s.id)).map((s) => s.id);
 if (missing.length) die(`scenes.html has no <section data-scene> for: ${missing.join(", ")}`);
 
+const music = musicBed(dir, cfg.music, timing);
 const html = readFileSync(join(REPO, "kit", "shell.html"), "utf8")
+  .replace("{{music}}", music ? `<audio id="music" src="assets/music.wav" data-start="0" data-duration="${timing.total}" data-track-index="31" data-volume="1"></audio>` : "")
   .replaceAll("{{title}}", esc(cfg.title))
   .replaceAll("{{total}}", String(timing.total))
   .replace("{{theme}}", () => themeCss(cfg.theme, dir))
@@ -134,4 +136,4 @@ if (!existsSync(gsap)) die("GSAP is not installed here: npm install");
 mkdirSync(join(dir, "assets", "vendor"), { recursive: true });
 copyFileSync(gsap, join(dir, "assets", "vendor", "gsap.min.js"));
 
-console.log(`index.html: ${timing.scenes.length} scenes, ${timing.total} s, theme ${cfg.theme}`);
+console.log(`index.html: ${timing.scenes.length} scenes, ${timing.total} s, theme ${cfg.theme}${music ? ", music" : ""}`);
