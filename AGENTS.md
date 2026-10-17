@@ -20,7 +20,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Path | What |
 |---|---|
-| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the read-only `critic` agent. Validate with `claude plugin validate . --strict` |
+| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the `critic` agent (read-only tools plus Skill, told not to write). Validate with `claude plugin validate .` (one expected warning: no `version`) |
 | `docs/PRD.md`, `docs/DESIGN.md` | The requirements, and the design decisions and behaviour. Kept current (*Docs that stay current*) |
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
@@ -86,9 +86,12 @@ decision changed").
   you write it: read the code or run it.
 - Ground a decision in evidence: a file, a measurement, a finding in `skills/REVIEW.md`, or a
   source you read. What you do not know goes in the PRD's open questions, not in a guess.
-- When you add or rename a skill, list it in the skills table below and in the PRD.
-- `npm test` fails if either file is missing, if this section no longer names them, or if a
-  skill is not listed in the skills table.
+- When you add or rename a skill, list it in the skills table above and in the PRD.
+- `npm test` fails if either file is missing or empty, if this section's heading is gone, if a skill
+  is missing from the skills table or the PRD, if a critic is missing from `docs/assets/critics.svg`,
+  or, in CI on a pull request, if `bin/`, `kit/`, `template/`, `skills/`, `agents/` or
+  `.claude-plugin/` changed and neither doc did (a commit message line `docs: no change` overrides it).
+- **Bump nothing by hand in `plugin.json`:** it has no `version`, so the commit SHA versions the plugin.
 
 ## Set up
 
@@ -117,7 +120,7 @@ render downloads a headless Chrome if HyperFrames finds none (about 190 MB).
 | `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` |
 | `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
 | `npm run usage` | Tokens and context per agent for the newest Claude Code session of this repo, subagents included (`-- <session id>` for another, `-- --json` for data); read from `~/.claude/projects/`, or from `CLAUDE_PROJECTS_DIR` |
-| `claude plugin validate . --strict` | The plugin manifest, marketplace entry, skills and agent; run it after any change to them |
+| `claude plugin validate .` | The plugin manifest, marketplace entry, skills and agent; run it after any change to them. One warning is expected (no `version`, on purpose: the commit SHA versions the plugin); `--strict` fails on it |
 | `npm test` | No Kokoro needed; CI runs only this |
 
 A change to `bin/`, `kit/` or `template/` is validated by running `make` and `review` on
@@ -145,7 +148,8 @@ timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-
 **Voice.** `af_heart` is the default; `npx hyperframes tts --list` shows the rest. Non-English
 voices need `espeak-ng` system-wide. `say` maps a written word to what Kokoro is told to say
 (`"HyperFrames": "Hyper Frames"`); captions keep the written form. At speed 1.0 Kokoro reads
-near 190 words a minute, so most videos want about 0.85.
+near 190 words a minute, and scenes vary by about 10% at one speed, so start at 0.8 and adjust `speed`
+from the packet's words a minute (`narration-writing`).
 
 ## How the timing works
 
@@ -168,7 +172,7 @@ videos/     videos about this repo; how-it-works is the example
 skills/critic-grounding/scripts/  check-excerpt.mjs, the excerpt check (run through the skill)
 sample_application/  a vendored sample app (microblog, MIT) the skills are tested on; see its SOURCE.md
 docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images; the GIF is cut from out/how-it-works.mp4
-test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links
+test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links, usage counting, the excerpt checker, the sandbox runner, the docs rule
 local/      gitignored, per person (tailor skill)
 ```
 

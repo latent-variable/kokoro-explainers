@@ -28,8 +28,13 @@ every piece of on-screen text in the cue table and the frames. Follow the links 
 - **major:** on-screen text and narration disagree on a fact.
 - **minor:** a claim that is true but carries no source line, so the next edit cannot check it.
 
-A defect in shown code, a command or output is reported by `critic-grounding`; cite it ("see
+For every spoken sentence, spot-check the `[read]` and `[ran]` cites behind it against the pinned
+file: a false line in `sources.md` that is spoken but not shown is yours, and no other critic sees
+it. A defect in shown code, a command or output is reported by `critic-grounding`; cite it ("see
 grounding") and do not duplicate it.
+
+A **spoken alias** recorded in `sources.md` *Terms*, with its literal on screen at the same cue
+(`glossary`), is not a naming, caption or sync mismatch.
 
 Never propose adding a fact the sources lack: report the gap and say not to fabricate.
 

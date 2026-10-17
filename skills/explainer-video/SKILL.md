@@ -36,16 +36,20 @@ is public.
 The everyday case. The agent doing the work does not build the video itself: it hands off
 to a fresh explainer agent, so the video is made by one that has not absorbed its reasoning.
 
-1. **The working agent writes `brief.md`** in a new `local/videos/<name>/`: the decision in
-   one sentence, each option it sees, what it would pick and why, the code paths that matter
-   and the worktree or commit to read them at. It states what it knows; it does not script
-   the video.
+1. **The working agent writes `brief.md`** in a new `local/videos/<name>/` (`decision-brief`): the
+   decision in one sentence, numbered claims, each option with its gains and costs, what it would
+   pick and why, one assumption it has not verified, and the pin to read the code at. It states what
+   it knows; it does not script the video.
 2. **It starts a fresh agent** with this skill and the brief. Facts come from the code at that
    worktree, never from the brief alone: the brief can be wrong, the code is the ground truth.
-3. **The explainer agent builds the video**, quick size: one to two minutes, three to five
-   scenes, ending on the options and a recommendation. `critic-decision` joins the critics.
-4. **It hands back the MP4's path.** The person watches, decides, and the working agent
-   carries on.
+3. **The explainer agent builds the video**, quick size: one to two minutes and three to five scenes
+   for a simple call, ending on the options and a recommendation. `critic-decision` joins the
+   critics. When the must-speak list (every option's gains and costs, each contradiction and added
+   cost, the unverified assumptions, the default if nobody decides, the pick and its reason) will not
+   fit, run to three minutes, or show the options in an on-screen table with a spoken summary and put
+   the full list in the hand-back; `critic-pacing`'s scene-length limit still holds.
+4. **It hands back** with `explain-handoff`: status, the MP4's path, the pick, and what the code
+   overruled or could not settle. The person watches, decides, and the working agent carries on.
 
 ## 1. Facts first: `sources.md`
 

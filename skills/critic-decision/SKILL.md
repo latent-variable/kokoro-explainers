@@ -13,7 +13,10 @@ description: >
 true (`critic-accuracy`) or the video is clear in general (`critic-clarity`).
 
 **Evidence:** the brief in `brief.md` (the decision, as the agent that asked for the video
-framed it), the script and cues in `review/packet.md`, the frames, and `sources.md`.
+framed it, with numbered claims), the script and cues in `review/packet.md`, the frames,
+`sources.md`, and **the code at the pin** it names. `sources.md`'s brief-versus-code list is a claim to
+check, not ground truth: re-run every `confirmed` absence claim, and every `confirmed` claim about
+the recommended option, over the whole pinned tree.
 
 ## Criteria
 
@@ -28,8 +31,9 @@ framed it), the script and cues in `review/packet.md`, the frames, and `sources.
 - **major:** what happens if nobody decides is not said.
 - **major:** the recommendation rests on something the viewer may not have weighed, and the
   video does not name it, so they cannot see where their own call would differ. This includes
-  the brief's "Not verified" assumption, and every contradiction and added cost in `sources.md`'s
-  brief-versus-code list: each is spoken in the video.
+  the brief's "Not verified" assumption, every claim left "not checked" that the pick rests on
+  (a "by when", an effort estimate), and every contradiction and added cost in `sources.md`'s
+  brief-versus-code list: each is spoken in the video, attributed as unverified where it is.
 - **major:** the pick is voiced as the explainer's own ("I would pick B"). It is the working
   agent's, and the video says so.
 - **minor:** options not shown side by side at the moment of choosing.

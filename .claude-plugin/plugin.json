@@ -1,10 +1,19 @@
 {
   "name": "shipshow",
-  "version": "0.1.0",
   "description": "Understand a code base or a change, then explain it: evidence-tagged context skills, decision briefs, a narrated explainer pipeline and nine adversarial critics that judge it.",
-  "author": { "name": "latent-variable", "url": "https://github.com/latent-variable" },
+  "author": {
+    "name": "latent-variable",
+    "url": "https://github.com/latent-variable"
+  },
   "homepage": "https://github.com/latent-variable/shipshow",
   "repository": "https://github.com/latent-variable/shipshow",
   "license": "MIT",
-  "keywords": ["explainer", "code-review", "decision", "video", "critics", "evidence"]
+  "keywords": [
+    "explainer",
+    "code-review",
+    "decision",
+    "video",
+    "critics",
+    "evidence"
+  ]
 }

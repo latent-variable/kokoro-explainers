@@ -16,28 +16,36 @@ can be hard to hear. Write for the ear, then check it against the clock.
 
 - **One idea per scene**, in short sentences. The sentence is also the unit of timing: each
   one is voiced on its own, so a long sentence puts its cues at an estimate.
-- **Pace comes from measurement.** `critic-pacing` holds the target and the limits; this skill
-  holds none of the numbers. Kokoro reads roughly 190 words a minute at speed 1.0 and scenes
-  vary by about plus or minus 10% at one speed, so choose `speed` from the packet's per-scene
-  words a minute (start near 0.8), not from a formula. The packet's rate is speech-only, so
-  cutting words does not change it: fix a scene that is still out of band by rewording it
-  (shorter or longer sentences, fewer digits and identifiers). The template's `speed` of 1.0
-  is too fast to pass.
+- **Pace comes from measurement.** `critic-pacing` holds the target and the limits. Kokoro reads
+  roughly 190 words a minute at speed 1.0 and scenes vary by about plus or minus 10% at one speed, so
+  start `speed` at **0.8** (the template's and `AGENTS.md`'s starting point) and adjust it from the
+  packet's per-scene words a minute, not from a formula. The packet's rate is speech-only, so cutting
+  words does not change it: adjust `speed` first, and reword only a scene that is the outlier at the
+  speed that suits the rest (a clause-heavy sentence tends to read faster per word than a short one;
+  that is untested here).
 - **Length is set by words.** A scene `critic-pacing` calls too long holds two ideas: cut words
   or split it.
 - **What is said matches what is shown**, when it is shown. Name a thing as it appears, and
   put its `data-cue` on that word. If the sentence has the word twice, say `word#2` or split
   the sentence.
-- **Say what the viewer needs, not what the code says.** Do not read symbols, paths, flags or
-  long identifiers aloud; say what they mean and show the literal on screen. When two names sound
-  alike (`follower_id`, `followed_id`) or one name covers two things, write the glossary's spoken
-  alias **in the script itself**, so voice, captions and cue timing agree, and show the literal
-  on the same cue. `video.json` `"say"` is only for pronouncing a one-meaning word: it is global,
-  case-sensitive and whole-word, it changes the voiced text but not the caption, and the cue
-  arithmetic and the packet's word count use the written text.
+- **Say what the viewer needs, not what the code says.** Do not read symbols, paths, flags or long
+  identifiers aloud; say what they mean and show the literal on screen. Name any file or function you
+  speak by an alias recorded in the glossary ("the models file" is ambiguous when two folders each
+  have a `routes.py`: say which). When two names sound alike (`follower_id`, `followed_id`) or one
+  name covers two things, write the alias **in the script itself**, so voice, captions and cue timing
+  agree, and show the literal on screen at the same cue. Captions are built from the script, so a
+  caption shows the alias and the screen shows the literal: that is expected, and the critics are
+  told it is not a mismatch.
+- **`say` is for pronunciation only.** `video.json` `"say"` swaps a word wherever a non-word
+  character borders it, so `{"models.py": "the models file"}` also turns `app/models.py` into
+  `app/the models file`. It changes the voiced text but not the caption, and the cue arithmetic and
+  the packet's word count use the written text. Use it for one-meaning words, never for a name that
+  appears inside a path.
 - **A cue is placed on a word.** `data-cue` matches the start of a spoken word across the whole
   scene, not one sentence, so `follow` also matches `follower` and `followed`. Use `word#n` or a
-  distinctive word; the build warns when a bare word occurs twice in its scene.
+  distinctive word; the build warns when a bare word occurs twice in its scene. Cue a literal on a
+  word its alias contains ("posts" for `following_posts`), never on the identifier itself: it
+  matches no spoken word and the build stops.
 - **One name per thing, throughout** (`glossary`). Do not vary words for style.
 
 ## For the ear
@@ -47,7 +55,9 @@ can be hard to hear. Write for the ear, then check it against the clock.
 - Put the point first; qualifications after.
 - Numbers as they are said: "version two point four", "about two hundred milliseconds",
   "three of the five". Round to what a listener can hold; the exact figure goes on screen.
-- Avoid homophones and look-alikes that can mislead by ear, and long strings of nouns.
+- Avoid homophones and look-alikes that can mislead by ear, and long strings of nouns. Avoid
+  abbreviations with a full stop ("e.g.", "i.e."): a sentence ends at a full stop and a space, so
+  they split the sentence.
 - A pause is a comma or a sentence end. `lead`, `gap` and `tail` in `video.json` set the
   silences; do not pad text to make them.
 - Do not announce structure ("in this section we will see"). Open on the point, and say why it

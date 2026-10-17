@@ -26,10 +26,13 @@ result goes. In short:
 2. **Disagreement is a finding.** Where docs and code differ, it goes in a Findings list; the
    code wins.
 3. **Unknowns are listed, never filled**, under "Open questions" with where you looked.
-4. **Scope is said.** Answer the question asked first. Name the pin and what you did not read.
-   Sections with no evidence are omitted, not padded. The prose is short (a purpose paragraph and
-   a few summary lines); tagged evidence lines are not capped, so cut breadth before you cut a
-   malformed-input check or the backing of a universal claim.
+4. **Scope is said, and prose is tagged.** Answer the question asked first. Name the pin and what you
+   did not read. Each sentence of the purpose paragraph carries a tag or cites a `[stated]` line.
+   Omit a section only when the question did not ask for it; when it was asked and nothing was found,
+   write the one-line `absent:` form. Never pad. Tagged evidence lines are not capped, so cut breadth
+   before you cut a malformed-input check or the backing of a universal claim. The minimum for an
+   API is one row per route: its auth, its malformed-body outcome, and the test that covers it; a
+   shared line for identical routes states the search that shows they are identical.
 
 ## What a good context covers
 

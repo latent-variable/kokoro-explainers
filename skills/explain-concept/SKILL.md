@@ -12,8 +12,9 @@ description: >
 
 The step between "we know the facts" and "we write the script". `code-context` says what is
 true; this decides what a particular person needs of it, and in what shape. A video that
-states every true thing teaches nothing. A `plan.md` in the video's folder is an aid; the
-bars below are judged on the video itself (`critic-clarity`, `critic-engagement`).
+states every true thing teaches nothing. A `plan.md` in the video's folder is an optional aid; the
+bars below are judged on the video itself (`critic-clarity`, `critic-engagement`). The headings and
+the plan template are suggestions, not a required method.
 
 ## 1. The viewer and the outcome
 
@@ -40,12 +41,22 @@ omission from an oversight.
 - **A worked example with concrete values comes before any general statement**, including in
   scene 1 when the framing is wrong.
 - **If the code contradicts the framing** (the brief asks how a post is delivered; nothing
-  delivers it), scene 1 corrects it as a concrete example ("Ben posts; nothing is sent to Ana"),
-  each negative claim cites an `absent:` line in `sources.md`, and the person is told in the
-  plan's first line and in the hand-back.
-- The last scene says what to do next, and makes the outcome reachable: for a feature or
-  change video it names the file and function the viewer would open, and the video shows at
-  least one real excerpt. A spoken alias (`glossary`) always has its literal on screen.
+  delivers it), the correction is for a viewer who holds that framing; a viewer who never assumed it
+  gets the real mechanism with a stake line first. Where it applies, scene 1 corrects it as a
+  concrete example ("Ben posts; nothing is sent to Ana"), and the title uses the real mechanism.
+  Before any scene says "nothing else happens", list the write path's listeners, events, signals and
+  hooks (a post that is also indexed for search is still a post that is not sent to a follower), and
+  cite each as `absent:` or `present:` in `sources.md`. The person is told in the plan's first line
+  and in the hand-back.
+- The last scene says what to do next, and makes the outcome reachable: for a feature or change
+  video it names the entry points the viewer would open (a feature has a write path and a read path),
+  with their literals on screen, and the video shows at least one real excerpt, the part the
+  narration explained. A spoken alias (`glossary`) always has its literal on screen.
+- **The scene that carries the central mechanism shows the real lines doing the work**, each cued as
+  it is named, and says how the viewer can check the claim themselves (the test that exercises it
+  is the runnable example). A script that is true but could be written without reading the code
+  teaches nothing. Keep something changing on screen about every 6 to 8 seconds; `critic-pacing`
+  holds the limit.
 - A newcomer's order often runs: the problem, the idea, one worked example, how it goes
   wrong or what it costs, then what to do.
 

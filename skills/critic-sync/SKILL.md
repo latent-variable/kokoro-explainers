@@ -26,4 +26,7 @@ at that moment) and the frames, each listed with the sentence being spoken in it
 - **major:** a caption in a frame that does not match the sentence being spoken in that frame.
 - **minor:** several elements landing at once where they are named one after another.
 
+A **spoken alias** recorded in `sources.md` *Terms*, with its literal on screen at the same cue
+(`glossary`), is not a naming, caption or sync mismatch.
+
 **Done:** when every cue row and every frame has been checked against its words.

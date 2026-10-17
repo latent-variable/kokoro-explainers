@@ -34,7 +34,7 @@ Your agents change code faster than you can read it. ShipShow hands you a short 
 /plugin install shipshow --marketplace latent-variable/shipshow
 ```
 
-The skills work in any repository. The video pipeline (Kokoro and HyperFrames) needs this repo cloned and set up as below.
+Needs Claude Code 2.1.275 or later. The understanding and decision skills (`code-context`, `change-context`, `decision-brief` and the rest of the context skills) work in any repository. Making and judging videos (`explainer-video`, `critic-loop`, the critics, `tailor`) needs this repo cloned and set up as below.
 
 ## Set it up
 

@@ -21,9 +21,12 @@ The builder runs the loop and fixes the findings. It does not judge them away. F
 critic in `video.json` `"critics"` (default: the first seven below; a decision video adds
 `critic-decision`; a video that shows code, output or captures adds `critic-grounding`), plus any the person added in `local/skills/`, it starts a **new** agent:
 
-- **Claude Code:** the Agent tool with a fresh general-purpose agent, never a fork (a fork
-  inherits the builder's context, and with it the builder's bias). Sonnet is enough for most
-  rounds; Opus for the final round of a video going public.
+- **Claude Code:** the Agent tool with a fresh agent, never a fork (a fork inherits the builder's
+  context, and with it the builder's bias). In the ShipShow plugin that is
+  `subagent_type: "shipshow:critic"`, which is restricted to Read, Grep, Glob, Bash and Skill and
+  told not to write; elsewhere a general-purpose agent. Sonnet is enough for most rounds; a stronger
+  model for the final round of a video going public where the account allows it. A judge from the
+  builder's own model family shares its blind spots, so say which model judged.
 - **Codex:** `codex exec --sandbox read-only` from an empty folder, with the frames passed as
   `-i <absolute path>` and the brief on stdin.
 - **Anything else:** any agent that starts with none of this conversation and can read files
@@ -83,7 +86,7 @@ Return only the JSON below. Stop when your skill's criteria are covered.
       "fix": "the smallest change that fixes it"
     }
   ],
-  "assets": [ { "asset": "...", "source": "...", "method": "diff|re-run|static|viewed", "result": "..." } ]
+  "assets": [ { "asset": "...", "source": "...", "method": ["diff", "re-run", "static", "viewed"], "result": "genuine|trimmed|trimmed-misleading|unsupported|no-provenance" } ]
 }
 ```
 

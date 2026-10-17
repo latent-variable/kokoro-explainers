@@ -1,7 +1,7 @@
 ---
 name: repo-context
 description: >
-  Get oriented in this repo before changing it: what it is, where each piece lives, how to
+  (Only in the ShipShow repo itself.) Get oriented in this repo before changing it: what it is, where each piece lives, how to
   run and test it, which traps have bitten before, and how a change is validated. Load at
   the start of any development task here (fixing a bug, changing `bin/`, `kit/`, `template/`
   or a skill, adding a feature), when asked "how does this repo work", or when handing a

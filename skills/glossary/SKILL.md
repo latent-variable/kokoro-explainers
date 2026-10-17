@@ -17,9 +17,9 @@ to find in round three.
 
 ## Where it lives
 
-A **Terms** section at the end of the video's `sources.md`, written with it and before the
-plan, so scene names use the settled words. It is ground truth like the rest
-of the file, so `critic-accuracy` and `critic-consistency` check against it.
+A **Terms** section at the end of the video's `sources.md`. It is ground truth like the rest of
+the file, so `critic-accuracy` and `critic-consistency` check against it. Settling it before the
+script is cheaper than finding a conflict in round three; revise it when the plan cuts a concept.
 
 ```
 ## Terms
@@ -36,9 +36,14 @@ of the file, so `critic-accuracy` and `critic-consistency` check against it.
 - **Use the source's name** for what the viewer will meet for real: a flag, a type, an endpoint.
   Where that name cannot be heard unambiguously or means two things, record a **spoken alias**
   in the entry and show the literal beside it on the same cue (`narration-writing`). One
-  source name, one concept; if the code overloads a name, say which meaning each scene uses.
+  source name, one concept. When the code overloads a name (`followers` is a table, a relationship
+  and an alias inside one query), the entry labels each meaning and the scene shows which line is
+  which, because a verbatim excerpt cannot be renamed. A spoken alias is followed, in a later scene,
+  by the literal being said or tied to it on screen. Every file or function named aloud has an alias
+  entry.
 - **A word the source lacks is a decision.** If the brief's own word ("timeline") is absent
-  from the code, the glossary says so and the plan states the real mechanism.
+  from the code, the glossary says so, the video's title and `video.json` use the real mechanism, and
+  the one corrective mention of the missing word is exempt from the ban list.
 - **Define on first use**, in a short sentence the viewer hears ("A follower is someone who
   follows you."), not in a footnote.
 - **Exact written forms**: capitalisation, hyphenation, product names. A video's `critics.md`
@@ -49,6 +54,6 @@ of the file, so `critic-accuracy` and `critic-consistency` check against it.
 
 ## Keep it honest
 
-Before the script is final, search the script, scenes and captions for each term's banned
-synonyms. When a critic finds a conflict, fix the glossary first, then every place the old
+Before the script is final, each term's banned synonyms are absent from the script, scenes and
+captions (a search is one way to know). When a critic finds a conflict, fix the glossary first, then every place the old
 word appears. A term added late is added to the glossary in the same change.

@@ -5,7 +5,7 @@ in the same change (`AGENTS.md`, *Docs that stay current*). How it is built and 
 [DESIGN.md](DESIGN.md). Dates are absolute. Status is one of **done**, **in progress**,
 **planned**, **open**.
 
-Last reviewed: 2026-10-17.
+Last reviewed: 2026-10-17 (after red-team round 3).
 
 ## Problem
 
@@ -65,8 +65,8 @@ questions*).
 | ID | Requirement | Status |
 |---|---|---|
 | F11 | Fresh critic agents judge a video; the builder never judges (`critic-loop`) | done |
-| F12 | Nine critics: accuracy, clarity, pacing, sync, visuals, consistency, engagement, decision, grounding | done |
-| F13 | A critic can verify that shown code and output match the source: a mechanical excerpt check and capture files (`critic-grounding`) | in progress |
+| F12 | Nine critics, one skill each: `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision`, `critic-grounding` | done |
+| F13 | A critic can verify that shown code and output match the source: a scripted excerpt check, capture files with a recomputable hash, and a per-asset table (`critic-grounding`) | done, being hardened |
 | F14 | A review packet gives critics measurements and frames (`npm run review`) | done |
 
 ### Hand it back and see the cost
@@ -74,16 +74,18 @@ questions*).
 | ID | Requirement | Status |
 |---|---|---|
 | F15 | A finished video is returned with its status, next step, what was checked and what is unsure (`explain-handoff`) | done, being hardened |
-| F16 | Tokens and context per agent, subagents included, for a session (`npm run usage`) | done |
+| F16 | Tokens and context per agent, subagents included, for a session (`npm run usage`) | done, **repo only**: it is not a skill, so the plugin does not ship it |
 
 ### Ship and extend
 
 | ID | Requirement | Status |
 |---|---|---|
-| F17 | Package as a Claude Code plugin: `.claude-plugin/plugin.json` and `marketplace.json`, all skills, a read-only `critic` agent; validates under `--strict` | done for the skills; the video pipeline still needs a clone (see open question 3) |
+| F17 | Package as a Claude Code plugin: `.claude-plugin/plugin.json` and `marketplace.json`, all skills, a `critic` agent restricted to Read, Grep, Glob, Bash and Skill and told not to write; validates (one expected warning: no `version`, deliberate) | done; the pipeline skills, `critic-loop`, the critics and `tailor` need a clone (open question 3); known packaging limits in DESIGN D13 |
 | F18 | A vendored sample application to test the skills on (`sample_application/`, microblog) | done |
 | F19 | Take multimodal inputs (images, audio, video, documents) as evidence for a video | **open**: depends on Amperium's data |
-| F20 | Per-person preferences and private videos stay local (`tailor`, `local/`) | done |
+| F20 | Per-person preferences and private videos stay local (`tailor`, `local/`) | done in this repo; elsewhere a skill checks `local/` is ignored and uses `.git/info/exclude` |
+| F21 | Run code to verify a claim without harm: a sandbox script, a faithful scratch copy, no network, writes confined (`evidence-standard`) | done on macOS; Linux untested |
+| F22 | Scaffold and diagnose: `npm run new` from `template/`, `npm run doctor` for what the machine lacks, a draft render mode | done |
 
 ## Non-functional requirements
 
@@ -93,12 +95,14 @@ questions*).
 | N2 | **Truth.** A fact the sources lack is reported as a gap, never filled | `sources.md`, `critic-accuracy`, `critic-grounding` | done |
 | N3 | **Independence.** The builder never judges its own video; critics are fresh agents | `critic-loop` | done |
 | N4 | **Public-safe.** A private code base's details never reach this public repo | `local/` is gitignored; `evidence-standard`, *Where the result goes* | done |
-| N5 | **Safe to run.** Reading a code base does not change it, spend money or send data out | `evidence-standard`, *Run code safely* | in progress: advice, not yet enforced (see DESIGN D9) |
-| N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 21 skills, about 7,400 characters (about 1,800 tokens) of names and descriptions; longest SKILL.md 135 lines | done; re-measure when a skill is added |
+| N5 | **Safe to run.** Reading a code base does not change it, spend money or send data out | `evidence-standard`, `scripts/sandbox-run.sh` (DESIGN D9) | done on macOS, tested; refuses elsewhere; reads are not confined and it is not a defence against hostile code |
+| N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 21 skills, 7,408 characters (about 1,850 tokens) of names and descriptions; longest SKILL.md 139 lines | done; re-measure when a skill is added |
 | N7 | **Reproducible.** A voice take is cached by text, voice and speed; generated files are gitignored | `assets/voice/*.key` | done |
 | N8 | **Observable.** Token and context use is readable per agent | `npm run usage` | done |
-| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` | done; 2 tests need `npm install` |
-| N10 | **Portable.** Tested on macOS; Linux should work, untried | `README.md` | open |
+| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (13 tests; the sandbox test runs on macOS only) | done; 2 tests need `npm install` |
+| N10 | **Portable.** The pipeline is tested on macOS; CI runs the unit tests on Linux (`ubuntu-latest`) | `README.md`, `.github/workflows/ci.yml` | open: pipeline on Linux untried |
+| N11 | **Attribution.** The vendored sample is MIT with its licence kept; Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its standard licence | `sample_application/LICENSE`, `README.md` | done |
+| N12 | **Reviewable.** Every change is a pull request with CI and an automated review; a rename changes the reviewer's allowlist | `AGENTS.md`, traps | done |
 
 ## Out of scope for now
 
@@ -121,7 +125,7 @@ questions*).
 1. What is Amperium's multimodal data (modalities, volume, domain), and what must a video of it
    show? F19 waits on this.
 2. Does the hackathon prompt require a particular deliverable or judging criterion?
-3. Which skills ship in the plugin, and does the video pipeline ship in it or stay a repo the
-   user clones? (DESIGN D13.)
-4. Can a Kokoro voice and a render run inside a plugin's install, given the model is about
-   340 MB and Chrome about 190 MB (`AGENTS.md`, *Set up*)?
+3. Should the video pipeline (Kokoro, about 340 MB, HyperFrames and Chrome, about 190 MB, a Python
+   environment) be installed by the plugin, for example under `${CLAUDE_PLUGIN_DATA}`, or stay a repo the
+   user clones? Until it is decided the pipeline skills, `critic-loop`, the critics and `tailor` need a
+   clone (DESIGN D13).

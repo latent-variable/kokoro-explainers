@@ -26,4 +26,7 @@ description: >
   "2. The pictures", then an unnumbered third).
 - **minor:** entrances, spacing or margins that change from scene to scene for no reason.
 
+A **spoken alias** recorded in `sources.md` *Terms*, with its literal on screen at the same cue
+(`glossary`), is not a naming, caption or sync mismatch.
+
 **Done:** when every term and every recurring element has been compared across all scenes.

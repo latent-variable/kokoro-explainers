@@ -17,8 +17,9 @@ pause, every cue's time and how long its text stays up against its reading time.
 ## Criteria
 
 - **major:** a scene spoken faster than 175 words a minute, or slower than 130. 150 to 165
-  is the target for technical content. The fix is usually `"speed"` in `video.json` or
-  fewer words, not more pauses.
+  is the target for technical content. The fix is `"speed"` in `video.json`
+  first (the packet's rate is speech-only, so cutting words does not change it); reword only a
+  scene that is the outlier at the speed that suits the rest. Not more pauses.
 - **major:** on-screen text marked "short" in the cue table: it leaves before a viewer could
   read it while listening.
 - **major:** a pause over 2 seconds anywhere but the very end, or a screen with no change

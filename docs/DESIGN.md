@@ -65,30 +65,33 @@ with `AGENTS.md` (round 2), so the rule is the narrower one above.
 four tags (`[stated]`, `[read]`, `[ran]`, `[inferred]`), a pin, safe running, absence claims,
 where the result goes. **Why.** Round one found the same five gaps in four skills; one place
 cannot drift. **Alternative.** Restating the rules per skill, which is what had drifted.
-Research supports the direction: citations must be checked mechanically, because a citation is
-only a claim about a source (<https://arxiv.org/pdf/2512.12117>).
+Research points the same way: a citation looks like evidence but is only a claim about a source,
+so it must be checked like any other claim (<https://kodekloud.com/blog/ground-llm-answers-with-citations/>),
+and one preprint reports checking each citation mechanically against retrieved code
+(<https://arxiv.org/pdf/2512.12117>, self-reported, one study).
 
 ### D7. Pinning when there is no commit (2026-10-17)
 **Decision.** Committed code is pinned to a full SHA. Vendored code needs both pins: this repo's
 HEAD (what cites resolve against) and the upstream SHA from `SOURCE.md`, labelled, with an
 uncompared upstream SHA counted as `[stated]`. Uncommitted code is handed over as a patch or a
 content hash, not a branch. **Why.** The sample app has no history here, and a branch name
-moves. **Open.** An offline tree hash of the upstream tree in `SOURCE.md` so a critic can verify
-"unmodified" without the network.
+moves. **Superseded in part by D18:** the offline tree hash now exists.
 
 ### D8. Read-only by default, run in a throwaway copy (2026-10-17)
 **Decision.** Understanding a code base must not change it. Runs happen in a scratch copy with
 a scrubbed environment; installs are a network call and need consent. **Why.** Red-teaming
 showed commands writing into the repo and a `.env` being loaded.
 
-### D9. The safe-running envelope is advice until it is enforced (2026-10-17)
-**Decision.** Record that `env -i` does not block the network, a copy does not stop a command
-writing to `../`, and `cp -R` carries a `.env`. **Consequence.** The skills now require
-`cd <copy> || stop` first, deleting `.env` and local databases from the copy, and a named
-no-network method per OS (macOS Seatbelt via `sandbox-exec`, Linux `unshare -n` or a container);
-without one, a command is not run and its asset is `unsupported`. Claude Code itself isolates
-with Seatbelt and Bubblewrap and scopes credentials separately from the filesystem; sandboxing
-limits damage and does not make untrusted code trustworthy.
+### D9. The safe-running envelope is a script, not advice (2026-10-17)
+**Decision.** Record what testing showed: `env -i` does not block the network, a copy does not stop a
+command writing to `../`, `cp -R` carries a `.env`, and a failed `cd` wrote into the real repo.
+**Consequence.** Running goes through `skills/evidence-standard/scripts/sandbox-run.sh`: empty
+environment, `HOME` and `TMPDIR` inside the copy, no network, writes confined to the copy, `~/.ssh`
+and similar unreadable, `open` and `osascript` denied. macOS only (`sandbox-exec`); on any other
+system it refuses rather than run unsandboxed. Tested: network, outside writes, `../`, `/dev/null`,
+Python's tempfile. Known limits: reads elsewhere are not confined, BSD `mktemp` with no template
+ignores `TMPDIR`, and it is not a defence against hostile code. Claude Code itself isolates with
+Seatbelt and Bubblewrap, and sandboxing limits damage without making untrusted code trustworthy.
 Sources: <https://medium.com/@Koukyosyumei/how-claude-code-and-codex-sandbox-untrusted-code-ba39b493046a>,
 <https://dev.to/traceseal/how-to-sandbox-an-ai-coding-agent-and-what-a-sandbox-cannot-prove-h9b>.
 
@@ -112,25 +115,46 @@ into the feature branch. **Why.** The branch was already pushed; a merge avoids 
 is short. Skills point at `AGENTS.md`.
 
 ### D13. The end goal is a Claude Code plugin (team, 2026-10-17)
-**Decision.** The repo root is the plugin: `.claude-plugin/plugin.json` (name `shipshow`),
-`skills/`, `agents/critic.md`, and a one-plugin `.claude-plugin/marketplace.json` with
-`source: "./"`. `claude plugin validate . --strict` passes for the marketplace, the manifest,
-the skills and the agent. Install: `/plugin install shipshow --marketplace latent-variable/shipshow`.
-**Why.** It installs in other repositories, with updates from the marketplace.
+**Decision.** The repo root is the plugin: `.claude-plugin/plugin.json` (name `shipshow`, **no
+`version`**), `skills/`, `agents/critic.md`, and a one-plugin `.claude-plugin/marketplace.json` with
+`source: "./"`. `claude plugin validate .` passes for the marketplace, the manifest, the skills and the agent; its
+only warning, and the only thing `--strict` rejects, is the missing `version`, which is deliberate
+(below). Install (Claude Code 2.1.275 or later):
+`/plugin install shipshow --marketplace latent-variable/shipshow`, which works once this is on `main`.
+**Why.** It installs in other repositories, with updates from the marketplace. Setting `version`
+pins users to it until someone bumps it, so it is omitted and the commit SHA versions the plugin.
 **Facts from the docs that shaped it.** Only `name` is required, in kebab-case, and may not start
-with `claude-` or `anthropic-`. Skills load namespaced as `/<plugin>:<skill>`. An enabled
-plugin's skill names and descriptions sit in context every turn (measured here: about 1,800
-tokens for 21 skills), so descriptions stay short and SKILL.md under 500 lines (longest: 135).
-A bundled script is found with `${CLAUDE_SKILL_DIR}`, so `check-excerpt.mjs` lives inside
-`critic-grounding`, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted only in plugin skill
-text, not in this repo's own `.claude/skills` links, so skills use `${CLAUDE_SKILL_DIR}`. A
-`CLAUDE.md` at a plugin root is not loaded as context. A plugin runs with the user's privileges.
-**The critic agent.** `agents/critic.md` restricts a critic to Read, Grep, Glob and Bash and tells
-it not to write in the repository, which backs the rule that a critic is fresh and read-only.
+with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
+namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
+every turn (measured: 21 skills, 7,408 characters, about 1,850 tokens), so descriptions stay short
+and SKILL.md under 500 lines (longest 139). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
+the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
+and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
+a plugin root is not loaded as context. A plugin runs with the user's privileges.
+**The critic agent.** `agents/critic.md` gives a critic Read, Grep, Glob, Bash and Skill and tells it
+not to write. Bash can write, so it is told, not enforced; the sandbox script is the enforcement for
+anything it runs. `critic-loop` names `shipshow:critic` for Claude Code.
+**Known limits, not fixed.**
+- `source: "./"` copies every tracked file: 142 files, about 520 KB, of which `skills/`, `agents/` and
+  the manifests are about 103 KB. The rest (the sample app, videos, docs, tests, `package-lock.json`)
+  is dead weight in the user's plugin cache. A plugin in a subdirectory would fix it, but the skills,
+  `npm run skills` and this repo's conventions live at the root; that restructuring is deferred.
+- A `bin/` at a plugin root is the reserved executables directory: its files go on the Bash tool's
+  `PATH`, and claude.ai and Cowork do not install a plugin that has one. Ours are non-executable,
+  extension-named Node files, so they are inert on `PATH`; the target is Claude Code, so the second
+  point does not bite.
+- Installed in a clone of this repo, every skill loads twice (the plugin and `.claude/skills`).
+- Skills refer to each other by bare name (`critic-loop`); how that resolves under the
+  `/shipshow:` namespace is untested.
+- Which skills work outside a clone: the understanding and brief skills (`code-context`,
+  `change-context`, `evidence-standard`, `decision-brief`, `explain-concept`, `glossary`,
+  `narration-writing`, `explain-handoff`) with caveats (they cite `AGENTS.md` and `local/`; `local/`
+  is gitignored only here, so they check and use `.git/info/exclude`). `explainer-video`, `critic-loop`,
+  the nine critics (they judge `review/packet.md`) and `tailor` need this repo cloned and set up.
+  `repo-context` is for this repo only.
 **Open.** The Kokoro and HyperFrames pipeline (a 340 MB model, about 190 MB of Chrome, a Python
-virtual environment) is not installed by the plugin: the pipeline skills need this repo cloned
-and set up. Whether it should be installed by the plugin is PRD open question 3.
-Sources: <https://code.claude.com/docs/en/plugins>, <https://code.claude.com/docs/en/skills>,
+virtual environment) is not installed by the plugin (PRD, open question 3). Sources:
+<https://code.claude.com/docs/en/plugins>, <https://code.claude.com/docs/en/skills>,
 <https://code.claude.com/docs/en/plugins/manifest-reference>,
 <https://code.claude.com/docs/en/plugins/create-marketplace>.
 
@@ -145,16 +169,18 @@ directory, pin, exit code, date, an output hash and the full output. A critic re
 per-asset table with its verdict.
 
 ### D15. Pace comes from measurement, not a formula (2026-10-17)
-**Decision.** `speed` is chosen from the review packet. **Why.** An earlier skill said words a
-minute is about 190 times `speed`; the repo's own `REVIEW.md` shows scenes at 176 to 209 words a
-minute at speed 1.0, a spread of about 19%, and the shipped 0.85 video measured 168 to 171 in
-some scenes. Words a minute is speech-only, so cutting words shortens a scene but does not fix
-its rate. **Consequence.** Start near 0.8 for the 150 to 165 target and fix an outlier scene by
-rewording it.
+**Decision.** Start `speed` at 0.8 (the template and `AGENTS.md`) and adjust it from the review
+packet. **Why.** An earlier skill said words a minute is about 190 times `speed`; the repo's own
+`videos/how-it-works/REVIEW.md` shows scenes at 176 to 209 words a minute at speed 1.0, a spread of
+about 19%, and scenes 1 and 2 of the shipped 0.85 video at 168 and 171. Words a minute is
+speech-only (`bin/review.mjs`), so cutting words shortens a scene but does not change its rate.
+The template used to ship `speed: 1.0`, about 190 and a `critic-pacing` fail; it is now 0.8.
 
 ### D16. A spoken alias is written into the script (2026-10-17)
 **Decision.** Where two identifiers sound alike or one name covers two things, write the alias
-in the script itself and show the literal on screen on the same cue. `video.json` `say` is for
+in the script itself and show the literal on screen on the same cue. Captions come from the script,
+so a caption shows the alias; `critic-accuracy`, `critic-consistency` and `critic-sync` are told that
+a recorded alias with its literal on screen is not a mismatch. `video.json` `say` is for
 pure pronunciation of a one-meaning word. **Why.** `say` is global, case-sensitive and
 whole-word, so it cannot disambiguate one written name across scenes; it also changes the
 voiced text while captions and cue timing use the written text, which trips `critic-sync`.
@@ -165,7 +191,37 @@ confirmed, contradicted or not checked; it derives each option's costs from the 
 the brief's list as a floor; an assumption it cannot check is named in the video and the
 hand-back. A hand-back is `ready` only when every required critic passed. **Why.** Round one's
 red team planted a wrong claim and a hidden cost; the first version of the skill surfaced
-neither, and round two surfaced the wrong claim but not the thin cost.
+neither, and round two surfaced the wrong claim but not the thin cost. Round three added: briefs
+number their claims (`C1`..), a cost needs a mechanism, the explainer re-runs absence searches over
+the whole tree and traces the recommended option end to end, the working agent (not the explainer)
+judges whether the pick still holds, `critic-decision` sees the code at the pin, and `ready` requires
+the full required critic set, defined in `explain-handoff`.
+
+### D18. The offline tree hash exists (2026-10-17; supersedes the open item in D7)
+**Decision.** `sample_application/SOURCE.md` records the upstream commit's tree hash
+(`2c6e850f...`, from `gh api`) and a read-only recipe that reproduces it from this repo's own
+objects, so "unmodified" is checkable with no network. **Checked:** it prints the same hash from any
+directory, writes no object into `.git` (loose objects 365 before and after, with a tree that
+needed a new one), and reports uncommitted edits. Running the recipe verbatim found two bugs in it
+(a `git write-tree` that wrote into `.git`; a diff check that ran against the temporary index).
+
+### D19. Decidable checks are scripts, and every recipe in a skill is run as written (2026-10-17)
+**Decision.** Where a check is decidable it is code with tests, not prose: the excerpt check
+(`skills/critic-grounding/scripts/check-excerpt.mjs`) and the sandbox runner (D9). **Why.** Round three
+found a blocking bug in the first excerpt script (a path with a space or a symlink printed nothing
+and exited 0, a false pass), plus blank-line, empty-input, ambiguity and indentation defects, and
+found that recipes I had put in skills were wrong when run literally (`|| stop`, `git grep -E` with
+`\b`, a diff check against the wrong index). **Consequence.** A script fails closed: no segments, a
+missing `--ranges`, a bad path or bad input never exits 0. The test for each reported bug is in
+`test/pipeline.test.mjs`. A command written into a skill is run verbatim before it ships.
+
+### D20. Judges are Sonnet only here (2026-10-17)
+**Decision.** The red-team rounds ran on Sonnet 5.5. **Why.** The workspace limits agents to Sonnet:
+six Opus agents were rejected at once with HTTP 429 (a configured limit of one request per minute).
+**Consequence.** Every judge shares the builder's model family, so self-preference bias applies
+(<https://arxiv.org/html/2410.21819v1>) and the red-team record is evidence of what a Sonnet attacker
+finds, not proof. `critic-loop` still recommends a stronger model for a public release "where the
+account allows it".
 
 ## Behaviour
 
@@ -183,6 +239,13 @@ What an agent or person observes. Each line is checkable against the cited file.
   time and reading time) and `review/frames/`. The packet measures; the critics judge.
 - `usage` prints, per agent, API calls, input, output, cache-write and cache-read tokens,
   peak and last context, wall time and model, and a total; `--json` for data.
+- `critic-grounding` runs `check-excerpt.mjs <source> <excerpt> --ranges ...`: exit 0 and `ok: true`
+  only when every `…`-separated segment is consecutive source lines (blank lines ignored, relative
+  indentation and text exact) at the stated lines; exit 1 on a mismatch, an empty excerpt or an
+  ambiguous or wrong range; exit 2 on bad usage or input. It lists each gap with a preview and flags
+  guards, branches, decorators and early exits.
+- `sandbox-run.sh <dir> <cmd>` runs with no network and writes confined to `<dir>`, or refuses (exit 3)
+  where it cannot sandbox, and exits 2 on bad usage.
 - Scripts never delete files. Generated files are gitignored. The kit renders entrances on a
   cue (`up`, `fade`, `pop`, `left`, `right`, `grow`); exit, swap, arrows, highlight and counters
   need a custom `<script>`.
