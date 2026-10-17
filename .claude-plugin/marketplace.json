@@ -1,0 +1,12 @@
+{
+  "name": "shipshow",
+  "description": "ShipShow: turn a shit show into a ship show",
+  "owner": { "name": "latent-variable", "url": "https://github.com/latent-variable" },
+  "plugins": [
+    {
+      "name": "shipshow",
+      "source": "./",
+      "description": "Evidence-grounded understanding of code and changes, decision briefs, narrated explainer videos, and adversarial critics."
+    }
+  ]
+}

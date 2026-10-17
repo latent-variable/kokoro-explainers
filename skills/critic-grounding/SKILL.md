@@ -23,8 +23,8 @@ packet text: the text can be right and the pixels wrong), and the code itself. F
 
 For each shown asset, check it yourself and record how:
 
-- **Code excerpt:** save the shown text to a file and run `node bin/check-excerpt.mjs <source
-  file> <excerpt file> --ranges <ranges from sources.md>`. Each segment between `…` markers must
+- **Code excerpt:** save the shown text to a file and run `node "${CLAUDE_SKILL_DIR}/scripts/check-excerpt.mjs"
+  <source file> <excerpt file> --ranges <ranges from sources.md>`. Each segment between `…` markers must
   be consecutive lines of the file, in file order, and the matched ranges must equal the stated
   ones. That catches a one-token change ("600" for "3600"), a splice of non-adjacent lines, and
   a wrong range, which reading does not. Then read every gap it lists: a gap holding a guard,

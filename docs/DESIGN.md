@@ -112,24 +112,35 @@ into the feature branch. **Why.** The branch was already pushed; a merge avoids 
 is short. Skills point at `AGENTS.md`.
 
 ### D13. The end goal is a Claude Code plugin (team, 2026-10-17)
-**Decision.** Package as a plugin: `.claude-plugin/plugin.json` at the root, `skills/` and
-`agents/` beside it, a marketplace entry in `.claude-plugin/marketplace.json` for distribution.
-Skills load namespaced as `/<plugin>:<skill>`. **Why.** It installs in other repositories.
-**Constraints from the docs.** An enabled plugin's skill names and descriptions occupy context on
-every turn, so keep descriptions short and put detail in supporting files (SKILL.md under 500
-lines); bundled scripts are addressed with `${CLAUDE_SKILL_DIR}`; the manifest name and the
-marketplace entry name must match; `claude plugin validate` checks both. A plugin runs with the
-user's privileges. **Open.** Which skills ship, and how the Kokoro and HyperFrames pipeline is
-installed (PRD, open questions 3 and 4). Sources: <https://code.claude.com/docs/en/plugins>,
-<https://code.claude.com/docs/en/skills>, <https://code.claude.com/docs/en/plugins/create-marketplace>.
+**Decision.** The repo root is the plugin: `.claude-plugin/plugin.json` (name `shipshow`),
+`skills/`, `agents/critic.md`, and a one-plugin `.claude-plugin/marketplace.json` with
+`source: "./"`. `claude plugin validate . --strict` passes for the marketplace, the manifest,
+the skills and the agent. Install: `/plugin install shipshow --marketplace latent-variable/shipshow`.
+**Why.** It installs in other repositories, with updates from the marketplace.
+**Facts from the docs that shaped it.** Only `name` is required, in kebab-case, and may not start
+with `claude-` or `anthropic-`. Skills load namespaced as `/<plugin>:<skill>`. An enabled
+plugin's skill names and descriptions sit in context every turn (measured here: about 1,800
+tokens for 21 skills), so descriptions stay short and SKILL.md under 500 lines (longest: 135).
+A bundled script is found with `${CLAUDE_SKILL_DIR}`, so `check-excerpt.mjs` lives inside
+`critic-grounding`, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted only in plugin skill
+text, not in this repo's own `.claude/skills` links, so skills use `${CLAUDE_SKILL_DIR}`. A
+`CLAUDE.md` at a plugin root is not loaded as context. A plugin runs with the user's privileges.
+**The critic agent.** `agents/critic.md` restricts a critic to Read, Grep, Glob and Bash and tells
+it not to write in the repository, which backs the rule that a critic is fresh and read-only.
+**Open.** The Kokoro and HyperFrames pipeline (a 340 MB model, about 190 MB of Chrome, a Python
+virtual environment) is not installed by the plugin: the pipeline skills need this repo cloned
+and set up. Whether it should be installed by the plugin is PRD open question 3.
+Sources: <https://code.claude.com/docs/en/plugins>, <https://code.claude.com/docs/en/skills>,
+<https://code.claude.com/docs/en/plugins/manifest-reference>,
+<https://code.claude.com/docs/en/plugins/create-marketplace>.
 
 ### D14. A ninth critic, grounding (2026-10-17)
 **Decision.** `critic-grounding` judges that every shown excerpt, command and output is genuine
 and from the named pin. It owns shown code and output; `critic-accuracy` owns claims and prose;
 `critic-sync` owns timing. **Why.** A claim can be true while the output shown for it was never
-produced. **Consequence.** The check is decidable, so it is being scripted rather than left as
-prose: each `…`-separated segment must be contiguous lines of the file, in order, and every
-omitted gap is flagged if it contains a guard or a return. Capture files carry command, working
+produced. **Consequence.** The check is decidable, so it is scripted (`skills/critic-grounding/scripts/check-excerpt.mjs`,
+tested) rather than left as prose: each `…`-separated segment must be contiguous lines of the file, in order, and every
+omitted gap is listed and flagged if it contains a guard, branch, return or default. Capture files carry command, working
 directory, pin, exit code, date, an output hash and the full output. A critic returns a
 per-asset table with its verdict.
 

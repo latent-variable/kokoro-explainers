@@ -80,7 +80,7 @@ questions*).
 
 | ID | Requirement | Status |
 |---|---|---|
-| F17 | Package as a Claude Code plugin with the portable skills first | planned |
+| F17 | Package as a Claude Code plugin: `.claude-plugin/plugin.json` and `marketplace.json`, all skills, a read-only `critic` agent; validates under `--strict` | done for the skills; the video pipeline still needs a clone (see open question 3) |
 | F18 | A vendored sample application to test the skills on (`sample_application/`, microblog) | done |
 | F19 | Take multimodal inputs (images, audio, video, documents) as evidence for a video | **open**: depends on Amperium's data |
 | F20 | Per-person preferences and private videos stay local (`tailor`, `local/`) | done |
@@ -94,7 +94,7 @@ questions*).
 | N3 | **Independence.** The builder never judges its own video; critics are fresh agents | `critic-loop` | done |
 | N4 | **Public-safe.** A private code base's details never reach this public repo | `local/` is gitignored; `evidence-standard`, *Where the result goes* | done |
 | N5 | **Safe to run.** Reading a code base does not change it, spend money or send data out | `evidence-standard`, *Run code safely* | in progress: advice, not yet enforced (see DESIGN D9) |
-| N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Claude Code skills docs | in progress |
+| N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 21 skills, about 7,400 characters (about 1,800 tokens) of names and descriptions; longest SKILL.md 135 lines | done; re-measure when a skill is added |
 | N7 | **Reproducible.** A voice take is cached by text, voice and speed; generated files are gitignored | `assets/voice/*.key` | done |
 | N8 | **Observable.** Token and context use is readable per agent | `npm run usage` | done |
 | N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` | done; 2 tests need `npm install` |

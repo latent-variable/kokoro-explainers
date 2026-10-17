@@ -25,8 +25,16 @@ Your agents change code faster than you can read it. ShipShow hands you a short 
 <p align="center">
   <img src="docs/assets/critics.svg" width="100%" alt="The critics: fresh agents, one question each. Accuracy, clarity, pacing, sync, visuals, consistency, engagement, decision and grounding.">
   <br>
-  <sub>Accuracy &middot; Clarity &middot; Pacing &middot; Sync &middot; Visuals &middot; Consistency &middot; Engagement &middot; Decision</sub>
+  <sub>Accuracy &middot; Clarity &middot; Pacing &middot; Sync &middot; Visuals &middot; Consistency &middot; Engagement &middot; Decision &middot; Grounding</sub>
 </p>
+
+## Install as a Claude Code plugin
+
+```
+/plugin install shipshow --marketplace latent-variable/shipshow
+```
+
+The skills work in any repository. The video pipeline (Kokoro and HyperFrames) needs this repo cloned and set up as below.
 
 ## Set it up
 

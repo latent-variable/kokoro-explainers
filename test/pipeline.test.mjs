@@ -138,7 +138,7 @@ test("the PRD and design docs exist, AGENTS.md names them, and every skill is in
 });
 
 test("check-excerpt accepts real lines, rejects a splice or a changed token, and flags a guard hidden in a gap", async () => {
-  const { checkExcerpt } = await import("../bin/check-excerpt.mjs");
+  const { checkExcerpt } = await import("../skills/critic-grounding/scripts/check-excerpt.mjs");
   const src = ["def add(doc):", "    if not search:", "        return", "    payload = {}", "    for f in fields:", "        payload[f] = 1", "    index(payload)", ""].join("\n");
   assert.equal(checkExcerpt(src, "    payload = {}\n    for f in fields:\n", "4-5").ok, true);
   assert.match(checkExcerpt(src, "    payload = {}\n    index(payload)\n").problems[0], /not consecutive/);

@@ -20,6 +20,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Path | What |
 |---|---|
+| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the read-only `critic` agent. Validate with `claude plugin validate . --strict` |
 | `docs/PRD.md`, `docs/DESIGN.md` | The requirements, and the design decisions and behaviour. Kept current (*Docs that stay current*) |
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
@@ -116,6 +117,7 @@ render downloads a headless Chrome if HyperFrames finds none (about 190 MB).
 | `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` |
 | `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
 | `npm run usage` | Tokens and context per agent for the newest Claude Code session of this repo, subagents included (`-- <session id>` for another, `-- --json` for data); read from `~/.claude/projects/`, or from `CLAUDE_PROJECTS_DIR` |
+| `claude plugin validate . --strict` | The plugin manifest, marketplace entry, skills and agent; run it after any change to them |
 | `npm test` | No Kokoro needed; CI runs only this |
 
 A change to `bin/`, `kit/` or `template/` is validated by running `make` and `review` on
@@ -163,6 +165,7 @@ kit/        shell.html (canvas, captions, audio) and kit.js (the timeline), shar
 skills/     the explainer and development skills, critic-loop, tailor and the nine critics
 template/   what npm run new copies
 videos/     videos about this repo; how-it-works is the example
+skills/critic-grounding/scripts/  check-excerpt.mjs, the excerpt check (run through the skill)
 sample_application/  a vendored sample app (microblog, MIT) the skills are tested on; see its SOURCE.md
 docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images; the GIF is cut from out/how-it-works.mp4
 test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links

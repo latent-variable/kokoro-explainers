@@ -2,7 +2,7 @@
 // consecutive lines of the source file, in file order, and every omitted gap is listed, with
 // a flag when it holds a guard, branch, return or default whose absence changes what the
 // excerpt appears to do. Only whitespace is normalised.
-//   node bin/check-excerpt.mjs <source file> <excerpt file> [--ranges 4-6,10-12]
+//   node check-excerpt.mjs <source file> <excerpt file> [--ranges 4-6,10-12]
 // Prints JSON: { ok, segments: [{ from, to }], gaps: [{ from, to, flags }], problems }.
 // Exit 0 when every segment matches (read the gaps yourself), 1 when one does not.
 import { readFileSync } from "node:fs";
