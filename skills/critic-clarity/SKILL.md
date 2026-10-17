@@ -1,9 +1,9 @@
 ---
 name: critic-clarity
 description: >
-  Use when the critic loop assigns you this critic. Critic for whether an explainer video teaches:
-  the intended viewer follows it on one viewing, understands what changed and why it matters, and
-  knows what to do next.
+  Critic for whether an explainer video teaches: the intended viewer follows it on one
+  viewing, understands what changed and why it matters, and knows what to do next. Load
+  when the critic loop assigns you this critic.
 ---
 
 # Critic: clarity

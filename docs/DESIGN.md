@@ -156,7 +156,7 @@ pins users to it until someone bumps it, so it is omitted and the commit SHA ver
 **Facts from the docs that shaped it.** Only `name` is required, in kebab-case, and may not start
 with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
 namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
-every turn (measured: 22 skills, 7,860 characters, about 1,965 tokens), so descriptions stay short
+every turn (measured: 22 skills, 7,882 characters, about 1,971 tokens), so descriptions stay short
 and SKILL.md under 500 lines (longest 206). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
 the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
 and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
@@ -471,20 +471,23 @@ among the tools it saw, which this change did not cause (`tools` is unchanged) a
 plugin-shipped agent's own hooks run is unconfirmed, so the Bash limit stays a stated one. **Costs.** A critic that needs more than 40 turns
 stops early and returns what it has; raise `maxTurns` if a longer video needs it.
 
-### D39. Descriptions put the trigger first; skills have a size ceiling; two skills pre-approve their scripts (2026-10-17; plan 1.3, 1.4, 1.6)
-**Decision.** Every skill description now starts "Use when ..." (the repo-only one after its "(Only in the ShipShow repo
-itself.)" marker), then says what the skill does. Before, 22 of 22 put "Load when ..." last. A test asserts the opening, a
-ceiling of 600 characters a description, and 20,000 characters (about 5,000 tokens) a `SKILL.md`. `critic-grounding` and
+### D39. Descriptions keep what the skill is first and "Load when ..." last; a size ceiling; two skills pre-approve their scripts (2026-10-17; plan 1.3, 1.4, 1.6)
+**Decision.** The 22 descriptions stay as they were: what the skill does, then "Load when ...". A test asserts that each says when to
+load, a ceiling of 600 characters a description, and 20,000 characters (about 5,000 tokens) a `SKILL.md`. `critic-grounding` and
 `evidence-standard` gain `allowed-tools` for their bundled scripts (`Bash(node ${CLAUDE_SKILL_DIR}/scripts/*)` and the sibling
 skill's), so a critic is not asked to approve the same script each round.
-**Why.** Anthropic's skills docs: the trigger belongs first because the listing truncates and the description decides whether
-a skill loads; after compaction only the first 5,000 tokens of an invoked skill are kept. The largest `SKILL.md` here is
-12,593 characters, so the ceiling is headroom, not a squeeze. The descriptions got 22 characters shorter (7,860 in all).
-**Checked.** `claude plugin validate skills --strict` passes. **Not checked.** That `allowed-tools` pre-approves a script
-in a live critic run (the docs say `${CLAUDE_SKILL_DIR}` works there; no run was made), and that the new wording triggers
-the skills as well as the old: that needs the evals of plan step 5.1.
-**Costs.** A description that restates its trigger first reads as an instruction to the model that sees the listing; the
-critic skills now open "Use when the critic loop assigns you this critic" and then "Critic for ...".
+**What was tried and dropped.** Plan step 1.3 said to put the trigger first ("Use when ...", Anthropic's skills docs). It was
+rewritten, then measured with the `evals/` suite (trigger cases, natural phrasing, no skill named, Sonnet): trigger-first, 22 skills,
+**lowered** triggering. The evidence standard fired 19 of 21 runs on the old text and 6 of 16 on the rewrite; `narration-writing` 18
+of 21 against 7 of 16; `change-context` 14 of 21 against 4 of 16. Keeping the old order and changing only "Load" to "Use" on 11 skills
+gave 1 of 8 for the evidence standard, and trigger-first with "Load" gave 0 of 8: both the order and the verb mattered, in a
+way no reasoning here predicted. `critic-loop` and `decision-brief` fired 8 of 8 on every variant. Runs are few (5 to 8 a cell) and
+single-model, but the gap is the size of the effect, not of the noise (the same old text scored 8 of 8 and 6 of 8 on two runs).
+**Why keep the measurement.** The rewrite was done on a docs recommendation and would have shipped; the suite caught it. Lesson:
+a change to what triggers a skill is checked with the evals (the next PR in this stack, `evals/`), not argued.
+**Not checked.** That `allowed-tools` pre-approves a script in a live critic run. `trigger-code-context` fired 0 of every run on
+every variant: a question about a pasted snippet is answered without the skill, whatever the wording.
+**Costs.** The descriptions are not shorter than before (7,882 characters with names, about 1,971 tokens).
 
 ### D40. A video's results/ folder is written from files that exist (2026-10-17; plan 0.2)
 **Decision.** `node bin/results.mjs <video> start` records when a run began; `node bin/results.mjs <video>` then writes

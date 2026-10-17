@@ -1,10 +1,10 @@
 ---
 name: critic-decision
 description: >
-  Use when the critic loop assigns you this critic. Critic for a decision video: one made so a
-  person can make a call mid-work. Judges whether the decision is stated, every option is laid out
-  with what it gains and costs, one is recommended with the reason, and doing nothing is accounted
-  for.
+  Critic for a decision video: one made so a person can make a call mid-work. Judges whether
+  the decision is stated, every option is laid out with what it gains and costs, one is
+  recommended with the reason, and doing nothing is accounted for. Load when the critic
+  loop assigns you this critic.
 ---
 
 # Critic: decision

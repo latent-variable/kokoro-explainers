@@ -1,12 +1,12 @@
 ---
 name: critic-loop
 description: >
-  Use after a video's first draft, after any change to one, to change how much review a video
-  gets, or to add a critic. Judge an explainer video with adversarial critics: a fresh agent per
-  critic per round, never the agent that built it, each loading one critic skill and judging the
-  video's review packet and frames. The video's critic plan (npm run critics) sets which critics,
-  which models, how many rounds and to what severity; collect findings, fix, rebuild, and run
-  fresh critics until the plan is met or its cap is reached.
+  Judge an explainer video with adversarial critics: a fresh agent per critic per round,
+  never the agent that built it, each loading one critic skill and judging the video's
+  review packet and frames. The video's critic plan (npm run critics) sets which critics,
+  which models, how many rounds and to what severity; collect findings, fix, rebuild, and
+  run fresh critics until the plan is met or its cap is reached. Load after a video's first
+  draft, after any change to one, to change how much review a video gets, or to add a critic.
 ---
 
 # Critic loop

@@ -1,9 +1,9 @@
 ---
 name: critic-sync
 description: >
-  Use when the critic loop assigns you this critic. Critic for whether an explainer video's
-  picture matches its voice: each thing appears when it is named, what is shown is what is being
-  said, and captions match the speech.
+  Critic for whether an explainer video's picture matches its voice: each thing appears
+  when it is named, what is shown is what is being said, and captions match the speech.
+  Load when the critic loop assigns you this critic.
 ---
 
 # Critic: sync
