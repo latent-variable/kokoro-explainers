@@ -29,7 +29,7 @@ Output tokens may undercount a call that was still streaming when logged.
 
 ## Time and tools
 - Voice: 134.6 s for 39 sentences first time; 66.3 s for the 28 re-voiced after round 1 (takes are cached by text); the later script edits re-voiced a few more.
-- About eleven draft renders of 205 to 242 s each (every change to a scene or the script rebuilds the whole video), then the final render.
+- About eleven draft renders of 205 to 242 s each (every change to a scene or the script rebuilds the whole video), then the final render: 285 s, 33.9 MB, `out/pacer-dev-journey.mp4` (not committed).
 - Node 22.17, Claude Code 2.1.302, Kokoro via `.venv` (Python 3.13), ffmpeg from Homebrew (compiled from source on this machine).
 - Builder and judges: `claude-sonnet-5-5`.
 
