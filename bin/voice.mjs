@@ -1,5 +1,6 @@
-// Voice a video's script with Kokoro, one sentence at a time, and time every sentence.
-//   node bin/voice.mjs videos/<name> [--speed 1.25]
+// Voice a video's script, one sentence at a time, and time every sentence. Kokoro by default;
+// "engine": "omnivoice" in video.json (or --engine omnivoice) is the higher-quality one.
+//   node bin/voice.mjs videos/<name> [--speed 1.25] [--engine omnivoice] [--voice caro_davy]
 // Writes, in the video folder (all generated, none committed):
 //   assets/voice/<scene>-<n>.wav   one take per sentence; a take whose text, voice and speed
 //                                  are unchanged is kept, so editing one sentence re-voices one
@@ -9,7 +10,8 @@
 // a sentence starts where we placed its take.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { HF, config, die, readWav, round, run, scenes, sentences, spoken, ttsEnv, videoDir, writeWav } from "./lib.mjs";
+import { createHash } from "node:crypto";
+import { REPO, HF, VENV_PY, config, die, readWav, round, run, scenes, sentences, spoken, ttsEnv, videoDir, writeWav } from "./lib.mjs";
 
 const PARALLEL = 3;
 
@@ -19,6 +21,8 @@ if (!existsSync(HF)) die("HyperFrames is not installed here: npm install");
 const vdir = join(dir, "assets", "voice");
 mkdirSync(vdir, { recursive: true });
 
+const omni = cfg.engine === "omnivoice";
+
 // Every sentence, with the take it needs and whether that take is current.
 const jobs = [];
 const plan = scenes(dir).map((s) => ({
@@ -26,7 +30,10 @@ const plan = scenes(dir).map((s) => ({
   sentences: sentences(s.text).map((text, i) => {
     const say = spoken(text, cfg.say);
     const wav = join(vdir, `${s.id}-${String(i + 1).padStart(2, "0")}.wav`);
-    const key = JSON.stringify({ say, voice: cfg.voice, speed: cfg.kokoroSpeed });
+    // A Kokoro take's key is unchanged from before omnivoice existed, so its takes stay valid.
+    const key = JSON.stringify(omni
+      ? { engine: "omnivoice", say, voice: cfg.omni.identity, speed: cfg.speed }
+      : { say, voice: cfg.voice, speed: cfg.kokoroSpeed });
     const keyFile = wav.replace(/\.wav$/, ".key");
     const fresh = existsSync(wav) && existsSync(keyFile) && readFileSync(keyFile, "utf8") === key;
     if (!fresh) jobs.push({ say, wav, key, keyFile });
@@ -41,28 +48,52 @@ async function voiceOne({ say, wav, key, keyFile }) {
   writeFileSync(keyFile, key);
 }
 
+// OmniVoice loads a model of about 1.5 GB, so one process voices every stale sentence.
+// A seed from each take's key makes a sentence voice the same way every run.
+async function voiceAllOmni() {
+  const py = process.env.HYPERFRAMES_PYTHON || VENV_PY;
+  if (!existsSync(py)) die("omnivoice needs this repo's .venv: npm run setup:omnivoice");
+  const spec = join(dir, "assets", "omnivoice-jobs.json");
+  writeFileSync(spec, JSON.stringify({
+    speed: cfg.speed,
+    voice: { name: cfg.omni.name, wav: cfg.omni.wav, text: cfg.omni.text },
+    cache: join(dir, "assets", "omnivoice"),
+    jobs: jobs.map((j) => ({ text: j.say, wav: j.wav, seed: parseInt(createHash("sha256").update(j.key).digest("hex").slice(0, 8), 16) })),
+  }));
+  try {
+    await run(py, [join(REPO, "bin", "omnivoice.py"), spec]);
+  } catch (e) {
+    die(`OmniVoice failed\n${e.message}\nnpm run doctor -- --omnivoice says what is missing.`);
+  }
+  for (const j of jobs) writeFileSync(j.keyFile, j.key);
+  console.log(`voiced ${jobs.length}/${jobs.length}`);
+}
+
 const t0 = Date.now();
-let done = 0;
-const queue = [...jobs];
-await Promise.all(
-  Array.from({ length: Math.min(PARALLEL, queue.length) }, async () => {
-    while (queue.length) {
-      const job = queue.shift();
-      try {
-        await voiceOne(job);
-      } catch (e) {
-        die(`Kokoro failed on: ${job.say}\n${e.message}\nnpm run doctor says what is missing.`);
+if (omni && jobs.length) await voiceAllOmni();
+else {
+  let done = 0;
+  const queue = [...jobs];
+  await Promise.all(
+    Array.from({ length: Math.min(PARALLEL, queue.length) }, async () => {
+      while (queue.length) {
+        const job = queue.shift();
+        try {
+          await voiceOne(job);
+        } catch (e) {
+          die(`Kokoro failed on: ${job.say}\n${e.message}\nnpm run doctor says what is missing.`);
+        }
+        process.stdout.write(`\rvoiced ${++done}/${jobs.length}`);
       }
-      process.stdout.write(`\rvoiced ${++done}/${jobs.length}`);
-    }
-  }),
-);
+    }),
+  );
+}
 if (jobs.length) console.log(` in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
 else console.log("every sentence already voiced");
 
 // Lay the takes out on one track and record where each landed.
 let rate = 0, channels = 0, t = 0;
-const timing = { voice: cfg.voice, speed: cfg.speed, scenes: [] };
+const timing = { engine: cfg.engine, voice: cfg.voice, speed: cfg.speed, scenes: [] };
 const placed = [];
 for (const s of plan) {
   const scene = { id: s.id, start: round(t), sentences: [] };

@@ -1,5 +1,6 @@
 // Shared plumbing for the bin/ scripts: paths, the video's config, sentence splitting, WAV I/O.
 import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -94,13 +95,33 @@ export function seedFor(name) {
   return h >>> 0;
 }
 
+// The optional OmniVoice engine (bin/omnivoice.py): which model, and the built-in voices.
+export const OMNI = JSON.parse(readFileSync(join(REPO, "bin", "omnivoice-voices.json"), "utf8"));
+export const OMNI_SPEEDS = [1.0, 1.3];  // the range it was tested at; mlx-audio's own pace at 1.0 is about BASE_WPM
+
+/** A voice for the omnivoice engine: a clone (local/voices/<name>.wav, and <name>.txt beside it
+ *  with the words spoken in the clip) or a built-in one. `identity` is what a take was made from,
+ *  so a clip replaced under the same name is a different voice and its takes are voiced again.
+ *  Undefined when the name is neither. */
+export function omniVoice(name) {
+  const wav = join(localDir(), "voices", `${name}.wav`);
+  if (existsSync(wav)) {
+    const txt = wav.replace(/\.wav$/, ".txt");
+    const text = existsSync(txt) ? readFileSync(txt, "utf8").trim() : null;
+    const sha = createHash("sha256").update(readFileSync(wav)).update(text ?? "").digest("hex").slice(0, 16);
+    return { name, wav, text, identity: `${name}@${sha}` };
+  }
+  if (OMNI.builtIn[name]) return { name, identity: `${name}@${OMNI.voicesRevision}` };
+}
+
 /** video.json with its defaults filled in. The most specific setting wins: --speed or --theme
  *  on the command line, then video.json, then local/config.json, then the defaults. */
 export function config(dir, argv = process.argv) {
   const local = localConfig();
   const cfg = {
     title: basename(dir),
-    voice: local.voice || "af_heart",
+    engine: local.engine || "kokoro",  // "kokoro", or "omnivoice" (higher quality, cloned voices; Apple Silicon)
+    voice: local.voice,                // a Kokoro voice (af_heart) or an omnivoice one (local/voices/<name>.wav, or a built-in)
     speed: local.speed ?? DEFAULT_SPEED,
     theme: local.theme || "shipshow",
     flair: {},
@@ -110,9 +131,25 @@ export function config(dir, argv = process.argv) {
     tail: 0.9,         // after a scene's last sentence
     ...JSON.parse(readFileSync(join(dir, "video.json"), "utf8")),
   };
+  if (flag("engine", argv) !== undefined) cfg.engine = flag("engine", argv);
+  if (flag("voice", argv) !== undefined) cfg.voice = flag("voice", argv);
+  if (!["kokoro", "omnivoice"].includes(cfg.engine)) die(`engine is "${cfg.engine}"; it takes kokoro or omnivoice`);
   if (flag("speed", argv) !== undefined) cfg.speed = Number(flag("speed", argv));
   if (flag("theme", argv) !== undefined) cfg.theme = flag("theme", argv);
   if (!(cfg.speed >= 0.5 && cfg.speed <= 2)) die(`speed ${cfg.speed} is outside 0.5 to 2`);
+  if (cfg.engine === "omnivoice") {
+    // A Kokoro voice id (af_heart) under this engine is the template's or a person's default, not a
+    // choice: it gives way to omnivoice's own. A name that is neither is a typo, and says so.
+    cfg.omni = (cfg.voice && omniVoice(cfg.voice)) || (!cfg.voice || /^[a-z]{2}_[a-z]+$/.test(cfg.voice) ? omniVoice(OMNI.default) : undefined);
+    if (!cfg.omni) {
+      const clones = existsSync(join(localDir(), "voices")) ? readdirSync(join(localDir(), "voices")).filter((f) => f.endsWith(".wav")).map((f) => f.slice(0, -4)) : [];
+      die(`no omnivoice voice "${cfg.voice}": the built-in ones are ${Object.keys(OMNI.builtIn).join(", ")}${clones.length ? `; yours (local/voices/) are ${clones.join(", ")}` : ""}. A clone is a 3 to 10 second recording at local/voices/<name>.wav`);
+    }
+    cfg.voice = cfg.omni.name;
+    if (cfg.speed < OMNI_SPEEDS[0] || cfg.speed > OMNI_SPEEDS[1]) die(`speed ${cfg.speed} is outside ${OMNI_SPEEDS[0]} to ${OMNI_SPEEDS[1]}, the range omnivoice was tested at (kokoro takes 0.5 to 2)`);
+  } else {
+    cfg.voice ||= "af_heart";
+  }
   cfg.kokoroSpeed = Math.round(BASE_PACE * cfg.speed * 1000) / 1000;
   return cfg;
 }
