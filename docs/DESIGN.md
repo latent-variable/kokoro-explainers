@@ -351,6 +351,11 @@ syllables-a-minute pace target next to this branch's measured reading queue and 
 `bin/lib.mjs` and `bin/measure.mjs`. The skill count and description size did not change.
 **Costs.** A machine without `ffmpeg` cannot load the test file (the music helper exits the process); install it first.
 
+### D30. Main's caption rule for function words adopted (main, #14; 2026-10-17)
+**Decision.** Merged main's caption fixes (a caption never ends on a function word, and carried function words never push one
+past the 12-word limit) and the `how-we-built-it` video. Nothing on this branch touches captions; the merge was clean.
+**Costs.** None known; the test count is now 47.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
