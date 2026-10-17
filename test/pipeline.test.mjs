@@ -3,7 +3,7 @@
 // build test writes its own timing.json, as bin/voice.mjs would.
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -355,4 +355,16 @@ test("omnivoice says what to do about a voice it does not have and a speed outsi
   assert.match(r.stderr, /speed 1\.5 is outside 1 to 1\.3/);
   r = voiceRun(dir, local, py, "--engine", "mystery");
   assert.match(r.stderr, /engine is "mystery"; it takes kokoro or omnivoice/);
+});
+
+test("new scaffolds a folder that holds only the working agent's brief, and keeps the brief", () => {
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "decision");
+  mkdirSync(dir);
+  writeFileSync(join(dir, "brief.md"), "the call\n");
+  const r = spawnSync(process.execPath, [join(REPO, "bin", "new.mjs"), dir], { encoding: "utf8" });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(readFileSync(join(dir, "brief.md"), "utf8"), "the call\n");
+  assert.ok(existsSync(join(dir, "video.json")));
+  const again = spawnSync(process.execPath, [join(REPO, "bin", "new.mjs"), dir], { encoding: "utf8" });
+  assert.notEqual(again.status, 0, "a folder with a video in it is never overwritten");
 });
