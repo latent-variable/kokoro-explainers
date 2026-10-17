@@ -108,3 +108,59 @@ Critics ran on the 97.9 s cut. Accuracy and decision passed (minors only); clari
 - Length is about 101.5 s, at the edge of "about 100".
 - The pick scene no longer carries a do-nothing line; the options scene does.
 - Nobody has heard the voice back.
+
+## Round 3
+
+The plan's last round: eight critics (accuracy, clarity, consistency, decision, engagement, pacing, sync, visuals) on the 101.5 s cut. Engagement passed; the rest failed. After main was merged (new skills, evidence standard, caption rules; captions are karaoke, the kit's, untouched). The cut after these fixes is about 97 s.
+
+### accuracy: fail
+- accuracy-r3-1 (major, A's cost too broad): **fixed.** Spoken "nobody can open one invoice or change its status"; the card says the same and adds "list route keeps working"; sources.md says only the two by-ID routes go off.
+- accuracy-r3-2 ("stops the next leak"): **fixed.** One phrase, "a forgotten check can't leak", everywhere (see consistency-1).
+- accuracy-r3-3 ("your role"): **fixed.** "doing more than you are allowed", spoken and on the tile.
+- accuracy-r3-4 (no evidence tags): **fixed.** Every claim row in sources.md carries `[read]` or `[inferred]`, and a Terms section records the vocabulary.
+
+### clarity: fail
+- clarity-r3-1 (major, subjective, cut STRIDE): **declined.** The person wants STRIDE kept. It is compressed to one sentence with the three plain stakes ("this hole hits three: reading what you should not, changing it, doing more than you are allowed"). The second half of the finding (C's gain was never spoken) is **fixed**: "The database returns only your company's rows, so a forgotten check can't leak."
+- clarity-r3-2 (hard sentences): **fixed.** B's line is split in two ("About an hour, because the list route already filters by company. Customers lose nothing, but the hole stays open meanwhile."); the hinge is a question first, then the evidence, then the fallback, ending on "then ship B".
+- clarity-r3-3 (vocabulary): **fixed.** Chips say "CO. 7" (company); "the agent recommends" introduces the agent before "the agent's estimates".
+
+### consistency: fail
+- consistency-1 (major, C's gain wording): **fixed.** "a forgotten check can't leak" on the option card, the pick card, the why box, and spoken.
+- consistency-2 (major, subjective, colour): **fixed.** Orange is a problem or a cost, green a gain; the labels "then C", "hinge" and "evidence" are ice blue, and the hinge is a neutral underline.
+- consistency-3 ("fixes" vs "options"): **fixed.** Eyebrow reads "three options"; the opening still asks "which fix", the decision's own word.
+- consistency-4 ("ownership check" never said): **fixed.** Spoken once in B's sentence.
+- consistency-5 (org, company, customers): **fixed.** Company for the party, customers for those who lose access; chips say "CO. n".
+- consistency-6 (wording across scenes): **fixed.** The pick card's A cost and B gain reuse the options wording.
+- consistency-7 (headline pattern, subjective): **fixed in part.** "tonight" is on the opening question. **Declined:** headlines on scenes 3 to 5, since each is a different kind of content and a title would cost room.
+
+### decision: fail
+- decision-r3-1 (whose pick): **fixed.** "The agent recommends option B tonight", and the tag reads "the agent's pick".
+- decision-r3-2 (B's hour unreasoned): **fixed.** "because the list route already filters by company", plus a card chip "same filter as the list route". **Declined:** "the company is already on every request", for length; the list route clause carries the same evidence.
+- decision-r3-3 (question late): **fixed.** The opening is shorter, so the question has more time; the chips dim while it shows.
+- decision-r3-4 (prices on the final frame): **fixed.** B and C cards carry a dimmed cost line; A's cost tag was already there.
+
+### engagement: pass
+- Minors recorded: the STRIDE detour (kept on purpose), the ending now lands on "then ship B" (r3-2 fixed), the layers stretch accepted.
+
+### pacing: fail
+- pacing-1 (STRIDE tiles unread): **fixed.** The three tiles and their plain-stake lines land together on "three", with the rest of the scene to read them.
+- pacing-2 (question late): **fixed**, as decision-r3-3.
+- pacing-3 (opening too dense): **fixed.** "one user" replaces "eighty-eight" (it is on screen), and "the system let every one through" is cut: 27 words, from 34.
+- pacing-4 (options too dense): **fixed in part.** "Three options, with the agent's time estimates" is cut (the header says it), B's cost is trimmed, and the options scene opens straight on option A; words roughly equal, since the reason for B and C's gain were requested. **Declined:** pacing-5's wider sentence gaps, which would add length past the cap.
+
+### sync: fail
+- sync-r3-1 (major, firewall gloss early): **fixed.** The whole gloss is hidden until "addresses", and "never the owner" turns orange on "owns".
+- sync-r3-2 (major, C's gain unspoken): **fixed.** Spoken, and the gain lands on "leak".
+- sync-r3-3 (STRIDE label late): **fixed.** The label and tiles land on "STRIDE".
+
+### visuals: fail
+- visuals-r3-1 (major, dim text too faint): **fixed.** Unlit cards and lines are at 62 to 65 percent, with a bar marking each line when it is lit; the check reports 117 of 117 contrast passes.
+- visuals-r3-2 (firewall fragment): **fixed**, as sync-r3-1.
+- visuals-r3-3 (layer cards): **fixed in part.** Cards are shorter. **Declined:** shrinking the title again.
+- visuals-r3-4 (lopsided slots): **fixed in part.** The description block has a fixed height so rows line up; the left-to-right build is how the voice goes.
+- visuals-r3-5 (question weight): **fixed.** Chips dim when it appears.
+- visuals-r3-6 (pills, tiles): **fixed.** The block moved up and the unlit tiles brightened.
+
+### Left for the person
+- The length is about 97 s. Nobody has heard the voice back.
+- Decision-r3-4: the B and C pick-card cost lines are small (28 px or more) but dimmed with their cards.
