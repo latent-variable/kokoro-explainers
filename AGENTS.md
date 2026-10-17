@@ -28,6 +28,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 | `kit/` | The page, base styles and timeline every video shares |
 | `themes/` | Shared themes (`shipshow`, `paper`, `launch`, `buildday`); a client's goes in `local/themes/` |
 | `template/` | What `npm run new` copies |
+| `examples/` | Fictional code bases for example videos: `ledgerly`, the invoicing API behind `videos/invoice-leak` |
 | `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
 
 ## Skills
@@ -55,8 +56,8 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
   never seen the build: never a fork, never yourself. Its whole job is to find what is wrong.
 - **A video is done when its critics pass or its review plan's cap is reached**, never when it
   merely renders: `REVIEW.md` records each round, and at the cap every open finding as
-  accepted or declined with its reason. The floor (accuracy, and decision for a decision
-  video) can never ship open. Which critics a video gets is in its `video.json`; its own bar is in `critics.md`.
+  accepted or declined with its reason. The floor (accuracy; decision for a decision video;
+  grounding for a video that shows code) can never ship open. Which critics a video gets is in its `video.json`; its own bar is in `critics.md`.
 - **Every claim traces to `sources.md`.** A fact the sources lack is a gap to report, never
   one to fill in.
 - **A bar you keep wishing a video met becomes a critic** (`critic-loop`, *A new critic*).
@@ -218,10 +219,11 @@ kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.
 themes/     shipshow, paper, launch and buildday; each a theme.css of tokens, plus fonts (Space Grotesk, Space Mono, JetBrains Mono: SIL OFL)
 skills/     the explainer and development skills, critic-loop, tailor, theme and the nine critics
 template/   what npm run new copies
-videos/     videos about this repo: how-it-works (the example) and why-shipshow (the pitch)
+videos/     how-it-works (the example), how-we-built-it, why-shipshow (the pitch) and invoice-leak (the decision demo, about examples/ledgerly)
+examples/   ledgerly, a fictional invoicing API with one authorization bug, a threat model and an access log
 skills/critic-grounding/scripts/  excerpt.mjs and check-excerpt.mjs, the excerpt check (run through the skill)
 skills/evidence-standard/scripts/  sandbox-run.sh, capture.mjs, verify-vendored.sh (run through the skill)
-sample_application/  pacer-demo, a toy ad-spend pacer built by three agents in a day: the Aperiam demo (README, history/, agents/; ANSWER.md is a spoiler)
+sample_application/  pacer-demo, a toy ad-spend pacer built by three agents in a day: the Aperiam sample (README, history/, agents/; ANSWER.md is a spoiler)
 docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images: make-assets.mjs draws the SVGs (fonts embedded); demo.gif and themes.jpg are frames of videos/invoice-leak
 test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links, usage counting, the excerpt checker, the sandbox runner, the docs rule
 local/      gitignored, per person (tailor skill)

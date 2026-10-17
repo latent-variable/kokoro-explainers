@@ -81,4 +81,4 @@ Every video takes a theme: colours, fonts, layout and motion in one folder. Ship
 
 Everything about the code, the skills and the commands is in [AGENTS.md](AGENTS.md).
 
-<sub>Made for a hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0, and so is OmniVoice's code (its weights have their own card); GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>
+<sub>Made for a hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0, and so is OmniVoice's code (its weights have their own card); the `eve` voice is VCTK speaker p361, CC BY 4.0; GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>
