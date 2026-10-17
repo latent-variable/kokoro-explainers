@@ -435,7 +435,7 @@ project settings and rules cannot be committed. Nothing in the plan is done.
 cost or critic agreement is recorded. **Costs.** None yet; each step names how to tell it worked and the unconfirmed items
 to check first (plugin-shipped agent hooks, how a missing `version` resolves).
 
-### D36. Project hooks enforce the rules that were only prose (2026-10-17; plan steps 2.0 to 2.3, 2.7 of `docs/PLAN.md`)
+### D37. Project hooks enforce the rules that were only prose (2026-10-17; plan steps 2.0 to 2.3, 2.7 of `docs/PLAN.md`)
 **Decision.** `.claude/settings.json` and `.claude/hooks/` are tracked (`.gitignore` ignores only `.claude/skills/`, the links
 `npm install` makes, and `.claude/settings.local.json`). Three hooks: **`guard-bash`** (PreToolUse on Bash) refuses `rm`,
 `unlink`, `shred`, `find -delete`, and the git commands that discard or rewrite work (`restore`, `clean`, `reset --hard`,
