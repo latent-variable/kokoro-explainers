@@ -78,7 +78,8 @@ render downloads a headless Chrome if HyperFrames finds none (about 190 MB).
 | `npm run preview -- <folder>` | The HyperFrames studio, to scrub through it |
 | `npm run render -- <folder>` | `out/<name>.mp4`, the name taken from the folder's path (`--draft` for a fast pass) |
 | `npm run make -- <folder>` | Voice, build, lint and render (`--speed 1.5` to try a pace without editing `video.json`) |
-| `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` |
+| `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` (`--frames scenes` for fewer stills) |
+| `npm run critics -- <folder>` | The video's critic plan: critics, models, rounds, severity, and a rough time and token estimate (`--preset`, `--rounds`, `--until`, `--model`, `--final`, `--frames`, `--rerun`, `--critics`, `--json`) |
 | `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
 | `npm test` | No Kokoro needed; CI runs only this |
 
@@ -91,7 +92,7 @@ A change to `bin/`, `kit/` or `template/` is validated by running `make` and `re
 |---|---|
 | `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. A sentence ends at `.`, `!` or `?` and a space |
 | `scenes.html` | One `<section data-scene="01-intro">` per script file, a `<style>` for the look, optionally a `<script>` |
-| `video.json` | `title`, `voice`, `speed`, `theme`, `flair`, `say`, `audience`, `critics`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
+| `video.json` | `title`, `kind` (`decision`, `feature`, `release`), `voice`, `speed`, `theme`, `flair`, `review`, `say`, `audience`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
 | `sources.md` | Every claim the video makes, with its source |
 | `critics.md` | This video's own bar, applied by every critic |
 | `brief.md` | A decision video's handoff from the agent that asked for it |
@@ -125,6 +126,13 @@ too, or a theme cannot restyle it.
 `"flair"` overrides them for one video; a section's `data-transition` or `data-camera` for
 one scene. Ambient motion is seeded from the video's name (`"seed"` to change it), so a
 render is repeatable and each video moves its own way.
+
+**Review.** How much critic review a video gets is a plan with dials (`critics`, `rounds`,
+`until`, `model`, `final`, `frames`, `rerun`) and presets (`quick`, `standard`, `thorough`),
+resolved by `reviewPlan` in `bin/lib.mjs`: flags, then `video.json` `"review"`, then
+`local/config.json` `"review"`, then the preset (`quick` for a decision video, else
+`standard`). `skills/critic-loop` has what each dial trades and the floor no dial lowers.
+The estimate's constants are measurements from 2026-10-17; replace them when you measure.
 
 **Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, about 160 words a minute), not
 Kokoro's own: 1.25 by default. Pauses shrink with it. The most specific wins: `--speed` on
@@ -171,6 +179,12 @@ local/      gitignored, per person (tailor skill)
   2026-10-17).
 - **A theme cannot restyle a hard-coded colour or font.** A scene that writes `#182033`
   instead of `var(--card)` keeps it in every theme.
+
+## For the PR reviewer
+
+- **Don't flag code-level reference in this file as belonging elsewhere.** The owner put
+  all of it here on purpose (2026-10-17): the README stays short for people, and this file
+  is where agents find the code. Raised and declined on #6 and #8.
 
 ## Agent context (scope + memory)
 <!-- BEGIN agent-context (managed by ~/.agents/bin/project-sync.sh) -->

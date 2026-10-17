@@ -1,5 +1,5 @@
 // Write the evidence a critic judges a video by: review/packet.md and review/frames/.
-//   node bin/review.mjs videos/<name>          (after bin/build.mjs)
+//   node bin/review.mjs videos/<name> [--frames cues|scenes]   (after bin/build.mjs)
 // The packet holds what an agent cannot get by watching: the script with its timings, the
 // speaking rate of each scene, the pauses, every cued element with the words being spoken
 // when it lands, and how long each piece of on-screen text stays up against the time it
@@ -7,7 +7,7 @@
 // scene ends; a critic looks at those instead of the MP4. Critics: skills/critic-loop.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
-import { BASE_WPM, HF, REPO, config, die, round, run, videoDir } from "./lib.mjs";
+import { BASE_WPM, HF, REPO, config, die, reviewPlan, round, run, videoDir } from "./lib.mjs";
 
 const SETTLE = 0.8;         // a still this long after a cue, once its entrance has finished
 const READ_WPS = 3.3;       // words a viewer reads per second (about 200 a minute) while listening
@@ -57,8 +57,12 @@ for (const s of timing.scenes) for (const x of s.sentences) {
 }
 pauses.push({ at: round(prevEnd), length: round(timing.total - prevEnd), between: `${prev} -> the end` });
 
-// Stills: a moment after each cue lands, and just before each scene ends.
-const times = [...cues.map((c) => c.at + SETTLE), ...timing.scenes.map((s) => s.start + s.duration - 0.4)]
+// Stills: a moment after each cue lands and just before each scene ends; with the critic
+// plan's frames dial at "scenes" (a quick review), only mid-scene and scene end.
+const frameMode = reviewPlan(cfg).frames;
+const times = (frameMode === "scenes"
+  ? timing.scenes.flatMap((s) => [s.start + s.duration / 2, s.start + s.duration - 0.4])
+  : [...cues.map((c) => c.at + SETTLE), ...timing.scenes.map((s) => s.start + s.duration - 0.4)])
   .map(round).sort((a, b) => a - b)
   .filter((t, i, a) => t < timing.total && (i === 0 || t - a[i - 1] >= 0.4));
 const fdir = join(dir, "review", "frames");
@@ -88,8 +92,9 @@ out.push(md(cues.map((c) => {
   const need = round(words(c.text) / READ_WPS);
   return [c.at, c.scene, `\`${c.cue}\``, c.text.slice(0, 90), c.saying, `${c.up} s${c.up < need ? ` (short: needs ${need})` : ""}`];
 }), ["at (s)", "scene", "cue", "on screen", "being said", "stays up"]), "");
-out.push("## Frames", "", `In \`review/frames/\`, ${frames.length} stills; ${sheets.map((f) => `\`${f}\``).join(", ")} show them together.`, "");
-const near = (t) => cues.filter((c) => Math.abs(c.at + SETTLE - t) < 0.01).map((c) => `after \`${c.cue}\``).join(", ") || "scene end";
+out.push("## Frames", "", `In \`review/frames/\`, ${frames.length} stills (${frameMode === "scenes" ? "mid-scene and scene end only" : "after each cue and at each scene end"}); ${sheets.map((f) => `\`${f}\``).join(", ")} show them together.`, "");
+const sceneEnd = (t) => timing.scenes.some((s) => Math.abs(s.start + s.duration - 0.4 - t) < 0.01);
+const near = (t) => cues.filter((c) => Math.abs(c.at + SETTLE - t) < 0.01).map((c) => `after \`${c.cue}\``).join(", ") || (sceneEnd(t) ? "scene end" : "mid-scene");
 out.push(md(frames.map((f) => {
   const t = +f.match(/at-([\d.]+)s/)[1];
   return [f, t, sceneAt(t).id, near(t), sentenceAt(t)?.text || "(pause)"];

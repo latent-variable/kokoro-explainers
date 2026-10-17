@@ -168,3 +168,37 @@ test("flair: a known token becomes a #root override; an unknown value stops the 
   writeFileSync(join(dir, "video.json"), JSON.stringify({ ...vj, flair: { transition: "spin" } }));
   assert.throws(() => execFileSync(process.execPath, [join(REPO, "bin", "build.mjs"), dir], { env, stdio: "pipe" }), /transition is "spin"/);
 });
+
+test("critic plan: presets, precedence, a decision video's defaults, and caps validated", async () => {
+  const { reviewPlan, PRESETS } = await import("../bin/lib.mjs");
+  const local = mkdtempSync(join(tmpdir(), "kx-test-"));
+  process.env.SHIPSHOW_LOCAL = local;
+  try {
+    const plan = (cfg, argv = []) => reviewPlan({ title: "t", ...cfg }, argv);
+    assert.equal(plan({}).preset, "standard");
+    assert.equal(plan({}).rounds, PRESETS.standard.rounds);
+    // A decision video defaults to quick and always gets critic-decision, which is also a floor.
+    const d = plan({ kind: "decision" });
+    assert.equal(d.preset, "quick");
+    assert.ok(d.critics.includes("critic-decision"));
+    assert.deepEqual(d.floor, ["critic-accuracy", "critic-decision"]);
+    // local/config.json < video.json < flags
+    writeFileSync(join(local, "config.json"), JSON.stringify({ review: { preset: "thorough", rounds: 3 } }));
+    assert.equal(plan({}).preset, "thorough");
+    assert.equal(plan({}).rounds, 3);
+    assert.equal(plan({ review: { rounds: 2 } }).rounds, 2);
+    assert.equal(plan({ review: { rounds: 2 } }, ["--rounds", "1"]).rounds, 1);
+    assert.equal(plan({}, ["--preset", "quick"]).preset, "quick");
+    assert.equal(plan({}, ["--final", "none"]).final, null);
+    assert.deepEqual(plan({}, ["--critics", "critic-accuracy,critic-sync"]).critics, ["critic-accuracy", "critic-sync"]);
+    // More rounds never cost less.
+    assert.ok(plan({}, ["--rounds", "4"]).estimate.worst > plan({}, ["--rounds", "1"]).estimate.worst);
+  } finally {
+    delete process.env.SHIPSHOW_LOCAL;
+  }
+  // Bad dials stop with a reason rather than being ignored.
+  const bad = (args) => spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), join(REPO, "videos", "how-it-works"), ...args], { encoding: "utf8", env: { ...process.env, SHIPSHOW_LOCAL: mkdtempSync(join(tmpdir(), "kx-test-")) } });
+  assert.match(bad(["--rounds", "0"]).stderr, /rounds is 0/);
+  assert.match(bad(["--until", "everything"]).stderr, /until is "everything"/);
+  assert.match(bad(["--critics", "critic-vibes"]).stderr, /critic-vibes/);
+});

@@ -3,9 +3,10 @@ name: critic-loop
 description: >
   Judge an explainer video with adversarial critics: a fresh agent per critic per round,
   never the agent that built it, each loading one critic skill and judging the video's
-  review packet and frames. Collect structured findings, fix, rebuild, and run fresh
-  critics until nothing blocking or major is left. Load after a video's first draft, after
-  any change to one, or to add a new critic.
+  review packet and frames. The video's critic plan (npm run critics) sets which critics,
+  which models, how many rounds and to what severity; collect findings, fix, rebuild, and
+  run fresh critics until the plan is met or its cap is reached. Load after a video's first
+  draft, after any change to one, to change how much review a video gets, or to add a critic.
 ---
 
 # Critic loop
@@ -15,15 +16,49 @@ its intent instead of the frames. Its bias is to get it done. A critic's only bi
 find what is wrong. So the builder never reviews its own work, and every round uses fresh
 critics that have never seen the video before.
 
+## The plan: how much review a video gets
+
+Review is where a video's time goes, so it has dials, and a cap always ends the loop.
+`npm run critics -- <folder>` prints the plan for a video: which critics, on which model,
+for at most how many rounds, until what severity, and a rough time and token estimate. Run
+it first and follow it. **The person's word in the moment beats all of it** ("quick review",
+"go thorough", "skip pacing"): pass it as flags (`--preset quick`, `--rounds 1`).
+
+| Preset | Critics | Rounds | Until | Model | Frames | About | For |
+|---|---|---|---|---|---|---|---|
+| `quick` | accuracy, sync, visuals | 1 | blocking | sonnet | scenes | 1 min | a decision video mid-work (its default), a draft, a private video |
+| `standard` | all seven | 2 | major | sonnet | cues | 1 to 2 min | the default |
+| `thorough` | all seven | 4 | major | sonnet, Opus for the last round's taste critics | cues | up to 6 min | a video going public |
+
+Times are critic time on a 70 second video; the builder's fixes between rounds come on top,
+and are usually most of it. Each dial, and what it trades:
+
+| Dial | Values | Turning it down saves | and costs |
+|---|---|---|---|
+| `critics` | any list of critic skills | a parallel agent's tokens | every kind of problem that critic would catch |
+| `rounds` | 1 to 10 | a rebuild and a round each | fixes that go unchecked by a fresh critic |
+| `until` | `blocking`, `major`, `minor` | rounds spent on majors (or minors) | a video with known, recorded flaws |
+| `model` | `haiku`, `sonnet`, `opus`, or any your agent runs | time and tokens per critic | subtler problems missed |
+| `final` | a model, or `none` | the last round's premium | the finest grading of taste |
+| `frames` | `cues`, `scenes` | packet time and images to read | sync and cue timing judged on fewer stills |
+| `rerun` | `failed`, `touched`, `all` | critics re-run after a fix | a fix breaking something an unrerun critic owned |
+
+Set them in `video.json` `"review"` (`{"preset": "thorough"}`, `{"rounds": 1}`), per person in
+`local/config.json` `"review"`, or per run as flags; the most specific wins (`bin/lib.mjs`,
+`reviewPlan`). A decision video (`"kind": "decision"`) defaults to `quick` and always adds
+`critic-decision`.
+
+**The floor no dial lowers.** Whatever the caps, a video never ships with an open blocking
+finding from `critic-accuracy` (or, for a decision video, `critic-decision`): fix it and run
+that one critic once more, past the cap if need be; if it still fails, it goes to a person.
+
 ## Who runs it
 
 The builder runs the loop and fixes the findings. It does not judge them away. For each
-critic in `video.json` `"critics"` (default: the first seven below; a decision video adds
-`critic-decision`), plus any the person added in `local/skills/`, it starts a **new** agent:
+critic in the plan it starts a **new** agent, on the plan's model:
 
 - **Claude Code:** the Agent tool with a fresh general-purpose agent, never a fork (a fork
-  inherits the builder's context, and with it the builder's bias). Sonnet is enough for most
-  rounds; Opus for the final round of a video going public.
+  inherits the builder's context, and with it the builder's bias), with the plan's model.
 - **Codex:** `codex exec --sandbox read-only` from an empty folder, with the frames passed as
   `-i <absolute path>` and the brief on stdin.
 - **Anything else:** any agent that starts with none of this conversation and can read files
@@ -95,18 +130,20 @@ Save each one as `videos/<name>/review/round-<n>/<critic>.json`.
 
 ## The loop
 
-1. Run the critics. Read every finding.
-2. Fix every blocking finding, and every major one that is objective. A subjective major
-   gets one pass: fix it or decline it with a reason, then do not re-litigate it.
+1. Run the plan's critics. Read every finding.
+2. Fix every finding at or above the plan's `until`: with `major`, every blocking finding
+   and every objective major. A subjective major gets one pass: fix it or decline it with a
+   reason, then do not re-litigate it. Anything below `until` is recorded, not chased.
 3. Decline a finding that is wrong with evidence (the source line, the measurement), and
    record it. Never quietly "fix" a wrong finding.
-4. Rebuild (`npm run make -- videos/<name> --draft`, `npm run review -- videos/<name>`),
-   then run **fresh** critics. Only the critics whose ground the fixes touched need a new
-   round; a failed critic always gets one.
+4. If rounds remain, rebuild (`npm run make -- <folder> --draft`, `npm run review --
+   <folder>`) and run **fresh** critics, chosen by the plan's `rerun`. When the cap is
+   reached, stop: what is still open is recorded in `REVIEW.md` as accepted, with its
+   severity, except the floor above.
 5. **Look before you spend.** Before each new round, open the contact sheets yourself: a
    builder's glance catches overflow and mistimed cues for free (and `build` warns when a
    bare cue word occurs twice in its scene).
-6. **Stop** when every critic passes. **Escalate to a human** when the same finding survives
+6. **Stop** when every critic passes or the cap is reached. **Escalate to a human** when the floor fails, the same finding survives
    three rounds, two critics contradict each other, or a round only finds problems in the
    previous round's fixes.
 
