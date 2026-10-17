@@ -20,7 +20,7 @@ check(`Node.js 22 or newer (have ${process.versions.node})`, +process.versions.n
 check("ffmpeg, for rendering", has("ffmpeg"), "brew install ffmpeg   (or your platform's package)");
 check("HyperFrames and GSAP", existsSync(HF), "npm install");
 const py = process.env.HYPERFRAMES_PYTHON || VENV_PY;
-const venv = check(`Python for Kokoro (${py})`, existsSync(py), "python3 -m venv .venv && .venv/bin/pip install -r requirements.txt");
+const venv = check(`Python for Kokoro (${py})`, existsSync(py), "npm run setup");
 if (venv) {
   const mods = spawnSync(py, ["-c", "import kokoro_onnx, soundfile, espeakng_loader; print(espeakng_loader.get_data_path())"], { encoding: "utf8" });
   if (check("kokoro-onnx and soundfile", mods.status === 0, ".venv/bin/pip install -r requirements.txt")) {

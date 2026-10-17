@@ -34,8 +34,7 @@ Node.js 22+, Python 3.10+ and ffmpeg (tested on macOS):
 
 ```
 npm install
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+npm run setup
 npm run doctor
 npm run make -- videos/how-it-works
 ```

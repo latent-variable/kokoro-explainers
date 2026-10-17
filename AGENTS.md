@@ -58,7 +58,7 @@ Node.js 22+, Python 3.10+ and ffmpeg; tested on macOS.
 
 ```
 npm install                                                       # HyperFrames, GSAP; links skills into .claude/skills
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # Kokoro, which hyperframes tts runs
+npm run setup                                                     # .venv with Kokoro, which hyperframes tts runs
 npm run doctor                                                    # what is missing, with the fix; voices one word
 ```
 
