@@ -12,7 +12,9 @@ if (process.argv.includes("--json")) {
   process.exit(0);
 }
 const e = plan.estimate;
-console.log(`Critic plan for ${plan.video} (${plan.kind} video, preset ${plan.preset}${plan.overrides.length ? `, changed: ${plan.overrides.join(", ")}` : ""})
+const why = plan.importance ? `importance ${plan.importance}${plan.importanceReason ? `: ${plan.importanceReason}` : ""}` : "importance not set: the builder judges it (skills/critic-loop)";
+console.log(`Critic plan for ${plan.video} (${plan.kind} video, preset ${plan.preset} from ${plan.presetFrom}${plan.overrides.length ? `, changed: ${plan.overrides.join(", ")}` : ""})
+  ${why}
 
   critics   ${plan.critics.join(", ")}${plan.floorAdded.length ? `  (${plan.floorAdded.join(", ")} added: the floor always runs)` : ""}
   model     ${plan.model}${plan.final ? `; ${plan.final} for the last round's ${plan.taste.join(", ")}` : ""}

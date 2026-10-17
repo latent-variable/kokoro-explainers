@@ -1,6 +1,8 @@
 {
   "title": "How ShipShow works",
   "kind": "feature",
+  "importance": "high",
+  "importance_reason": "public: the example every visitor to the README sees",
   "voice": "af_heart",
   "say": {
     "HyperFrames": "Hyper Frames",
@@ -9,8 +11,5 @@
     "GitHub": "Git Hub",
     "ShipShow": "Ship Show"
   },
-  "audience": "A developer who has not seen this repository and wants to know how a video gets made from text.",
-  "review": {
-    "preset": "thorough"
-  }
+  "audience": "A developer who has not seen this repository and wants to know how a video gets made from text."
 }

@@ -92,7 +92,7 @@ A change to `bin/`, `kit/` or `template/` is validated by running `make` and `re
 |---|---|
 | `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. A sentence ends at `.`, `!` or `?` and a space |
 | `scenes.html` | One `<section data-scene="01-intro">` per script file, a `<style>` for the look, optionally a `<script>` |
-| `video.json` | `title`, `kind` (`decision`, `feature`, `release`), `voice`, `speed`, `theme`, `flair`, `review`, `say`, `audience`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
+| `video.json` | `title`, `kind` (`decision`, `feature`, `release`), `importance` and `importance_reason` (set by the builder), `voice`, `speed`, `theme`, `flair`, `review`, `say`, `audience`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
 | `sources.md` | Every claim the video makes, with its source |
 | `critics.md` | This video's own bar, applied by every critic |
 | `brief.md` | A decision video's handoff from the agent that asked for it |
@@ -129,9 +129,11 @@ render is repeatable and each video moves its own way.
 
 **Review.** How much critic review a video gets is a plan with dials (`critics`, `rounds`,
 `until`, `model`, `final`, `frames`, `rerun`) and presets (`quick`, `standard`, `thorough`),
-resolved by `reviewPlan` in `bin/lib.mjs`: flags, then `video.json` `"review"`, then
-`local/config.json` `"review"`, then the preset (`quick` for a decision video, else
-`standard`). `skills/critic-loop` has what each dial trades and the floor no dial lowers.
+resolved by `reviewPlan` in `bin/lib.mjs`. The builder picks the preset by setting
+`video.json` `"importance"` (`low`, `normal`, `high` for `quick`, `standard`, `thorough`) with
+an `"importance_reason"`. Most specific wins: flags, then `video.json` `"review"` (an
+explicit preset there beats importance), then importance, then `local/config.json`
+`"review"`, then the kind's default (`quick` for a decision video, else `standard`). `skills/critic-loop` has what each dial trades and the floor no dial lowers.
 The estimate's constants are measurements from 2026-10-17; replace them when you measure.
 
 **Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, about 160 words a minute), not

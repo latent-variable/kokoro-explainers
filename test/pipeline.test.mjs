@@ -212,3 +212,27 @@ test("critic plan: presets, precedence, a decision video's defaults, and caps va
   writeFileSync(join(typo, "video.json"), JSON.stringify({ kind: "decison" }));
   assert.match(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), typo], { encoding: "utf8" }).stderr, /kind is "decison"/);
 });
+
+test("importance: the builder's call picks the preset; a person's explicit preset or flag beats it", async () => {
+  const { reviewPlan, IMPORTANCE } = await import("../bin/lib.mjs");
+  const local = mkdtempSync(join(tmpdir(), "kx-test-"));
+  process.env.SHIPSHOW_LOCAL = local;
+  try {
+    const plan = (cfg, argv = []) => reviewPlan({ title: "t", ...cfg }, argv);
+    for (const [level, preset] of Object.entries(IMPORTANCE)) assert.equal(plan({ importance: level }).preset, preset);
+    assert.equal(plan({ importance: "high" }).presetFrom, "importance");
+    // Beats a person's general default...
+    writeFileSync(join(local, "config.json"), JSON.stringify({ review: { preset: "quick" } }));
+    assert.equal(plan({ importance: "high" }).preset, "thorough");
+    // ...but not a preset set on the video, or a flag in the moment.
+    assert.equal(plan({ importance: "high", review: { preset: "standard" } }).preset, "standard");
+    assert.equal(plan({ importance: "high" }, ["--preset", "quick"]).preset, "quick");
+    // A decision video judged low still gets its decision critic.
+    assert.ok(plan({ kind: "decision", importance: "low" }).critics.includes("critic-decision"));
+  } finally {
+    delete process.env.SHIPSHOW_LOCAL;
+  }
+  const bad = mkdtempSync(join(tmpdir(), "kx-test-"));
+  writeFileSync(join(bad, "video.json"), JSON.stringify({ importance: "urgent" }));
+  assert.match(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), bad], { encoding: "utf8" }).stderr, /importance is "urgent"/);
+});
