@@ -248,8 +248,10 @@ export function reviewPlan(cfg, argv = process.argv) {
       if (!overrides.includes(k)) overrides.push(k);
     }
   }
-  if (kind === "decision" && !plan.critics.includes("critic-decision")) plan.critics.push("critic-decision");
+  // The floor's critics run whatever list was asked for: no dial removes them.
   const floor = ["critic-accuracy", ...(kind === "decision" ? ["critic-decision"] : [])];
+  const added = floor.filter((c) => !plan.critics.includes(c));
+  if (added.length) plan.critics = [...added.filter((c) => c === "critic-accuracy"), ...plan.critics, ...added.filter((c) => c !== "critic-accuracy")];
   const taste = plan.critics.filter((c) => TASTE_CRITICS.includes(c));
 
   // Critics run in parallel, so a round takes as long as its slowest critic, plus the packet.
@@ -262,7 +264,7 @@ export function reviewPlan(cfg, argv = process.argv) {
   const worst = plan.rounds === 1 ? first : { min: first.min + (plan.rounds - 2) * (middle.min + REBUILD_MIN) + last.min + REBUILD_MIN, k: first.k + (plan.rounds - 2) * middle.k + last.k };
   const r = (x) => Math.round(x * 10) / 10;
   return {
-    video: cfg.title, kind, preset, ...plan, taste, floor, overrides,
+    video: cfg.title, kind, preset, ...plan, taste, floor, overrides, floorAdded: overrides.includes("critics") ? added : [],
     estimate: { firstRound: r(first.min), firstRoundTokens: Math.round(first.k), worst: r(worst.min), worstTokens: Math.round(worst.k) },
   };
 }

@@ -14,7 +14,7 @@ if (process.argv.includes("--json")) {
 const e = plan.estimate;
 console.log(`Critic plan for ${plan.video} (${plan.kind} video, preset ${plan.preset}${plan.overrides.length ? `, changed: ${plan.overrides.join(", ")}` : ""})
 
-  critics   ${plan.critics.join(", ")}
+  critics   ${plan.critics.join(", ")}${plan.floorAdded.length ? `  (${plan.floorAdded.join(", ")} added: the floor always runs)` : ""}
   model     ${plan.model}${plan.final ? `; ${plan.final} for the last round's ${plan.taste.join(", ")}` : ""}
   rounds    at most ${plan.rounds}
   until     ${plan.until === "blocking" ? "no blocking finding is left" : plan.until === "major" ? "no blocking or objective major finding is left" : "no finding at all is left"}

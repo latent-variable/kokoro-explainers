@@ -51,6 +51,7 @@ Set them in `video.json` `"review"` (`{"preset": "thorough"}`, `{"rounds": 1}`),
 **The floor no dial lowers.** Whatever the caps, a video never ships with an open blocking
 finding from `critic-accuracy` (or, for a decision video, `critic-decision`): fix it and run
 that one critic once more, past the cap if need be; if it still fails, it goes to a person.
+A `critics` list that leaves out a floor critic gets it added back (`npm run critics` says so).
 
 ## Who runs it
 

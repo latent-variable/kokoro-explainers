@@ -191,6 +191,9 @@ test("critic plan: presets, precedence, a decision video's defaults, and caps va
     assert.equal(plan({}, ["--preset", "quick"]).preset, "quick");
     assert.equal(plan({}, ["--final", "none"]).final, null);
     assert.deepEqual(plan({}, ["--critics", "critic-accuracy,critic-sync"]).critics, ["critic-accuracy", "critic-sync"]);
+    // No list removes the floor: accuracy always runs, and a decision video's decision critic.
+    assert.deepEqual(plan({}, ["--critics", "critic-sync"]).critics, ["critic-accuracy", "critic-sync"]);
+    assert.deepEqual(plan({ kind: "decision" }, ["--critics", "critic-sync"]).critics, ["critic-accuracy", "critic-sync", "critic-decision"]);
     // More rounds never cost less.
     assert.ok(plan({}, ["--rounds", "4"]).estimate.worst > plan({}, ["--rounds", "1"]).estimate.worst);
   } finally {
