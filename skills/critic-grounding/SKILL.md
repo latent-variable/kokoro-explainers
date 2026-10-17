@@ -1,10 +1,10 @@
 ---
 name: critic-grounding
 description: >
-  Use when the critic loop assigns you this critic, for any video that shows code, output or
-  captures. Critic for whether the evidence an explainer video shows is real: every command,
-  output, request, response, screenshot, recording or code excerpt on screen was captured from the
-  commit and run that `sources.md` names, and is shown as it was captured.
+  Critic for whether the evidence an explainer video shows is real: every command, output,
+  request, response, screenshot, recording or code excerpt on screen was captured from the
+  commit and run that `sources.md` names, and is shown as it was captured. Load when the
+  critic loop assigns you this critic, for any video that shows code, output or captures.
 allowed-tools: Bash(node ${CLAUDE_SKILL_DIR}/scripts/*) Bash(sh ${CLAUDE_SKILL_DIR}/../evidence-standard/scripts/*) Bash(node ${CLAUDE_SKILL_DIR}/../evidence-standard/scripts/*)
 ---
 

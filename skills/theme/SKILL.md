@@ -1,10 +1,10 @@
 ---
 name: theme
 description: >
-  Use when asked to style videos for a client or brand, to match a site or a deck, to change how
-  the videos look in general, or to add a font or a logo. Make or change a theme: the look every
-  video picks up (colours, fonts, spacing, card shapes, captions, and the default motion), most
-  often from a client's brand.
+  Make or change a theme: the look every video picks up (colours, fonts, spacing, card shapes,
+  captions, and the default motion), most often from a client's brand. Load when asked to
+  style videos for a client or brand, to match a site or a deck, to change how the videos
+  look in general, or to add a font or a logo.
 ---
 
 # Theme

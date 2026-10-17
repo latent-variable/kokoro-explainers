@@ -1,9 +1,10 @@
 ---
 name: critic-engagement
 description: >
-  Use when the critic loop assigns you this critic. Critic for whether an explainer video holds
-  its intended viewer: a reason to keep watching from the first seconds, the viewer's own stakes
-  made visible, and design choices that serve that persona rather than a generic audience.
+  Critic for whether an explainer video holds its intended viewer: a reason to keep
+  watching from the first seconds, the viewer's own stakes made visible, and design
+  choices that serve that persona rather than a generic audience. Load when the critic
+  loop assigns you this critic.
 ---
 
 # Critic: engagement

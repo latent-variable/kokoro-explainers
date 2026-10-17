@@ -1,10 +1,10 @@
 ---
 name: explain-handoff
 description: >
-  Use when you are returning a video, finished or not, including the hand-back of a decision video
-  to the working agent waiting on it. Return an explainer to the person or agent that asked for
-  it: its status, where the video is, what it says in a few lines, what to do next, which critics
-  passed, what the brief got wrong and what is still unchecked.
+  Return an explainer to the person or agent that asked for it: its status, where the video is,
+  what it says in a few lines, what to do next, which critics passed, what the brief got wrong
+  and what is still unchecked. Load when you are returning a video, finished or not, including
+  the hand-back of a decision video to the working agent waiting on it.
 ---
 
 # Explain handoff
