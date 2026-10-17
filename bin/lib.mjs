@@ -151,6 +151,12 @@ export function config(dir, argv = process.argv) {
     cfg.voice ||= "af_heart";
   }
   cfg.kokoroSpeed = Math.round(BASE_PACE * cfg.speed * 1000) / 1000;
+  // A video that shows code or captured output gets critic-grounding (skills/critic-grounding): set
+  // "shows_code" in video.json, or it is read from scenes.html (a <pre> or <code> element). Code in the scenes
+  // always counts: "shows_code": false cannot lower the floor.
+  const scenesHtml = join(dir, "scenes.html");
+  const found = existsSync(scenesHtml) && /<(pre|code)\b|class=["'][^"']*\bss-code\b/i.test(readFileSync(scenesHtml, "utf8"));
+  cfg.shows_code = cfg.shows_code === true || found;
   return cfg;
 }
 
@@ -311,7 +317,7 @@ export function reviewPlan(cfg, argv = process.argv) {
     }
   }
   // The floor's critics run whatever list was asked for: no dial removes them.
-  const floor = ["critic-accuracy", ...(kind === "decision" ? ["critic-decision"] : [])];
+  const floor = ["critic-accuracy", ...(kind === "decision" ? ["critic-decision"] : []), ...(cfg.shows_code ? ["critic-grounding"] : [])];
   const added = floor.filter((c) => !plan.critics.includes(c));
   if (added.length) plan.critics = [...added.filter((c) => c === "critic-accuracy"), ...plan.critics, ...added.filter((c) => c !== "critic-accuracy")];
   const taste = plan.critics.filter((c) => TASTE_CRITICS.includes(c));

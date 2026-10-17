@@ -1,55 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="584" viewBox="0 0 1280 584" role="img" aria-labelledby="t d">
 <title id="t">The critics</title>
-<desc id="d">Eight critics, each a fresh agent with one question: Accuracy, is every claim true? Clarity, will they follow it? Pacing, can they keep up? Sync, is it shown when it is said? Visuals, is every frame readable? Consistency, one name for one thing? Engagement, would they keep watching? Decision, can they make the call? The agent that made the video never judges it.</desc>
-<rect width="1280" height="440" rx="28" fill="#0f1420"/>
+<desc id="d">Nine critics, each a fresh agent with one question: Accuracy, is every claim true? Clarity, will they follow it? Pacing, can they keep up? Sync, is it shown when it is said? Visuals, is every frame readable? Consistency, one name for one thing? Engagement, would they keep watching? Decision, can they make the call? Grounding, is the evidence real? The agent that made the video never judges it.</desc>
+<rect width="1280" height="584" rx="28" fill="#0f1420"/>
 <text x="42" y="66" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="34" font-weight="800" fill="#eef2f8">The critics</text>
 <text x="42" y="100" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="20" fill="#b4bdcd">Fresh agents, one question each. The agent that made the video never judges it.</text>
 <g transform="translate(42 134)">
-<rect width="284" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
 <text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Accuracy</text>
 <text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Is every claim true?</text>
-<g transform="translate(244 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
-<g transform="translate(346 134)">
-<rect width="284" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<g transform="translate(447 134)">
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
 <text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Clarity</text>
 <text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Will they follow it?</text>
-<g transform="translate(244 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
-<g transform="translate(650 134)">
-<rect width="284" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<g transform="translate(852 134)">
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
 <text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Pacing</text>
 <text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Can they keep up?</text>
-<g transform="translate(244 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-</g>
-<g transform="translate(954 134)">
-<rect width="284" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
-<text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Sync</text>
-<text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Is it shown when it&#8217;s said?</text>
-<g transform="translate(244 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
 <g transform="translate(42 278)">
-<rect width="284" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Sync</text>
+<text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Is it shown when it&#8217;s said?</text>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+</g>
+<g transform="translate(447 278)">
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
 <text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Visuals</text>
 <text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Is every frame readable?</text>
-<g transform="translate(244 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
-<g transform="translate(346 278)">
-<rect width="284" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<g transform="translate(852 278)">
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
 <text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Consistency</text>
 <text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">One name for one thing?</text>
-<g transform="translate(244 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
-<g transform="translate(650 278)">
-<rect width="284" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<g transform="translate(42 422)">
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
 <text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Engagement</text>
 <text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Would they keep watching?</text>
-<g transform="translate(244 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
-<g transform="translate(954 278)">
-<rect width="284" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<g transform="translate(447 422)">
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
 <text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Decision</text>
 <text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Can they make the call?</text>
-<g transform="translate(244 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+</g>
+<g transform="translate(852 422)">
+<rect width="385" height="124" rx="18" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<text x="24" y="52" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffb454">Grounding</text>
+<text x="24" y="92" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#d6dcE6">Is the evidence real?</text>
+<g transform="translate(345 40)"><circle r="18" fill="#163a2a" stroke="#7ee0a1" stroke-width="2.5"/><path d="M-8 0 l5 6 l11 -12" fill="none" stroke="#7ee0a1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
 </svg>

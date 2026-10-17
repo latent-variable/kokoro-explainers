@@ -2,5 +2,6 @@
   "title": "My explainer",
   "kind": "feature",
   "voice": "af_heart",
+  "audience": "Who watches, what they already know, and what they can do after: one or two sentences.",
   "say": {}
 }
