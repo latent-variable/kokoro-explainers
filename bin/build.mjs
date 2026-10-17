@@ -62,7 +62,7 @@ function lines(text) {
     cur.push(w);
     if ((w.endsWith(",") && cur.length >= 5) || cur.length >= LINE_WORDS) {
       const carry = [];
-      while (cur.length > 3 && WEAK.has(norm(cur[cur.length - 1]))) carry.unshift(cur.pop());
+      while (cur.length > 1 && WEAK.has(norm(cur[cur.length - 1]))) carry.unshift(cur.pop());
       out.push(cur);
       cur = carry;
     }
