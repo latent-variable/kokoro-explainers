@@ -486,6 +486,22 @@ the skills as well as the old: that needs the evals of plan step 5.1.
 **Costs.** A description that restates its trigger first reads as an instruction to the model that sees the listing; the
 critic skills now open "Use when the critic loop assigns you this critic" and then "Critic for ...".
 
+### D40. A video's results/ folder is written from files that exist (2026-10-17; plan 0.2)
+**Decision.** `node bin/results.mjs <video> start` records when a run began; `node bin/results.mjs <video>` then writes
+`results/run.json` (plan, video stats, versions), `usage-delta.json`, `critic-rounds.json`, `run.md`, and copies each
+`review/*.txt` capture that has a `.sha256` beside it. `bin/usage.mjs` gained `--since` and `--until`, which keep only the API
+calls logged inside the window (subagents included, one with none dropped), because a session's cost is not a task's.
+A file that exists and was not written by the script is left alone; the new one is written as `<name>.generated.<ext>`.
+**Why.** The first results folder (`videos/pacer-dev-journey/results/`) was written by hand from two snapshots of `npm run usage`
+and the task notifications. Recording is only useful if it costs the agent nothing (Anthropic: "record tokens, tool-call counts,
+runtime and errors per run"). The generated numbers for that video match the hand-written ones agent by agent.
+**Left out.** Plan step 2.6, a `SubagentStop` hook that logs each critic: `usage.mjs` already reads every subagent's
+transcript, so a hook would record the same numbers a second time. **Not joined.** Which agent was which critic: a transcript
+carries an id, not a role, so the rows are labelled by id; the per-round counts come from `review/round-N/` and are not matched
+to a transcript. Whether the person agreed with a critic is not recorded anywhere yet.
+**Costs.** The window is by timestamp, so work in the same session outside the video lands in it too (the builder's row is the
+session's, not the video's alone); mark `start` at the beginning and keep a video's work together.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.

@@ -1,7 +1,7 @@
 // Token and context use of a Claude Code session and the subagents it spawned, read from the
 // session transcripts Claude Code already writes under ~/.claude/projects/. Output tokens are as
 // recorded in the transcript, which may undercount a call that was still streaming when it was logged.
-//   node bin/usage.mjs [session id | transcript path] [--json]
+//   node bin/usage.mjs [session id | transcript path] [--json] [--since <ISO time>] [--until <ISO time>]
 // With no argument: the newest session of this repo. Context is the prompt size of one API
 // call (fresh + cache-written + cache-read input tokens); "peak" is the largest of them.
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
@@ -13,12 +13,14 @@ import { REPO } from "./lib.mjs";
 const projects = process.env.CLAUDE_PROJECTS_DIR || join(homedir(), ".claude", "projects");
 
 // One agent's transcript: sum usage per API call (a call can span several lines).
-export function readTranscript(file) {
+// since and until (ISO times) keep only the API calls logged inside that window, so one task's cost is not the session's.
+export function readTranscript(file, { since, until } = {}) {
   const calls = new Map();
   let first = null, last = null, model = null, bad = 0;
   for (const line of readFileSync(file, "utf8").split("\n")) {
     if (!line.trim()) continue;
     let d; try { d = JSON.parse(line); } catch { bad++; continue; }
+    if (d.timestamp && ((since && d.timestamp < since) || (until && d.timestamp > until))) continue;
     if (d.timestamp) { first ??= d.timestamp; last = d.timestamp; }
     const u = d.message?.usage;
     if (d.type !== "assistant" || !u) continue;
@@ -40,13 +42,13 @@ export function readTranscript(file) {
 }
 
 // The session's own transcript, then <session>/subagents/agent-*.jsonl.
-export function readSession(file) {
+export function readSession(file, window = {}) {
   const dir = file.replace(/\.jsonl$/, "");
-  const agents = [{ name: "main", ...readTranscript(file) }];
+  const agents = [{ name: "main", ...readTranscript(file, window) }];
   const sub = join(dir, "subagents");
   if (existsSync(sub)) {
     for (const f of readdirSync(sub).filter((f) => /^agent-.*\.jsonl$/.test(f)).sort()) {
-      agents.push({ name: basename(f, ".jsonl").replace(/^agent-/, "").slice(0, 8), ...readTranscript(join(sub, f)) });
+      agents.push({ name: basename(f, ".jsonl").replace(/^agent-/, "").slice(0, 8), ...readTranscript(join(sub, f), window) });
     }
   }
   return agents;
@@ -79,19 +81,26 @@ const secs = (a) => {
 let entry = false;
 try { entry = process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)); } catch { entry = false; }
 if (entry) {
-  const args = process.argv.slice(2), json = args.includes("--json");
+  const raw = process.argv.slice(2), json = raw.includes("--json"), window = {}, args = [];
+  for (let i = 0; i < raw.length; i++) {
+    if (raw[i] === "--since" || raw[i] === "--until") {
+      const v = raw[++i];
+      if (!v || Number.isNaN(Date.parse(v))) { console.error(`${raw[i - 1]} needs an ISO time, for example 2026-10-17T21:23:38Z`); process.exit(2); }
+      window[raw[i - 1].slice(2)] = new Date(v).toISOString();
+    } else args.push(raw[i]);
+  }
   const unknown = args.filter((a) => a.startsWith("-") && a !== "--json");
-  if (unknown.length) { console.error(`unknown option ${unknown[0]}; usage: node bin/usage.mjs [session id | transcript file] [--json]`); process.exit(2); }
+  if (unknown.length) { console.error(`unknown option ${unknown[0]}; usage: node bin/usage.mjs [session id | transcript file] [--json] [--since <ISO time>] [--until <ISO time>]`); process.exit(2); }
   let file, agents;
   try {
     file = findSession(args.find((a) => !a.startsWith("--")));
-    agents = readSession(file);
+    agents = readSession(file, window).filter((a) => a.name === "main" || a.calls > 0);
   } catch (e) { console.error(`error: ${e.message}`); process.exit(2); }
   const bad = agents.reduce((n, a) => n + (a.bad || 0), 0);
   if (bad) console.error(`warning: ${bad} line(s) in the transcript(s) could not be read; the figures may undercount`);
   if (agents.every((a) => a.calls === 0)) console.error("warning: no usage records found in this transcript");
   const total = agents.reduce((s, a) => ({ calls: s.calls + a.calls, input: s.input + a.input, output: s.output + a.output, cacheWrite: s.cacheWrite + a.cacheWrite, cacheRead: s.cacheRead + a.cacheRead }), { calls: 0, input: 0, output: 0, cacheWrite: 0, cacheRead: 0 });
-  if (json) { console.log(JSON.stringify({ session: basename(file, ".jsonl"), agents, total }, null, 2)); process.exit(0); }
+  if (json) { console.log(JSON.stringify({ session: basename(file, ".jsonl"), ...(window.since || window.until ? { window } : {}), agents, total }, null, 2)); process.exit(0); }
   console.log(`session ${basename(file, ".jsonl")}`);
   console.log("agent     calls   input  output  cache-wr  cache-rd  peak-ctx  last-ctx  secs  model");
   for (const a of [...agents, { name: "TOTAL", ...total, peakContext: Math.max(...agents.map((a) => a.peakContext)), lastContext: 0, model: "" }]) {
