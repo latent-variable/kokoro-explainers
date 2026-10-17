@@ -140,11 +140,11 @@ export function config(dir, argv = process.argv) {
   }
   cfg.kokoroSpeed = Math.round(BASE_PACE * cfg.speed * 1000) / 1000;
   // A video that shows code or captured output gets critic-grounding (skills/critic-grounding): set
-  // "shows_code" in video.json, or it is read from scenes.html (a <pre> or <code> element).
-  if (cfg.shows_code === undefined) {
-    const scenesHtml = join(dir, "scenes.html");
-    cfg.shows_code = existsSync(scenesHtml) && /<(pre|code)\b|class=["'][^"']*\bss-code\b/i.test(readFileSync(scenesHtml, "utf8"));
-  }
+  // "shows_code" in video.json, or it is read from scenes.html (a <pre> or <code> element). Code in the scenes
+  // always counts: "shows_code": false cannot lower the floor.
+  const scenesHtml = join(dir, "scenes.html");
+  const found = existsSync(scenesHtml) && /<(pre|code)\b|class=["'][^"']*\bss-code\b/i.test(readFileSync(scenesHtml, "utf8"));
+  cfg.shows_code = cfg.shows_code === true || found;
   return cfg;
 }
 

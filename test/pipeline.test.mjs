@@ -692,7 +692,7 @@ test("critic plan: a video that shows code gets critic-grounding on the floor, w
   assert.equal(config(dir, []).shows_code, true);
   const vj = JSON.parse(readFileSync(join(dir, "video.json"), "utf8"));
   writeFileSync(join(dir, "video.json"), JSON.stringify({ ...vj, shows_code: false }));
-  assert.equal(config(dir, []).shows_code, false, "an explicit value in video.json wins");
+  assert.equal(config(dir, []).shows_code, true, "code in the scenes counts even when video.json says false");
 });
 
 test("sandbox-run: a directory name cannot widen the profile, the real home stays protected without $HOME, and system roots are refused", { skip: process.platform !== "darwin" && "sandbox-exec is macOS only" }, () => {

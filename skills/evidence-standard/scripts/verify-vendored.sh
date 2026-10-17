@@ -22,7 +22,7 @@ cd "$top"
 gitdir=$(cd "$(git rev-parse --git-common-dir)" && pwd -P)   # the common dir: a linked worktree has no objects of its own
 g() { git -c core.fsmonitor=false -c core.untrackedCache=false -c core.fileMode=true -c diff.ignoreSubmodules=none -c core.hooksPath=/dev/null "$@"; }
 tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT INT TERM
+# $tmp is left for the operating system's temp cleanup: this script never deletes (it is small: one index and the tree objects)
 got=$(GIT_INDEX_FILE="$tmp/index" GIT_OBJECT_DIRECTORY="$tmp/objects" GIT_ALTERNATE_OBJECT_DIRECTORIES="$gitdir/objects" \
   sh -c 'mkdir -p "$GIT_OBJECT_DIRECTORY" && git -c core.fsmonitor=false read-tree "HEAD:$1" && git -c core.fsmonitor=false update-index --force-remove SOURCE.md && git -c core.fsmonitor=false write-tree' sh "$dir" 2>/dev/null) \
   || { echo "verify-vendored: cannot read $dir at HEAD" >&2; exit 2; }

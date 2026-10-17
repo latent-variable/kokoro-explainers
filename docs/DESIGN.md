@@ -337,6 +337,13 @@ leaves the machine); OmniVoice can drop or repeat a word and nothing here hears 
 a take's identity includes the voice file's bytes. This branch did not change any of it; the merge only combined
 `doctor` (its version check and main's engine lines), `package.json` (both setup scripts) and the tests.
 
+### D28. Review of #12: code in the scenes always gets the grounding critic; the scripts say "move aside", not "delete" (2026-10-17)
+**Decision.** `shows_code` is true when `video.json` says so or when `scenes.html` holds code, so `"shows_code": false`
+cannot lower the floor (`bin/lib.mjs`, `config`). `bin/setup.mjs` tells a person with an out-of-range `.venv` to
+`mv .venv .venv.old`, and `verify-vendored.sh` leaves its temp directory to the operating system instead of
+deleting it, in line with "the scripts never delete files".
+**Costs.** A video cannot opt out of the grounding critic once it shows code; a verifier run leaves a small temp folder.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.

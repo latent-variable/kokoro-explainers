@@ -12,7 +12,7 @@ if (!found) die(`no Python ${MIN.join(".")} to ${MAX.join(".")} found (kokoro-on
 const existing = join(REPO, ".venv", "bin", "python");
 if (existsSync(existing)) {
   const have = pythonVersion(existing);
-  if (!have || !supportedPython(have)) die(`.venv already exists with Python ${have || "unknown"}, outside ${MIN.join(".")} to ${MAX.join(".")}. Remove it yourself (rm -r .venv) and run npm run setup again`);
+  if (!have || !supportedPython(have)) die(`.venv already exists with Python ${have || "unknown"}, outside ${MIN.join(".")} to ${MAX.join(".")}. Move it aside yourself (mv .venv .venv.old) and run npm run setup again`);
 }
 console.log(`using ${found.cmd} (Python ${found.version})`);
 for (const [cmd, args] of [...(existsSync(existing) ? [] : [[found.cmd, ["-m", "venv", ".venv"]]]), [join(REPO, ".venv", "bin", "pip"), ["install", "-r", "requirements.txt"]]]) {
