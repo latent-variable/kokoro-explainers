@@ -1,8 +1,12 @@
-# kokoro-explainers
+# ShipShow
 
-Narrated explainer videos made from plain text, on your own machine. You write a script and one HTML page; [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) reads the script and [HyperFrames](https://hyperframes.heygen.com) draws the scenes and records them to an MP4, with captions.
+**Turn a shit show into a ship show.**
 
-Nothing is sent to a cloud service. The voice model is about 340 MB and runs on the CPU.
+Agents change a code base faster than anyone can read it, and keeping up turns into a shit show. ShipShow makes short narrated videos that explain what changed, how it works, and what you need to decide, so you ship code you understand.
+
+You write a script and one HTML page, or your agent does; [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) reads the script and [HyperFrames](https://hyperframes.heygen.com) draws the scenes and records them to an MP4, with captions.
+
+Nothing is sent to a cloud service. The voice model is about 340 MB and runs on the CPU; the first render also downloads a headless Chrome (about 190 MB) if HyperFrames finds none.
 
 Built for the amperium.ai hackathon. The everyday use is a decision video: an agent working on a feature hands off to a fresh explainer agent, which makes a short video of what you need to know to make a call, and recommends one. The same skills make feature explainers (how something in a code base works) and release explainers.
 
@@ -65,7 +69,7 @@ For anything more, add a `<script>` to `scenes.html`. It runs after the shared t
 
 ```
 {
-  "title": "How kokoro-explainers works",
+  "title": "How ShipShow works",
   "voice": "af_heart",
   "speed": 1.0,
   "say": { "HyperFrames": "Hyper Frames", "MP4": "M P 4" }

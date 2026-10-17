@@ -5,6 +5,8 @@ and what is expected of you. `README.md` is the same story for humans.
 
 ## What this is
 
+ShipShow: turn a shit show into a ship show. When agents change a code base faster than a person can follow, a short narrated video of what changed and what needs deciding lets them ship code they understand.
+
 A pipeline that turns plain text into narrated explainer videos on one machine (a Kokoro
 voice, HyperFrames scenes), and a set of skills for agents to make them well. The everyday
 use is a decision video: an agent working on a feature hands off to a fresh explainer agent,
@@ -64,7 +66,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 - **No speech recognition, on purpose.** `hyperframes transcribe` built whisper.cpp and then timed out downloading its model after six minutes. Timing comes from voicing each sentence separately (`bin/voice.mjs`), so a word inside a sentence is placed by its share of the letters. Do not add an ASR step to fix a cue a few hundred milliseconds off; split the sentence or use `data-cue="+seconds"`.
 - **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts every later take's number, so they re-voice; that costs about a second each.
 - **Generated files are gitignored** (`videos/*/assets/`, `review/`, `index.html`, `meta.json`, `timing.json`). Never commit audio, frames or renders.
-- **The project name is a placeholder** (2026-10-17). Do not spread `kokoro-explainers` into new files beyond what already names it; a rename is coming. A rename also changes the PR reviewer's allowlist (latent-git-agents `config/repos.json` and `tests/repo-allowlist.test.mjs`), or PRs stop being reviewed.
+- **The name is ShipShow**, one word, two capitals; the repo is `latent-variable/shipshow` (renamed from kokoro-explainers 2026-10-17, and GitHub redirects the old address). A rename also changes the PR reviewer's allowlist (latent-git-agents `config/repos.json` and `tests/repo-allowlist.test.mjs`), or PRs stop being reviewed.
 - **`hyperframes lint` warns `nested_structure_needs_subcomposition` and `timeline_track_too_dense`** on every video. Advisory: each scene is one section on one track by design. Errors still block.
 - The scripts never delete files: a stale take is overwritten, never removed.
 

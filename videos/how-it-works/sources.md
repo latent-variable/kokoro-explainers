@@ -19,8 +19,8 @@ commit the video is built from, plus the two tools it runs.
 | Tag a picture with a word and it appears as the voice reaches that word | `data-cue` in `bin/build.mjs` (`cueTime`) and `kit/kit.js`. The time inside a sentence is estimated from the share of letters before the word |
 | One command voices, builds, and records frame by frame into an MP4 | `npm run make` runs `bin/make.mjs`: voice, build, lint, render (`hyperframes render`, frame by frame in headless Chrome) |
 | Change a sentence and only that sentence is voiced again (an edit; an insertion renumbers later takes) | `bin/voice.mjs` keeps a take whose text, voice and speed are unchanged (`.key` files). Inserting a sentence renumbers the takes after it, which re-voices those too |
-| Everything runs on your own machine | No network call in the pipeline once the model is downloaded; the first `doctor` run downloads it |
-| The project is open source, on GitHub | `LICENSE` (MIT); public at github.com/latent-variable/kokoro-explainers |
+| After a one-time download, everything runs on your own machine | No network call in the pipeline once two things are downloaded: the Kokoro model (the first `doctor` run, about 340 MB) and, when HyperFrames finds no Chrome, a headless Chrome on the first render (`hyperframes browser ensure`, about 190 MB) |
+| The project is open source, on GitHub | `LICENSE` (MIT); public at github.com/latent-variable/shipshow |
 | To make your own, clone it and follow the setup in its README | `README.md`, *Set it up*: `npm install`, the Python venv with `requirements.txt`, `npm run doctor` |
 | Then run npm run new with a folder name | `npm run new -- videos/<name>` copies `template/` (`bin/new.mjs`) |
 | Write one text file per scene and a section for each in scenes.html, then run npm run make on it | `npm run make -- videos/<name>` (`bin/make.mjs`); `README.md`, *Make your own*: `script/01-intro.txt`, one per scene |

@@ -1,13 +1,13 @@
 {
-  "title": "How kokoro-explainers works",
+  "title": "How ShipShow works",
   "voice": "af_heart",
   "speed": 0.85,
   "say": {
     "HyperFrames": "Hyper Frames",
     "MP4": "M P 4",
-    "kokoro-explainers": "Kokoro explainers",
     "npm": "N P M",
-    "GitHub": "Git Hub"
+    "GitHub": "Git Hub",
+    "ShipShow": "Ship Show"
   },
   "audience": "A developer who has not seen this repository and wants to know how a video gets made from text.",
   "critics": [
