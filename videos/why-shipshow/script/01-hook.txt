@@ -1,1 +1,1 @@
-Your agents write code faster than you can read it. Every pull request is waiting on you to understand it. Keeping up is a shit show.
+Your agents write code faster than you can read it. Each pull request waits on you. Keeping up is a shit show. ShipShow turns it into a short video you can watch.

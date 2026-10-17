@@ -1,1 +1,1 @@
-It shines when you have to decide. Your agent hands the question to a fresh explainer agent. Minutes later, you watch the options, what each one costs, and a recommendation. Then you make the call.
+It shines when your agent needs your call. Mid-change, it asks: rewrite the retry logic, or patch it? It hands that question to a fresh explainer agent. Soon after, you watch both options, what each costs, and a recommendation. Then you make the call.

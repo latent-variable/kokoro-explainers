@@ -236,3 +236,10 @@ test("importance: the builder's call picks the preset; a person's explicit prese
   writeFileSync(join(bad, "video.json"), JSON.stringify({ importance: "urgent" }));
   assert.match(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), bad], { encoding: "utf8" }).stderr, /importance is "urgent"/);
 });
+
+test("syllables: rough but steady, so pace is judged by ear, not by word length", async () => {
+  const { syllables } = await import("../bin/lib.mjs");
+  assert.deepEqual(["each", "pull", "request", "understanding", "the", "make", "voice", "API"].map(syllables), [1, 1, 2, 4, 1, 1, 1, 2]);
+  const per = (s) => s.split(" ").reduce((a, w) => a + syllables(w), 0) / s.split(" ").length;
+  assert.ok(per("Each pull request waits on you") < per("Oversight and understanding of abstractions"));
+});

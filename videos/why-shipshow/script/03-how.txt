@@ -1,1 +1,1 @@
-ShipShow makes those videos on your own machine. Your agent writes a short script and the scenes. Kokoro, a small local voice, reads it. HyperFrames draws it, frame by frame. No API key needed.
+ShipShow makes those videos on your own machine. Your agent writes a short script and the scenes. Kokoro, a small local voice, reads it, and HyperFrames renders it to an MP4. No API key for the voice or the render.

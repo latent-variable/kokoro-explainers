@@ -137,7 +137,8 @@ explicit preset there beats importance), then importance, then `local/config.jso
 The estimate's constants are measurements from 2026-10-17; replace them when you measure.
 
 **Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, about 160 words a minute), not
-Kokoro's own: 1.25 by default. Pauses shrink with it. The most specific wins: `--speed` on
+Kokoro's own: 1.25 by default. The packet measures pace in syllables a minute (base about 210,
+`BASE_SPM`), since words a minute runs high on short words. Pauses shrink with it. The most specific wins: `--speed` on
 `make` or `voice`, then `video.json`, then the person's `local/config.json`, then 1.25
 (`bin/lib.mjs`, `config`). A take is re-voiced when its speed changes.
 

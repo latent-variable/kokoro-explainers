@@ -25,6 +25,18 @@ export function videoDir(arg) {
 // BASE_PACE, about BASE_WPM words a minute (measured on the how-it-works video, 2026-10-17).
 export const BASE_PACE = 0.85;
 export const BASE_WPM = 160;
+// Syllables a minute is the pace a listener hears; words a minute runs high on short words
+// ("Each pull request waits on you" reads fast by words, not by ear). At speed 1, ShipShow
+// speaks about 210 a minute (how-it-works, measured 2026-10-17).
+export const BASE_SPM = 210;
+
+/** Syllables in a word, by vowel groups: rough, and the same rough on every scene. */
+export function syllables(word) {
+  const w = word.toLowerCase().replace(/[^a-z]/g, "");
+  if (!w) return 0;
+  const groups = w.replace(/e$/, "").match(/[aeiouy]+/g);
+  return Math.max(1, groups ? groups.length : 1);
+}
 export const DEFAULT_SPEED = 1.25;
 
 /** A --name value from the command line: `--speed 1.4` or `--speed=1.4`; undefined if absent. */
