@@ -14,6 +14,12 @@ https://github.com/user-attachments/assets/5421baa1-c54d-4151-8cf4-6e5e20be889e
 
 <p align="center"><sub>The pitch, 57 seconds, made with ShipShow. <a href="videos/why-shipshow">Its script, scenes and review.</a></sub></p>
 
+<p align="center">
+  <a href="https://x.com/karpathy/status/2105819303471976479"><img src="docs/assets/karpathy.png" width="640" alt="Andrej Karpathy (@karpathy) on X: Explainer videos. The output format I am most bullish on is fully custom / bespoke explainer videos generated on any arbitrary topic. Experiment with things like &quot;Create a 3b1b style video explainer on X. Use my ElevenLabs API key for audio narration&quot;. (you'd need an API key for the latter or you can ask your LLM to find you decent free alternatives that use your local compute). This is actually starting to work! In summary: As LLMs get better, they will do more and more of the legwork autonomously, and a lot more of our work will rise up the abstractions into oversight and understanding."></a>
+  <br>
+  <sub>Why videos: <a href="https://x.com/karpathy/status/2105819303471976479">Andrej Karpathy's post</a>, excerpted. ShipShow's voice and render are the free alternative on your local compute that he mentions.</sub>
+</p>
+
 ## How it works
 
 <p align="center">
@@ -75,4 +81,4 @@ Every video takes a theme: colours, fonts, layout and motion in one folder. Ship
 
 Everything about the code, the skills and the commands is in [AGENTS.md](AGENTS.md).
 
-<sub>Made for a hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0, and so is OmniVoice's code (its weights have their own card); GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>
+<sub>Made for a hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0, and so is OmniVoice's code (its weights have their own card); the `eve` voice is VCTK speaker p361, CC BY 4.0; GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>
