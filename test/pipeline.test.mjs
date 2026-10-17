@@ -64,7 +64,11 @@ test("a caption never ends on a function word, even when carrying it leaves a sh
     total: 9,
     scenes: [
       { id: "01-intro", start: 0, duration: 4, sentences: [{ text: "First fish the a to, then they swim away.", start: 0.5, duration: 3 }] },
-      { id: "02-idea", start: 4, duration: 5, sentences: [{ text: "A box appears when the voice says box.", start: 4.5, duration: 3 }] },
+      { id: "02-idea", start: 4, duration: 5, sentences: [
+        { text: "A box appears when the voice says box.", start: 4.5, duration: 3 },
+        // A whole run of function words before a comma has nothing to stay behind: it joins the next line.
+        { text: "A to in of and, first they swim away.", start: 7.8, duration: 1 },
+      ] },
     ],
   }));
   mkdirSync(join(dir, "assets"), { recursive: true });
@@ -72,6 +76,7 @@ test("a caption never ends on a function word, even when carrying it leaves a sh
   const html = readFileSync(join(dir, "index.html"), "utf8");
   const caps = [...html.matchAll(/class="clip cap"[^>]*><span>([^<]*)<\/span>/g)].map((m) => m[1]);
   assert.deepEqual(caps.slice(0, 2), ["First fish", "the a to, then they swim away."]);
+  assert.ok(caps.includes("A to in of and, first they swim away."), `a stranded line in ${JSON.stringify(caps)}`);
   for (const c of caps) assert.doesNotMatch(c, /\b(a|an|the|to|of|and|or|but|in|on|at|for|with|by|as|its|their|that)[.,]?$/i, `"${c}" ends on a function word`);
 });
 
