@@ -1,1 +1,1 @@
-Pick option B now. Run option A until it ships. Option B closes this hole in about an hour. Its cost is that the next forgotten route leaks again, so plan option C next. Option C takes days and can lock customers out: too risky tonight.
+Pick option B tonight: it closes this hole in about an hour and takes nothing from customers. Then plan option C, so the next forgotten check can't leak. This assumes an hour more exposure is acceptable, since the log shows reads only. If not, switch the routes off first.

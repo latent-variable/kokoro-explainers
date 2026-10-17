@@ -56,7 +56,7 @@
   .routes { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
   .route { padding: 8px 18px; border-radius: 10px; border: 2px solid rgba(255, 122, 61, 0.6); background: #1b0d05; font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: #ffd9c4; white-space: nowrap; align-self: flex-start; }
   .route small { font-size: 28px; font-weight: 500; color: var(--muted); margin-left: 12px; }
-  .stakes { position: absolute; left: var(--pad); right: var(--pad); top: 590px; font-family: var(--font-display); font-size: 42px; font-weight: 700; white-space: nowrap; }
+  .stakes { position: absolute; left: var(--pad); right: var(--pad); top: 590px; font-family: var(--font-display); font-size: 40px; font-weight: 700; white-space: nowrap; }
   .stakes b { color: var(--accent); }
   .stride { position: absolute; left: var(--pad); right: var(--pad); top: 665px; display: flex; align-items: center; gap: 18px; }
   .stride .tag { margin-right: 14px; font-size: 28px; }
@@ -99,7 +99,7 @@
   .rec { padding: 10px 24px; border: 3px solid var(--good); border-radius: 12px; background: #06140b; color: var(--good); font-family: var(--font-mono); font-size: 32px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; }
   .why { position: absolute; left: var(--pad); right: var(--pad); top: 560px; padding: 16px 32px; display: flex; flex-direction: column; gap: 10px; border-color: rgba(74, 222, 128, 0.5); }
   .why .ln { display: flex; gap: 22px; align-items: baseline; font-family: var(--font-display); font-size: 38px; font-weight: 700; white-space: nowrap; }
-  .why .ln .tag { font-size: 28px; width: 190px; color: var(--good); }
+  .why .ln .tag { font-size: 28px; width: 240px; flex: none; color: var(--good); }
   .why .ln .tag.c { color: var(--accent); }
   .why .ln em { font-style: normal; color: var(--accent); }
   .still { position: absolute; left: var(--pad); top: 800px; font-family: var(--font-mono); font-size: 30px; color: var(--ink); white-space: nowrap; }
@@ -124,13 +124,12 @@
   <div class="pills">
     <div class="pill" data-cue="Six" data-anim="pop">6 INVOICES &middot; 4 OTHER COMPANIES</div>
     <div class="pill" data-cue="through" data-anim="pop">200 OK &times; 7</div>
-    <div class="pill" data-cue="emails" data-anim="pop">EMAILS + AMOUNTS SEEN</div>
   </div>
   <div class="big l-ask ember" data-cue="Which" data-anim="slam">Which fix do we ship?</div>
 </section>
 
 <section data-scene="02-layers" data-transition="wipe">
-  <div class="tag y-tag" data-cue="+0.1" data-anim="fade"><b>//</b>one request, four layers</div>
+  <div class="tag y-tag" data-cue="+0.1" data-anim="fade"><b>//</b>one request, four trust boundaries</div>
   <div class="big y-head silver" data-cue="crosses" data-anim="up">Where does it break?</div>
   <div class="y-line" data-cue="+0.2" data-anim="fade"></div>
   <div class="y-dot" id="y-dot"></div>
@@ -138,7 +137,7 @@
   <div class="layers">
     <div class="layer card" data-cue="firewall" data-anim="up"><div class="no">LAYER 1</div><div class="nm">Firewall</div><div class="sub">sees addresses, <em data-cue="owns" data-anim="highlight">never the owner</em></div></div>
     <div class="layer card" data-cue="load" data-anim="up"><div class="no">LAYER 2</div><div class="nm">Load balancer</div><div class="sub">spreads traffic</div></div>
-    <div class="layer card" id="y-api" data-cue="API#1" data-anim="up"><div class="stamp" id="y-stamp" data-cue="lives" data-anim="slam">BUG LIVES HERE</div><div class="no">LAYER 3</div><div class="nm">API</div><div class="sub">decides who sees what</div></div>
+    <div class="layer card" id="y-api" data-cue="API#1" data-anim="up"><div class="stamp" id="y-stamp" data-cue="bug" data-anim="slam">BUG LIVES HERE</div><div class="no">LAYER 3</div><div class="nm">API</div><div class="sub">decides who sees what</div></div>
     <div class="layer card" data-cue="database" data-anim="up"><div class="no">LAYER 4</div><div class="nm">Database</div><div class="sub">holds the invoices</div></div>
   </div>
 </section>
@@ -156,10 +155,10 @@
         <div class="route" data-cue="opening" data-anim="right">GET /invoices/:id<small>open one</small></div>
         <div class="route" data-cue="changing" data-anim="right">PATCH /invoices/:id/status<small>change it</small></div>
       </div>
-      <div class="res" data-cue="Two" data-anim="slam">&#10005; NEITHER ROUTE ASKS</div>
+      <div class="res" data-cue="missing" data-anim="slam">&#10005; NEITHER ROUTE ASKS</div>
     </div>
   </div>
-  <div class="stakes" data-cue="signed" data-anim="up"><b>Any signed-in user</b> reads other companies' invoices, <b>could change one</b></div>
+  <div class="stakes" data-cue="signed" data-anim="up"><b>Any signed-in user:</b> reads others' emails + amounts, <b>can change a status</b></div>
   <div class="stride" data-cue="STRIDE" data-anim="stagger">
     <div class="tag"><b>//</b>STRIDE &middot; threat checklist</div>
     <div class="st card">S</div>
@@ -173,7 +172,6 @@
     <span data-cue="information" data-anim="up"><b>I</b>information disclosure</span>
     <span data-cue="tampering" data-anim="up"><b>T</b>tampering</span>
     <span data-cue="elevation" data-anim="up"><b>E</b>elevation of privilege</span>
-    <span class="pill" data-cue="reads" data-anim="pop">LOG: READS ONLY</span>
   </div>
 </section>
 
@@ -181,53 +179,53 @@
   <div class="tag o-tag" data-cue="Three" data-anim="fade"><b>//</b>three fixes &middot; times are the agent's estimates</div>
   <div class="ocols">
     <div class="ocol card" data-cue="Three" data-anim="fade">
-      <div class="lay" data-cue="firewall" data-anim="up">layer 1 &middot; firewall</div>
-      <div class="nm" data-cue="firewall" data-anim="up"><span>A</span>Firewall rule</div>
+      <div class="lay" data-cue="switch" data-anim="up">the two routes</div>
+      <div class="nm" data-cue="switch" data-anim="up"><span>A</span>Switch routes off</div>
       <div class="time ember" data-cue="minutes" data-anim="up">Minutes<small>est.</small></div>
-      <div class="row gain" data-cue="blocks" data-anim="fade"><small>GAINS</small>blocks fast readers</div>
-      <div class="row cost" data-cue="slow" data-anim="fade"><small>COSTS</small>a slow reader gets through</div>
+      <div class="row gain" data-cue="stops" data-anim="fade"><small>GAINS</small>the leak stops</div>
+      <div class="row cost" data-cue="customer#1" data-anim="fade"><small>COSTS</small>no one can open or change an invoice</div>
     </div>
     <div class="ocol card" data-cue="Three" data-anim="fade">
-      <div class="lay" data-cue="ownership" data-anim="up">layer 3 &middot; API</div>
+      <div class="lay" data-cue="ownership" data-anim="up">the two routes</div>
       <div class="nm" data-cue="ownership" data-anim="up"><span>B</span>Ownership check</div>
       <div class="time ember" data-cue="hour" data-anim="up">~1 hour<small>est.</small></div>
-      <div class="row gain" data-cue="closes" data-anim="fade"><small>GAINS</small>closes the hole</div>
-      <div class="row cost" data-cue="remember" data-anim="fade"><small>COSTS</small>every new route must remember</div>
+      <div class="row gain" data-cue="lose" data-anim="fade"><small>GAINS</small>customers lose nothing</div>
+      <div class="row cost" data-cue="meanwhile" data-anim="fade"><small>COSTS</small>open meanwhile; every new route must remember</div>
     </div>
     <div class="ocol card" data-cue="Three" data-anim="fade">
-      <div class="lay" data-cue="security" data-anim="up">layer 4 &middot; database</div>
+      <div class="lay" data-cue="security" data-anim="up">the database</div>
       <div class="nm" data-cue="security" data-anim="up"><span>C</span>Row-level security</div>
       <div class="time ember" data-cue="days" data-anim="up">Days<small>est.</small></div>
-      <div class="row gain" data-cue="hands" data-anim="fade"><small>GAINS</small>database returns only your rows</div>
+      <div class="row gain" data-cue="returns" data-anim="fade"><small>GAINS</small>database returns only your rows</div>
       <div class="row cost" data-cue="lock" data-anim="fade"><small>COSTS</small>a mistake can lock customers out</div>
     </div>
   </div>
-  <div class="nothing card" data-cue="nothing" data-anim="slam"><span class="tag"><b>//</b>do nothing</span>readable by other customers, already used once</div>
+  <div class="nothing card" data-cue="nothing#2" data-anim="slam"><span class="tag"><b>//</b>do nothing</span>readable and changeable by other customers</div>
 </section>
 
 <section data-scene="05-pick" data-transition="fade">
   <div class="tag r-tag" data-cue="+0.1" data-anim="fade"><b>//</b>the recommendation</div>
   <div class="rcols">
     <div class="rc card" data-cue="+0.1" data-anim="fade">
-      <div class="when" data-cue="Run" data-anim="up">stopgap</div><div class="nm" data-cue="Run" data-anim="up"><span>A</span>Firewall rule</div>
-      <div class="what" data-cue="Run" data-anim="up">blocks fast readers until B ships</div><div class="eta" data-cue="Run" data-anim="fade">MINUTES &middot; est.</div>
+      <div class="when" data-cue="switch" data-anim="up">only if an hour is too long</div><div class="nm" data-cue="switch" data-anim="up"><span>A</span>Switch routes off</div>
+      <div class="what" data-cue="switch" data-anim="up">first, while B is built</div><div class="eta" data-cue="switch" data-anim="fade">MINUTES &middot; est.</div>
     </div>
     <div class="rc card pick" data-cue="+0.1" data-anim="fade">
-      <div class="rec-wrap" data-cue="now" data-anim="fade"><div class="rec">&#10003; RECOMMENDED</div></div>
-      <div class="when" data-cue="Pick" data-anim="up">ship now</div><div class="nm" data-cue="Pick" data-anim="up"><span>B</span>Ownership check</div>
+      <div class="rec-wrap" data-cue="tonight" data-anim="fade"><div class="rec">&#10003; RECOMMENDED</div></div>
+      <div class="when" data-cue="Pick" data-anim="up">ship tonight</div><div class="nm" data-cue="Pick" data-anim="up"><span>B</span>Ownership check</div>
       <div class="what" data-cue="Pick" data-anim="up">closes this hole</div><div class="eta" data-cue="Pick" data-anim="fade">~1 HOUR &middot; est.</div>
     </div>
     <div class="rc card" data-cue="+0.1" data-anim="fade">
       <div class="when" data-cue="plan" data-anim="up">plan next</div><div class="nm" data-cue="plan" data-anim="up"><span>C</span>Row-level security</div>
-      <div class="what" data-cue="plan" data-anim="up">a forgotten check stops being a leak</div><div class="eta" data-cue="plan" data-anim="fade">DAYS &middot; est.</div>
+      <div class="what" data-cue="plan" data-anim="up">a forgotten check can't leak</div><div class="eta" data-cue="plan" data-anim="fade">DAYS &middot; est.</div>
     </div>
   </div>
   <div class="why card">
-    <div class="ln" data-cue="closes" data-anim="up"><span class="tag">// why B</span><span>closes this hole in about an hour</span></div>
-    <div class="ln" data-cue="cost" data-anim="up"><span class="tag c">// its cost</span><span>the next forgotten route <em>leaks again</em>, so C is next</span></div>
-    <div class="ln" data-cue="takes" data-anim="up"><span class="tag c">// not C yet</span><span data-cue="risky" data-anim="highlight">days, and it can lock customers out</span></div>
+    <div class="ln" data-cue="closes" data-anim="up"><span class="tag">// why B</span><span>closes this hole, takes nothing from customers</span></div>
+    <div class="ln" data-cue="forgotten" data-anim="up"><span class="tag c">// then C</span><span>the next forgotten check <em>can't leak</em></span></div>
+    <div class="ln" data-cue="assumes" data-anim="up"><span class="tag c">// assumes</span><span data-cue="acceptable" data-anim="highlight">an hour more exposure is acceptable</span></div>
   </div>
-  <div class="still" data-cue="tonight" data-anim="fade"><b>//</b>doing nothing: invoices stay readable by other customers</div>
+  <div class="still" data-cue="reads" data-anim="fade"><b>//</b>log: reads only so far &middot; doing nothing leaves invoices readable and changeable</div>
 </section>
 
 <script>
