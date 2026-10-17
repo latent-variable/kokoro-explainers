@@ -58,6 +58,7 @@
         // A planet's rim low in the frame: a gridded arc lit along its edge, rising slowly.
         const planet = document.createElement("div");
         planet.className = "horizon";
+        planet.setAttribute("data-layout-allow-overflow", "");
         ambientEl.appendChild(planet);
         tl.fromTo(planet, { y: 60 }, { y: -40, duration: TOTAL, ease: "sine.inOut" }, 0);
       } else if (ambient !== "none") {

@@ -22,12 +22,12 @@
     background: linear-gradient(135deg, #ff925f, var(--accent) 45%, #e5561d); box-shadow: 0 0 0 1px rgba(255, 170, 120, 0.5), 0 18px 70px rgba(255, 122, 61, 0.55); white-space: nowrap; }
 
   /* 01-night */
-  .n-tag { position: absolute; left: var(--pad); top: 110px; }
-  .n-head { position: absolute; left: var(--pad); top: 200px; font-size: 150px; }
+  .n-tag { position: absolute; left: var(--pad); top: 250px; }
+  .n-head { position: absolute; left: var(--pad); top: 320px; font-size: 150px; }
   .n-head div { white-space: nowrap; }
   .agents { position: absolute; right: var(--pad); top: 160px; width: 640px; display: flex; flex-direction: column; gap: 26px; }
   .agent { padding: 26px 32px; }
-  .agent .who { font-family: var(--font-mono); font-size: 26px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-2); }
+  .agent .who { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-2); }
   .agent .what { font-family: var(--font-mono); font-size: 36px; color: var(--ink); margin-top: 10px; white-space: nowrap; }
   .agent .what em { font-style: normal; color: var(--accent); font-weight: 700; }
   .agents-hud { right: calc(var(--pad) - 26px); top: 134px; width: 692px; height: 640px; }
@@ -36,12 +36,12 @@
   .p-count { position: absolute; left: var(--pad); top: 150px; }
   .p-count .num { font-size: 300px; }
   .p-count .lbl { margin-top: 18px; }
-  .stack { position: absolute; right: 120px; top: 70px; width: 980px; height: 640px; }
-  .ask { position: absolute; width: 470px; padding: 20px 26px; font-family: var(--font-mono); font-size: 27px; color: var(--ink); white-space: nowrap; border-color: rgba(255, 122, 61, 0.55); }
-  .ask b { display: block; font-size: 22px; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 6px; }
+  .stack { position: absolute; right: 120px; top: 50px; width: 1000px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+  .ask { padding: 12px 22px; font-family: var(--font-mono); font-size: 28px; color: var(--ink); white-space: nowrap; border-color: rgba(255, 122, 61, 0.55); }
+  .ask b { display: block; font-size: 24px; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 2px; }
   .meter { position: absolute; left: var(--pad); top: 640px; width: 640px; }
   .meter .bar { height: 18px; border-radius: 9px; background: rgba(142, 200, 255, 0.12); border: 1.5px solid var(--line); margin-top: 18px; overflow: hidden; }
-  .meter .fill { width: 8%; height: 100%; background: var(--accent); box-shadow: 0 0 22px rgba(255, 122, 61, 0.9); }
+  .meter .fill { width: 6%; height: 100%; background: var(--accent); box-shadow: 0 0 22px rgba(255, 122, 61, 0.9); }
   .meter .pct { font-family: var(--font-display); font-size: 64px; font-weight: 700; color: var(--accent); margin-top: 10px; }
 
   /* 03-knot */
@@ -70,11 +70,12 @@
   .chap { display: flex; align-items: baseline; gap: 26px; }
   .chap .n { font-family: var(--font-mono); font-size: 30px; color: var(--accent); }
   .chap .t { font-family: var(--font-display); font-size: 62px; font-weight: 700; letter-spacing: -0.03em; text-transform: uppercase; }
-  .opts { position: absolute; right: 54px; top: 130px; width: 560px; display: flex; flex-direction: column; gap: 22px; }
+  .opts { position: absolute; right: 54px; top: 130px; width: 600px; display: flex; flex-direction: column; gap: 22px; }
   .opt { padding: 22px 28px; }
-  .opt h4 { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.12em; color: var(--accent-2); margin-bottom: 12px; }
-  .opt .row { display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 26px; color: var(--muted); margin-top: 8px; }
-  .opt .row span { width: 110px; }
+  .opt h4 { font-family: var(--font-mono); font-size: 30px; letter-spacing: 0.1em; color: var(--accent-2); margin-bottom: 10px; }
+  .opt .row { display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 28px; color: var(--ink); margin-top: 8px; white-space: nowrap; }
+  .opt .row span { width: 100px; color: var(--muted); }
+  .what-line { font-family: var(--font-mono); font-size: 30px; color: var(--muted); margin: -14px 0 0 58px; white-space: nowrap; }
   .opt .gain, .opt .cost { height: 16px; border-radius: 8px; }
   .opt .gain { background: var(--good); }
   .opt .cost { background: var(--accent); }
@@ -91,17 +92,19 @@
   .col .q { font-family: var(--font-display); font-size: 40px; font-weight: 500; color: var(--ink); margin-top: 18px; line-height: 1.2; }
   .col .watch { margin-top: auto; align-self: flex-start; padding: 16px 26px; border-radius: 12px; font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: #1b0d05; background: linear-gradient(135deg, #ff925f, var(--accent)); box-shadow: 0 10px 40px rgba(255, 122, 61, 0.45); }
   .a-line { position: absolute; left: var(--pad); right: var(--pad); top: 710px; text-align: center; font-family: var(--font-display); font-size: 64px; font-weight: 700; letter-spacing: -0.03em; }
-  .a-line s { color: var(--muted); text-decoration-color: var(--accent); text-decoration-thickness: 6px; }
+  .ghosts { position: absolute; left: var(--pad); right: var(--pad); top: 140px; display: flex; gap: 40px; }
+  .ghosts div { flex: 1; height: 520px; border: 1.5px dashed rgba(142, 200, 255, 0.3); border-radius: var(--radius); }
+  .a-line s { color: #c9d2e3; text-decoration-color: var(--accent); text-decoration-thickness: 6px; }
 
   /* 07-trust */
-  .c-panel { position: absolute; left: var(--pad); top: 110px; width: 740px; }
+  .c-panel { position: absolute; left: var(--pad); top: 250px; width: 700px; }
   .c-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 26px; }
-  .c-grid div { padding: 18px 24px; font-family: var(--font-mono); font-size: 30px; color: var(--ink); display: flex; justify-content: space-between; }
+  .c-grid div { padding: 18px 24px; font-family: var(--font-mono); font-size: 32px; color: var(--ink); display: flex; justify-content: space-between; }
   .c-grid div b { color: var(--good); }
-  .c-src { margin-top: 28px; font-family: var(--font-mono); font-size: 32px; color: var(--ink); }
+  .c-src { margin-top: 28px; white-space: nowrap; font-family: var(--font-mono); font-size: 29px; color: var(--ink); }
   .c-src em { font-style: normal; color: var(--good); }
-  .quote { position: absolute; right: var(--pad); top: 130px; width: 820px; padding: 46px 52px; border-color: rgba(142, 200, 255, 0.4); }
-  .quote-hud { right: calc(var(--pad) - 24px); top: 106px; width: 868px; height: 560px; }
+  .quote { position: absolute; right: var(--pad); top: 250px; width: 820px; padding: 46px 52px; border-color: rgba(142, 200, 255, 0.4); }
+  .quote-hud { right: calc(var(--pad) - 24px); top: 226px; width: 868px; height: 400px; }
   .quote .tag { font-size: 24px; letter-spacing: 0.12em; }
   .quote p { font-family: var(--font-display); font-size: 54px; font-weight: 500; line-height: 1.22; margin-top: 26px; }
   .quote p em { font-style: normal; }
@@ -119,7 +122,7 @@
     <div class="silver" data-cue="+0.3" data-anim="up">Your agents</div>
     <div class="ember" data-cue="never" data-anim="slam">never sleep.</div>
   </div>
-  <div class="hud agents-hud" data-cue="+0.6" data-anim="fade"><i></i><i></i><i></i><i></i></div>
+  <div class="hud agents-hud" data-cue="+0.1" data-anim="fade"><i></i><i></i><i></i><i></i></div>
   <div class="agents">
     <div class="agent card" data-cue="code" data-anim="right"><div class="who">agent / code</div><div class="what">&#9656; <em>14</em> files changed</div></div>
     <div class="agent card" data-cue="contract" data-anim="right"><div class="who">agent / legal</div><div class="what">&#9656; contract draft <em>v3</em></div></div>
@@ -133,32 +136,35 @@
     <div class="tag lbl" data-cue="twelve" data-anim="fade"><b>//</b>decisions waiting on you</div>
   </div>
   <div class="stack" data-cue="twelve" data-anim="stagger">
-    <div class="ask card" style="left: 0; top: 0;"><b>NEEDS YOUR CALL</b>merge auth refactor?</div>
-    <div class="ask card" style="left: 500px; top: 20px;"><b>NEEDS YOUR CALL</b>send contract v3?</div>
-    <div class="ask card" style="left: 60px; top: 120px;"><b>NEEDS YOUR CALL</b>shortlist 12 of 400?</div>
-    <div class="ask card" style="left: 470px; top: 150px;"><b>NEEDS YOUR CALL</b>refund order #4471?</div>
-    <div class="ask card" style="left: 20px; top: 250px;"><b>NEEDS YOUR CALL</b>rewrite retry logic?</div>
-    <div class="ask card" style="left: 510px; top: 280px;"><b>NEEDS YOUR CALL</b>raise ad budget 20%?</div>
-    <div class="ask card" style="left: 80px; top: 380px;"><b>NEEDS YOUR CALL</b>drop the old API?</div>
-    <div class="ask card" style="left: 480px; top: 410px;"><b>NEEDS YOUR CALL</b>reply to the client?</div>
-    <div class="ask card" style="left: 30px; top: 510px;"><b>NEEDS YOUR CALL</b>ship to production?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>merge auth refactor?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>send contract v3?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>shortlist 12 of 400?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>refund order #4471?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>rewrite retry logic?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>raise ad budget 20%?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>drop the old API?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>reply to the client?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>renew the vendor?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>pause the campaign?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>ship to production?</div>
+    <div class="ask card"><b>NEEDS YOUR CALL</b>approve the hire?</div>
   </div>
   <div class="meter" data-cue="barely" data-anim="up">
     <div class="tag"><b>//</b>what you actually read</div>
     <div class="bar"><div class="fill"></div></div>
-    <div class="pct">8%</div>
+    <div class="pct">barely any of it</div>
   </div>
 </section>
 
 <section data-scene="03-knot" class="why" data-transition="flash">
-  <div class="heat" data-cue="knot" data-anim="fade"></div>
+  <div class="heat" data-cue="guess" data-anim="fade"></div>
   <div class="big k-guess" data-cue="guess" data-anim="glitch">You guess.</div>
   <div class="k-chips">
     <span class="card" data-cue="approve" data-anim="pop">&#10003; approve</span>
     <span class="arrow" data-cue="hope" data-anim="fade">&#9656;&#9656;</span>
     <span class="card" data-cue="hope" data-anim="pop">hope</span>
   </div>
-  <svg class="ecg" viewBox="0 0 1920 200" preserveAspectRatio="none" data-cue="knot" data-anim="draw">
+  <svg class="ecg" viewBox="0 0 1920 200" preserveAspectRatio="none" data-cue="guess" data-anim="draw">
     <path d="M0 110 L300 110 L340 110 L360 60 L380 160 L400 110 L560 110 L590 20 L620 190 L650 110 L820 110 L840 70 L860 150 L880 110 L1000 110 L1030 6 L1060 196 L1090 110 L1240 110 L1260 50 L1280 170 L1300 110 L1420 110 L1450 14 L1480 190 L1510 110 L1920 110" />
   </svg>
   <div class="k-cost">
@@ -183,18 +189,18 @@
       <div class="tag" style="color: var(--muted);">from agent / code</div>
     </div>
     <div class="chap-list">
-      <div class="chap" data-cue="happened" data-anim="left"><span class="n">01</span><span class="t silver">What happened</span></div>
+      <div data-cue="happened" data-anim="left"><div class="chap"><span class="n">01</span><span class="t silver">What happened</span></div><div class="what-line">retries fail under load</div></div>
       <div class="chap" data-cue="options" data-anim="left"><span class="n">02</span><span class="t silver">Your options</span></div>
       <div class="chap" data-cue="costs" data-anim="left"><span class="n">03</span><span class="t silver">What each costs</span></div>
       <div class="chap" data-cue="recommends" data-anim="left"><span class="n">04</span><span class="t ember">The recommendation</span></div>
     </div>
     <div class="opts">
       <div class="opt card" data-cue="options" data-anim="right"><h4>OPTION A &middot; REWRITE</h4>
-        <div class="row"><span>gains</span><div class="gain" style="width: 300px;"></div></div>
-        <div class="row" data-cue="costs" data-anim="fade"><span>costs</span><div class="cost" style="width: 320px;"></div></div></div>
+        <div class="row"><span>gains</span>fixes the root cause</div>
+        <div class="row" data-cue="costs" data-anim="fade"><span>costs</span><b style="color: var(--accent);">3 days, misses launch</b></div></div>
       <div class="opt card" data-cue="options" data-anim="right"><h4>OPTION B &middot; PATCH</h4>
-        <div class="row"><span>gains</span><div class="gain" style="width: 230px;"></div></div>
-        <div class="row" data-cue="costs" data-anim="fade"><span>costs</span><div class="cost" style="width: 90px;"></div></div></div>
+        <div class="row"><span>gains</span>ships today</div>
+        <div class="row" data-cue="costs" data-anim="fade"><span>costs</span><b style="color: var(--accent);">1 hour, rewrite later</b></div></div>
     </div>
     <div class="rec" data-cue="recommends" data-anim="slam">&#10003; RECOMMENDED: B</div>
     <div class="scrub"><div class="fill" id="scrub-fill"></div></div>
@@ -203,6 +209,7 @@
 
 <section data-scene="06-anyone" class="why" data-transition="fade">
   <div class="tag a-tag" data-cue="+0.1" data-anim="fade"><b>//</b>examples &middot; any agent that needs your call</div>
+  <div class="ghosts" data-cue="+0.1" data-anim="fade"><div></div><div></div><div></div></div>
   <div class="cols">
     <div class="col card" data-cue="hiring" data-anim="up">
       <div class="who">hiring agent</div>
@@ -223,21 +230,21 @@
       <div class="watch" data-cue="Each" data-anim="pop">&#9654; watch &middot; 0:52</div>
     </div>
   </div>
-  <div class="a-line" data-cue="Each" data-anim="up"><span class="silver">A video,</span> <s>not a wall of logs.</s></div>
+  <div class="a-line"><span class="silver" data-cue="video" data-anim="up">A video,</span> <s data-cue="wall" data-anim="fade">not a wall of logs.</s></div>
 </section>
 
 <section data-scene="07-trust" class="why" data-transition="fade">
   <div class="c-panel">
-    <div class="tag" data-cue="critic" data-anim="fade"><b>//</b>critic agents, before you see it</div>
-    <div class="c-grid" data-cue="check" data-anim="stagger">
+    <div class="tag" data-cue="+0.1" data-anim="fade"><b>//</b>critics check it first</div>
+    <div class="c-grid" data-cue="+0.2" data-anim="stagger">
       <div class="card">accuracy <b>&#10003;</b></div><div class="card">clarity <b>&#10003;</b></div>
       <div class="card">pacing <b>&#10003;</b></div><div class="card">sync <b>&#10003;</b></div>
       <div class="card">visuals <b>&#10003;</b></div><div class="card">consistency <b>&#10003;</b></div>
     </div>
-    <div class="c-src" data-cue="sources" data-anim="up"><em>&#10003;</em> every claim checked against its sources</div>
+    <div class="c-src" data-cue="check" data-anim="up"><em>&#10003;</em> every claim checked against its sources</div>
   </div>
-  <div class="hud quote-hud" data-cue="sources" data-anim="fade"><i></i><i></i><i></i><i></i></div>
-  <div class="quote card" data-cue="sources" data-anim="right">
+  <div class="hud quote-hud" data-cue="Andrej" data-anim="fade"><i></i><i></i><i></i><i></i></div>
+  <div class="quote card" data-cue="Andrej" data-anim="right">
     <div class="tag">Andrej Karpathy &middot; on X &middot; Oct 2, 2026</div>
     <p>&ldquo;&hellip;most <em style="color: var(--accent);" data-cue="bullish" data-anim="highlight">bullish</em> on is fully custom / bespoke <em class="grad">explainer videos</em>&hellip;&rdquo;</p>
   </div>
@@ -250,7 +257,7 @@
     <div class="row">
       <div class="btn" data-cue="open" data-anim="pop">github.com/latent-variable/shipshow &rarr;</div>
     </div>
-    <div class="made" data-cue="video" data-anim="pop"><span class="ping"></span>this video was made with ShipShow</div>
+    <div class="made" data-cue="ShipShow#2" data-anim="pop"><span class="ping"></span>this video was made with ShipShow</div>
   </div>
 </section>
 
