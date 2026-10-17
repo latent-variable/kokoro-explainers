@@ -1125,7 +1125,7 @@ test("every skill and the critic agent has well-formed front matter: `claude plu
     const body = f.text.split("\n").slice(f.text.split("\n").findIndex((l) => l.startsWith("description:")) + 1).join(" ").trim();
     assert.ok((f.folded ? body : f.desc || "").length >= 40, `skills/${n}/SKILL.md: the description is missing or tiny`);
     assert.ok(readFileSync(join(REPO, "skills", n, "SKILL.md"), "utf8").split("\n").length < 500, `skills/${n}/SKILL.md is over 500 lines`);
-    // what the skill is first, "Load when ..." last: measured to trigger far better than trigger-first (DESIGN D39, evals/README.md)
+    // what the skill is first, "Load when ..." last: measured to trigger far better than trigger-first (DESIGN D41, evals/README.md)
     const full = (f.folded ? body : f.desc || "");
     assert.match(full, /Load\s+(when|with|before|after|at)\s/, `skills/${n}/SKILL.md: the description must say when to load the skill`);
     assert.ok(full.length <= 600, `skills/${n}/SKILL.md: the description is ${full.length} characters; it costs context every turn, keep it under 600`);
