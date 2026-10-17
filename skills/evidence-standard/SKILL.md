@@ -90,10 +90,10 @@ Run only inside this envelope and record it as `[ran]`. Otherwise the claim stay
    quicker but honours `export-ignore` and `export-subst`: compare `git ls-tree -r --name-only <sha> --
    <subdir> | sort` with `(cd <tmp> && find <subdir> -type f | sort)`, and prefer the clone. `git
    worktree add` writes into the source repo's `.git`; use it only on a repo you own. Never run in the
-   target's own tree or by switching the user's checked-out branch. In the copy, delete `.env*`,
-   `.flaskenv` and any other dotfile the code reads for configuration, `.git`, and local databases; the
-   app may load them even under a scrubbed environment. If you cannot delete files (a hook may forbid it),
-   use `git archive`: it has no `.git` and no untracked dotfiles to begin with. For a change, a copy at base and a copy at head,
+   target's own tree or by switching the user's checked-out branch. Delete nothing from the copy. A
+   clone or archive holds only tracked files, so it has none of your untracked `.env*`, `.flaskenv` or local
+   databases; a dotfile the repo does track is repo content, so read it before running, since the app may
+   load it even under a scrubbed environment. `git archive` goes further: it has no `.git` either. For a change, a copy at base and a copy at head,
    and the base's test files copied into the head copy (`git show ${base}:<path> > <copy>/<path>`).
 2. **`cd "<copy>" || exit 1` before anything that writes.** A relative path that runs after a failed
    `cd` writes into the real repo; this happened in testing. (`stop` is not a command.)
