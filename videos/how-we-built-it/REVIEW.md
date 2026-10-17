@@ -6,14 +6,14 @@ every round was a fresh agent that had not seen the build or an earlier round, a
 round 5 attempt to run clarity and visuals on Opus was rejected by the workspace rate limit
 (HTTP 429, one input token a minute), so both were rerun on Sonnet.
 
-**Status: not done.** Three of the four critics pass in round 6. Clarity still fails.
+**Status: the four critics run all pass in round 7.** Pacing, consistency and engagement were not run.
 
-| Critic | R1 | R2 | R3 | R4 | R5 | R6 |
-|---|---|---|---|---|---|---|
-| accuracy | fail | fail | pass | fail | pass | pass |
-| clarity | fail | fail | fail | fail | fail | **fail** |
-| sync | fail | pass | fail | pass | pass | pass |
-| visuals | fail | fail | pass | fail | fail | pass |
+| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 |
+|---|---|---|---|---|---|---|---|
+| accuracy | fail | fail | pass | fail | pass | pass | pass |
+| clarity | fail | fail | fail | fail | fail | fail | pass |
+| sync | fail | pass | fail | pass | pass | pass | pass |
+| visuals | fail | fail | pass | fail | fail | pass | pass |
 
 ## What the critics changed
 
@@ -37,24 +37,22 @@ round 5 attempt to run clarity and visuals on Opus was rejected by the workspace
 - **Round 5.** Visuals (blocking, introduced by the round 4 restack): the loop caption overlapped the
   chip row. Fixed. Clarity: the "first video" in the loop scene was never named; it is now "the
   project's first video, how it works".
-- **Round 6.** Accuracy, sync and visuals pass. Clarity fails (below).
+- **Round 6.** Accuracy, sync and visuals pass. Clarity fails on two majors (below).
+- **Round 7.** After the clarity rewrite below, all four pass.
 
 The builder's own look between rounds caught the heading-only openings and the "start time" line
 sitting against the chip box before any critic did.
 
-## Open: clarity, round 6
+## Clarity, round 6, and how it closed
 
-Two majors, both subjective:
-
-- **Loop scene.** The pipeline-warning sentence ("it now warns when a picture could land on the
-  wrong word") leans on the idea that pictures are tied to words, which scene 2 only hints at;
-  and "how it works" is easy to mishear as a phrase rather than a video title.
-- **Traps scene.** The 160-character espeak-ng example is a detail this audience will not hit, and
-  the scene does not say why a file agents read first helps.
-
-Clarity has raised these two spots since round 2, in different wording, and has asked both for more
-explanation of the trap and for it to be replaced. This is the escalation case in `critic-loop`
-(the same finding surviving three rounds, and a critic pulling two ways), so it is left for a human.
+Two subjective majors, raised in different wording since round 2: the loop scene's warning sentence
+leaned on an idea (pictures tied to words) the video had not set up, and "how it works" was easy to
+mishear as a phrase; the traps scene spent its time on a 160-character espeak-ng detail this
+audience will not hit, without saying why a file agents read first helps. Clarity had asked both
+for more explanation of that detail and for it to be replaced, so it went to a human, who chose a
+rewrite. The espeak example was dropped; the traps scene now says what AGENTS.md is for; scene 2 says
+a picture appears when its words are spoken; the loop scene calls the other video "the example
+video, called how it works" and states what the warning is for. Round 7 passes.
 
 ## Declined
 
@@ -67,9 +65,12 @@ explanation of the trap and for it to be replaced. This is the escalation case i
 
 ## Accepted minors
 
-Left after round 6, not re-run: all seven critic chips land at the start of the scene, before
-"seven critics" is said, and only two are highlighted; the first trap row lands before it is
-spoken; the "six rounds" line lands about 3 s after its sentence starts; the loop caption line is
-centred while other elements are left-aligned; some cards are taller than their content; the
-critics and traps scenes sit in the top half of the frame. Pacing was not run: most scenes read at
-150 to 193 words a minute, above the 150 to 165 the `explainer-video` skill suggests, scene 6 highest.
+Left after round 7, not re-run. Clarity: the loop's last sentence puts its point at the end; scene 2
+does not say why voicing sentences separately gives exact start times (the README's "because we put
+it there"); "traps" is not defined and the example repeats scene 2. Sync: only accuracy and pacing
+are outlined in the critics scene while three more are named; the example-video line lands about 3 s
+after its sentence starts; the traps card shows lines the voice does not read and "on purpose" is
+not spoken. Visuals: the pipeline scene is a single small row for about 15 s before the cards; the
+Round 1 card sits alone on the left for a while; the caption chunk ends on "a". Accuracy: "sound and
+picture line up" paraphrases the sync critic's README line. Pacing was not run: scenes read at 163
+to 193 words a minute, above the 150 to 165 the `explainer-video` skill suggests, scene 6 highest.
