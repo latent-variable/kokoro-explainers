@@ -25,7 +25,7 @@ You know your own way of reading a repo; these are the sources worth reaching fo
 - `.agents/memory/MEMORY.md` when it exists (gitignored project memory).
 - `git log --oneline -15`: what changed lately and why. Commit subjects here are
   `type: summary (#PR)`.
-- The files you will touch and their neighbours. `bin/` is about 640 lines in total:
+- The files you will touch and their neighbours. `bin/` is about 1,200 lines in total:
   the step you change and the ones around it are what matter.
 
 ## The shape

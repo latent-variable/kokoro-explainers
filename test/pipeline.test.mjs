@@ -1151,3 +1151,19 @@ test("critics: a video still carrying the template's placeholder audience is war
   writeFileSync(join(dir, "video.json"), JSON.stringify({ ...JSON.parse(readFileSync(join(dir, "video.json"), "utf8")), audience: "A developer who manages coding agents and has to explain an overspend to Finance." }));
   assert.doesNotMatch(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), dir], { encoding: "utf8" }).stderr, /placeholder audience/);
 });
+
+test("hold keeps the last frame up after the video's last word, and moves nothing else", () => {
+  const dir = newVideo(), local = fakeLocal(), py = fakeWorker();
+  const cfg = JSON.parse(readFileSync(join(dir, "video.json"), "utf8"));
+  const timing = (hold) => {
+    writeFileSync(join(dir, "video.json"), JSON.stringify({ ...cfg, engine: "omnivoice", hold }));
+    const r = voiceRun(dir, local, py);
+    assert.equal(r.status, 0, r.stderr);
+    return JSON.parse(readFileSync(join(dir, "timing.json"), "utf8"));
+  };
+  const before = timing(0), after = timing(2.5);
+  assert.equal(Math.round((after.total - before.total) * 100) / 100, 2.5);
+  const last = before.scenes.length - 1;
+  assert.equal(Math.round((after.scenes[last].duration - before.scenes[last].duration) * 100) / 100, 2.5);
+  assert.deepEqual(after.scenes.slice(0, last), before.scenes.slice(0, last), "earlier scenes keep their times");
+});
