@@ -28,3 +28,4 @@ it says so below.
 | Less anxiety, better calls | The project's promise (the team, 2026-10-17); a framing |
 | ShipShow is open source, on GitHub | `LICENSE` (MIT); github.com/latent-variable/shipshow |
 | This video was made by ShipShow | This folder: its script, scenes and review run through `bin/` (voiced by OmniVoice, rendered by HyperFrames) |
+| The voice is Eve: VCTK speaker p361, credited on screen | `bin/omnivoice-voices.json` (`vctk/p361_023_enhanced.wav` in kyutai/tts-voices); VCTK is CC BY 4.0, which asks for the credit |
