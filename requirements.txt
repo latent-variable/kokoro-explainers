@@ -1,0 +1,5 @@
+# Kokoro-82M, which `hyperframes tts` runs. Pinned: phonemizer 3.4 is the first that
+# kokoro-onnx 0.6 accepts, and a newer one may move the espeak API again.
+kokoro-onnx==0.6.1
+phonemizer==3.4.0
+soundfile==0.14.0

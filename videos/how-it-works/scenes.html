@@ -1,0 +1,99 @@
+<style>
+  :root { --bg: #0f1420; --ink: #eef2f8; --muted: #a6b0c3; --accent: #ffb454; --cool: #7cc4ff; --card: #182033; --line: #2c3854; }
+  .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px; }
+  .kicker { font-size: 34px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  h1 { font-size: 120px; font-weight: 800; letter-spacing: -0.02em; }
+  h2 { position: absolute; top: 90px; left: 140px; font-size: 76px; font-weight: 750; }
+  .flow { display: flex; align-items: center; gap: 28px; }
+  .chip { padding: 22px 36px; border-radius: 18px; background: var(--card); border: 2px solid var(--line); font-size: 40px; font-weight: 600; }
+  .chip.hot { border-color: var(--accent); color: var(--accent); }
+  .arrow { font-size: 44px; color: var(--muted); }
+  .mono { font-family: "SF Mono", Menlo, Consolas, monospace; }
+  .stats { position: absolute; top: 250px; left: 140px; display: flex; gap: 40px; }
+  .stat { width: 470px; padding: 34px 40px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); }
+  .stat b { display: block; font-size: 84px; color: var(--accent); font-weight: 800; }
+  .stat span { font-size: 34px; color: var(--muted); }
+  .track { position: absolute; top: 640px; left: 140px; width: 1640px; height: 120px; }
+  .track .axis { position: absolute; left: 0; right: 0; top: 60px; height: 4px; background: var(--line); }
+  .take { position: absolute; top: 18px; height: 88px; border-radius: 14px; background: var(--cool); color: #0f1420; font-size: 30px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .note { position: absolute; top: 790px; left: 140px; font-size: 36px; color: var(--muted); }
+  .code { position: absolute; top: 260px; left: 140px; width: 860px; padding: 40px 44px; border-radius: 22px; background: #0a0e17; border: 2px solid var(--line); font-size: 32px; line-height: 1.6; color: var(--muted); }
+  .code .k { color: var(--cool); }
+  .code .s { color: var(--accent); }
+  .stage { position: absolute; top: 260px; left: 1080px; width: 700px; height: 380px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; }
+  .stage .shown { font-size: 64px; font-weight: 800; color: var(--accent); }
+  .capdemo { position: absolute; top: 700px; left: 1080px; width: 700px; padding: 18px 24px; border-radius: 12px; background: rgba(0,0,0,0.6); font-size: 32px; text-align: center; }
+  .steps { position: absolute; top: 260px; left: 140px; display: flex; gap: 36px; }
+  .step { width: 520px; padding: 36px 40px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); }
+  .step b { display: block; font-size: 30px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .step span { font-size: 38px; line-height: 1.35; }
+  .cmd { position: absolute; top: 560px; left: 140px; padding: 26px 36px; border-radius: 16px; background: #0a0e17; border: 2px solid var(--line); font-size: 38px; color: var(--ink); }
+  .redo { position: absolute; top: 700px; left: 140px; font-size: 40px; color: var(--muted); }
+  .redo em { font-style: normal; color: var(--accent); font-weight: 700; }
+  .url { font-size: 56px; color: var(--cool); }
+  .small { font-size: 38px; color: var(--muted); }
+</style>
+
+<section data-scene="01-title">
+  <div class="center">
+    <div class="kicker" data-cue="+0.2" data-anim="fade">Narrated explainers, made locally</div>
+    <h1 data-cue="+0.4">kokoro-explainers</h1>
+    <div class="flow">
+      <div class="chip mono" data-cue="text">script/*.txt</div>
+      <div class="arrow" data-cue="HTML" data-anim="fade">+</div>
+      <div class="chip mono" data-cue="HTML#1">scenes.html</div>
+      <div class="arrow" data-cue="laptop" data-anim="fade">&rarr;</div>
+      <div class="chip hot" data-cue="laptop">video</div>
+    </div>
+  </div>
+</section>
+
+<section data-scene="02-voice">
+  <h2 data-cue="+0.1" data-anim="left">1. The voice</h2>
+  <div class="stats">
+    <div class="stat" data-cue="Kokoro"><b>Kokoro</b><span>open text-to-speech model</span></div>
+    <div class="stat" data-cue="eighty"><b>82M</b><span>parameters</span></div>
+    <div class="stat" data-cue="laptop"><b>Local</b><span>runs on the CPU</span></div>
+  </div>
+  <div class="track">
+    <div class="axis" data-cue="sentence" data-anim="grow"></div>
+    <div class="take" style="left: 0; width: 470px" data-cue="sentence" data-anim="pop">sentence 1</div>
+    <div class="take" style="left: 510px; width: 330px" data-cue="voiced" data-anim="pop">sentence 2</div>
+    <div class="take" style="left: 880px; width: 560px" data-cue="voiced" data-anim="pop">sentence 3</div>
+  </div>
+  <div class="note" data-cue="exactly" data-anim="fade">Each take is placed on the track, so every start time is known.</div>
+</section>
+
+<section data-scene="03-scenes">
+  <h2 data-cue="+0.1" data-anim="left">2. The pictures</h2>
+  <div class="code mono" data-cue="section">
+    &lt;<span class="k">section</span> data-scene=<span class="s">"02-voice"</span>&gt;<br />
+    &nbsp;&nbsp;&lt;<span class="k">div</span> data-cue=<span class="s">"Kokoro"</span>&gt;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;Kokoro<br />
+    &nbsp;&nbsp;&lt;/<span class="k">div</span>&gt;<br />
+    &lt;/<span class="k">section</span>&gt;
+  </div>
+  <div class="stage" data-cue="HyperFrames" data-anim="fade">
+    <div class="shown" data-cue="appears" data-anim="pop">Kokoro</div>
+  </div>
+  <div class="capdemo" data-cue="captions">Spelled the way you wrote it.</div>
+</section>
+
+<section data-scene="04-render">
+  <h2 data-cue="+0.1" data-anim="left">3. The render</h2>
+  <div class="steps">
+    <div class="step" data-cue="voices"><b>voice</b><span>Kokoro reads each sentence</span></div>
+    <div class="step" data-cue="builds"><b>build</b><span>scenes, cues and captions become one page</span></div>
+    <div class="step" data-cue="records"><b>render</b><span>HyperFrames records it to an MP4</span></div>
+  </div>
+  <div class="cmd mono" data-cue="One" data-anim="fade">npm run make -- videos/how-it-works</div>
+  <div class="redo" data-cue="Only">Edit one sentence: <em>one</em> sentence is voiced again.</div>
+</section>
+
+<section data-scene="05-close">
+  <div class="center">
+    <div class="kicker" data-cue="machine" data-anim="fade">Local, open source, MIT licensed</div>
+    <div class="url mono" data-cue="open">github.com/latent-variable/kokoro-explainers</div>
+    <div class="small mono" data-cue="starter">npm run new -- videos/my-video</div>
+  </div>
+</section>

@@ -1,0 +1,1 @@
+Everything runs on your own machine, and the project is open source. To make your own, copy the starter folder and write your script.

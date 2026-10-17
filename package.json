@@ -1,0 +1,26 @@
+{
+  "name": "kokoro-explainers",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Narrated explainer videos from plain text: a Kokoro-82M voice and HyperFrames scenes, rendered on your own machine.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "doctor": "node bin/doctor.mjs",
+    "new": "node bin/new.mjs",
+    "voice": "node bin/voice.mjs",
+    "build": "node bin/build.mjs",
+    "check": "hyperframes check",
+    "preview": "hyperframes preview",
+    "render": "node bin/render.mjs",
+    "make": "node bin/make.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "gsap": "3.14.2",
+    "hyperframes": "0.8.168"
+  }
+}

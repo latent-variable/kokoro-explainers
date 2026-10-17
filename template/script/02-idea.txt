@@ -1,0 +1,1 @@
+This is the second scene. A box appears when the voice says box.
