@@ -9,6 +9,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "setup": "python3 -m venv .venv && .venv/bin/pip install -r requirements.txt",
     "doctor": "node bin/doctor.mjs",
     "new": "node bin/new.mjs",
     "voice": "node bin/voice.mjs",

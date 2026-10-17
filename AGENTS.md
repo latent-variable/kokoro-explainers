@@ -52,11 +52,83 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
   who builds, who judges (a fresh agent), and where facts come from (the code, `sources.md`)
   hold for every agent.
 
+## Set up
+
+Node.js 22+, Python 3.10+ and ffmpeg; tested on macOS.
+
+```
+npm install                                                       # HyperFrames, GSAP; links skills into .claude/skills
+npm run setup                                                     # .venv with Kokoro, which hyperframes tts runs
+npm run doctor                                                    # what is missing, with the fix; voices one word
+```
+
+The first `doctor` downloads Kokoro into `~/.cache/hyperframes/tts` (about 340 MB). The first
+render downloads a headless Chrome if HyperFrames finds none (about 190 MB).
+
 ## Commands
 
-- `npm run doctor`: what the machine is missing. Run it first on a fresh clone.
-- `npm test`: no Kokoro needed; CI runs only this.
-- `npm run make -- videos/<name>`: the end-to-end path (voice, build, lint, render). `npm run review -- videos/<name>` then writes the critics' evidence. A change to `bin/`, `kit/` or `template/` is validated by running it on `videos/how-it-works` and looking at frames: `npx hyperframes snapshot videos/how-it-works --at <seconds>`.
+| Command | What it does |
+|---|---|
+| `npm run new -- <folder>` | A new video from `template/` (`videos/x` for this repo, `local/videos/x` for any other code base) |
+| `npm run voice -- <folder>` | One Kokoro take per sentence, then `assets/narration.wav` and `timing.json` |
+| `npm run build -- <folder>` | The HyperFrames composition, `index.html`, from `scenes.html` and the timing |
+| `npm run check -- <folder>` | HyperFrames' own check: lint, layout, motion, caption contrast |
+| `npm run preview -- <folder>` | The HyperFrames studio, to scrub through it |
+| `npm run render -- <folder>` | `out/<name>.mp4`, the name taken from the folder's path (`--draft` for a fast pass) |
+| `npm run make -- <folder>` | Voice, build, lint and render |
+| `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` |
+| `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
+| `npm test` | No Kokoro needed; CI runs only this |
+
+A change to `bin/`, `kit/` or `template/` is validated by running `make` and `review` on
+`videos/how-it-works` and looking at the contact sheets.
+
+## A video's files
+
+| File | What it is |
+|---|---|
+| `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. A sentence ends at `.`, `!` or `?` and a space |
+| `scenes.html` | One `<section data-scene="01-intro">` per script file, a `<style>` for the look, optionally a `<script>` |
+| `video.json` | `title`, `voice`, `speed`, `say`, `audience`, `critics`; optional `lead`, `gap`, `tail` (seconds of pause) |
+| `sources.md` | Every claim the video makes, with its source |
+| `critics.md` | This video's own bar, applied by every critic |
+| `brief.md` | A decision video's handoff from the agent that asked for it |
+| `REVIEW.md` | The critic rounds |
+
+**Cues.** An element with `data-cue` arrives when the voice reaches that word:
+`data-cue="Kokoro"` (the first word starting "Kokoro" in that scene), `data-cue="model#2"`
+(the second), `data-cue="+0.3"` (0.3 s into the scene). `data-anim` is `up` (default), `fade`,
+`pop`, `left`, `right` or `grow`. The build stops on a word the scene never says, and warns
+when a bare word occurs more than once. A `<script>` in `scenes.html` runs after the shared
+timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-at`.
+
+**Voice.** `af_heart` is the default; `npx hyperframes tts --list` shows the rest. Non-English
+voices need `espeak-ng` system-wide. `say` maps a written word to what Kokoro is told to say
+(`"HyperFrames": "Hyper Frames"`); captions keep the written form. At speed 1.0 Kokoro reads
+near 190 words a minute, so most videos want about 0.85.
+
+## How the timing works
+
+Kokoro does not report word times, and a speech-recognition model to find them would be a
+second, larger download. So `bin/voice.mjs` voices each sentence on its own and places it on
+the track: a sentence's start is exact because we put it there. A word inside a sentence is
+placed by its share of the sentence's letters, close enough for a card to land on the word
+that names it. `bin/build.mjs` turns those times into `data-start` and `data-duration` on each
+scene and caption and `data-at` on each cued element; `kit/kit.js` is the shared GSAP timeline;
+HyperFrames renders the page frame by frame in headless Chrome and muxes in the narration.
+
+## Layout
+
+```
+bin/        voice, build, render, make, review, new, doctor, link-skills; lib.mjs is shared
+kit/        shell.html (canvas, captions, audio) and kit.js (the timeline), shared by every video
+skills/     explainer-video, critic-loop, tailor and the eight critics
+template/   what npm run new copies
+videos/     videos about this repo; how-it-works is the example
+docs/assets/  the README's images; the GIF is cut from out/how-it-works.mp4
+test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links
+local/      gitignored, per person (tailor skill)
+```
 
 ## Traps
 

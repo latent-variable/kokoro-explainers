@@ -21,9 +21,9 @@ commit the video is built from, plus the two tools it runs.
 | Change a sentence and only that sentence is voiced again (an edit; an insertion renumbers later takes) | `bin/voice.mjs` keeps a take whose text, voice and speed are unchanged (`.key` files). Inserting a sentence renumbers the takes after it, which re-voices those too |
 | After a one-time download, everything runs on your own machine | No network call in the pipeline once two things are downloaded: the Kokoro model (the first `doctor` run, about 340 MB) and, when HyperFrames finds no Chrome, a headless Chrome on the first render (`hyperframes browser ensure`, about 190 MB) |
 | The project is open source, on GitHub | `LICENSE` (MIT); public at github.com/latent-variable/shipshow |
-| To make your own, clone it and follow the setup in its README | `README.md`, *Set it up*: `npm install`, the Python venv with `requirements.txt`, `npm run doctor` |
+| To make your own, clone it and follow the setup in its README | `README.md`, *Set it up*: `npm install`, `npm run setup` (the Python venv with `requirements.txt`), `npm run doctor` |
 | Then run npm run new with a folder name | `npm run new -- videos/<name>` copies `template/` (`bin/new.mjs`) |
-| Write one text file per scene and a section for each in scenes.html, then run npm run make on it | `npm run make -- videos/<name>` (`bin/make.mjs`); `README.md`, *Make your own*: `script/01-intro.txt`, one per scene |
+| Write one text file per scene and a section for each in scenes.html, then run npm run make on it | `npm run make -- videos/<name>` (`bin/make.mjs`); `AGENTS.md`, *A video's files*: `script/01-intro.txt`, one per scene |
 
 ## Left out
 
