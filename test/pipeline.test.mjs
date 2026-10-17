@@ -136,3 +136,16 @@ test("the PRD and design docs exist, AGENTS.md names them, and every skill is in
   const skills = readdirSync(join(REPO, "skills")).filter((n) => existsSync(join(REPO, "skills", n, "SKILL.md")));
   assert.deepEqual(skills.filter((n) => !listed(n)), [], "skills missing from the AGENTS.md skills table");
 });
+
+test("check-excerpt accepts real lines, rejects a splice or a changed token, and flags a guard hidden in a gap", async () => {
+  const { checkExcerpt } = await import("../bin/check-excerpt.mjs");
+  const src = ["def add(doc):", "    if not search:", "        return", "    payload = {}", "    for f in fields:", "        payload[f] = 1", "    index(payload)", ""].join("\n");
+  assert.equal(checkExcerpt(src, "    payload = {}\n    for f in fields:\n", "4-5").ok, true);
+  assert.match(checkExcerpt(src, "    payload = {}\n    index(payload)\n").problems[0], /not consecutive/);
+  assert.match(checkExcerpt(src, "    payload = []\n").problems[0], /not consecutive|segment 1/);
+  assert.match(checkExcerpt(src, "    index(payload)\n    payload = {}\n").problems[0], /out of order|not consecutive/);
+  const trimmed = checkExcerpt(src, "def add(doc):\n    …\n    payload = {}\n");
+  assert.equal(trimmed.ok, true);
+  assert.deepEqual(trimmed.gaps[0].flags.sort(), ["if", "not", "return"]);
+  assert.match(checkExcerpt(src, "payload = {}\n", "3-3").problems[0], /differ/);
+});
