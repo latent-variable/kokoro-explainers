@@ -1,0 +1,1 @@
+Your agents write code faster than you can read it. Each pull request waits on you. Keeping up is a shit show. ShipShow turns each change into a short video you can watch.

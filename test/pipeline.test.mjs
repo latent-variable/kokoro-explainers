@@ -237,6 +237,31 @@ test("importance: the builder's call picks the preset; a person's explicit prese
   assert.match(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), bad], { encoding: "utf8" }).stderr, /importance is "urgent"/);
 });
 
+test("syllables: rough but steady, so pace is judged by ear, not by word length", async () => {
+  const { syllables } = await import("../bin/lib.mjs");
+  assert.deepEqual(["each", "pull", "request", "understanding", "the", "make", "voice", "API"].map(syllables), [1, 1, 2, 4, 1, 1, 1, 2]);
+  const per = (s) => s.split(" ").reduce((a, w) => a + syllables(w), 0) / s.split(" ").length;
+  assert.ok(per("Each pull request waits on you") < per("Oversight and understanding of abstractions"));
+});
+
+test("music bed: lower under the voice than in the gaps, and silent where it fades out", async () => {
+  const { musicBed } = await import("../bin/lib.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "kx-test-"));
+  // A steady stereo tone, 48 kHz, 2 s, looped to 6 s.
+  const rate = 48000, n = rate * 2, tone = new Int16Array(n * 2);
+  for (let i = 0; i < n; i++) tone[i * 2] = tone[i * 2 + 1] = Math.round(12000 * Math.sin((i / rate) * 2 * Math.PI * 220));
+  writeWav(join(dir, "tone.wav"), { rate, channels: 2, samples: tone });
+  const timing = { total: 6, scenes: [{ id: "a", start: 0, duration: 6, sentences: [{ text: "x", start: 3, duration: 1.5 }] }] };
+  assert.equal(musicBed(dir, { file: "tone.wav", volume: 0.5, duck: 0.2 }, timing), true);
+  const out = readWav(join(dir, "assets", "music.wav")).samples;
+  const peak = (a, b) => { let m = 0; for (let f = Math.floor(a * rate); f < b * rate; f++) m = Math.max(m, Math.abs(out[f * 2])); return m; };
+  const gap = peak(1.5, 2), speech = peak(3.5, 4);
+  assert.ok(speech < gap * 0.3, `under speech ${speech} should be about a fifth of the gap ${gap}`);
+  assert.ok(gap > 12000 * 0.5 * 0.9, "the gap plays at its volume");
+  assert.ok(peak(5.99, 6) < gap * 0.01, "faded out at the end");
+  assert.equal(musicBed(dir, { file: "missing.wav" }, timing), false);
+});
+
 // The omnivoice engine. The model itself needs a Mac and about 2 GB, so a fake worker stands in for
 // bin/omnivoice.py: it writes a one-second tone per job and records the job file it was given.
 const fakeLocal = () => {

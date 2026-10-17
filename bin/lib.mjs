@@ -1,5 +1,5 @@
 // Shared plumbing for the bin/ scripts: paths, the video's config, sentence splitting, WAV I/O.
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
@@ -26,6 +26,18 @@ export function videoDir(arg) {
 // BASE_PACE, about BASE_WPM words a minute (measured on the how-it-works video, 2026-10-17).
 export const BASE_PACE = 0.85;
 export const BASE_WPM = 160;
+// Syllables a minute is the pace a listener hears; words a minute runs high on short words
+// ("Each pull request waits on you" reads fast by words, not by ear). At speed 1, ShipShow
+// speaks about 210 a minute (how-it-works, measured 2026-10-17).
+export const BASE_SPM = 210;
+
+/** Syllables in a word, by vowel groups: rough, and the same rough on every scene. */
+export function syllables(word) {
+  const w = word.toLowerCase().replace(/[^a-z]/g, "");
+  if (!w) return 0;
+  const groups = w.replace(/e$/, "").match(/[aeiouy]+/g);
+  return Math.max(1, groups ? groups.length : 1);
+}
 export const DEFAULT_SPEED = 1.25;
 
 /** A --name value from the command line: `--speed 1.4` or `--speed=1.4`; undefined if absent. */
@@ -66,11 +78,11 @@ export function themeCss(name, videoFolder) {
 }
 
 /** video.json "flair": a video's own motion, over its theme's. */
-export const FLAIR = { transition: ["none", "fade", "rise", "slide", "zoom", "wipe"], entrance: null, camera: ["none", "push"], ambient: ["none", "glow", "grid", "dots"], "ambient-strength": null, progress: ["on", "off"] };
+export const FLAIR = { transition: ["none", "fade", "rise", "slide", "zoom", "wipe", "flash"], entrance: null, camera: ["none", "push"], ambient: ["none", "glow", "grid", "dots", "stars"], "ambient-strength": null, progress: ["on", "off"] };
 export function flairCss(flair = {}) {
   const lines = Object.entries(flair).map(([k, v]) => {
     if (!(k in FLAIR)) die(`video.json flair has "${k}"; it takes ${Object.keys(FLAIR).join(", ")}`);
-    if (FLAIR[k] && !FLAIR[k].includes(String(v))) die(`video.json flair ${k} is "${v}"; it takes ${FLAIR[k].join(", ")}`);
+    if (FLAIR[k] && !String(v).split(/\s+/).every((x) => FLAIR[k].includes(x))) die(`video.json flair ${k} is "${v}"; it takes ${FLAIR[k].join(", ")}`);
     return `  --${k}: ${v};`;
   });
   return lines.length ? `#root {\n${lines.join("\n")}\n}` : "";
@@ -317,4 +329,47 @@ export function reviewPlan(cfg, argv = process.argv) {
     video: cfg.title, kind, importance: cfg.importance || null, importanceReason: cfg.importance_reason || null, presetFrom, preset, ...plan, taste, floor, overrides, floorAdded: overrides.includes("critics") ? added : [],
     estimate: { firstRound: r(first.min), firstRoundTokens: Math.round(first.k), worst: r(worst.min), worstTokens: Math.round(worst.k) },
   };
+}
+
+/** video.json "music": {"file", "volume", "duck"}: a bed under the narration, lowered while
+ *  the voice speaks. Writes <video>/assets/music.wav and returns true, or warns and returns
+ *  false when the file is not there (music is often local: a teammate may not have it).
+ *  "file" is relative to the video's folder, then the repo; "volume" is the bed's level in
+ *  the gaps (0 to 1, default 0.22) and "duck" what it is multiplied by under speech (0.35). */
+export function musicBed(dir, music, timing) {
+  if (!music) return false;
+  const spec = typeof music === "string" ? { file: music } : music;
+  const file = [join(dir, spec.file), join(REPO, spec.file), spec.file].find((p) => p && existsSync(p));
+  if (!file) {
+    console.warn(`music: ${spec.file} is not on this machine; building without a music bed`);
+    return false;
+  }
+  const volume = spec.volume ?? 0.22, duck = spec.duck ?? 0.35, rate = 48000;
+  const tmp = join(dir, "assets", "music-source.wav");
+  mkdirSync(join(dir, "assets"), { recursive: true });
+  const r = spawnSync("ffmpeg", ["-v", "error", "-y", "-i", file, "-ac", "2", "-ar", String(rate), "-c:a", "pcm_s16le", tmp]);
+  if (r.error?.code === "ENOENT") die("music: ffmpeg is not installed; npm run doctor says how to get it");
+  if (r.status !== 0) die(`music: ffmpeg could not read ${file}\n${r.stderr}`);
+  const src = readWav(tmp).samples, frames = Math.ceil(timing.total * rate), out = new Int16Array(frames * 2);
+  // Where the voice speaks, padded a little, so the bed dips before a sentence and returns after.
+  const spans = timing.scenes.flatMap((s) => s.sentences.map((x) => [x.start - 0.15, x.start + x.duration + 0.25]));
+  const ramp = 0.3, srcFrames = src.length / 2;
+  let si = 0;
+  for (let f = 0; f < frames; f++) {
+    const t = f / rate;
+    while (si < spans.length && spans[si][1] + ramp < t) si++;
+    // Distance into the nearest speech span, as a 0..1 blend toward the ducked level.
+    let speech = 0;
+    for (let k = si; k < spans.length && spans[k][0] - ramp <= t; k++) {
+      const [a, b] = spans[k];
+      speech = Math.max(speech, t < a ? 1 - (a - t) / ramp : t > b ? 1 - (t - b) / ramp : 1);
+    }
+    let gain = volume * (1 - speech * (1 - duck));
+    gain *= Math.min(1, t / 0.8, (timing.total - t) / 2.5);   // fade in, and out over the end
+    const s = (f % srcFrames) * 2;                                 // loop a shorter track
+    out[f * 2] = Math.round(src[s] * gain);
+    out[f * 2 + 1] = Math.round(src[s + 1] * gain);
+  }
+  writeWav(join(dir, "assets", "music.wav"), { rate, channels: 2, samples: out });
+  return true;
 }
