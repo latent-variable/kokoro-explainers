@@ -10,6 +10,10 @@ description: >
 
 # Decision brief
 
+> **Needs a clone of the ShipShow repo**, set up with `npm install` (this skill uses `bin/`, `npm run` and
+> `AGENTS.md`). Outside one, say so and stop; the plugin alone ships the understanding skills
+> (`code-context`, `change-context`, `evidence-standard`).
+
 A decision video is made by an agent that has *not* absorbed your reasoning, so it can see the
 options as the person will. The brief is how you hand over the question. It states what you know.
 It does not script the video, and it is not ground truth: the code is. `critic-decision` checks

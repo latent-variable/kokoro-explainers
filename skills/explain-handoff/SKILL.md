@@ -9,6 +9,10 @@ description: >
 
 # Explain handoff
 
+> **Needs a clone of the ShipShow repo**, set up with `npm install` (this skill uses `bin/`, `npm run` and
+> `AGENTS.md`). Outside one, say so and stop; the plugin alone ships the understanding skills
+> (`code-context`, `change-context`, `evidence-standard`).
+
 The video is not the end; the person acting on it is. The hand-back says where the video is and what
 a viewer who skips it should know, without asking them to trust you: the sources and the review are
 there to check. Return it as a message, not a new file in the repo.
@@ -18,8 +22,8 @@ there to check. Return it as a message, not a new file in the repo.
 `Status: ready` only when **every critic in the video's review plan has passed** (`npm run critics --
 <folder>` lists them) and `REVIEW.md` says so. The plan always includes the floor: `critic-accuracy`,
 `critic-decision` for a decision video, and `critic-grounding` for a video that shows code, output or
-captures. A critic the person's own plan left out is listed as `not in the plan (<who chose it>)`; a
-floor critic is never left out. A critic `not run` or `declined` makes the hand-back `not ready`.
+captures. A critic the person's plan (`review.critics`) left out is listed as `not in the plan (<who chose it>)`; a
+floor critic is never left out, because the plan adds it back. A critic `not run` or `declined` makes the hand-back `not ready`.
 
 ```
 Status: ready
@@ -32,7 +36,7 @@ Overruled claims the pick's reason depended on: <the brief's `Pick rests on` IDs
 Brief vs code: <every brief claim ID (`C`) appears once: confirmed ..; contradicted ..; partly ..; not checked ..; then what you added, by `X` ID: costs ..; options added or dropped ..; brief faults ..>
 Checked: <every required critic: passed | not run | declined | removed from video.json by <who>, with the REVIEW.md path and round>
 Unsure: <open questions from sources.md; assumptions and "by when" claims not checked; what you did not read or run>
-Read at: repo HEAD <sha> / upstream <sha | none> / patch or hash <h | none>   Run: <yes | no>   Sources: <sources.md path>   Stored: <path; "not committed" for local/>
+Read at: repo HEAD <sha> / upstream <sha | none> / replayed history <shas | none> / patch or hash <h | none>   Run: <yes | no>   Sources: <sources.md path>   Stored: <path; "not committed" for local/>
 ```
 
 `Run: yes (<the [ran] line IDs>)` means behaviour at the pin was observed inside `evidence-standard`'s

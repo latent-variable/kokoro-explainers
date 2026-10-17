@@ -566,7 +566,7 @@ test("capture: record keeps the command's own exit code, verify catches a change
   assert.equal(node("record", dir, join(dir, "nope", "c.txt"), "--", "true").status, 2);
 });
 
-test("the sample application behaves as its README says: its tests pass, one known failure is a todo, and the scenario overspends", () => {
+test("the sample application behaves as its README says: its tests pass, two known failures are todos, and the scenario overspends", () => {
   const sample = join(REPO, "sample_application");
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT; // a child started under this runner would otherwise print nothing readable
@@ -748,4 +748,222 @@ test("python: 3.10 to 3.13 are supported, 3.14 and 3.9 are not, and setup picks 
   const versions = { "python3.13": null, "python3.12": "3.12", python3: "3.14" };
   assert.deepEqual(pickPython(["python3.13", "python3.12", "python3"], (c) => versions[c] ?? null), { cmd: "python3.12", version: "3.12" });
   assert.equal(pickPython(["python3"], () => "3.14"), null, "a machine with only 3.14 gets no interpreter, not a failing install");
+});
+
+test("capture: a sandboxed command cannot redirect the host-side write with a symlink, and a command that never ran is not recorded", { skip: process.platform !== "darwin" && "record needs the macOS sandbox" }, () => {
+  const cap = join(REPO, "skills", "evidence-standard", "scripts", "capture.mjs");
+  const node = (...a) => spawnSync(process.execPath, [cap, ...a], { encoding: "utf8" });
+  const dir = mkdtempSync(join(tmpdir(), "kx-cap2-"));
+  const victim = join(mkdtempSync(join(tmpdir(), "kx-victim-")), "victim.txt");
+  writeFileSync(victim, "VICTIM ORIGINAL\n");
+  // the command plants a symlink at the capture path and at its sidecar path, inside the scratch directory
+  const file = join(dir, "out.txt");
+  const r = node("record", dir, file, "--", "/bin/sh", "-c", `ln -s '${victim}' out.txt; ln -s '${victim}' out.txt.sha256; echo pwned`);
+  assert.equal(readFileSync(victim, "utf8"), "VICTIM ORIGINAL\n", "the capture write followed a planted symlink");
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(readFileSync(file, "utf8").includes("pwned"), true, "the capture file was replaced by a regular file");
+  assert.equal(node("verify", file).status, 0);
+  // a directory swapped for a symlink while the command ran: refused, nothing written through it
+  const sub = join(dir, "sub");
+  mkdirSync(sub);
+  const outside = mkdtempSync(join(tmpdir(), "kx-outside-"));
+  const swapped = node("record", dir, join(sub, "c.txt"), "--", "/bin/sh", "-c", `rmdir sub && ln -s '${outside}' sub`);
+  assert.equal(swapped.status, 2, swapped.stdout + swapped.stderr);
+  assert.deepEqual(readdirSync(outside), [], "something was written through the swapped directory");
+  // a command that is not there, one that starts with a dash, or one that kills its shell: exit 2, no capture
+  const none = join(dir, "none.txt");
+  assert.equal(node("record", dir, none, "--", "/no/such/command").status, 2);
+  assert.equal(node("record", dir, none, "--", "-x").status, 2);
+  assert.equal(existsSync(none), false, "a capture was written for a command that never ran");
+  // the sandbox denies signalling other processes, so a command cannot kill its own shell to hide its status:
+  // it fails with its own exit code, which is recorded as it is
+  assert.equal(node("record", dir, none, "--", "/bin/sh", "-c", "kill -9 $PPID").status, 0);
+  assert.match(readFileSync(none, "utf8"), /^# exit: 1$/m);
+});
+
+test("sandbox-run: no controlling terminal, so a command cannot type into the caller's shell; other processes cannot be signalled; risky scratch directories are refused", { skip: process.platform !== "darwin" && "sandbox-exec is macOS only" }, () => {
+  const sbx = join(REPO, "skills", "evidence-standard", "scripts", "sandbox-run.sh");
+  const dir = mkdtempSync(join(tmpdir(), "kx-sbx-"));
+  const probe = join(dir, "sti.py");
+  writeFileSync(probe, "import fcntl, os, sys, termios\ntry:\n    fd = os.open('/dev/tty', os.O_RDWR)\n    fcntl.ioctl(fd, termios.TIOCSTI, b'x')\n    print('INJECTED'); sys.exit(0)\nexcept OSError as e:\n    print('blocked:', e.strerror); sys.exit(3)\n");
+  const underPty = (...cmd) => spawnSync("python3", ["-c", "import pty, sys; sys.exit(pty.spawn(sys.argv[1:]) >> 8)", ...cmd], { encoding: "utf8" });
+  const control = underPty("python3", probe); // the same probe, unsandboxed, under a pty: this is what the fix prevents
+  assert.match(control.stdout, /INJECTED/, "the control did not inject, so this test proves nothing here");
+  const boxed = underPty(sbx, dir, "python3", probe);
+  assert.doesNotMatch(boxed.stdout, /INJECTED/, "a sandboxed command typed into the controlling terminal");
+  assert.equal(boxed.status, 3);
+  // another process cannot be signalled
+  assert.notEqual(spawnSync(sbx, [dir, "sh", "-c", `kill -0 ${process.pid}`], { encoding: "utf8" }).status, 0, "a sandboxed command could signal another process");
+  // refused scratch directories, each without creating a stray .sandbox-home
+  const home = spawnSync("sh", ["-c", "dscl . -read /Users/$(id -un) NFSHomeDirectory | awk '{print $2}'"], { encoding: "utf8" }).stdout.trim();
+  for (const bad of [join(home, ".ssh"), join(home, "Library"), join(home, "Library", "LaunchAgents"), "/Users/Shared", `/System/Volumes/Data${home}`]) {
+    if (!existsSync(bad)) continue;
+    assert.equal(spawnSync(sbx, [bad, "true"], { encoding: "utf8" }).status, 2, `${bad} must be refused`);
+    assert.equal(existsSync(join(bad, ".sandbox-home")), false, `${bad} got a stray .sandbox-home`);
+  }
+  assert.equal(spawnSync(sbx, [dir, "-p", "x"], { encoding: "utf8" }).status, 2, "a command starting with a dash is refused");
+  mkdirSync(join(dir, "-x"));
+  assert.equal(spawnSync(sbx, ["-x", "true"], { cwd: dir, encoding: "utf8" }).status, 0, "a scratch directory named -x works");
+});
+
+test("verify-vendored: repo-local git settings cannot hide an edit (fsmonitor, submodule ignore), a hook is never run, and a linked worktree works", () => {
+  const script = join(REPO, "skills", "evidence-standard", "scripts", "verify-vendored.sh");
+  const git = (cwd, ...a) => spawnSync("git", ["-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "protocol.file.allow=always", ...a], { cwd, encoding: "utf8" });
+  const repo = mkdtempSync(join(tmpdir(), "kx-vend4-"));
+  git(repo, "init", "-q");
+  const sub = mkdtempSync(join(tmpdir(), "kx-sub-"));
+  git(sub, "init", "-q");
+  writeFileSync(join(sub, "f.txt"), "sub\n");
+  git(sub, "add", "-A");
+  git(sub, "commit", "-q", "-m", "sub");
+  mkdirSync(join(repo, "v"));
+  writeFileSync(join(repo, "v", "a.py"), "a = 1\n");
+  git(repo, "add", "-A");
+  git(repo, "submodule", "add", "-q", sub, "v/sm");
+  git(repo, "commit", "-q", "-m", "vendor v");
+  const tree = git(repo, "rev-parse", "HEAD:v").stdout.trim();
+  const run = (cwd = repo) => spawnSync("sh", [script, "v", tree], { cwd, encoding: "utf8" });
+  assert.equal(run().status, 0, run().stdout);
+  // a core.fsmonitor hook: it must never run, and an edit must not be hidden by it
+  const marker = join(repo, "hook-ran");
+  git(repo, "config", "core.fsmonitor", `touch '${marker}'; true`);
+  assert.equal(run().status, 0);
+  assert.equal(existsSync(marker), false, "the fsmonitor hook ran");
+  git(repo, "config", "--unset", "core.fsmonitor");
+  // a submodule marked ignore=all hides an edit inside it from plain git status
+  git(repo, "config", "submodule.v/sm.ignore", "all");
+  writeFileSync(join(repo, "v", "sm", "f.txt"), "EVIL\n");
+  assert.equal(git(repo, "status", "--porcelain").stdout.includes("v/sm"), false, "the setup did not hide the edit from plain git status");
+  assert.match(run().stdout, /DIRTY/);
+  assert.equal(run().status, 1);
+  // a linked worktree has no objects of its own: the check must still work from it
+  const repo2 = mkdtempSync(join(tmpdir(), "kx-vend5-"));
+  git(repo2, "init", "-q");
+  mkdirSync(join(repo2, "v"));
+  writeFileSync(join(repo2, "v", "a.py"), "a = 1\n");
+  git(repo2, "add", "-A");
+  git(repo2, "commit", "-q", "-m", "vendor v");
+  const tree2 = git(repo2, "rev-parse", "HEAD:v").stdout.trim();
+  const wt = join(mkdtempSync(join(tmpdir(), "kx-wt-")), "wt");
+  git(repo2, "worktree", "add", "-q", wt);
+  assert.equal(spawnSync("sh", [script, "v", tree2], { cwd: wt, encoding: "utf8" }).status, 0);
+});
+
+test("round six small fixes: hyphenated numbers are two words, flags make code, bad input is refused, usage totals stay numbers, setup never recreates a wrong venv", async () => {
+  const { words, readingSeconds, looksLikeCode, readingQueue } = await import("../bin/measure.mjs");
+  assert.equal(words("eighty-one"), 2);
+  assert.equal(looksLikeCode("npm install --save-dev typescript"), true);
+  assert.equal(looksLikeCode("$ npm test"), true);
+  assert.equal(looksLikeCode("We use tools, e.g. a linter, and it works."), false, "e.g. does not make prose code");
+  assert.ok(readingSeconds("npm install --save-dev typescript") >= 2.5);
+  assert.throws(() => readingQueue([{ at: Number.NaN, text: "x" }], 10), /finite/);
+  assert.throws(() => readingQueue([{ at: 1, text: undefined }], 10), /string/);
+  const { parseRanges } = await import("../skills/critic-grounding/scripts/excerpt.mjs");
+  assert.throws(() => parseRanges("1-2,"), /empty entry/);
+  assert.throws(() => parseRanges("1-2,,3"), /empty entry/);
+  const dir = mkdtempSync(join(tmpdir(), "kx-test-"));
+  writeFileSync(join(dir, "s.py"), "a = 1\n");
+  writeFileSync(join(dir, "e.txt"), "a = 1\n");
+  const check = join(REPO, "skills", "critic-grounding", "scripts", "check-excerpt.mjs");
+  assert.equal(spawnSync(process.execPath, [check, join(dir, "s.py"), join(dir, "e.txt"), "--ranges", "1-1", "--ranges", "1-1"], { encoding: "utf8" }).status, 2, "--ranges twice");
+  // usage: a string count is a bad record counted as zero, never concatenated; a garbage timestamp is zero seconds; -j is not a session id
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  const rec = (id, usage, ts) => JSON.stringify({ type: "assistant", timestamp: ts, message: { id, model: "m", usage } });
+  writeFileSync(join(root, "s1.jsonl"), [rec("a", { input_tokens: "7", output_tokens: 5, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }, "garbage"), rec("b", { input_tokens: 1, output_tokens: 2, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }, "2026-10-17T10:00:00Z")].join("\n"));
+  const u = spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs"), join(root, "s1.jsonl"), "--json"], { encoding: "utf8" });
+  assert.equal(u.status, 0, u.stderr);
+  const total = JSON.parse(u.stdout).total;
+  assert.equal(typeof total.input, "number");
+  assert.equal(total.input, 1, "the string count was treated as zero, not added as text");
+  assert.match(u.stderr, /could not be read/);
+  assert.equal(spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs"), "-j"], { encoding: "utf8" }).status, 2);
+  // python / setup: an out-of-range interpreter is not accepted, and pythonVersion refuses an empty command
+  const { pythonVersion } = await import("../bin/python.mjs");
+  assert.equal(pythonVersion(""), null);
+  assert.equal(pythonVersion(undefined), null);
+});
+
+test("packet: a count or pulse is photographed after it finishes, a highlight or a line inside a shown block adds no reading, and a ss-code block puts critic-grounding on the floor", async () => {
+  const { settleFor, newReadingText, readingQueue } = await import("../bin/measure.mjs");
+  assert.equal(settleFor("count"), 1.4);
+  assert.equal(settleFor("pulse"), 1.4);
+  assert.equal(settleFor("up"), 0.8);
+  assert.equal(settleFor(""), 0.8);
+  const block = { text: "const total = a + b; return total;", anim: "up" };
+  assert.equal(newReadingText({ text: "return total;", anim: "highlight" }, [block]), "", "a highlight is not new reading");
+  assert.equal(newReadingText({ text: "return total;", anim: "up" }, [block]), "", "a line inside an earlier block is already counted there");
+  assert.equal(newReadingText({ text: "something else", anim: "up" }, [block]), "something else");
+  // a block, then each of its lines cued as it is named: only the block is read, so nothing is late
+  const lines = ["const total = a + b;", "return total;"];
+  const items = [{ at: 10, text: block.text }, ...lines.map((text, i) => ({ at: 12 + i, text: newReadingText({ text, anim: "highlight" }, [block]) }))];
+  assert.equal(readingQueue(items, 40).some((x) => x.late), false);
+  // ss-code and the floor
+  const { config, reviewPlan } = await import("../bin/lib.mjs");
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "demo");
+  cpSync(join(REPO, "template"), dir, { recursive: true });
+  writeFileSync(join(dir, "scenes.html"), '<section data-scene="01-intro"><div class="ss-code">x = 1</div></section>');
+  assert.equal(config(dir, []).shows_code, true, "a div with class ss-code is shown code, not just a pre or code element");
+  assert.ok(reviewPlan(config(dir, []), []).critics.includes("critic-grounding"));
+  assert.match(readFileSync(join(REPO, "kit", "base.css"), "utf8"), /\.ss-code \{[^}]*white-space: pre[^}]*\}/, ".ss-code must keep indentation");
+  assert.match(readFileSync(join(REPO, "kit", "base.css"), "utf8"), /\.ss-code \{[^}]*font-variant-ligatures: none/, ".ss-code must not draw >= or === as one glyph");
+});
+
+test("extract-excerpts: the text a viewer sees, without highlight spans or entities, ready for check-excerpt", () => {
+  const dir = mkdtempSync(join(tmpdir(), "kx-test-"));
+  const html = `<section data-scene="01-intro"><h1>x</h1></section>
+<section data-scene="03-batching">
+  <pre class="ss-code" data-source="src/ledger.mjs" data-ranges="2-3,5-5">
+<span class="k">export</span> function f(a, b) {
+  if (a &gt;= b) { return a &amp;&amp; b; }
+</span>…
+  return "ok";
+}</pre>
+  <div class="ss-code"><div>nested</div> line two</div>
+</section>`;
+  writeFileSync(join(dir, "scenes.html"), html);
+  const out = join(dir, "out");
+  const run = spawnSync(process.execPath, [join(REPO, "skills", "critic-grounding", "scripts", "extract-excerpts.mjs"), join(dir, "scenes.html"), out], { encoding: "utf8" });
+  assert.equal(run.status, 0, run.stderr);
+  const list = JSON.parse(run.stdout);
+  assert.equal(list.length, 2);
+  assert.deepEqual([list[0].scene, list[0].source, list[0].ranges], ["03-batching", "src/ledger.mjs", "2-3,5-5"]);
+  assert.equal(readFileSync(list[0].file, "utf8"), 'export function f(a, b) {\n  if (a >= b) { return a && b; }\n…\n  return "ok";\n}');
+  assert.equal(readFileSync(list[1].file, "utf8"), "nested line two");
+  assert.match(list[0].check, /check-excerpt\.mjs .* --ranges 2-3,5-5/);
+  // no code shown: exit 1; bad usage: exit 2
+  writeFileSync(join(dir, "none.html"), "<section data-scene=\"01\"><p>hi</p></section>");
+  assert.equal(spawnSync(process.execPath, [join(REPO, "skills", "critic-grounding", "scripts", "extract-excerpts.mjs"), join(dir, "none.html"), join(dir, "o2")], { encoding: "utf8" }).status, 1);
+  assert.equal(spawnSync(process.execPath, [join(REPO, "skills", "critic-grounding", "scripts", "extract-excerpts.mjs")], { encoding: "utf8" }).status, 2);
+});
+
+test("every skill and the critic agent has well-formed front matter: `claude plugin validate` only warns on a broken one", () => {
+  const front = (rel) => {
+    const text = readFileSync(join(REPO, rel), "utf8");
+    const m = text.match(/^---\n([\s\S]*?)\n---\n/);
+    assert.ok(m, `${rel} has no front matter`);
+    const get = (k) => (m[1].match(new RegExp(`^${k}:\\s*(.*)$`, "m")) || [])[1];
+    return { text: m[1], name: get("name"), folded: new RegExp(`^${"description"}:\\s*>`, "m").test(m[1]), desc: get("description") };
+  };
+  const names = readdirSync(join(REPO, "skills")).filter((n) => existsSync(join(REPO, "skills", n, "SKILL.md")));
+  for (const n of names) {
+    const f = front(`skills/${n}/SKILL.md`);
+    assert.equal(f.name, n, `skills/${n}/SKILL.md: name must equal the folder name`);
+    assert.match(f.name, /^[a-z0-9-]+$/, `${n}: name must be lower-case letters, digits and hyphens`);
+    const body = f.text.split("\n").slice(f.text.split("\n").findIndex((l) => l.startsWith("description:")) + 1).join(" ").trim();
+    assert.ok((f.folded ? body : f.desc || "").length >= 40, `skills/${n}/SKILL.md: the description is missing or tiny`);
+    assert.ok(readFileSync(join(REPO, "skills", n, "SKILL.md"), "utf8").split("\n").length < 500, `skills/${n}/SKILL.md is over 500 lines`);
+  }
+  const a = front("agents/critic.md");
+  assert.equal(a.name, "critic");
+  assert.match(a.text, /^tools:\s*\[.*"Skill".*\]/m, "agents/critic.md must list the Skill tool, which it needs to load a critic skill");
+  assert.match(a.text, /^description:\s*\S/m);
+});
+
+test("critics: a video still carrying the template's placeholder audience is warned about", () => {
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "demo");
+  cpSync(join(REPO, "template"), dir, { recursive: true });
+  const warn = spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), dir], { encoding: "utf8" });
+  assert.match(warn.stderr, /placeholder audience/);
+  writeFileSync(join(dir, "video.json"), JSON.stringify({ ...JSON.parse(readFileSync(join(dir, "video.json"), "utf8")), audience: "A developer who manages coding agents and has to explain an overspend to Finance." }));
+  assert.doesNotMatch(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), dir], { encoding: "utf8" }).stderr, /placeholder audience/);
 });

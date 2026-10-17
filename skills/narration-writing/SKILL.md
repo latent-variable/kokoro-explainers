@@ -9,6 +9,10 @@ description: >
 
 # Narration writing
 
+> **Needs a clone of the ShipShow repo**, set up with `npm install` (this skill uses `bin/`, `npm run` and
+> `AGENTS.md`). Outside one, say so and stop; the plugin alone ships the understanding skills
+> (`code-context`, `change-context`, `evidence-standard`).
+
 The script is read aloud once, at a fixed pace, with no rewind. A sentence that reads well
 can be hard to hear. Write for the ear, then check it against the clock.
 
@@ -18,7 +22,7 @@ can be hard to hear. Write for the ear, then check it against the clock.
   one is voiced on its own, so a long sentence puts its cues at an estimate.
 - **Write for the person's speed.** `video.json`, `local/config.json` or `--speed` sets it (1.25 by
   default, a multiplier on a base of about 160 words a minute), and `critic-pacing` judges each scene
-  against about 160 times the speed. At 1.25 a 30 second scene holds about 100 words. The packet's rate is
+  against about 160 times the speed. At 1.25 a 30 second scene holds about 90 words once the pauses between sentences and scenes are counted. The packet's rate is
   speech-only and the speed is not yours to change, so a scene that is off target is fixed with fewer or
   plainer words: digits, identifiers and long clauses read slowly; short plain sentences read at the target.
   Do not pad to slow a scene or cram to speed one up.
@@ -42,6 +46,8 @@ can be hard to hear. Write for the ear, then check it against the clock.
   the packet's word count use the written text. Use it for one-meaning words, never for a name that
   appears inside a path or that begins a longer phrase in the same script (`index` also rewrites
   `the index route` and `index.html`).
+- **Cue early in the sentence, not on its last word**: an element cued on the word that ends a scene has
+  about a second left on screen, which the packet flags as short.
 - **A cue is placed on a word.** `data-cue` matches the start of a spoken word across the whole
   scene, not one sentence, so `follow` also matches `follower` and `followed`. Use `word#n` or a
   distinctive word; the build warns when a bare word occurs twice in its scene. Cue a literal on a

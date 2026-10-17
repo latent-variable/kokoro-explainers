@@ -76,9 +76,12 @@ the work, not paperwork after it:
 | `docs/DESIGN.md` | How it fits together, the decision log, observable behaviour, how the design was tested | You make a design decision, change how something behaves, reverse an earlier choice, or learn a trap |
 
 **Update them in the same change as the code, skill or doc that moved them**, before you commit.
-A change to `bin/`, `kit/`, `template/`, a skill, the critics, the plugin layout, CI, `package.json`
-or the README that leaves both files without a real change needs `docs: no change - <reason>` (a reason
-of ten characters or more) in the PR title or the last commit message.
+A change to `bin/`, `kit/`, `template/`, `themes/`, a skill, the critics, `agents/`, `test/`, `sample_application/`,
+the plugin layout, CI, `package.json`, the lockfile, `requirements.txt`, the README, `AGENTS.md` or `CLAUDE.md`
+that leaves both files without a substantive change (at least 40 characters of added text; whitespace, a
+punctuation edit or the review date do not count) needs `docs: no change - <reason>` (a reason of ten characters
+or more) in the PR title or the last non-merge commit message. The text added may be unrelated to the change:
+the rule makes a stale number loud, not a stale claim, so read the docs you touch.
 
 - A new decision is a new entry at the end of the log: number, date, decision, why, what it
   costs. Never rewrite a past entry; supersede it with a new one that names it.
@@ -125,7 +128,7 @@ render downloads a headless Chrome if HyperFrames finds none (about 190 MB).
 | `npm run critics -- <folder>` | The video's critic plan: critics, models, rounds, severity, and a rough time and token estimate (`--preset`, `--rounds`, `--until`, `--model`, `--final`, `--frames`, `--rerun`, `--critics`, `--json`) |
 | `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
 | `npm run usage` | Tokens and context per agent for the newest Claude Code session of this repo, subagents included (`-- <session id>` for another, `-- --json` for data); read from `~/.claude/projects/`, or from `CLAUDE_PROJECTS_DIR` |
-| `claude plugin validate .` | The plugin manifest, marketplace entry, skills and agent; run it after any change to them. One warning is expected (no `version`, on purpose: the commit SHA versions the plugin); `--strict` fails on it |
+| `claude plugin validate .` | The two manifests only (`plugin.json`, `marketplace.json`); `claude plugin validate skills` and `agents` look at components but only warn on a broken one, so a test parses every `SKILL.md` and `agents/critic.md` front matter. One warning is expected (no `version`, on purpose: the commit SHA versions the plugin); `--strict` fails on it |
 | `npm test` | No Kokoro needed; CI runs only this |
 
 A change to `bin/`, `kit/` or `template/` is validated by running `make` and `review` on
@@ -137,7 +140,7 @@ A change to `bin/`, `kit/` or `template/` is validated by running `make` and `re
 |---|---|
 | `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. A sentence ends at `.`, `!` or `?` and a space |
 | `scenes.html` | One `<section data-scene="01-intro">` per script file, a `<style>` for the look, optionally a `<script>` |
-| `video.json` | `title`, `kind` (`decision`, `feature`, `release`), `importance` and `importance_reason` (set by the builder), `voice`, `speed`, `theme`, `flair`, `review`, `say`, `audience`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
+| `video.json` | `title`, `kind` (`decision`, `feature`, `release`), `importance` and `importance_reason` (set by the builder), `shows_code` (puts `critic-grounding` on the floor; read from `scenes.html` when absent: a `<pre>`, `<code>` or `.ss-code` sets it, `false` overrides), `voice`, `speed`, `theme`, `flair`, `review`, `say`, `audience`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
 | `sources.md` | Every claim the video makes, with its source |
 | `critics.md` | This video's own bar, applied by every critic |
 | `brief.md` | A decision video's handoff from the agent that asked for it |

@@ -10,6 +10,10 @@ description: >
 
 # Glossary
 
+> **Needs a clone of the ShipShow repo**, set up with `npm install` (this skill uses `bin/`, `npm run` and
+> `AGENTS.md`). Outside one, say so and stop; the plugin alone ships the understanding skills
+> (`code-context`, `change-context`, `evidence-standard`).
+
 A viewer who hears "take" in one scene and "clip" in another assumes two things. The cost is
 real: `how-it-works` was caught calling one thing "take" and "sentence", and "render" for
 both a scene and a step. One name per concept is cheaper to settle before the script than

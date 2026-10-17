@@ -17,7 +17,7 @@ the person who asked for this demo:
   marketing optimization".
 
 The site says nothing about AI, agents or multimodal data, and `aperiam.vc/aperiam-ads` returned 404 on the
-same day. `amperium.ai`, named in this repository's README, does not resolve.
+same day. `amperium.ai`, which main's README named when this was written, does not resolve.
 
 **Name and domain.** The person who asked for this demo says the firm is now at `amperiu.vc`. On 2026-10-17
 neither `amperiu.vc` nor `amperium.vc` resolved from the machine that fetched the pages, so the quotes

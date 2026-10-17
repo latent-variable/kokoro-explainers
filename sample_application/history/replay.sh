@@ -4,7 +4,7 @@
 #   sh history/replay.sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd -P)
-dir=$(mktemp -d)
+dir=$(mktemp -d "${TMPDIR:-/tmp}/replay.XXXXXX")   # an explicit template: BSD mktemp ignores TMPDIR without one
 cd "$dir"
 git init -q .
 for p in "$here"/0*.patch; do

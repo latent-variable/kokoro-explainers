@@ -16,7 +16,8 @@ const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export function parseRanges(s) {
   if (!s) return null;
-  return s.split(",").map((p) => p.trim()).filter(Boolean).map((p) => {
+  return s.split(",").map((p) => p.trim()).map((p) => {
+    if (!p) throw new Error("bad range: an empty entry (a trailing or doubled comma)");
     const m = p.match(/^(\d+)(?:\s*-\s*(\d+))?$/);
     if (!m) throw new Error(`bad range "${p}": use 4 or 4-7, comma separated`);
     return [Number(m[1]), Number(m[2] ?? m[1])];

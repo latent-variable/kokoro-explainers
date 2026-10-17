@@ -106,7 +106,7 @@ export function config(dir, argv = process.argv) {
   // "shows_code" in video.json, or it is read from scenes.html (a <pre> or <code> element).
   if (cfg.shows_code === undefined) {
     const scenesHtml = join(dir, "scenes.html");
-    cfg.shows_code = existsSync(scenesHtml) && /<(pre|code)\b/i.test(readFileSync(scenesHtml, "utf8"));
+    cfg.shows_code = existsSync(scenesHtml) && /<(pre|code)\b|class=["'][^"']*\bss-code\b/i.test(readFileSync(scenesHtml, "utf8"));
   }
   return cfg;
 }

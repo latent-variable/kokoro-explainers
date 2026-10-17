@@ -28,6 +28,9 @@ they asked for, not a defect.
 - **minor:** a speed outside 0.8 to 1.6, said once, so the person knows it is unusual.
 - **major:** on-screen text marked "short" in the cue table: it leaves before a viewer could
   read it while listening.
+- **major:** text marked "late": reading in order, with text that lands together or soon after queued, the
+  viewer cannot finish it before its scene ends. (A highlight or a line cued inside a block already shown adds
+  no reading, so it is never late.)
 - **major:** a pause over 2 seconds anywhere but the very end, or a screen with no change
   (no cue, no new scene) for over 12 seconds while the voice goes on.
 - **major:** a scene over 40 seconds. It almost always holds two ideas.

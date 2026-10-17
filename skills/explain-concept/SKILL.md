@@ -10,6 +10,10 @@ description: >
 
 # Explain a concept
 
+> **Needs a clone of the ShipShow repo**, set up with `npm install` (this skill uses `bin/`, `npm run` and
+> `AGENTS.md`). Outside one, say so and stop; the plugin alone ships the understanding skills
+> (`code-context`, `change-context`, `evidence-standard`).
+
 The step between "we know the facts" and "we write the script". `code-context` says what is
 true; this decides what a particular person needs of it, and in what shape. A video that
 states every true thing teaches nothing. A `plan.md` in the video's folder is an optional aid; the
@@ -92,9 +96,9 @@ numbers on screen, and cue each as it is spoken, so the voice points at the scre
 be in `sources.md`, copied from the pin it names, never retyped (`explainer-video`, step 1; the critic
 checks it with a script).
 
-**What the kit renders natively:** entrances on a cue (`up`, `fade`, `pop`, `left`, `right`,
-`grow`). Exit, swap, arrows, line highlight and counters need a custom `<script>` in
-`scenes.html`; choose a picture the kit can make or plan the script.
+**What the kit renders natively:** entrances on a cue (`up`, `fade`, `pop`, `left`, `right`, `grow`, `zoom`,
+`blur`, `type`, `draw`, `count`, `highlight`, `stagger`, `pulse`; `AGENTS.md`). An exit, a swap and a connector
+between two boxes need a custom `<script>` in `scenes.html`; choose a picture the kit can make or plan the script.
 
 ## 4. Fit it to the format
 

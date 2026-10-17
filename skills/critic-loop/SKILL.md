@@ -11,6 +11,10 @@ description: >
 
 # Critic loop
 
+> **Needs a clone of the ShipShow repo**, set up with `npm install` (this skill uses `bin/`, `npm run` and
+> `AGENTS.md`). Outside one, say so and stop; the plugin alone ships the understanding skills
+> (`code-context`, `change-context`, `evidence-standard`).
+
 The agent that built a video is the worst judge of it: it knows what it meant, so it sees
 its intent instead of the frames. Its bias is to get it done. A critic's only bias is to
 find what is wrong. So the builder never reviews its own work, and every round uses fresh
@@ -114,7 +118,8 @@ Give each critic objectives and evidence, never a procedure. How it looks is its
 
 ```
 You are a critic for an explainer video. Review it yourself; do not delegate.
-Load and follow skills/<critic>/SKILL.md. Judge only what that skill covers.
+Load and follow the critic skill (skills/<critic>/SKILL.md; `shipshow:<critic>` in the plugin). Judge only
+what that skill covers.
 Evidence, in <video dir> (videos/<name>/ or local/videos/<name>/):
   review/packet.md      the script with timings, pauses, cues, reading times
   review/frames/        stills after each cue and at each scene end (contact-sheet*.jpg)

@@ -5,7 +5,7 @@ in the same change (`AGENTS.md`, *Docs that stay current*). How it is built and 
 [DESIGN.md](DESIGN.md). Dates are absolute. Status is one of **done**, **in progress**,
 **planned**, **open**.
 
-Last reviewed: 2026-10-17 (after red-team round 5 and the merge with main).
+Last reviewed: 2026-10-17 (after red-team round 6 and the merge with main).
 
 ## Problem
 
@@ -25,7 +25,7 @@ that is checked by other agents, so the person can ship code they understand. (`
 | **An explainer agent** | A grounded way to learn a code base and turn it into a video |
 | **A critic agent** | A bar to judge against, and evidence to judge with |
 
-The hackathon is for a company the README calls amperium.ai, which does not resolve. The firm we can
+The hackathon is for a company that main's README named amperium.ai (this branch removed the name), which does not resolve. The firm we can
 read is **Aperiam** (aperiam.vc): "the leading adtech and martech venture capital firm", with a
 ventures arm that backs adtech and martech startups, an advisory arm, an Ads arm doing "emerging tech
 orchestration for supply chain, commerce, and identity", and a marketing arm. The person who asked for
@@ -59,7 +59,7 @@ dropped (F19 stays open). The demo therefore speaks to an adtech company's pain:
 | ID | Requirement | Status |
 |---|---|---|
 | F5 | Turn evidenced facts into a plan: viewer, outcome, one idea per scene, the picture for each (`explain-concept`) | done, being hardened |
-| F6 | Write a script meant to be heard, with pace set from measurement (`narration-writing`) | done, being hardened |
+| F6 | Write a script meant to be heard, at the pace the person set (`speed`, F25) (`narration-writing`) | done, being hardened |
 | F7 | One name per concept across script, captions and scenes (`glossary`) | done, being hardened |
 | F8 | Make a video from plain text: Kokoro voice, HyperFrames scenes, captions, MP4 (`bin/`, `kit/`, `explainer-video`) | done |
 | F9 | A decision video: an agent hands a decision to a fresh explainer with options, costs and a pick (`decision-brief`) | done, being hardened |
@@ -104,10 +104,10 @@ dropped (F19 stays open). The demo therefore speaks to an adtech company's pain:
 | N3 | **Independence.** The builder never judges its own video; critics are fresh agents | `critic-loop` | done |
 | N4 | **Public-safe.** A private code base's details never reach this public repo | `local/` is gitignored; `evidence-standard`, *Where the result goes* | done |
 | N5 | **Safe to run.** Reading a code base does not change it, spend money or send data out | `evidence-standard`, `scripts/sandbox-run.sh` (DESIGN D9) | done on macOS, tested; refuses elsewhere; reads are not confined and it is not a defence against hostile code |
-| N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 22 skills, 7,869 characters (about 1,970 tokens) of names and descriptions; longest SKILL.md 201 lines (a test checks these figures against the tree) | done |
+| N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 22 skills, 7,869 characters (about 1,970 tokens) of names and descriptions; longest SKILL.md 206 lines (a test checks these figures against the tree) | done |
 | N7 | **Reproducible.** A voice take is cached by text, voice and speed; generated files are gitignored | `assets/voice/*.key` | done |
 | N8 | **Observable.** Token and context use is readable per agent | `npm run usage` | done |
-| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (33 tests; the sandbox and capture tests run on macOS only, the CI docs check only on a pull request) | done; 2 tests need `npm install` |
+| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (41 tests; the sandbox and capture tests run on macOS only, the CI docs check only on a pull request) | done; 3 tests need `npm install` (the build cue test, the bare-cue warning and the flair test) |
 | N10 | **Portable.** The pipeline is tested on macOS; CI runs the unit tests on Linux (`ubuntu-latest`) | `README.md`, `.github/workflows/ci.yml` | open: pipeline on Linux untried |
 | N11 | **Attribution.** The sample is original (its `SOURCE.md` says what it is and is not based on); Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its standard licence | `sample_application/SOURCE.md`, `README.md` | done |
 | N12 | **Reviewable.** Every change is a pull request with CI and an automated review; a rename changes the reviewer's allowlist | `AGENTS.md`, traps | done |
@@ -133,7 +133,7 @@ dropped (F19 stays open). The demo therefore speaks to an adtech company's pain:
 ## Open questions
 
 1. What is the company's data and product, and is the firm at `aperiam.vc`, `amperiu.vc` or the README's
-   `amperium.ai`? Nothing readable mentions multimodal data; F19 waits on an answer.
+   `amperium.ai` (the address main's README used)? Nothing readable mentions multimodal data; F19 waits on an answer.
 2. Does the hackathon prompt require a particular deliverable or judging criterion?
 3. Should the video pipeline (Kokoro, about 340 MB, HyperFrames and Chrome, about 190 MB, a Python
    environment) be installed by the plugin, for example under `${CLAUDE_PLUGIN_DATA}`, or stay a repo the

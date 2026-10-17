@@ -11,6 +11,10 @@ description: >
 
 # Explainer video
 
+> **Needs a clone of the ShipShow repo**, set up with `npm install` (this skill uses `bin/`, `npm run` and
+> `AGENTS.md`). Outside one, say so and stop; the plugin alone ships the understanding skills
+> (`code-context`, `change-context`, `evidence-standard`).
+
 You are the builder. You make the video; you never judge it. Judging is the critics' job
 (`skills/critic-loop`), run by agents that did not build it. A video is done when its
 critics pass and `REVIEW.md` says so, not when it renders.
@@ -58,8 +62,9 @@ Write `sources.md` in the video's folder before any script. It is the ground tru
 checks against, so a claim that is not in it does not go in the video.
 
 - **The source of record**, linked: for a decision or feature video, file paths at the
-  commit you read (two pins for a directory whose `SOURCE.md` names an upstream commit or tree hash; one
-  repo pin for original code, saying so); for a release, the release page, the tag range, the changelog, the pull
+  commit you read (two pins for a directory whose `SOURCE.md` names an upstream commit or tree hash, and for a
+  history that exists only as patches or a replay script: the host repo's HEAD and the replayed repo's SHAs;
+  one repo pin for original code, saying so); for a release, the release page, the tag range, the changelog, the pull
   requests, the docs. For a GitHub release:
   `gh release view <tag> -R <owner>/<repo>`, `gh api repos/<owner>/<repo>/compare/<old>...<new>`,
   the project's `CHANGELOG.md` at the new tag.
@@ -85,7 +90,8 @@ A workable order, not a required one: `sources.md` with its Terms (`glossary`), 
 a concept.
 
 `npm run new -- <folder>`, then one file per scene in `script/`, read aloud in
-file-name order.
+file-name order. Replace the template's two sample scenes (`script/01-intro.txt`, `02-idea.txt` and their
+sections in `scenes.html`): the build stops on a script file with no section.
 
 - Spoken sentences, short. One idea per scene. The order a newcomer needs, not the order
   of the changelog.
@@ -112,19 +118,25 @@ that gives this video its look. Each element arrives on the word that introduces
 
 ### Showing code
 
-The critic checks every excerpt with a script (`critic-grounding`), so build it to pass. Use the kit's
-`.ss-code` block and:
+The critic checks every excerpt with a script (`critic-grounding`), so build it to pass. Use the kit's `.ss-code`
+block (it keeps indentation and draws `>=` and `===` as typed) on a `<pre>`:
+`<pre class="ss-code" data-source="src/ledger.mjs" data-ranges="4-6,19-22">`.
 
 - **Whole contiguous lines**, keeping each segment's original indentation relative to the other segments
   (a dedent, or a line shown inside a block it is not in, fails). A uniform shift of the whole excerpt is fine.
 - **A marker line for each gap**: a line holding only `…` (not `...`, which is a real line in some languages),
   and `sources.md` lists the lines each gap omits.
-- **The gutter is not text in the code node.** The file name and line numbers come from CSS or a `data-`
-  attribute, so that the text extracted from the node is only code; they must equal the file and range in
-  `sources.md`. Ranges run from the first to the last non-blank line of each segment.
-- **Check it yourself first:** copy the excerpt text out of `scenes.html`, extract the source from the pin
-  (`git show ${pin}:<path>`), and run `node "${CLAUDE_SKILL_DIR}/../critic-grounding/scripts/check-excerpt.mjs"
-  <source> <excerpt> --ranges <ranges>`. A `ok: true` and a gap list you have read is what the critic will see.
+- **The gutter is not text in the code node.** The file name and line numbers come from CSS reading the `data-`
+  attributes (`::before { content: attr(data-source) }`), so that the text extracted from the node is only code;
+  they must equal the file and range in `sources.md`. Ranges run from the first to the last non-blank line of
+  each segment. Output (a capture) is labelled with the capture file's lines, not the source's.
+- **Give the viewer time to read it**: code is read at about 1.5 identifier tokens a second, so a 23-token excerpt
+  needs about 15 s on screen. Cue a line you name with `data-anim="highlight"` (it marks text already shown and
+  adds no reading); do not show a long block and then tour it in a few seconds.
+- **Check it yourself first:** `node "${CLAUDE_SKILL_DIR}/../critic-grounding/scripts/extract-excerpts.mjs"
+  scenes.html <dir>` writes each block's text and prints the check command; extract the source from the pin
+  (`git show ${pin}:<path>`) and run `node "${CLAUDE_SKILL_DIR}/../critic-grounding/scripts/check-excerpt.mjs"
+  <source> <excerpt> --ranges <ranges>`. `ok: true` and a gap list you have read is what the critic will see.
 
 ### Give it its own feel
 
@@ -136,7 +148,7 @@ made for its subject, not stamped from a template.
 - **Flair** in `video.json` for this video's own motion: `"flair": {"transition": "wipe",
   "camera": "push", "ambient": "grid"}`. A section's `data-transition` changes one scene;
   varying them keeps the cuts alive.
-- **Entrances that mean something**: `type` for a command or a name, `draw` for an arrow or a
+- **Entrances that mean something**: `type` for a command or a name (on unboxed text: a chip or card shows an empty box until the cue), `draw` for an arrow or a
   line between two ideas, `count` for a number that matters, `highlight` on the phrase the
   sentence turns on, `stagger` for a list, `pulse` for the one thing to remember. A screen
   where nothing moves for more than about eight seconds while the voice goes on is losing

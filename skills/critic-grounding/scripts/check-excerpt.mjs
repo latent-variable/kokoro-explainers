@@ -16,6 +16,7 @@ function main(argv) {
     if (argv[i] === "--ranges" || argv[i] === "--marker") {
       const value = argv[i + 1];
       if (value === undefined || value.startsWith("--")) { console.error(`${argv[i]} needs a value`); return 2; }
+      if (opts[argv[i].slice(2)] !== undefined) { console.error(`${argv[i]} was given twice`); return 2; }
       opts[argv[i].slice(2)] = value;
       i++;
     }

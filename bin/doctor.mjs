@@ -25,9 +25,9 @@ const venv = check(`Python for Kokoro (${py})`, existsSync(py), "npm run setup")
 if (venv) {
   const have = pythonVersion(py);
   check(`Python ${MIN.join(".")} to ${MAX.join(".")} for Kokoro (have ${have || "unknown"})`, !!have && supportedPython(have),
-    `kokoro-onnx 0.6.1 does not support this Python: install one in range (brew install python@3.12), delete .venv and run npm run setup`);
+    process.env.HYPERFRAMES_PYTHON ? `HYPERFRAMES_PYTHON points at a Python outside ${MIN.join(".")} to ${MAX.join(".")}: point it at one in range` : `kokoro-onnx 0.6.1 does not support this Python: install one in range (brew install python@3.12), remove .venv yourself, and run npm run setup`);
   const mods = spawnSync(py, ["-c", "import kokoro_onnx, soundfile, espeakng_loader; print(espeakng_loader.get_data_path())"], { encoding: "utf8" });
-  if (check("kokoro-onnx and soundfile", mods.status === 0, ".venv/bin/pip install -r requirements.txt")) {
+  if (check("kokoro-onnx and soundfile", mods.status === 0 && mods.stdout.trim().length > 0, ".venv/bin/pip install -r requirements.txt")) {
     // espeak-ng keeps its data path in a fixed-size buffer: a long one is cut short and
     // fails as "No such file or directory" on .../phontab.
     const data = mods.stdout.trim();

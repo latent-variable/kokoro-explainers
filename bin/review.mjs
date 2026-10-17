@@ -8,9 +8,8 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { BASE_WPM, HF, REPO, config, die, reviewPlan, round, run, videoDir } from "./lib.mjs";
-import { READ_CODE_TPS, READ_WPS, readingQueue, readingSeconds, stillStretches, words } from "./measure.mjs";
+import { READ_CODE_TPS, READ_WPS, newReadingText, readingQueue, readingSeconds, settleFor, stillStretches, words } from "./measure.mjs";
 
-const SETTLE = 0.8;         // a still this long after a cue, once its entrance has finished
 
 const dir = videoDir(process.argv[2]);
 const cfg = config(dir);
@@ -43,7 +42,7 @@ const sentenceAt = (t) => {
 const cues = [];
 for (const m of html.matchAll(/<\w+[^>]*?data-cue="([^"]*)" data-at="([\d.]+)"[^>]*>/g)) {
   const at = +m[2], scene = sceneAt(at);
-  cues.push({ at, cue: m[1], scene: scene.id, text: elementText(m.index), saying: sentenceAt(at + 0.15)?.text || "(between sentences)", up: round(scene.start + scene.duration - at) });
+  cues.push({ at, cue: m[1], anim: (m[0].match(/data-anim="([^"]*)"/) || [])[1] || "", scene: scene.id, text: elementText(m.index), saying: sentenceAt(at + 0.15)?.text || "(between sentences)", up: round(scene.start + scene.duration - at) });
 }
 cues.sort((a, b) => a.at - b.at);
 
@@ -62,7 +61,7 @@ pauses.push({ at: round(prevEnd), length: round(timing.total - prevEnd), between
 const frameMode = reviewPlan(cfg).frames;
 const times = (frameMode === "scenes"
   ? timing.scenes.flatMap((s) => [s.start + s.duration / 2, s.start + s.duration - 0.4])
-  : [...cues.map((c) => c.at + SETTLE), ...timing.scenes.map((s) => s.start + s.duration - 0.4)])
+  : [...cues.map((c) => c.at + settleFor(c.anim)), ...timing.scenes.map((s) => s.start + s.duration - 0.4)])
   .map(round).sort((a, b) => a - b)
   .filter((t, i, a) => t < timing.total && (i === 0 || t - a[i - 1] >= 0.4));
 const fdir = join(dir, "review", "frames");
@@ -90,9 +89,13 @@ out.push("## Pauses", "", "Silence before each sentence, and after the last.", "
 out.push("## Cues", "", `Each element that arrives on a word: when it lands, what is being said then, and how long it stays up. Reading time assumes ${READ_WPS} words a second for prose and ${READ_CODE_TPS} identifier tokens a second for code; "short" means it leaves before a viewer could read it while listening, and "late" means that, reading in order, the viewer cannot finish it before its scene ends.`, "");
 // Reading is queued: a viewer reads in order, so text that lands together or in quick succession waits.
 const queued = new Map();
-for (const sc of timing.scenes) for (const q of readingQueue(cues.filter((c) => c.scene === sc.id), sc.start + sc.duration)) queued.set(q, q);
+for (const sc of timing.scenes) {
+  const inScene = cues.filter((c) => c.scene === sc.id);
+  const items = inScene.map((c, i) => ({ at: c.at, text: newReadingText(c, inScene.slice(0, i)), ref: c }));
+  for (const q of readingQueue(items, sc.start + sc.duration)) queued.set(q.ref, q);
+}
 out.push(md(cues.map((c) => {
-  const q = [...queued.values()].find((x) => x.at === c.at && x.cue === c.cue && x.text === c.text);
+  const q = queued.get(c);
   const need = round(q.need);
   const flags = [c.up < need ? `short: stays up ${c.up}` : "", q.late ? `late: read by ${round(q.readBy)} s, the scene ends at ${round(sceneEndOf(c.scene))} s` : ""].filter(Boolean);
   return [c.at, c.scene, `\`${c.cue}\``, c.text.slice(0, 90), c.saying, `${c.up} s`, `${need} s`, flags.length ? `(${flags.join("; ")})` : ""];
@@ -104,7 +107,7 @@ out.push(md(timing.scenes.map((sc) => {
 }), ["scene", "longest still stretch (s)", "between"]), "");
 out.push("## Frames", "", `In \`review/frames/\`, ${frames.length} stills (${frameMode === "scenes" ? "mid-scene and scene end only" : "after each cue and at each scene end"}); ${sheets.map((f) => `\`${f}\``).join(", ")} show them together.`, "");
 const sceneEnd = (t) => timing.scenes.some((s) => Math.abs(s.start + s.duration - 0.4 - t) < 0.01);
-const near = (t) => cues.filter((c) => Math.abs(c.at + SETTLE - t) < 0.01).map((c) => `after \`${c.cue}\``).join(", ") || (sceneEnd(t) ? "scene end" : "mid-scene");
+const near = (t) => cues.filter((c) => Math.abs(c.at + settleFor(c.anim) - t) < 0.01).map((c) => `after \`${c.cue}\``).join(", ") || (sceneEnd(t) ? "scene end" : "mid-scene");
 out.push(md(frames.map((f) => {
   const t = +f.match(/at-([\d.]+)s/)[1];
   return [f, t, sceneAt(t).id, near(t), sentenceAt(t)?.text || "(pause)"];

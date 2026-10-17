@@ -31,7 +31,7 @@ Your agents change code faster than you can read it. ShipShow hands you a short 
 ## Install as a Claude Code plugin
 
 ```
-/plugin install shipshow --marketplace latent-variable/shipshow
+claude plugin install shipshow --marketplace latent-variable/shipshow
 ```
 
 Needs Claude Code 2.1.275 or later, and works once this is on `main`. Three skills work in any repository: `code-context`, `change-context` and `evidence-standard`. The rest (briefs, plans, scripts, hand-backs, `explainer-video`, `critic-loop` and the critics) feed or judge the video pipeline, which needs this repo cloned and set up as below.

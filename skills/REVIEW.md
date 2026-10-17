@@ -28,15 +28,16 @@ paths, the sentence splitter, the `or stop` recipe, the unportable `\b` in `git 
 
 Findings are blocking / major / minor.
 
-| Skill group | Round 1 | Round 2 | Round 3 | Round 4 | Round 5 |
-|---|---|---|---|---|---|
-| `code-context`, `evidence-standard` | 0 / 6 / 7 | 0 / 7 / 5 | 0 / 6 / 4 | 0 / 2 / 9 (34 commands run, 4 wrong) | see below |
-| `change-context` | 1 / 4 / 3 | 0 / 3 / 4 | 0 / 1 / 6 | 0 / 1 / 6 (11 traps, 11 caught, 10 by the method) | see below |
-| the three understanding skills used to find the sample's bug (new in round 5) | | | | | 0 / 0 / 5: found all 5 planted problems, 3 by the skills' text |
-| `explain-concept`, `narration-writing`, `glossary` | 0 / 7 / 4 | 0 / 2 / 5 | 0 / 1 / 8 | 0 / 3 / 6 | 0 / 5 / 6 (a deliberately bad video built from the skills) |
-| `decision-brief`, `explain-handoff`, `critic-decision` | 0 / 6 / 4 | 0 / 6 / 6 | 0 / 7 / 6 | 0 / 4 / 5 (6 of 7 surfaced) | 0 / 4 / 4 (6 planted, 4 surfaced) |
-| `critic-grounding` and the scripts | 2 / 6 / 1 | 0 / 7 / 3 | 1 / 10 / 4 | 0 / 2 / 6 | 0 / 2 / 7 (3 false passes, 1 silent exit, 2 sandbox escapes) |
-| docs and plugin packaging | | | 0 / 5 / 9 | 0 / 3 / 11 | 0 / 6 / 9 (96 statements checked, 19 wrong; 66 commands run, 3 wrong) |
+| Skill group | Round 1 | Round 2 | Round 3 | Round 4 | Round 5 | Round 6 |
+|---|---|---|---|---|---|---|
+| `code-context`, `evidence-standard` | 0 / 6 / 7 | 0 / 7 / 5 | 0 / 6 / 4 | 0 / 2 / 9 | see below | see below |
+| `change-context` | 1 / 4 / 3 | 0 / 3 / 4 | 0 / 1 / 6 | 0 / 1 / 6 (11 traps, 11 caught, 10 by the method) | see below | see below |
+| the understanding skills used to find the sample's bug | | | | | 0 / 0 / 5: found all 5 planted problems, 3 by the skills' text | |
+| a whole video built from the skills (new in round 6) | | | | | | 0 / 5 / 4: **the video's answer was correct** |
+| `explain-concept`, `narration-writing`, `glossary` | 0 / 7 / 4 | 0 / 2 / 5 | 0 / 1 / 8 | 0 / 3 / 6 | 0 / 5 / 6 | (in the row above) |
+| `decision-brief`, `explain-handoff`, `critic-decision` | 0 / 6 / 4 | 0 / 6 / 6 | 0 / 7 / 6 | 0 / 4 / 5 (6 of 7 surfaced) | 0 / 4 / 4 (6 planted, 4 surfaced) | not re-run |
+| `critic-grounding` and the scripts | 2 / 6 / 1 | 0 / 7 / 3 | 1 / 10 / 4 | 0 / 2 / 6 | 0 / 2 / 7 | **1** / 3 / 9 (all 3 earlier fixes held; 3 false passes, 4 sandbox escapes) |
+| docs, merge and plugin packaging | | | 0 / 5 / 9 | 0 / 3 / 11 | 0 / 6 / 9 | 0 / 2 / 12 (92 statements, 14 wrong) |
 
 Planted defects, by what caught them: round 1 caught none of the behaviour changes or wrong claims by the
 skills' method; round 2 the `change-context` traps and 3 of 4 grounding defects; round 3 all 10
@@ -60,7 +61,7 @@ findings were bugs in recipes and scripts added the round before: the main lesso
 - **`narration-writing`, `glossary`, `explain-concept`:** pace rules; a spoken alias; a false
   premise corrected in scene 1; numbers moved to the critics.
 - Verified two agent claims before acting: `bin/review.mjs` measures speech-only words a minute
-  (so cutting words does not change it), and the kit has only six entrance animations.
+  (so cutting words does not change it), and the kit had six entrance animations (main has since added eight more).
 
 ## What round 2 found, and what changed
 
@@ -151,23 +152,41 @@ gates a spend decision, and the passing-tests-by-parameter edit."
 | The docs rule was still met in letter (a punctuation edit, an override on a merge commit, substring counts) | 40 characters of added text; override from the PR title or the last non-merge commit; whole-number counts; the PRD review date must not predate its last edit; wider trigger list; `claude plugin validate` asserted in a test |
 | D13 contradicted the README on which skills are standalone; stale counts; the README footer named a domain that does not resolve | Aligned on three standalone skills; counts read from the tree; footer neutral |
 
-## Still open after round 5
+## What round 6 found, and what changed
 
-- Not fixed from round 5: `build.mjs` warns on every ambiguous cue word even when the first match is intended (six warnings on a clean
-  four-scene video); some numbers and rules still repeat across skills; a builder cannot yet measure the 0.8-era pace question
-  (main's design replaced it, but Kokoro is not installed here, so no new audio has been measured).
+Round 6 built a whole video from the skills under main's design and checked the fixes themselves. The builder
+worked out the right answer from the code and the history (both bugs, and that they are independent), and the
+critic plan did list `critic-grounding` for a video that shows code. The attacker confirmed all three earlier
+script fixes held, then found more in the same scripts, one of them blocking.
+
+| Finding | Change |
+|---|---|
+| **Blocking:** `capture.mjs record` followed a symlink the sandboxed command planted at the capture path or its sidecar, so the host wrote an attacker-controlled file anywhere the user can write | Write to a random temporary name and rename into place (rename replaces the link); refuse if the parent directory's real path changed; a command that is missing, starts with a dash or was killed is refused, not recorded; tests with the exact attack |
+| The sandbox let a command type into the caller's terminal (`TIOCSTI` through `/dev/tty`) | A new session with stdin from `/dev/null`: no controlling terminal; tested under a real pty, with the unsandboxed control injecting |
+| Denying a tool by name left the capability: the screen was readable through CoreGraphics, the keychain daemon reachable, other processes' arguments readable and signalable | Denied the window server, keychain and LaunchServices daemons, signals to and inspection of other processes; the header now says plainly it is not a confidentiality boundary |
+| The scratch-directory refusals accepted `~/.ssh`, `~/Library` and `/Users/Shared`, and the firmlink alias bypassed the home check; the attacker's probes left 14 empty `.sandbox-*` folders in your home, `~/.ssh`, `~/.claude` and elsewhere | Dot-directories and `~/Library` under home, `/Users/Shared` and the firmlink alias are refused before anything is created; more credential, history and shell-startup files denied; the 14 folders were found empty and removed with `rmdir` |
+| `verify-vendored.sh` said MATCH under a `core.fsmonitor` hook or a submodule marked `ignore=all`, and failed in a linked worktree | Repo-local settings that hide edits are forced off, the hook is never run, the common git directory is used; tests |
+| Kit: `.ss-code` drew `>=` and `===` as ligatures and collapsed indentation on a `div`; the plan dropped `critic-grounding` for a `div` block | `font-variant-ligatures: none` and `white-space: pre`; `.ss-code` sets `shows_code`; a test |
+| Packet: a highlight cued on a line inside a shown block was queued as new reading (a wall of `late`); a `count` cue was photographed half-counted | A highlight or a nested line adds no reading; per-entrance settle time; `late` defined in `critic-pacing`; tests |
+| The sample's own tests failed under the prescribed sandbox (`mktemp` ignores `TMPDIR`) | `replay.sh` uses an explicit template under `TMPDIR` |
+| A builder had no extractor for the excerpts, and the template's two sample scenes were never said to be replaced | `extract-excerpts.mjs` (tested), `data-source` and `data-ranges` on the block, and a replace-the-template-scenes line |
+| Small: `readingQueue`, `usage` and `doctor` accepted bad input; `setup` could pip-install into a wrong-version venv; `--ranges` accepted a trailing comma | Validated, with tests; `setup` refuses an out-of-range existing `.venv` (it never deletes one) |
+| Docs: `validate .` was said to check skills and the agent (it checks only the two manifests); the kit line was stale; `shows_code` was undocumented; the docs rule's trigger list in prose differed from the test | Reworded; a front-matter test for every skill and the agent; documented; one list |
+
+## Still open after round 6
+
+- Not re-run after the round-six fixes: a seventh round. The judges are Sonnet only.
+- Not fixed: `build.mjs` warns on every ambiguous cue word even when the first match is the intended one;
+  stillness limits differ across `critic-pacing`, `critic-engagement` and `explainer-video` (main's numbers,
+  left for its owner); the sandbox cannot be a confidentiality boundary on macOS without a different mechanism.
 - Linux sandbox commands (`bwrap --unshare-net`) are not tested; the script refuses off macOS.
 - `critic-grounding`'s rendered-frames check is "viewed"; the excerpt check does not see absolute indentation,
-  tabs against spaces, a hidden marker or an unmarked cut at either end.
-- The sandbox is not a defence against hostile code: other reads are not confined and any daemon not listed is reachable.
+  tabs against spaces, a hidden marker or an unmarked cut at either end; a closed stdout is undetectable.
 - `capture.mjs` proves integrity, not provenance; only re-running does.
 - The plugin ships every tracked file, has a `bin/` and a `package.json` at its root, and was never installed on a
   clean machine (D13).
-- The decision skills still rely on prose a builder can satisfy without evidence; the claim-ID reconciliation
-  is the candidate for a script.
-- The red-team rounds used Sonnet only (the workspace limits agents to it; six Opus agents were refused with
-  HTTP 429), so every judge shares the builder's model family.
+- The decision skills still rely on prose a builder can satisfy without evidence.
 
-## Round 6
+## Round 7
 
-Pending: fresh agents on the round-five fixes, the merge with main and the sample.
+Not run. The branch went to a pull request after round six, with the open items above stated.

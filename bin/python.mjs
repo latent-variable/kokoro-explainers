@@ -12,6 +12,7 @@ export const supportedPython = (v) => {
 
 /** "3.12" for a python command, or null if it does not run. */
 export function pythonVersion(cmd) {
+  if (!cmd || typeof cmd !== "string") return null;
   const r = spawnSync(cmd, ["-c", "import sys; print('%d.%d' % sys.version_info[:2])"], { encoding: "utf8" });
   return r.status === 0 ? r.stdout.trim() : null;
 }

@@ -28,10 +28,12 @@ export function readTranscript(file) {
     if (!prev || (u.output_tokens || 0) >= prev.output_tokens) calls.set(id, u);
   }
   const t = { bad, calls: calls.size, input: 0, output: 0, cacheWrite: 0, cacheRead: 0, peakContext: 0, lastContext: 0, model, first, last };
+  // a count that is not a non-negative number is a bad record, counted as zero, never string-concatenated into a total
+  const n = (x) => (Number.isFinite(x) && x >= 0 ? x : (t.bad++, 0));
   for (const u of calls.values()) {
-    const ctx = (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0);
-    t.input += u.input_tokens || 0; t.output += u.output_tokens || 0;
-    t.cacheWrite += u.cache_creation_input_tokens || 0; t.cacheRead += u.cache_read_input_tokens || 0;
+    const [i, o, w, r] = [n(u.input_tokens ?? 0), n(u.output_tokens ?? 0), n(u.cache_creation_input_tokens ?? 0), n(u.cache_read_input_tokens ?? 0)];
+    const ctx = i + w + r;
+    t.input += i; t.output += o; t.cacheWrite += w; t.cacheRead += r;
     t.peakContext = Math.max(t.peakContext, ctx); t.lastContext = ctx;
   }
   return t;
@@ -68,14 +70,17 @@ export function findSession(arg, repo = REPO) {
 }
 
 const k = (n) => (n >= 1e6 ? (n / 1e6).toFixed(2) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "k" : String(n));
-const secs = (a) => (a.first && a.last ? Math.round((Date.parse(a.last) - Date.parse(a.first)) / 1000) : 0);
+const secs = (a) => {
+  const d = a.first && a.last ? Math.round((Date.parse(a.last) - Date.parse(a.first)) / 1000) : 0;
+  return Number.isFinite(d) ? d : 0;
+};
 
 // Run as a script, also from a path with a space or through a symlink: compare real paths, never URLs.
 let entry = false;
 try { entry = process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)); } catch { entry = false; }
 if (entry) {
   const args = process.argv.slice(2), json = args.includes("--json");
-  const unknown = args.filter((a) => a.startsWith("--") && a !== "--json");
+  const unknown = args.filter((a) => a.startsWith("-") && a !== "--json");
   if (unknown.length) { console.error(`unknown option ${unknown[0]}; usage: node bin/usage.mjs [session id | transcript file] [--json]`); process.exit(2); }
   let file, agents;
   try {

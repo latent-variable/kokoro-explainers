@@ -28,7 +28,8 @@ For each shown asset, check it yourself and record how:
 
 - **Code excerpt.** Extract the source from the pin, not from a working tree (`git show ${pin}:<path> >
   <tmp>`; for vendored code that is `git show HEAD:<path>`, plus `verify-vendored.sh` for "unmodified"),
-  save the shown text to a file, and run `node "${CLAUDE_SKILL_DIR}/scripts/check-excerpt.mjs" <source>
+  save the shown text to a file (`${CLAUDE_SKILL_DIR}/scripts/extract-excerpts.mjs scenes.html <dir>` does it
+  for every `.ss-code` block), and run `node "${CLAUDE_SKILL_DIR}/scripts/check-excerpt.mjs" <source>
   <excerpt> --ranges <ranges from sources.md>` (if `${CLAUDE_SKILL_DIR}` shows unexpanded, it is
   `skills/critic-grounding/scripts/check-excerpt.mjs` from the repo root). Exit 0 and `ok: true` means every segment between `…`
   markers is consecutive lines of the file, in order, with the same text and relative indentation, at the
@@ -53,9 +54,11 @@ For each shown asset, check it yourself and record how:
 - **Pin.** For code under a directory whose `SOURCE.md` names an upstream commit or tree hash,
   `sources.md` must name both pins (`evidence-standard`); a repo-HEAD pin alone is a major finding.
   Where `SOURCE.md` names none (original code kept in this repo), one repo pin is enough, and `sources.md`
-  says the directory is original code.
+  says the directory is original code, unless the shown history exists only as patches or a replay
+  script: then `sources.md` also names the replayed repo's SHAs (`evidence-standard`, *A change*).
 - **Screenshot or recording.** Look at the frame (method `viewed`) and compare it with the capture and the
-  code. A code asset that exists only as pixels, with no text node in `scenes.html` to extract, is
+  code. Look at the operators in the frame: a font that draws `>=` or `===` as one glyph (ligatures) makes the
+  pixels differ from the text the script checked; the kit's `.ss-code` turns them off. A code asset that exists only as pixels, with no text node in `scenes.html` to extract, is
   `unsupported`. Map each frame to its asset id, so a stale frame after a cue is caught.
 - **Spoken or captioned quote of output.** Compare the words in `review/packet.md` with the capture.
 

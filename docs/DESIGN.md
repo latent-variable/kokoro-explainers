@@ -84,17 +84,25 @@ a scrubbed environment; installs are a network call and need consent. **Why.** R
 showed commands writing into the repo and a `.env` being loaded.
 
 ### D9. The safe-running envelope is a script, not advice (2026-10-17)
-**Decision.** Record what testing showed: `env -i` does not block the network, a copy does not stop a
-command writing to `../`, `cp -R` carries a `.env`, and a failed `cd` wrote into the real repo.
-**Consequence.** Running goes through `skills/evidence-standard/scripts/sandbox-run.sh`: empty
-environment, `HOME` and `TMPDIR` inside the copy, no network, writes confined to the copy, `~/.ssh`
-and similar unreadable, `open` and `osascript` denied. macOS only (`sandbox-exec`); on any other
-system it refuses rather than run unsandboxed. Tested: network, outside writes, `../`, `/dev/null`,
-Python's tempfile. Known limits: reads elsewhere are not confined, BSD `mktemp` with no template
-ignores `TMPDIR`, and it is not a defence against hostile code. Claude Code itself isolates with
-Seatbelt and Bubblewrap, and sandboxing limits damage without making untrusted code trustworthy.
-Sources: <https://medium.com/@Koukyosyumei/how-claude-code-and-codex-sandbox-untrusted-code-ba39b493046a>,
-<https://dev.to/traceseal/how-to-sandbox-an-ai-coding-agent-and-what-a-sandbox-cannot-prove-h9b>.
+**Decision.** Running goes through `skills/evidence-standard/scripts/sandbox-run.sh`: an empty environment (PATH
+and LANG only), `HOME` and `TMPDIR` inside the copy, no network, writes confined to the copy, **no controlling
+terminal** (a new session with stdin from `/dev/null`, so a command cannot type into the caller's shell with
+`TIOCSTI`: found and tested under a real pty), no signalling or inspecting other processes, the clipboard,
+preference, window-server, keychain and LaunchServices daemons denied, a list of credential, history and
+shell-startup files under the real home unreadable, and `open`, `osascript`, `screencapture`, `say` and
+`shortcuts` denied. macOS only (`sandbox-exec`); elsewhere it refuses rather than run unsandboxed. Paths are
+profile parameters, never text, and risky scratch directories are refused (system roots, home and its
+ancestors, dot-directories and `~/Library` under home, `/Users/Shared`, the firmlink alias) before anything is
+created in them. **Why.** Testing showed `env -i` does not block the network, a copy does not stop a command
+writing to `../`, `cp -R` carries a `.env`, a failed `cd` wrote into the real repo, a quote in a directory name
+spliced into the profile string and added write access (round five), a sandboxed command could type into the
+caller's terminal (round six), and denying a tool by name does not deny the capability (the screen was readable
+through CoreGraphics until the window server was denied). **It is not a confidentiality boundary.** Reads
+outside the denied list are open, and any daemon not listed is reachable; treat what a sandboxed command can read
+as disclosed to it. Claude Code itself isolates with Seatbelt and Bubblewrap, and sandboxing limits damage without
+making untrusted code trustworthy.
+Sources: <https://medium.com/@Koukyosyumei/how-claude-code-and-codex-sandbox-untrusted-code-ba39b493046a>
+(returned 403 to an automated fetch; unverified), <https://dev.to/traceseal/how-to-sandbox-an-ai-coding-agent-and-what-a-sandbox-cannot-prove-h9b>.
 
 ### D10. Tokens and context come from the transcripts Claude Code already writes (2026-10-17)
 **Decision.** `npm run usage` reads `~/.claude/projects/<repo>/<session>.jsonl` and its
@@ -119,17 +127,18 @@ is short. Skills point at `AGENTS.md`.
 ### D13. The end goal is a Claude Code plugin (team, 2026-10-17)
 **Decision.** The repo root is the plugin: `.claude-plugin/plugin.json` (name `shipshow`, **no
 `version`**), `skills/`, `agents/critic.md`, and a one-plugin `.claude-plugin/marketplace.json` with
-`source: "./"`. `claude plugin validate .` passes for the marketplace, the manifest, the skills and the agent; its
+`source: "./"`. `claude plugin validate .` passes for the marketplace and the manifest (it checks only those two); its
 only warning, and the only thing `--strict` rejects, is the missing `version`, which is deliberate
 (below). Install (Claude Code 2.1.275 or later):
-`/plugin install shipshow --marketplace latent-variable/shipshow`, which works once this is on `main`.
+`claude plugin install shipshow --marketplace latent-variable/shipshow` (the form `claude plugin install --help`
+lists; not run here, since installing changes the user's settings), which works once this is on `main`.
 **Why.** It installs in other repositories, with updates from the marketplace. Setting `version`
 pins users to it until someone bumps it, so it is omitted and the commit SHA versions the plugin.
 **Facts from the docs that shaped it.** Only `name` is required, in kebab-case, and may not start
 with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
 namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
 every turn (measured: 22 skills, 7,869 characters, about 1,970 tokens), so descriptions stay short
-and SKILL.md under 500 lines (longest 201). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
+and SKILL.md under 500 lines (longest 206). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
 the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
 and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
 a plugin root is not loaded as context. A plugin runs with the user's privileges.
@@ -155,9 +164,11 @@ anything it runs. `critic-loop` names `shipshow:critic` for Claude Code.
   critics, `theme`, `tailor`), and need this repo cloned and set up. They also cite `AGENTS.md`. `local/` is
   gitignored only here, so a skill that writes private material elsewhere first checks `git check-ignore
   local/` and uses `.git/info/exclude` with the person's consent. `repo-context` is for this repo only.
-- `claude plugin validate .` passes with one warning, the missing version; that is weak evidence (a broken
-  skill front matter also only warns), so a test runs it when the CLI is present and asserts the warning is
-  the version and nothing else.
+- `claude plugin validate .` passes with one warning, the missing version, and looks only at the two manifests
+  (a broken skill or agent file does not change its output: checked); `validate skills` and `validate agents`
+  look at components but are lenient. So a test runs `validate .` when the CLI is present and asserts the
+  warning is the version and nothing else, and another parses every `SKILL.md` and `agents/critic.md` front
+  matter (name, description, tools).
 - The root has a `package.json` and a lockfile, so an install may try to install Node dependencies into
   the plugin cache (the docs describe runtime dependencies; whether `devDependencies` such as
   `hyperframes` are installed is untested).
@@ -240,12 +251,12 @@ account allows it".
 
 ### D21. The sample is a pacing service built by three agents in one day (2026-10-17; replaces D11)
 **Decision.** `sample_application/` is `pacer-demo`, a toy ad-spend pacer of about 80 lines of
-dependency-free Node (about 230 with its tests and scenario), written for this demo and not Aperiam's code. Three agents each take one task: budget
+dependency-free Node (about 250 with its tests and scenario), written for this demo and not Aperiam's code. Three agents each take one task: budget
 pacing, batched ledger writes, and EUR and JPY campaigns. Each is correct for its task and each gets its
 tests green; the morning after, the same traffic gives a US campaign 111% of budget, a EUR one 93% and a
 yen one 181%, and no note says why. **Why.** The goal is a problem a developer who manages many agents would
 recognise ("that could have been me"). Aperiam describes itself as an adtech and martech investor with an
-Ads arm doing "technology orchestration" and portfolio companies it helps grow; budget pacing is a
+Ads arm doing "emerging tech orchestration" and portfolio companies it helps grow; budget pacing is a
 plausible service for one of them, and an overspend nobody can explain is a familiar one. The earlier
 assumption that the company handles multimodal data is not supported by its site and is dropped.
 **Design.** The bug is in the interaction, not in any change: pacing compares USD cents with a budget in the
@@ -255,7 +266,7 @@ note says pacing needs no change; the one test that would catch it is marked `to
 commits as patches, replayable (`history/replay.sh`) and checked by a test; the three hand-off notes each hold
 one confident claim that turns out false; `ANSWER.md` is a labelled spoiler. **Why zero dependencies.** The
 microblog needed Flask and an install the skills' safe-running rules forbid, so no agent could run anything;
-this runs with `node --test`. **Checked** by a root test: the tests pass with one `todo`, the scenario prints
+this runs with `node --test`. **Checked** by a root test: the tests pass with two `todo` cases (EUR under budget, JPY over), the scenario prints
 the documented percentages, and the README table matches.
 
 ### D22. The docs rule is structural and count-driven (2026-10-17; replaces the first form of the docs test)
@@ -294,19 +305,22 @@ list removes it, and `explain-handoff` takes the critic set from the plan instea
 template keeps `audience`, which two skills read. **Consequence.** The docs and `narration-writing` no longer
 say "start at 0.8"; the review packet prints the speed and the target.
 
-### D25. Round five hardened the scripts, and the reading check queues (2026-10-17)
-**Decision.** `sandbox-run.sh` passes paths as `sandbox-exec -D` parameters, so a directory name containing a
-quote can no longer add write permission (found: it wrote outside the scratch directory), takes the home
-directory from the user database, refuses system roots and ancestors of home, passes only PATH and LANG, and
-denies `screencapture` and `say`. `verify-vendored.sh` also fails on gitignored files and on
-`--assume-unchanged` or `--skip-worktree` edits, validates its arguments, runs `git --no-optional-locks` so it
-leaves `.git/index` alone, and cleans its temporary directory. `capture.mjs` JSON-encodes its header (the
-command as an argv array, so a newline cannot forge a header line or an exit status), compares hashes
-case-insensitively, exits 2 on unreadable input, and says `ok` is integrity, not provenance (an unkeyed hash
-can be forged; the critic still re-runs the command). The packet's reading check is a queue: a viewer reads in
-order, so text that lands together waits, and anything unreadable before its scene ends is `late`. **Known
-limit:** a closed stdout cannot be detected, because Node reopens it as `/dev/null` at startup; "no output is
-not a pass" is the rule.
+### D25. Rounds five and six hardened the scripts, and the reading check queues (2026-10-17)
+**Decision.** `verify-vendored.sh` fails on gitignored files and on `--assume-unchanged` or `--skip-worktree`
+edits, validates its arguments, forces off the repo-local settings that hide edits (`core.fsmonitor`, whose hook
+it therefore never runs, `core.fileMode=false`, submodule `ignore=all`), uses the repo's common directory so a
+linked worktree works, and leaves `.git/index` alone; it creates no new object, ref or index entry, and may
+refresh the timestamp of an existing object. `capture.mjs` JSON-encodes its header (the command as an argv
+array, so a newline cannot forge a header line or an exit status), compares hashes case-insensitively, exits 2
+on unreadable input, refuses a command that is missing, starts with a dash or was killed, and writes each file
+to a random temporary name and renames it into place, so a symlink the sandboxed command planted at the capture
+path or its sidecar cannot redirect the write (found: it overwrote a victim file; a swapped parent directory is
+refused too). Its `ok` means integrity, not provenance: an unkeyed hash can be forged, and a critic still re-runs
+the command. The packet's reading check is a queue: a viewer reads in order, so text that lands together waits,
+and anything unreadable before its scene ends is `late`; a highlight, or a line cued inside a block already
+shown, adds no reading; a count, pulse or type entrance is photographed after it finishes. **Known limit:** a
+closed stdout cannot be detected, because Node reopens it as `/dev/null` at startup; "no output is not a pass"
+is the rule.
 
 ### D26. Setup picks a Python Kokoro supports (2026-10-17)
 **Decision.** `npm run setup` runs `bin/setup.mjs`, which takes the first of python3.13 to 3.10, then
@@ -345,8 +359,8 @@ What an agent or person observes. Each line is checkable against the cited file.
   2 unsupported (no sidecar). `verify-vendored.sh <dir> <hash>` prints MATCH only for the upstream tree with
   no edits and no untracked files.
 - Scripts never delete files. Generated files are gitignored. The kit renders entrances on a
-  cue (`up`, `fade`, `pop`, `left`, `right`, `grow`); exit, swap, arrows, highlight and counters
-  need a custom `<script>`.
+  cue (the list, `up` to `pulse` including `type`, `draw`, `count` and `highlight`, is in `AGENTS.md`); an
+  exit, a swap and a connector between boxes need a custom `<script>`.
 
 **The skills**
 - A context line is `[tag] claim. path:line`, with `tested` or `untested` on behaviour lines.

@@ -8,13 +8,22 @@
 // and <capture file>.sha256, the SHA-256 of the whole capture file (header, delimiter and output), the same
 // as `shasum -a 256 <capture file>`. Set PIN to record the commit the code was at. verify recomputes it: exit 0 matches; exit 1 the capture was altered (blocking
 // for a critic); exit 2 no sidecar, or not a capture (unsupported, not blocking).
-import { createHash } from "node:crypto";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash, randomBytes } from "node:crypto";
+import { existsSync, readFileSync, realpathSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 
 const DELIM = "\n---\n";
+
+// The sandboxed command may leave a symlink at the capture path (or swap a directory for one) to make this
+// host-side write land elsewhere. So: write a randomly named new file (flag wx, never following a link), then
+// rename it into place (rename replaces the directory entry itself and never follows a link at the target).
+function writeNoFollow(path, data) {
+  const tmp = `${path}.tmp-${randomBytes(8).toString("hex")}`;
+  writeFileSync(tmp, data, { flag: "wx" });
+  renameSync(tmp, path);
+}
 const sha = (buf) => createHash("sha256").update(buf).digest("hex");
 
 export function split(buf) {
@@ -59,6 +68,9 @@ function main(argv) {
     const [dir, file] = rest;
     const cmd = rest.slice(3);
     if (!existsSync(dirname(resolve(file)))) { console.error(`error: the directory for ${file} does not exist; nothing was run`); return 2; }
+    if (cmd[0].startsWith("-")) { console.error(`error: the command ${cmd[0]} starts with a dash; nothing was run`); return 2; }
+    if (spawnSync("/bin/sh", ["-c", 'command -v -- "$1" >/dev/null', "capture", cmd[0]]).status !== 0) { console.error(`error: ${cmd[0]} is not a command on this PATH; nothing was run`); return 2; }
+    const parentBefore = realpathSync(dirname(resolve(file)));
     const sbx = join(dirname(fileURLToPath(import.meta.url)), "sandbox-run.sh");
     // Preflight with `true`, so that afterwards every exit status is the command's own: the sandbox script's
     // refusal codes (2 and 3) are also codes a command may legitimately return.
@@ -66,9 +78,11 @@ function main(argv) {
     if (pre.status !== 0) { console.error((pre.stderr || "").trim() || "sandbox-run refused to run"); return 2; }
     const run = spawnSync("/bin/sh", ["-c", '"$@" 2>&1', "capture", sbx, dir, ...cmd], { maxBuffer: 256 * 1024 * 1024 });
     if (run.error) { console.error(`error: ${run.error.message}`); return 2; }
+    if (run.status === null) { console.error(`error: the command was ended by ${run.signal || "a signal"}; nothing was recorded`); return 2; }
+    if (realpathSync(dirname(resolve(file))) !== parentBefore) { console.error("error: the directory of the capture file changed while the command ran (a symlink swap?); nothing was written"); return 2; }
     const buf = build({ command: cmd, dir, pin: process.env.PIN, date: new Date().toISOString(), exit: run.status, output: run.stdout });
-    writeFileSync(file, buf);
-    writeFileSync(`${file}.sha256`, `${sha(buf)}  ${file.split("/").pop()}\n`);
+    writeNoFollow(file, buf);
+    writeNoFollow(`${file}.sha256`, `${sha(buf)}  ${file.split("/").pop()}\n`);
     console.log(JSON.stringify({ capture: file, exit: run.status, sha256: sha(buf) }));
     return 0;
   }

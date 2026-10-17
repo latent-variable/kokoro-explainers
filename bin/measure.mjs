@@ -2,16 +2,17 @@
 //   readingSeconds(text)       how long a viewer needs to read a piece of on-screen text while listening
 //   stillStretches(scene, ats) the longest stretch of a scene in which nothing new appears
 // Prose is read at 3.3 words a second. Code is counted in identifier tokens (`Author.followers.of_type`
-// is three), because it is harder to read than the same number of words, at 1.5 tokens a second.
+// is four: an underscore splits one), because it is harder to read than the same number of words, at 1.5 tokens a second.
 export const READ_WPS = 3.3;
 export const READ_CODE_TPS = 1.5;
 
 const CJK = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu;
 // Letters and digits in any script; a CJK character is read as a word of its own.
-export const words = (s) => (s.replace(CJK, " x ").match(/[\p{L}\p{N}][\p{L}\p{N}_'.-]*/gu) || []).length;
+// A hyphen joins two spoken words ("eighty-one" is said as two), so it does not join one here.
+export const words = (s) => (s.replace(CJK, " x ").match(/[\p{L}\p{N}][\p{L}\p{N}_'.]*/gu) || []).length;
 export const tokens = (s) => (s.replace(CJK, " x ").match(/[\p{L}\p{N}]+/gu) || []).length;
 // Parentheses alone do not make code (prose has them); a call, a brace, an operator, an underscore or a dotted name does.
-export const looksLikeCode = (s) => /[{}=<>_\[\]]|[\p{L}\p{N}_]\(|[\p{L}\p{N}]\.[\p{L}_(]/u.test(s);
+export const looksLikeCode = (s) => /[{}=<>_\[\]]|[\p{L}\p{N}_]\(|[\p{L}\p{N}_]{2,}\.[\p{L}_(]{2,}|(?:^|\s)--?[A-Za-z][\w-]*|^\s*\$ /u.test(s);
 
 export function readingSeconds(text) {
   return looksLikeCode(text) ? tokens(text) / READ_CODE_TPS : words(text) / READ_WPS;
@@ -39,10 +40,28 @@ export function stillStretches(scene, cueTimes) {
  */
 export function readingQueue(items, sceneEnd) {
   if (!Number.isFinite(sceneEnd)) throw new Error("readingQueue: the scene end must be a finite number");
+  for (const it of items) if (!Number.isFinite(it.at) || typeof it.text !== "string") throw new Error(`readingQueue: each element needs a finite \`at\` and a string \`text\` (got ${JSON.stringify({ at: it.at, text: typeof it.text })})`);
   let done = -Infinity;
   return [...items].sort((a, b) => a.at - b.at).map((it) => {
     const need = readingSeconds(it.text);
     done = Math.max(done, it.at) + need;
     return { ...it, need, readBy: done, late: done > sceneEnd + 1e-9 };
   });
+}
+
+// How long an entrance takes to finish, so a still taken "after the cue" is of the finished state: a number that
+// counts up, a pulse and typing run past the default settle time (kit/kit.js).
+export const DEFAULT_SETTLE = 0.8;
+export const ENTRANCE_SETTLE = { count: 1.4, pulse: 1.4, type: 1.4 };
+export const settleFor = (anim) => ENTRANCE_SETTLE[anim] ?? DEFAULT_SETTLE;
+
+/**
+ * The text a cue adds for the viewer to read. A highlight marks text already shown, and an element whose text is
+ * part of an earlier cued element in the same scene (a line cued inside a code block that has already landed) is
+ * already counted there: neither is new reading.
+ */
+export function newReadingText(cue, earlierInScene) {
+  if (cue.anim === "highlight") return "";
+  if (cue.text && earlierInScene.some((e) => e.text !== cue.text && e.text.includes(cue.text))) return "";
+  return cue.text;
 }
