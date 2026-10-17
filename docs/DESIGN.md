@@ -524,6 +524,23 @@ that gave the skill no code, so it rightly refused), found by reading the transc
 **Not done.** A person labelling critic findings right or wrong (plan 5.4); a harder critic set; the suite in CI (5.5); `pass^k`.
 **Costs.** Each run is a Claude session on the person's credential. Three runs a case is few: a cell moved 2 of 5 to 7 of 8 between runs of the same text.
 
+### D42. The plugin installs from an empty config (2026-10-17; plan 4.1 to 4.3)
+**Checked** with `CLAUDE_CONFIG_DIR` pointed at an empty folder on Claude Code 2.1.302, three ways. (1) `claude plugin install shipshow
+--marketplace latent-variable/shipshow`, the README's command exactly: it clones the repo, adds the marketplace and installs. (2) `claude plugin
+marketplace add latent-variable/shipshow`, then `claude plugin install shipshow@shipshow`. (3) A local-folder marketplace
+(`marketplace add <this checkout>`). A fresh `claude -p --model sonnet` session in each config then listed all 22 skills and
+`shipshow:critic`. The **version is the commit SHA** (`Version: ea0b39bd536b` from `main`): an absent `version` in `plugin.json`
+does what D13 assumed. The plugin's `bin/` is **not** on the PATH of a Bash command in that session (`doctor.mjs`, `build.mjs`,
+`voice.mjs` and `make.mjs` were not found), and its files are not executable anyway: the manifest-reference concern about a plugin
+`bin/` was moot here.
+**Sizes.** From GitHub: 7.7 MB in the marketplace clone (the tracked files, 4.4 MB, plus `.git`; `docs/assets/demo.gif` is 2.1 MB of
+it). From a **local folder**: 381 MB, because a folder source copies untracked files too (`node_modules/`, `out/`, the videos' assets).
+A person trying the plugin from a checkout should expect that; the GitHub path does not.
+**Not checked.** The skills' behaviour inside the installed copy beyond the listing (the evals run against the checkout, not the cache);
+that `${CLAUDE_PLUGIN_ROOT}` paths in `agents/critic.md` resolve in the cache copy (a run through the plugin, in D38, loaded the agent but
+did not run a script); updating (`claude plugin update`) after a new commit.
+**Costs.** None: this is a record. The README's "works once this is on `main`" is replaced by the tried version.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
