@@ -1,6 +1,6 @@
 // Shared plumbing for the bin/ scripts: paths, the video's config, sentence splitting, WAV I/O.
 import { spawn } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -35,20 +35,63 @@ export function flag(name, argv = process.argv) {
   }
 }
 
+const localDir = () => process.env.SHIPSHOW_LOCAL || join(REPO, "local");
+
 /** This person's settings, local/config.json (tailor skill): {speed, voice, theme}. */
 export function localConfig() {
-  const p = join(process.env.SHIPSHOW_LOCAL || join(REPO, "local"), "config.json");
+  const p = join(localDir(), "config.json");
   return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : {};
 }
 
-/** video.json with its defaults filled in. The most specific setting wins: --speed on the
- *  command line, then video.json, then local/config.json, then the defaults. */
+/** A theme's folder: a client's own in local/themes/ first, then the shared themes/. */
+export function themeDir(name) {
+  for (const root of [join(localDir(), "themes"), join(REPO, "themes")]) {
+    if (existsSync(join(root, name, "theme.css"))) return join(root, name);
+  }
+  const known = [join(localDir(), "themes"), join(REPO, "themes")].filter(existsSync).flatMap((r) => readdirSync(r));
+  die(`no theme "${name}": the themes are ${[...new Set(known)].join(", ")} (skills/theme makes a new one)`);
+}
+
+/** A theme's CSS, with its relative url()s pointed at assets/theme/, where its files are
+ *  copied (fonts, a logo), so a render needs no network. */
+export function themeCss(name, videoFolder) {
+  const src = themeDir(name);
+  const files = readdirSync(src).filter((f) => f !== "theme.css");
+  if (files.length) {
+    mkdirSync(join(videoFolder, "assets", "theme"), { recursive: true });
+    for (const f of files) cpSync(join(src, f), join(videoFolder, "assets", "theme", f), { recursive: true });
+  }
+  return readFileSync(join(src, "theme.css"), "utf8").replace(/url\(\s*(["']?)(?!data:|https?:|\/|assets\/)([^"')]+)\1\s*\)/g, (_, q, path) => `url(${q}assets/theme/${path.replace(/^\.\//, "")}${q})`);
+}
+
+/** video.json "flair": a video's own motion, over its theme's. */
+export const FLAIR = { transition: ["none", "fade", "rise", "slide", "zoom", "wipe"], entrance: null, camera: ["none", "push"], ambient: ["none", "glow", "grid", "dots"], "ambient-strength": null, progress: ["on", "off"] };
+export function flairCss(flair = {}) {
+  const lines = Object.entries(flair).map(([k, v]) => {
+    if (!(k in FLAIR)) die(`video.json flair has "${k}"; it takes ${Object.keys(FLAIR).join(", ")}`);
+    if (FLAIR[k] && !FLAIR[k].includes(String(v))) die(`video.json flair ${k} is "${v}"; it takes ${FLAIR[k].join(", ")}`);
+    return `  --${k}: ${v};`;
+  });
+  return lines.length ? `#root {\n${lines.join("\n")}\n}` : "";
+}
+
+/** A number from the video's name, so each video's ambient motion is its own but repeatable. */
+export function seedFor(name) {
+  let h = 2166136261;
+  for (const c of name) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  return h >>> 0;
+}
+
+/** video.json with its defaults filled in. The most specific setting wins: --speed or --theme
+ *  on the command line, then video.json, then local/config.json, then the defaults. */
 export function config(dir, argv = process.argv) {
   const local = localConfig();
   const cfg = {
     title: basename(dir),
     voice: local.voice || "af_heart",
     speed: local.speed ?? DEFAULT_SPEED,
+    theme: local.theme || "shipshow",
+    flair: {},
     say: {},           // written form -> what Kokoro is told to say ("HyperFrames": "hyper frames")
     lead: 0.5,         // silence before a scene's first sentence, seconds at speed 1
     gap: 0.35,         // between sentences
@@ -56,6 +99,7 @@ export function config(dir, argv = process.argv) {
     ...JSON.parse(readFileSync(join(dir, "video.json"), "utf8")),
   };
   if (flag("speed", argv) !== undefined) cfg.speed = Number(flag("speed", argv));
+  if (flag("theme", argv) !== undefined) cfg.theme = flag("theme", argv);
   if (!(cfg.speed >= 0.5 && cfg.speed <= 2)) die(`speed ${cfg.speed} is outside 0.5 to 2`);
   cfg.kokoroSpeed = Math.round(BASE_PACE * cfg.speed * 1000) / 1000;
   return cfg;

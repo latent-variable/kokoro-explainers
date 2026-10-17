@@ -1,0 +1,40 @@
+/* Paper: light, editorial. Warm paper, ink, a deep red, serif headlines, flat cards. */
+:root {
+  --bg: #f6f1e7;
+  --ink: #1d1b18;
+  --muted: #5e574c;
+  --accent: #b3261e;
+  --accent-2: #1f5f8b;
+  --card: #fffdf8;
+  --line: #d9cfbd;
+  --code-bg: #efe7d8;
+  --code-ink: #3b352c;
+  --good: #2f7d4f;
+  --bad: #b3261e;
+
+  --font: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-mono: "SF Mono", Menlo, Consolas, monospace;
+  --display-weight: 700;
+  --display-tracking: -0.01em;
+
+  --pad: 160px;
+  --heading-top: 100px;
+  --heading-size: 80px;
+  --heading-align: left;
+  --radius: 6px;
+  --border: 2px;
+  --shadow: 0 10px 30px rgba(60, 45, 20, 0.10);
+
+  --cap-bg: rgba(29, 27, 24, 0.88);
+  --cap-ink: #fffdf8;
+  --cap-size: 42px;
+  --cap-radius: 4px;
+
+  --transition: slide;
+  --entrance: up;
+  --camera: none;
+  --ambient: dots;
+  --ambient-strength: 0.55;
+  --progress: on;
+}

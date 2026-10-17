@@ -5,11 +5,14 @@
 //   data-cue="word"     arrives when the voice says the first word starting with "word"
 //   data-cue="word#2"   ... the second one
 //   data-cue="+1.5"     ... 1.5 s into the scene
-// and data-anim="up|fade|pop|left|right|grow" says how (kit/kit.js). Captions are the script's
-// own words, one line at a time. Writes index.html, meta.json and assets/vendor/gsap.min.js.
+// and data-anim says how (kit/kit.js); a section's data-transition and data-camera override the
+// theme's. The look is the theme (video.json "theme", themes/ or local/themes/) under the
+// video's own styles, and video.json "flair" overrides the theme's motion. Captions are the
+// script's own words, one line at a time. Writes index.html, meta.json, assets/vendor/gsap.min.js
+// and assets/theme/ (the theme's fonts and images).
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
-import { REPO, config, die, norm, round, videoDir } from "./lib.mjs";
+import { REPO, config, die, flairCss, norm, round, seedFor, themeCss, videoDir } from "./lib.mjs";
 
 const CUE_LEAD = 0.15;      // a piece lands just before its word, so the eye gets there with the ear
 const LINE_WORDS = 12;      // the longest caption line
@@ -102,7 +105,7 @@ const sections = [...src.matchAll(/<section([^>]*)>([\s\S]*?)<\/section>/g)].map
   // 10 ms short of the next scene: scenes share a track, and touching ends read as an overlap.
   const attrs = m[1].replace(/\s*class="([^"]*)"/, "");
   const cls = ["clip", "scene", (m[1].match(/class="([^"]*)"/) || [])[1]].filter(Boolean).join(" ");
-  return `      <section${attrs} id="scene-${id}" class="${cls}" data-start="${scene.start}" data-duration="${round(scene.duration - 0.01)}" data-track-index="1">\n        <div class="inner">${body}</div>\n      </section>`;
+  return `      <section${attrs} id="scene-${id}" class="${cls}" data-start="${scene.start}" data-duration="${round(scene.duration - 0.01)}" data-track-index="1">\n        <div class="inner"><div class="cam">${body}</div></div>\n      </section>`;
 });
 const missing = timing.scenes.filter((s) => !seen.has(s.id)).map((s) => s.id);
 if (missing.length) die(`scenes.html has no <section data-scene> for: ${missing.join(", ")}`);
@@ -110,6 +113,10 @@ if (missing.length) die(`scenes.html has no <section data-scene> for: ${missing.
 const html = readFileSync(join(REPO, "kit", "shell.html"), "utf8")
   .replaceAll("{{title}}", esc(cfg.title))
   .replaceAll("{{total}}", String(timing.total))
+  .replace("{{theme}}", () => themeCss(cfg.theme, dir))
+  .replace("{{base}}", () => readFileSync(join(REPO, "kit", "base.css"), "utf8"))
+  .replace("{{flair}}", () => flairCss(cfg.flair))
+  .replaceAll("{{seed}}", String(cfg.seed ?? seedFor(basename(dir))))
   .replace("{{styles}}", () => styles)
   .replace("{{scenes}}", () => sections.join("\n"))
   .replace("{{captions}}", () => captions())
@@ -124,4 +131,4 @@ if (!existsSync(gsap)) die("GSAP is not installed here: npm install");
 mkdirSync(join(dir, "assets", "vendor"), { recursive: true });
 copyFileSync(gsap, join(dir, "assets", "vendor", "gsap.min.js"));
 
-console.log(`index.html: ${timing.scenes.length} scenes, ${timing.total} s`);
+console.log(`index.html: ${timing.scenes.length} scenes, ${timing.total} s, theme ${cfg.theme}`);

@@ -45,7 +45,9 @@ The first run downloads the voice model (about 340 MB) and, if needed, a headles
 
 ## Make it yours
 
-Tell your agent how you like your videos ("faster", "open with the decision", "always show the code") and it keeps that in `local/`, which never leaves your machine. Videos play at 1.25 times a relaxed pace by default; `npm run make -- <folder> --speed 1.5` tries another. Videos about private code live there too.
+Tell your agent how you like your videos ("faster", "open with the decision", "always show the code") and it keeps that in `local/`, which never leaves your machine, along with videos about private code. Videos play at 1.25 times a relaxed pace by default; `npm run make -- <folder> --speed 1.5` tries another.
+
+Every video takes a theme: colours, fonts, layout and motion in one folder. Ship with `shipshow` or `paper`, or have your agent build one from a client's brand; `--theme paper` previews any theme on any video.
 
 ## How we work
 

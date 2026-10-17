@@ -1,21 +1,24 @@
 <style>
-  /* This video's look. kit/shell.html sets the canvas (1920 by 1080) and the captions. */
-  .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; }
-  h1 { font-size: 100px; font-weight: 800; }
-  .box { padding: 40px 60px; border-radius: 20px; background: #182033; border: 2px solid var(--accent); font-size: 56px; }
+  /* This video's layout. Colours, fonts, spacing and motion come from the theme
+     (video.json "theme"); kit/base.css has ready pieces: ss-heading, ss-center, ss-card, ss-chip,
+     ss-code, ss-label, ss-takeaway. */
+  .box { padding: 40px 60px; font-size: 56px; }
 </style>
 
 <!-- One section per file in script/, named after it. data-cue="word" makes an element arrive
-     when the voice says that word; data-anim picks how (up, fade, pop, left, right, grow). -->
+     when the voice says that word; data-anim picks how (up, fade, pop, left, right, grow, zoom,
+     blur, type, draw, count, highlight, stagger, pulse). data-transition on a section picks how
+     the scene enters (none, fade, rise, slide, zoom, wipe). -->
 <section data-scene="01-intro">
-  <div class="center">
-    <h1 data-cue="first">Scene one</h1>
+  <div class="ss-center">
+    <div class="ss-label" data-cue="+0.2" data-anim="type">My explainer</div>
+    <h1 class="ss-display" style="font-size: 100px" data-cue="first" data-anim="zoom">Scene one</h1>
   </div>
 </section>
 
-<section data-scene="02-idea">
-  <div class="center">
-    <h1 data-cue="+0.2">Scene two</h1>
-    <div class="box" data-cue="box#2" data-anim="pop">box</div>
+<section data-scene="02-idea" data-transition="wipe">
+  <h2 class="ss-heading" data-cue="+0.2">Scene two</h2>
+  <div class="ss-center">
+    <div class="box ss-card" data-cue="box#2" data-anim="pulse">box</div>
   </div>
 </section>

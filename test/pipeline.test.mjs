@@ -126,3 +126,45 @@ test("speed: --speed beats video.json beats local/config.json beats 1.25, and sc
     delete process.env.SHIPSHOW_LOCAL;
   }
 });
+
+test("themes: a local theme wins over a shared one, its files are copied and its url()s rewritten", async () => {
+  const { themeDir, themeCss } = await import("../bin/lib.mjs");
+  const local = mkdtempSync(join(tmpdir(), "kx-test-"));
+  mkdirSync(join(local, "themes", "shipshow", "fonts"), { recursive: true });
+  writeFileSync(join(local, "themes", "shipshow", "theme.css"), ':root{--accent:#123456} @font-face{src:url("fonts/brand.woff2")} .l{background:url(./logo.svg)} .d{background:url(data:image/png;base64,AA)}');
+  writeFileSync(join(local, "themes", "shipshow", "fonts", "brand.woff2"), "font");
+  process.env.SHIPSHOW_LOCAL = local;
+  try {
+    assert.equal(themeDir("shipshow"), join(local, "themes", "shipshow"));
+    const video = mkdtempSync(join(tmpdir(), "kx-test-"));
+    const css = themeCss("shipshow", video);
+    assert.match(css, /url\("assets\/theme\/fonts\/brand\.woff2"\)/);
+    assert.match(css, /url\(assets\/theme\/logo\.svg\)/);
+    assert.match(css, /url\(data:image\/png;base64,AA\)/);
+    assert.equal(readFileSync(join(video, "assets", "theme", "fonts", "brand.woff2"), "utf8"), "font");
+    assert.equal(themeDir("paper"), join(REPO, "themes", "paper"));
+  } finally {
+    delete process.env.SHIPSHOW_LOCAL;
+  }
+});
+
+test("flair: a known token becomes a #root override; an unknown value stops the build", () => {
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "demo");
+  cpSync(join(REPO, "template"), dir, { recursive: true });
+  writeFileSync(join(dir, "timing.json"), JSON.stringify({
+    total: 4,
+    scenes: [
+      { id: "01-intro", start: 0, duration: 2, sentences: [{ text: "This is the first scene.", start: 0.5, duration: 1 }] },
+      { id: "02-idea", start: 2, duration: 2, sentences: [{ text: "A box appears when the voice says box.", start: 2.5, duration: 1 }] },
+    ],
+  }));
+  const env = { ...process.env, SHIPSHOW_LOCAL: mkdtempSync(join(tmpdir(), "kx-test-")) };
+  const vj = JSON.parse(readFileSync(join(dir, "video.json"), "utf8"));
+  writeFileSync(join(dir, "video.json"), JSON.stringify({ ...vj, flair: { transition: "zoom", ambient: "grid" } }));
+  execFileSync(process.execPath, [join(REPO, "bin", "build.mjs"), dir], { env, stdio: "pipe" });
+  const html = readFileSync(join(dir, "index.html"), "utf8");
+  assert.match(html, /#root \{\n  --transition: zoom;\n  --ambient: grid;\n\}/);
+  assert.match(html, /--accent: #ffb454/);                       // the default theme, shipshow
+  writeFileSync(join(dir, "video.json"), JSON.stringify({ ...vj, flair: { transition: "spin" } }));
+  assert.throws(() => execFileSync(process.execPath, [join(REPO, "bin", "build.mjs"), dir], { env, stdio: "pipe" }), /transition is "spin"/);
+});
