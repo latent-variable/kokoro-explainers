@@ -1,0 +1,15 @@
+{
+  "model": "mlx-community/OmniVoice-bf16",
+  "revision": "8fb0b754cad788aaefec690cd55c207e8a628f85",
+  "voicesRepo": "kyutai/tts-voices",
+  "voicesRevision": "323332d33f997de8394f24a193e1a76df720e01a",
+  "default": "caro_davy",
+  "builtIn": {
+    "caro_davy": "voice-zero/caro_davy.wav",
+    "bill_boerst": "voice-zero/bill_boerst.wav",
+    "peter_yearsley": "voice-zero/peter_yearsley.wav",
+    "stuart_bell": "voice-zero/stuart_bell.wav",
+    "marius": "voice-donations/Selfie.wav",
+    "javert": "voice-donations/Butter.wav"
+  }
+}

@@ -10,6 +10,7 @@
   },
   "scripts": {
     "setup": "python3 -m venv .venv && .venv/bin/pip install -r requirements.txt",
+    "setup:omnivoice": "[ -x .venv/bin/pip ] || npm run setup && .venv/bin/pip install -r requirements-omnivoice.txt",
     "doctor": "node bin/doctor.mjs",
     "new": "node bin/new.mjs",
     "voice": "node bin/voice.mjs",
