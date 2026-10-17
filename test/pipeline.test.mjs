@@ -194,6 +194,10 @@ test("critic plan: presets, precedence, a decision video's defaults, and caps va
     // No list removes the floor: accuracy always runs, and a decision video's decision critic.
     assert.deepEqual(plan({}, ["--critics", "critic-sync"]).critics, ["critic-accuracy", "critic-sync"]);
     assert.deepEqual(plan({ kind: "decision" }, ["--critics", "critic-sync"]).critics, ["critic-accuracy", "critic-sync", "critic-decision"]);
+    // A more specific preset resets less specific dials; a dial beside it still applies.
+    assert.equal(plan({ review: { preset: "quick" } }).rounds, 1);
+    assert.equal(plan({ review: { preset: "quick", rounds: 2 } }).rounds, 2);
+    assert.equal(plan({}, ["--preset", "standard"]).rounds, PRESETS.standard.rounds);
     // More rounds never cost less.
     assert.ok(plan({}, ["--rounds", "4"]).estimate.worst > plan({}, ["--rounds", "1"]).estimate.worst);
   } finally {
@@ -204,4 +208,7 @@ test("critic plan: presets, precedence, a decision video's defaults, and caps va
   assert.match(bad(["--rounds", "0"]).stderr, /rounds is 0/);
   assert.match(bad(["--until", "everything"]).stderr, /until is "everything"/);
   assert.match(bad(["--critics", "critic-vibes"]).stderr, /critic-vibes/);
+  const typo = mkdtempSync(join(tmpdir(), "kx-test-"));
+  writeFileSync(join(typo, "video.json"), JSON.stringify({ kind: "decison" }));
+  assert.match(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), typo], { encoding: "utf8" }).stderr, /kind is "decison"/);
 });

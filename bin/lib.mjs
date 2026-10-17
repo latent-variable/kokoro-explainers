@@ -232,15 +232,19 @@ function dial(key, value) {
 
 export function reviewPlan(cfg, argv = process.argv) {
   const kind = cfg.kind || "feature";
+  if (!["decision", "feature", "release"].includes(kind)) die(`video.json kind is "${kind}"; it takes decision, feature, release`);
   if (cfg.critics) die(`video.json "critics" moved into "review": {"critics": [...]} (skills/critic-loop)`);
   const cli = {};
   for (const k of ["preset", "rounds", "until", "model", "final", "frames", "rerun", "critics"]) if (flag(k, argv) !== undefined) cli[k] = flag(k, argv);
   const layers = [localConfig().review || {}, cfg.review || {}, cli];
-  const preset = [...layers].reverse().find((l) => l.preset)?.preset || (kind === "decision" ? "quick" : "standard");
+  // A preset resets every dial set less specifically than it: a video's "quick" is not undone
+  // by a person's "rounds": 4. Dials set at its own level or more specifically still apply.
+  const from = layers.map((l) => !!l.preset).lastIndexOf(true);
+  const preset = from >= 0 ? layers[from].preset : kind === "decision" ? "quick" : "standard";
   if (!PRESETS[preset]) die(`review preset is "${preset}"; it takes ${Object.keys(PRESETS).join(", ")}`);
   const plan = { ...PRESETS[preset], critics: [...PRESETS[preset].critics] };
   const overrides = [];
-  for (const layer of layers) {
+  for (const layer of layers.slice(Math.max(0, from))) {
     for (const [k, v] of Object.entries(layer)) {
       if (k === "preset") continue;
       if (!(k in plan)) die(`review has "${k}"; it takes preset, ${Object.keys(plan).join(", ")}`);
