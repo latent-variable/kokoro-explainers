@@ -1,3 +1,4 @@
+
 <p align="center">
   <img src="docs/assets/hero.svg" width="100%" alt="ShipShow. Turn a shit show into a ship show: short narrated videos of what your agents changed, so you understand it and ship it.">
 </p>
@@ -11,6 +12,11 @@ Your agents change code faster than you can read it. ShipShow hands you a short 
 </p>
 
 <!-- The full how-it-works video goes here. -->
+
+
+https://github.com/user-attachments/assets/5421baa1-c54d-4151-8cf4-6e5e20be889e
+
+
 
 ## How it works
 
