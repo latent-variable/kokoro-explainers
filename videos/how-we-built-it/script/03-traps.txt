@@ -1,1 +1,1 @@
-Each trap it hit was written into AGENTS.md, so the next agent does not repeat it. One library version has to be pinned. And the speech engine fails when its data path is one hundred sixty characters or longer.
+Coding agents read a file called AGENTS.md first. The traps this project hit are written in it, such as skipping speech recognition. Another: a data path of one hundred sixty characters or more breaks the voice engine. The error never mentions the path.
