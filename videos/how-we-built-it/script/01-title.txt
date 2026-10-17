@@ -1,0 +1,1 @@
+This project's first two pull requests were built with Claude assisting. First came the pipeline, then the critics: agents that review each video. This video is the story of how, and what a team could take from it.
