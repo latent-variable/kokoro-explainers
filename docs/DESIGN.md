@@ -269,7 +269,6 @@ finds, not proof. `critic-loop` still recommends a stronger model for a public r
 account allows it".
 
 ### D21. The sample is a pacing service built by three agents in one day (2026-10-17; replaces D11)
-*This pull request does not carry the sample; it lands in the next pull request of the stack.*
 **Decision.** `sample_application/` is `pacer-demo`, a toy ad-spend pacer of about 80 lines of
 dependency-free Node (about 250 with its tests and scenario), written for this demo and not Aperiam's code. Three agents each take one task: budget
 pacing, batched ledger writes, and EUR and JPY campaigns. Each is correct for its task and each gets its

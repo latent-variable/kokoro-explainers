@@ -1,0 +1,99 @@
+From de19392b5a0651dd8568b2a6be605294c5bea991 Mon Sep 17 00:00:00 2001
+From: agent-base <agent-base@example.invalid>
+Date: Thu, 15 Oct 2026 09:00:00 -0700
+Subject: [PATCH 1/5] Add the engine, ledger and campaign
+
+---
+ package.json         | 10 ++++++++++
+ src/campaign.mjs     |  4 ++++
+ src/engine.mjs       |  9 +++++++++
+ src/ledger.mjs       | 12 ++++++++++++
+ test/engine.test.mjs | 13 +++++++++++++
+ 5 files changed, 48 insertions(+)
+ create mode 100644 package.json
+ create mode 100644 src/campaign.mjs
+ create mode 100644 src/engine.mjs
+ create mode 100644 src/ledger.mjs
+ create mode 100644 test/engine.test.mjs
+
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..4d807f8
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,10 @@
++{
++  "name": "pacer-demo",
++  "private": true,
++  "type": "module",
++  "description": "A toy ad-spend pacer: the kind of service an adtech portfolio company runs. Written for the ShipShow demo.",
++  "scripts": {
++    "test": "node --test test/*.test.mjs",
++    "scenario": "node scenario/overspend.mjs"
++  }
++}
+diff --git a/src/campaign.mjs b/src/campaign.mjs
+new file mode 100644
+index 0000000..a9af2de
+--- /dev/null
++++ b/src/campaign.mjs
+@@ -0,0 +1,4 @@
++// A campaign has a daily budget in cents.
++export function campaign({ id, name, dailyBudget }) {
++  return { id, name, dailyBudget };
++}
+diff --git a/src/engine.mjs b/src/engine.mjs
+new file mode 100644
+index 0000000..538a522
+--- /dev/null
++++ b/src/engine.mjs
+@@ -0,0 +1,9 @@
++// Serve one impression: bill the campaign what the exchange charged.
++export function createEngine({ ledger }) {
++  return {
++    serve(campaign, event) {
++      ledger.record(campaign.id, event.costUsdCents);
++      return { served: true };
++    },
++  };
++}
+diff --git a/src/ledger.mjs b/src/ledger.mjs
+new file mode 100644
+index 0000000..6bf31fa
+--- /dev/null
++++ b/src/ledger.mjs
+@@ -0,0 +1,12 @@
++// Spend so far today, per campaign, in USD cents: what the exchange bills us in.
++export function createLedger() {
++  const spent = new Map();
++  return {
++    record(campaignId, usdCents) {
++      spent.set(campaignId, (spent.get(campaignId) ?? 0) + usdCents);
++    },
++    spent(campaignId) {
++      return spent.get(campaignId) ?? 0;
++    },
++  };
++}
+diff --git a/test/engine.test.mjs b/test/engine.test.mjs
+new file mode 100644
+index 0000000..bcdc304
+--- /dev/null
++++ b/test/engine.test.mjs
+@@ -0,0 +1,13 @@
++import assert from "node:assert/strict";
++import { test } from "node:test";
++import { campaign } from "../src/campaign.mjs";
++import { createEngine } from "../src/engine.mjs";
++import { createLedger } from "../src/ledger.mjs";
++
++test("serving an impression bills the campaign", () => {
++  const ledger = createLedger();
++  const engine = createEngine({ ledger });
++  const c = campaign({ id: "c1", name: "Spring sale", dailyBudget: 10000 });
++  assert.deepEqual(engine.serve(c, { costUsdCents: 7 }), { served: true });
++  assert.equal(ledger.spent("c1"), 7);
++});
+-- 
+2.53.0
+
