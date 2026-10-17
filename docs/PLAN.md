@@ -10,7 +10,7 @@ were measured on the same day.
 | Step | Status |
 |---|---|
 | 0.1 results folder per video | done by hand for `videos/pacer-dev-journey` (PR #20); 0.2 automates it |
-| 2.0 commit project settings, 2.1 Bash guard, 2.2 protect files, 2.3 Stop hook, 2.7 read denials | done: DESIGN D37, `test/hooks.test.mjs` |
+| 2.0 commit project settings, 2.1 Bash guard, 2.2 protect files, 2.3 Stop hook, 2.7 read denials | done: DESIGN D39, `test/hooks.test.mjs` |
 | 3.1 read-only critic (without the Bash hook), 3.2 `maxTurns` and an explicit model | next PR |
 | everything else | not started |
 
