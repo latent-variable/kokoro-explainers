@@ -17,7 +17,9 @@ evidence, and stated, observed and inferred stay apart.
 
 ## The bar
 
-Follow `evidence-standard` (tags, pins, safe running, where it goes). For a change:
+How you get there is yours. The numbered items are what the result must show, and the commands in this
+skill are one way that has worked, not a required sequence. Follow `evidence-standard` (tags, pins, safe
+running, where it goes). For a change:
 
 1. **Both ends are pinned**: `Base`, `Head`, `Merge-base` and the commit list, as full SHAs. A
    branch name moves; record what it pointed to, and re-check before you finish.
@@ -82,7 +84,7 @@ Follow `evidence-standard` (tags, pins, safe running, where it goes). For a chan
 
 ## Reading the change
 
-For a PR: `gh pr view <n> --json title,body,commits,files,reviews` and `gh pr diff <n>` (say "gh
+One way that has worked (any route that meets the bar is fine). For a PR: `gh pr view <n> --json title,body,commits,files,reviews` and `gh pr diff <n>` (say "gh
 unavailable" if it is). For a range: `git rev-parse` for both ends, `git merge-base`, and `git rev-list
 --reverse <base>..<head>` for the `Commits:` list (full SHAs; side-branch commits of a merge are in it),
 then **all three** of `git log -p <base>..<head>` for each commit, `git show --cc <merge>` for each merge

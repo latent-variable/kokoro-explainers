@@ -41,9 +41,9 @@ Skills live in `skills/<name>/SKILL.md` and are linked into `.claude/skills/` by
 
 ## Before you change anything
 
-- `npm run doctor` on a fresh clone. It names what the machine lacks and the fix.
-- `npm test` for a baseline. It needs no Kokoro, and it is the only thing CI runs.
-- `git status` and the branch: work on a feature branch, never on `main`.
+Know three things, by whatever route you like: what the machine lacks (`npm run doctor` names it, with the
+fix), whether the tests pass now (`npm test` needs no Kokoro and is the only thing CI runs), and that you are
+on a feature branch, never `main`.
 
 ## Validate the change
 
