@@ -1,0 +1,21 @@
+<style>
+  /* This video's look. kit/shell.html sets the canvas (1920 by 1080) and the captions. */
+  .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; }
+  h1 { font-size: 100px; font-weight: 800; }
+  .box { padding: 40px 60px; border-radius: 20px; background: #182033; border: 2px solid var(--accent); font-size: 56px; }
+</style>
+
+<!-- One section per file in script/, named after it. data-cue="word" makes an element arrive
+     when the voice says that word; data-anim picks how (up, fade, pop, left, right, grow). -->
+<section data-scene="01-intro">
+  <div class="center">
+    <h1 data-cue="first">Scene one</h1>
+  </div>
+</section>
+
+<section data-scene="02-idea">
+  <div class="center">
+    <h1 data-cue="+0.2">Scene two</h1>
+    <div class="box" data-cue="box#2" data-anim="pop">box</div>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+node_modules/
+.venv/
+out/
+__pycache__/
+.DS_Store
+
+# Generated per video by bin/voice.mjs and bin/build.mjs
+videos/*/assets/
+videos/*/index.html
+videos/*/meta.json
+videos/*/timing.json
+videos/*/.hyperframes/
+videos/*/renders/
+
+# Agent context (project-sync.sh)
+.agents/
+.claude/
