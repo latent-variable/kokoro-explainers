@@ -715,6 +715,22 @@ test("capture: record keeps the command's own exit code, verify catches a change
   assert.equal(node("record", dir, join(dir, "nope", "c.txt"), "--", "true").status, 2);
 });
 
+test("the sample application behaves as its README says: its tests pass, two known failures are todos, and the scenario overspends", () => {
+  const sample = join(REPO, "sample_application");
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT; // a child started under this runner would otherwise print nothing readable
+  const tests = spawnSync(process.execPath, ["--test", ...readdirSync(join(sample, "test")).filter((f) => f.endsWith(".test.mjs")).map((f) => join("test", f))], { cwd: sample, encoding: "utf8", env });
+  assert.equal(tests.status, 0, tests.stdout.slice(-600));
+  assert.match(tests.stdout, /^# fail 0$/m);
+  assert.match(tests.stdout, /^# todo 2$/m, "the budget contract test should hold the two known failures (EUR under, JPY over), marked todo");
+  const scenario = spawnSync(process.execPath, [join("scenario", "overspend.mjs")], { cwd: sample, encoding: "utf8" });
+  assert.equal(scenario.status, 0, scenario.stderr);
+  const percent = Object.fromEntries(scenario.stdout.split("\n").filter((l) => /\d+%/.test(l)).map((l) => [l.slice(0, 3).trim(), +l.match(/(\d+)%/)[1]]));
+  assert.deepEqual(percent, { US: 111, EU: 93, Tok: 181 }, "the README's table and the scenario's output differ");
+  const readme = readFileSync(join(sample, "README.md"), "utf8");
+  for (const row of ["11,088 USD    111%", "8,585 EUR     93%", "27,122 JPY    181%"]) assert.ok(readme.includes(row), `the sample README no longer shows "${row}"`);
+});
+
 test("critic plan: a video that shows code gets critic-grounding on the floor, whatever the preset or critics list", async () => {
   const { reviewPlan, config } = await import("../bin/lib.mjs");
   const plan = (cfg, argv = []) => reviewPlan({ title: "t", ...cfg }, argv);

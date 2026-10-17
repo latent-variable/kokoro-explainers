@@ -1,0 +1,71 @@
+From b25eed7a7d3479bcc381ac19e9a393fdf157a873 Mon Sep 17 00:00:00 2001
+From: agent-pacing <agent-pacing@example.invalid>
+Date: Thu, 15 Oct 2026 10:00:00 -0700
+Subject: [PATCH 2/5] Add daily budget pacing
+
+---
+ src/engine.mjs       |  5 ++++-
+ src/pacing.mjs       |  4 ++++
+ test/pacing.test.mjs | 23 +++++++++++++++++++++++
+ 3 files changed, 31 insertions(+), 1 deletion(-)
+ create mode 100644 src/pacing.mjs
+ create mode 100644 test/pacing.test.mjs
+
+diff --git a/src/engine.mjs b/src/engine.mjs
+index 538a522..f2da040 100644
+--- a/src/engine.mjs
++++ b/src/engine.mjs
+@@ -1,7 +1,10 @@
+-// Serve one impression: bill the campaign what the exchange charged.
++import { withinBudget } from "./pacing.mjs";
++
++// Serve one impression, unless the campaign is out of budget; then bill it what the exchange charged.
+ export function createEngine({ ledger }) {
+   return {
+     serve(campaign, event) {
++      if (!withinBudget(campaign, ledger)) return { served: false, reason: "budget" };
+       ledger.record(campaign.id, event.costUsdCents);
+       return { served: true };
+     },
+diff --git a/src/pacing.mjs b/src/pacing.mjs
+new file mode 100644
+index 0000000..265bf92
+--- /dev/null
++++ b/src/pacing.mjs
+@@ -0,0 +1,4 @@
++// Stop serving once a campaign has spent its daily budget.
++export function withinBudget(campaign, ledger) {
++  return ledger.spent(campaign.id) < campaign.dailyBudget;
++}
+diff --git a/test/pacing.test.mjs b/test/pacing.test.mjs
+new file mode 100644
+index 0000000..233d2cf
+--- /dev/null
++++ b/test/pacing.test.mjs
+@@ -0,0 +1,23 @@
++import assert from "node:assert/strict";
++import { test } from "node:test";
++import { campaign } from "../src/campaign.mjs";
++import { createEngine } from "../src/engine.mjs";
++import { createLedger } from "../src/ledger.mjs";
++
++test("a campaign stops serving once it has spent its daily budget", () => {
++  const ledger = createLedger();
++  const engine = createEngine({ ledger });
++  const c = campaign({ id: "c1", name: "Spring sale", dailyBudget: 1000 });
++  for (let i = 0; i < 10; i++) assert.equal(engine.serve(c, { costUsdCents: 100 }).served, true);
++  assert.deepEqual(engine.serve(c, { costUsdCents: 100 }), { served: false, reason: "budget" });
++  assert.equal(ledger.spent("c1"), 1000);
++});
++
++test("a campaign under budget keeps serving", () => {
++  const ledger = createLedger();
++  const engine = createEngine({ ledger });
++  const c = campaign({ id: "c2", name: "Brand", dailyBudget: 1000 });
++  assert.equal(engine.serve(c, { costUsdCents: 999 }).served, true);
++  assert.equal(engine.serve(c, { costUsdCents: 1 }).served, true);
++  assert.equal(engine.serve(c, { costUsdCents: 1 }).served, false);
++});
+-- 
+2.53.0
+

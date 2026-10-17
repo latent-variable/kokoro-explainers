@@ -220,6 +220,7 @@ template/   what npm run new copies
 videos/     videos about this repo: how-it-works (the example) and why-shipshow (the pitch)
 skills/critic-grounding/scripts/  excerpt.mjs and check-excerpt.mjs, the excerpt check (run through the skill)
 skills/evidence-standard/scripts/  sandbox-run.sh, capture.mjs, verify-vendored.sh (run through the skill)
+sample_application/  pacer-demo, a toy ad-spend pacer built by three agents in a day: the Aperiam demo (README, history/, agents/; ANSWER.md is a spoiler)
 docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images; the GIF is cut from out/how-it-works.mp4
 test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links, usage counting, the excerpt checker, the sandbox runner, the docs rule
 local/      gitignored, per person (tailor skill)

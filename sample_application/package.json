@@ -1,0 +1,10 @@
+{
+  "name": "pacer-demo",
+  "private": true,
+  "type": "module",
+  "description": "A toy ad-spend pacer: the kind of service an adtech portfolio company runs. Written for the ShipShow demo.",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "scenario": "node scenario/overspend.mjs"
+  }
+}
