@@ -1,1 +1,1 @@
-First, the voice. Kokoro is a text to speech model with eighty two million parameters, small enough to run on a laptop's processor. Each sentence of the script is voiced on its own. So we know exactly when every sentence starts, without running speech recognition afterwards.
+First, the voice. Kokoro is a small text-to-speech model that runs on a laptop. Each sentence is voiced on its own. So we know when each sentence starts, and the pictures can follow it.

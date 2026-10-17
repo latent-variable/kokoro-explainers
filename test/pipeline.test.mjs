@@ -2,7 +2,7 @@
 // swap that hits part of a word, a cue or caption at the wrong time. No Kokoro needed: the
 // build test writes its own timing.json, as bin/voice.mjs would.
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -68,4 +68,20 @@ test("build stops on a cue word the scene never says", () => {
     ],
   }));
   assert.throws(() => execFileSync(process.execPath, [join(REPO, "bin", "build.mjs"), dir], { stdio: "pipe" }), /giraffe/);
+});
+
+test("build warns when a bare cue word occurs more than once in its scene", () => {
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "demo");
+  cpSync(join(REPO, "template"), dir, { recursive: true });
+  writeFileSync(join(dir, "scenes.html"), readFileSync(join(dir, "scenes.html"), "utf8").replace('data-cue="box#2"', 'data-cue="box"'));
+  writeFileSync(join(dir, "timing.json"), JSON.stringify({
+    total: 4,
+    scenes: [
+      { id: "01-intro", start: 0, duration: 2, sentences: [{ text: "This is the first scene.", start: 0.5, duration: 1 }] },
+      { id: "02-idea", start: 2, duration: 2, sentences: [{ text: "A box appears when the voice says box.", start: 2.5, duration: 1 }] },
+    ],
+  }));
+  const r = spawnSync(process.execPath, [join(REPO, "bin", "build.mjs"), dir], { encoding: "utf8" });
+  assert.equal(r.status, 0);
+  assert.match(r.stderr, /data-cue="box" matches 2 words/);
 });

@@ -11,6 +11,7 @@ videos/*/meta.json
 videos/*/timing.json
 videos/*/.hyperframes/
 videos/*/renders/
+videos/*/review/
 
 # Agent context (project-sync.sh)
 .agents/

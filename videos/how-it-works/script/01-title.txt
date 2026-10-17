@@ -1,1 +1,1 @@
-This video was made from five short text files and one HTML page, on a laptop. Here is how it works.
+This video was made from five short text files, one per scene, and one HTML page. Here is how, and how to make your own.

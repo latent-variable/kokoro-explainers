@@ -1,1 +1,1 @@
-Next, the pictures. Each scene is a section of HTML, drawn by HyperFrames. Tag an element with a word from the script, and it appears when the voice says that word. The captions come from the script itself, so they are spelled the way you wrote them.
+Next, the pictures. HyperFrames turns an HTML page into video, one section per scene. Tag a picture with a word from the script, and it appears as the voice reaches that word.

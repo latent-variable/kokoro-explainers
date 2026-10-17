@@ -1,1 +1,1 @@
-Everything runs on your own machine, and the project is open source. To make your own, copy the starter folder and write your script.
+After a one-time model download, everything runs on your own machine. To make your own, clone the project from GitHub and follow the setup in its README. Then run npm run new with a folder name. Write one text file per scene, and a section for each in scenes.html. Then run npm run make on that folder.
