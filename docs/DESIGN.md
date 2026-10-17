@@ -137,7 +137,7 @@ pins users to it until someone bumps it, so it is omitted and the commit SHA ver
 **Facts from the docs that shaped it.** Only `name` is required, in kebab-case, and may not start
 with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
 namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
-every turn (measured: 22 skills, 7,869 characters, about 1,970 tokens), so descriptions stay short
+every turn (measured: 22 skills, 7,882 characters, about 1,971 tokens), so descriptions stay short
 and SKILL.md under 500 lines (longest 206). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
 the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
 and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
@@ -326,6 +326,16 @@ is the rule.
 **Decision.** `npm run setup` runs `bin/setup.mjs`, which takes the first of python3.13 to 3.10, then
 `python3`, that is in range; `doctor` checks the version. **Why.** The pinned `kokoro-onnx 0.6.1` requires
 Python 3.10 to 3.13, and `python3` is 3.14 on a current Homebrew machine, where pip refuses it (checked).
+
+### D27. OmniVoice is an optional second voice engine (main, #11; adopted 2026-10-17)
+**Decision.** `engine` in `video.json` or `local/config.json` picks `kokoro` (the default, anywhere) or
+`omnivoice` (higher quality, clones a voice from a 3 to 10 second clip, Apple Silicon only through MLX). It installs
+into the same `.venv` through `npm run setup:omnivoice`, which calls `npm run setup`, so this branch's
+supported-Python pick (D26) applies to both. `doctor` lists the engine as optional until asked with `--omnivoice`.
+**Consequences recorded by main.** A clone is somebody's voice (clone yourself or someone who agreed; `local/` never
+leaves the machine); OmniVoice can drop or repeat a word and nothing here hears it back (no speech recognition, D1);
+a take's identity includes the voice file's bytes. This branch did not change any of it; the merge only combined
+`doctor` (its version check and main's engine lines), `package.json` (both setup scripts) and the tests.
 
 ## Behaviour
 

@@ -53,7 +53,9 @@ The first run downloads the voice model (about 340 MB) and, if needed, a headles
 
 ## Make it yours
 
-Tell your agent how you like your videos ("faster", "open with the decision", "always show the code") and it keeps that in `local/`, which never leaves your machine, along with videos about private code. Videos play at 1.25 times a relaxed pace by default; `npm run make -- <folder> --speed 1.5` tries another. Review effort is yours too: a `quick` review takes about a minute of critics, `thorough` up to six (`npm run critics -- <folder>` shows the plan).
+Tell your agent how you like your videos ("faster", "open with the decision", "always show the code") and it keeps that in `local/`, which never leaves your machine, along with videos about private code. Videos play at 1.25 times a relaxed pace by default; `npm run make -- <folder> --speed 1.5` tries another.
+
+**A better voice, or your own.** On a Mac with Apple Silicon, `npm run setup:omnivoice` adds [OmniVoice](https://github.com/k2-fsa/OmniVoice): speech we find clearer and more natural, and it can clone a voice from a few seconds of recording. Put a clip at `local/voices/<name>.wav` (yours, or someone who agreed), and `npm run make -- <folder> --engine omnivoice --voice <name>` tries it. Kokoro stays the default and runs anywhere. Review effort is yours too: a `quick` review takes about a minute of critics, `thorough` up to six (`npm run critics -- <folder>` shows the plan).
 
 Every video takes a theme: colours, fonts, layout and motion in one folder. Ship with `shipshow` or `paper`, or have your agent build one from a client's brand; `--theme paper` previews any theme on any video.
 
@@ -71,4 +73,4 @@ Every video takes a theme: colours, fonts, layout and motion in one folder. Ship
 
 Everything about the code, the skills and the commands is in [AGENTS.md](AGENTS.md).
 
-<sub>Made for a hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>
+<sub>Made for a hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0, and so is OmniVoice's code (its weights have their own card); GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>

@@ -108,17 +108,20 @@ Node.js 22+, Python 3.10 to 3.13 (`npm run setup` picks one; `doctor` checks it)
 npm install                                                       # HyperFrames, GSAP; links skills into .claude/skills
 npm run setup                                                     # .venv with Kokoro, which hyperframes tts runs
 npm run doctor                                                    # what is missing, with the fix; voices one word
+npm run setup:omnivoice                                           # optional, Apple Silicon: OmniVoice for better and cloned voices
 ```
 
 The first `doctor` downloads Kokoro into `~/.cache/hyperframes/tts` (about 340 MB). The first
-render downloads a headless Chrome if HyperFrames finds none (about 190 MB).
+render downloads a headless Chrome if HyperFrames finds none (about 190 MB). The first OmniVoice
+take downloads its model (about 1.5 GB, `~/.cache/huggingface`); `npm run doctor -- --omnivoice`
+checks it and voices one word.
 
 ## Commands
 
 | Command | What it does |
 |---|---|
 | `npm run new -- <folder>` | A new video from `template/` (`videos/x` for this repo, `local/videos/x` for any other code base) |
-| `npm run voice -- <folder>` | One Kokoro take per sentence, then `assets/narration.wav` and `timing.json` |
+| `npm run voice -- <folder>` | One take per sentence (Kokoro, or OmniVoice: `--engine omnivoice --voice <name>` to try it), then `assets/narration.wav` and `timing.json` |
 | `npm run build -- <folder>` | The HyperFrames composition, `index.html`, from `scenes.html` and the timing |
 | `npm run check -- <folder>` | HyperFrames' own check: lint, layout, motion, caption contrast |
 | `npm run preview -- <folder>` | The HyperFrames studio, to scrub through it |
@@ -156,8 +159,14 @@ number in the text counts up), `highlight` (a marker sweeps under text already s
 `stagger` (children in turn), `pulse` (pops, then beats). A `<script>` in `scenes.html` runs after the shared
 timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-at`.
 
-**Voice.** `af_heart` is the default; `npx hyperframes tts --list` shows the rest. Non-English
-voices need `espeak-ng` system-wide. `say` maps a written word to what Kokoro is told to say
+**Voice.** Two engines, set by `engine` in `video.json` or `local/config.json` (`--engine` on `make` or
+`voice` tries one). **`kokoro`** is the default and runs anywhere: `af_heart`; `npx hyperframes tts --list`
+shows the rest; non-English voices need `espeak-ng` system-wide. **`omnivoice`** is higher quality and
+clones voices, on Apple Silicon only (MLX; `npm run setup:omnivoice`, then `"engine": "omnivoice"`). Its
+`voice` is a recording: a **built-in** one (`caro_davy`, the default, `bill_boerst`, `peter_yearsley`,
+`stuart_bell`, `marius`, `javert`: CC0 clips from kyutai/tts-voices, `bin/omnivoice-voices.json`) or a
+**clone**, a 3 to 10 second clip at `local/voices/<name>.wav` with, optionally, the words spoken in it at
+`<name>.txt` beside it. `say` maps a written word to what the engine is told to say
 (`"HyperFrames": "Hyper Frames"`); captions keep the written form.
 
 **Look.** A theme is `themes/<name>/theme.css` (or `local/themes/<name>/`, which wins): a
@@ -184,8 +193,8 @@ explicit preset there beats importance), then importance, then `local/config.jso
 `"review"`, then the kind's default (`quick` for a decision video, else `standard`). `skills/critic-loop` has what each dial trades and the floor no dial lowers.
 The estimate's constants are measurements from 2026-10-17; replace them when you measure.
 
-**Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, about 160 words a minute), not
-Kokoro's own: 1.25 by default. Pauses shrink with it. The most specific wins: `--speed` on
+**Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, OmniVoice at its own 1.0: both about 160 words
+a minute), not either engine's own: 1.25 by default. OmniVoice takes 1.0 to 1.3, the range it was tested at. Pauses shrink with it. The most specific wins: `--speed` on
 `make` or `voice`, then `video.json`, then the person's `local/config.json`, then 1.25
 (`bin/lib.mjs`, `config`). A take is re-voiced when its speed changes.
 
@@ -221,6 +230,10 @@ local/      gitignored, per person (tailor skill)
 - **Kokoro's Python is this repo's `.venv`**, passed to `hyperframes tts` as `HYPERFRAMES_PYTHON` (`bin/lib.mjs` `ttsEnv`). A user-set `HYPERFRAMES_PYTHON` wins.
 - **`requirements.txt` pins phonemizer.** kokoro-onnx 0.6.1 needs `EspeakWrapper.set_data_path`, which phonemizer 3.3 lacks. Bump the two together and run `npm run doctor`.
 - **espeak-ng fails when its data path is 160 characters or longer** (measured 2026-10-17: 159 works, 160 fails). It reports a missing `.../site-packages//phontab`, not a path error. A venv deep in a temp or worktree path hits this; `doctor` checks the length.
+- **OmniVoice is Apple Silicon only, and opt-in.** `requirements-omnivoice.txt` is separate so Kokoro installs anywhere; `doctor` lists the engine as `opt` until you ask with `--omnivoice`. `bin/omnivoice.py` voices every stale sentence in one process (the model loads once) from a job file `bin/voice.mjs` writes; a user-set `HYPERFRAMES_PYTHON` is its Python too, which is how the tests stand a fake worker in for it. The model and the built-in clips are pinned by revision in `bin/omnivoice-voices.json`.
+- **A clone is somebody's voice.** OmniVoice's own disclaimer prohibits unauthorized cloning and impersonation: clone yourself or someone who agreed. `local/` never leaves the machine, so a clone never reaches this public repo; keep it that way.
+- **OmniVoice can drop or repeat a word, and nothing here hears it back** (no speech recognition, below). Measured 2026-10-17: four template sentences read back exactly. Listen to a video before you ship it, and at 16 steps instead of 32 it dropped words on long lines, so `STEPS` stays 32. A sentence over about 45 words is the risk; split it.
+- **A take's identity includes the voice's bytes.** A clip replaced under the same name (or its `.txt` edited) is a different voice, so its takes are voiced again; a Kokoro take's key is unchanged from before OmniVoice, so existing takes stay valid.
 - **No speech recognition, on purpose.** `hyperframes transcribe` built whisper.cpp and then timed out downloading its model after six minutes. Timing comes from voicing each sentence separately (`bin/voice.mjs`), so a word inside a sentence is placed by its share of the letters. Do not add an ASR step to fix a cue a few hundred milliseconds off; split the sentence or use `data-cue="+seconds"`.
 - **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts the number of every later sentence in that scene (numbering restarts per scene), so those re-voice; the cost per take has not been measured.
 - **Generated files are gitignored** (`videos/*/assets/`, `review/`, `index.html`, `meta.json`, `timing.json`). Never commit audio, frames or renders.

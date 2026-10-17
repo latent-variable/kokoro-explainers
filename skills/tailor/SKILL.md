@@ -17,6 +17,9 @@ machine. The baseline is shared and reviewed; a preference is yours and needs no
 ```
 local/
   config.json           settings the pipeline reads: {"speed": 1.4, "voice": "af_heart", "theme": "acme"}
+                        (or {"engine": "omnivoice", "voice": "mine"}: a clone at voices/mine.wav)
+  voices/<name>.wav     a clone for the omnivoice engine: 3 to 10 seconds of the person, with their
+                        permission; <name>.txt beside it holds the words spoken in it (optional)
   themes/<name>/        your clients' themes (skills/theme); never committed
   preferences.md        how you like explainers made: depth, tone, look, order
   critics.md            your bar: every critic applies it to every video you make
