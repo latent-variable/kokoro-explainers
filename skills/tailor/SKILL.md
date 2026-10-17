@@ -41,7 +41,8 @@ local/
 - Let the builder judge its own video.
 - Tell the agent how to do what it already does well (managing its context, planning its
   steps). A rule like that becomes friction the next model has to work around; state the
-  outcome you want instead.
+  outcome you want instead. Who builds, who judges and where facts come from are bars, not
+  method, and a preference does not change them.
 
 ## Precedence
 

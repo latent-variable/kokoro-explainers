@@ -45,8 +45,10 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 - **A bar you keep wishing a video met becomes a critic** (`critic-loop`, *A new critic*).
 - **A video about another code base goes in `local/videos/`.** This repo is public.
 - **Skills set the bar, not the method** (team, 2026-10-17). They say what a good video is and
-  how it is judged; how an agent manages its context, plans or reads a code base is its own
-  business, and a rule about it is friction the next model has to work around.
+  how it is judged. How an agent manages its context or plans its steps is its own business,
+  and a rule about it is friction the next model has to work around. The bars are not method:
+  who builds, who judges (a fresh agent), and where facts come from (the code, `sources.md`)
+  hold for every agent.
 
 ## Commands
 

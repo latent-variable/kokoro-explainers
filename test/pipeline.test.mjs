@@ -7,7 +7,7 @@ import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { REPO, readWav, sentences, spoken, writeWav } from "../bin/lib.mjs";
+import { REPO, outName, readWav, sentences, spoken, writeWav } from "../bin/lib.mjs";
 
 test("sentences end at . ! or ? and a space, not inside a number or a file name", () => {
   assert.deepEqual(sentences("It costs 3.5 dollars. Open index.html now! Ready?  Yes."), [
@@ -98,4 +98,9 @@ test("skills link from skills/ and local/skills/, and a local one cannot shadow 
   assert.equal(readlinkSync(join(root, ".claude/skills/explainer-video")), join("..", "..", "skills", "explainer-video"));
   assert.equal(readlinkSync(join(root, ".claude/skills/critic-mine")), join("..", "..", "local", "skills", "critic-mine"));
   assert.match(r.stderr, /local\/skills\/explainer-video has the same name as a shared skill/);
+});
+
+test("renders of two folders that share a name do not overwrite each other", () => {
+  assert.equal(outName(join(REPO, "videos", "how-it-works")), "how-it-works");
+  assert.notEqual(outName(join(REPO, "local", "videos", "a", "demo")), outName(join(REPO, "local", "videos", "b", "demo")));
 });
