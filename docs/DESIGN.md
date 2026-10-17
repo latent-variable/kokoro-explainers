@@ -426,7 +426,7 @@ requirements install). A test locks the order in, so the upgrade cannot slip beh
 **Costs.** One more pip call, and a network fetch, on every setup. `npm run setup:omnivoice` still installs with the venv's
 current pip, so an old venv needs `npm run setup` first.
 
-### D36. A plan, not a change: Claude best practices (2026-10-17)
+### D38. A plan, not a change: Claude best practices (2026-10-17)
 **Decision.** Wrote `docs/PLAN.md` from Anthropic's docs and engineering posts (read by a research agent on 2026-10-17) and
 measured facts about this repo: `AGENTS.md` is 263 lines against a 200-line yardstick, no skill description puts its trigger
 first, `agents/critic.md` is read-only only by instruction, there are no hooks, and `.claude/` is gitignored whole, so
@@ -435,7 +435,7 @@ project settings and rules cannot be committed. Nothing in the plan is done.
 cost or critic agreement is recorded. **Costs.** None yet; each step names how to tell it worked and the unconfirmed items
 to check first (plugin-shipped agent hooks, how a missing `version` resolves).
 
-### D37. Project hooks enforce the rules that were only prose (2026-10-17; plan steps 2.0 to 2.3, 2.7 of `docs/PLAN.md`)
+### D39. Project hooks enforce the rules that were only prose (2026-10-17; plan steps 2.0 to 2.3, 2.7 of `docs/PLAN.md`)
 **Decision.** `.claude/settings.json` and `.claude/hooks/` are tracked (`.gitignore` ignores only `.claude/skills/`, the links
 `npm install` makes, and `.claude/settings.local.json`). Three hooks: **`guard-bash`** (PreToolUse on Bash) refuses `rm`,
 `unlink`, `shred`, `find -delete`, and the git commands that discard or rewrite work (`restore`, `clean`, `reset --hard`,
@@ -457,7 +457,7 @@ built from a variable, gets through; it is a seatbelt, not a sandbox (`sandbox-r
 (`doctor` says), and a machine without it hears about it at every first stop. Hooks run in the person's session and are
 loaded when it starts.
 
-### D38. The critic cannot Write or Edit, and stops after 40 turns (2026-10-17; supersedes the critic agent paragraph of D13)
+### D40. The critic cannot Write or Edit, and stops after 40 turns (2026-10-17; supersedes the critic agent paragraph of D13)
 **Decision.** `agents/critic.md` adds `disallowedTools: ["Write", "Edit", "NotebookEdit"]`, `maxTurns: 40` and `model: sonnet`
 (was `inherit`). The loop's `model` dial still overrides the agent's model, so a person who asks for another judge gets it.
 D13 said the critic was "told, not enforced"; the writing tools are now enforced, Bash is not (it can still redirect or
@@ -471,7 +471,7 @@ among the tools it saw, which this change did not cause (`tools` is unchanged) a
 plugin-shipped agent's own hooks run is unconfirmed, so the Bash limit stays a stated one. **Costs.** A critic that needs more than 40 turns
 stops early and returns what it has; raise `maxTurns` if a longer video needs it.
 
-### D39. Descriptions keep what the skill is first and "Load when ..." last; a size ceiling; two skills pre-approve their scripts (2026-10-17; plan 1.3, 1.4, 1.6)
+### D41. Descriptions keep what the skill is first and "Load when ..." last; a size ceiling; two skills pre-approve their scripts (2026-10-17; plan 1.3, 1.4, 1.6)
 **Decision.** The 22 descriptions stay as they were: what the skill does, then "Load when ...". A test asserts that each says when to
 load, a ceiling of 600 characters a description, and 20,000 characters (about 5,000 tokens) a `SKILL.md`. `critic-grounding` and
 `evidence-standard` gain `allowed-tools` for their bundled scripts (`Bash(node ${CLAUDE_SKILL_DIR}/scripts/*)` and the sibling
@@ -489,7 +489,7 @@ a change to what triggers a skill is checked with the evals (the next PR in this
 every variant: a question about a pasted snippet is answered without the skill, whatever the wording.
 **Costs.** The descriptions are not shorter than before (7,882 characters with names, about 1,971 tokens).
 
-### D40. A video's results/ folder is written from files that exist (2026-10-17; plan 0.2)
+### D42. A video's results/ folder is written from files that exist (2026-10-17; plan 0.2)
 **Decision.** `node bin/results.mjs <video> start` records when a run began; `node bin/results.mjs <video>` then writes
 `results/run.json` (plan, video stats, versions), `usage-delta.json`, `critic-rounds.json`, `run.md`, and copies each
 `review/*.txt` capture that has a `.sha256` beside it. `bin/usage.mjs` gained `--since` and `--until`, which keep only the API
@@ -505,7 +505,7 @@ to a transcript. Whether the person agreed with a critic is not recorded anywher
 **Costs.** The window is by timestamp, so work in the same session outside the video lands in it too (the builder's row is the
 session's, not the video's alone); mark `start` at the beginning and keep a video's work together.
 
-### D41. The plugin has an eval suite, built from our own failures (2026-10-17; plan 5.1 to 5.3)
+### D43. The plugin has an eval suite, built from our own failures (2026-10-17; plan 5.1 to 5.3)
 **Decision.** `evals/` holds 12 cases for `claude plugin eval`: five `trigger` cases (a task in natural words, no skill named; a
 `tool_used: Skill` grader) and seven `quality` cases (the skill is named; deterministic graders first, then one `llm` judge written as PASS
 and FAIL conditions), each run three times with the plugin and three times without (`--ablation with-without`, the default). `npm run
@@ -517,7 +517,7 @@ with no gap marker, an unsupported claim, a yen budget read as cents).
 **What it found.** The understanding skills lift the answer when they load (`code-context` +0.42, the evidence standard +0.33 to +0.50,
 narration +0.17) and often do not load on a plain question (`trigger-code-context` 0 of 3 on every wording). The critic skills add
 nothing on these cases (a bare agent also catches the planted defects), so they are regression tests until harder defects are planted. And it
-caught a regression before it shipped: the trigger-first description rewrite (D39) lowered triggering and was reverted.
+caught a regression before it shipped: the trigger-first description rewrite (D41) lowered triggering and was reverted.
 **Judge.** An `llm` grader uses Sonnet (`--judge-model`), the same family as the agent under test, so it shares its blind spots (the earlier
 caution of D20); the deterministic graders do not. Two of my own cases were wrong at first (a rubric that failed correct extra findings; a case
 that gave the skill no code, so it rightly refused), found by reading the transcripts (`--keep-temp`), not the scores.
