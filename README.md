@@ -28,9 +28,17 @@ Your agents change code faster than you can read it. ShipShow hands you a short 
   <sub>Accuracy &middot; Clarity &middot; Pacing &middot; Sync &middot; Visuals &middot; Consistency &middot; Engagement &middot; Decision &middot; Grounding</sub>
 </p>
 
+## Install as a Claude Code plugin
+
+```
+claude plugin install shipshow --marketplace latent-variable/shipshow
+```
+
+Needs Claude Code 2.1.275 or later, and works once this is on `main`. Three skills work in any repository: `code-context`, `change-context` and `evidence-standard`. The rest (briefs, plans, scripts, hand-backs, `explainer-video`, `critic-loop` and the critics) feed or judge the video pipeline, which needs this repo cloned and set up as below.
+
 ## Set it up
 
-Node.js 22+, Python 3.10+ and ffmpeg (tested on macOS):
+Node.js 22+, Python 3.10 to 3.13 (not newer: the pinned Kokoro does not support it) and ffmpeg (tested on macOS):
 
 ```
 npm install
@@ -65,4 +73,4 @@ Every video takes a theme: colours, fonts, layout and motion in one folder. Ship
 
 Everything about the code, the skills and the commands is in [AGENTS.md](AGENTS.md).
 
-<sub>Made for the amperium.ai hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0, and so is OmniVoice's code (its weights have their own card); GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>
+<sub>Made for a hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0, and so is OmniVoice's code (its weights have their own card); GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>

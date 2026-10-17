@@ -20,9 +20,11 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Path | What |
 |---|---|
+| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the `critic` agent (Read, Grep, Glob, Bash and Skill; told not to write, not enforced). Validate with `claude plugin validate .` (one expected warning: no `version`) |
+| `docs/PRD.md`, `docs/DESIGN.md` | The requirements, and the design decisions and behaviour. Kept current (*Docs that stay current*) |
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
-| `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor` |
+| `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor`, `critics`; and `usage` (token and context tracking) |
 | `kit/` | The page, base styles and timeline every video shares |
 | `themes/` | Shared themes (`shipshow`, `paper`, `launch`); a client's goes in `local/themes/` |
 | `template/` | What `npm run new` copies |
@@ -32,7 +34,15 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Skill | Load it to |
 |---|---|
+| `repo-context` | Get oriented before changing this repo: shape, commands, traps, how to validate |
+| `change-context` | Understand a change (diff, PR, release): why, before and after, breaking, risk |
 | `evidence-standard` | The shared rules for evidence: tags, pins, safe running, absence, where results go |
+| `code-context` | Understand any code base: purpose, functional and non-functional requirements, API behaviour, evidenced and with unknowns listed |
+| `explain-concept` | Plan a video: viewer, outcome, one idea per scene, the picture for each |
+| `decision-brief` | Hand a decision to a fresh explainer: options, costs, pick, exact commit |
+| `narration-writing` | Write a script for the ear: pace, numbers, pronunciation |
+| `glossary` | One name per concept, across script, captions and scenes |
+| `explain-handoff` | Return a finished video with its status, next step and open questions |
 | `explainer-video` | Make or update a video. You are the builder |
 | `critic-loop` | Judge a video with fresh critics, fix, repeat until they pass; add a new critic |
 | `tailor` | Record how one person wants their explainers, in `local/` |
@@ -57,9 +67,44 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
   who builds, who judges (a fresh agent), and where facts come from (the code, `sources.md`)
   hold for every agent.
 
+## Docs that stay current
+
+Two files record what the project must do and why it is built the way it is. They are part of
+the work, not paperwork after it:
+
+| File | Holds | Update it when |
+|---|---|---|
+| `docs/PRD.md` | Problem, users, goals, functional and non-functional requirements with status, scope, open questions | A requirement is added, changed, dropped or finished; the status of an F or N line moves; an open question is answered or raised |
+| `docs/DESIGN.md` | How it fits together, the decision log, observable behaviour, how the design was tested | You make a design decision, change how something behaves, reverse an earlier choice, or learn a trap |
+
+**Update them in the same change as the code, skill or doc that moved them**, before you commit.
+A change to `bin/`, `kit/`, `template/`, `themes/`, a skill, the critics, `agents/`, `test/`, `sample_application/`,
+the plugin layout, CI, `package.json`, the lockfile, `requirements.txt`, the README, `AGENTS.md` or `CLAUDE.md`
+that leaves both files without a substantive change (at least 40 characters of added text; whitespace, a
+punctuation edit or the review date do not count) needs `docs: no change - <reason>` (a reason of ten characters
+or more) in the PR title or the last non-merge commit message. The text added may be unrelated to the change:
+the rule makes a stale number loud, not a stale claim, so read the docs you touch.
+
+- A new decision is a new entry at the end of the log: number, date, decision, why, what it
+  costs. Never rewrite a past entry; supersede it with a new one that names it.
+- A requirement keeps its ID. Move its status (done, in progress, planned, open) rather than
+  deleting it.
+- Behaviour lines name the file they come from, so they can be checked. Verify a line before
+  you write it: read the code or run it.
+- Ground a decision in evidence: a file, a measurement, a finding in `skills/REVIEW.md`, or a
+  source you read. What you do not know goes in the PRD's open questions, not in a guess.
+- When you add or rename a skill, list it in the skills table above and in the PRD.
+- `npm test` fails if either file is missing or empty, if this section's heading is gone, if a skill
+  is missing from the skills table or the PRD, if a critic is missing from `docs/assets/critics.svg`, if
+  a number the docs quote (skills, characters of descriptions, longest `SKILL.md`, tests, critics) is not
+  the tree's, or, in CI on a pull request, if code, skills, the plugin, CI, `package.json` or the README
+  changed and the docs got no real change (whitespace and the `Last reviewed` date do not count) and no
+  `docs: no change - <reason>`. It makes a stale number loud, not a stale claim: read the docs you touch.
+- **Bump nothing by hand in `plugin.json`:** it has no `version`, so the commit SHA versions the plugin.
+
 ## Set up
 
-Node.js 22+, Python 3.10+ and ffmpeg; tested on macOS.
+Node.js 22+, Python 3.10 to 3.13 (`npm run setup` picks one; `doctor` checks it) and ffmpeg; tested on macOS.
 
 ```
 npm install                                                       # HyperFrames, GSAP; links skills into .claude/skills
@@ -87,6 +132,8 @@ checks it and voices one word.
 | `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` (`--frames scenes` for fewer stills) |
 | `npm run critics -- <folder>` | The video's critic plan: critics, models, rounds, severity, and a rough time and token estimate (`--preset`, `--rounds`, `--until`, `--model`, `--final`, `--frames`, `--rerun`, `--critics`, `--json`) |
 | `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
+| `npm run usage` | Tokens and context per agent for the newest Claude Code session of this repo, subagents included (`-- <session id>` for another, `-- --json` for data); read from `~/.claude/projects/`, or from `CLAUDE_PROJECTS_DIR` |
+| `claude plugin validate .` | The two manifests only (`plugin.json`, `marketplace.json`); `claude plugin validate skills` and `agents` look at components but only warn on a broken one, so a test parses every `SKILL.md` and `agents/critic.md` front matter. One warning is expected (no `version`, on purpose: the commit SHA versions the plugin); `--strict` fails on it |
 | `npm test` | No Kokoro needed; CI runs only this |
 
 A change to `bin/`, `kit/` or `template/` is validated by running `make` and `review` on
@@ -178,16 +225,16 @@ HyperFrames renders the page frame by frame in headless Chrome and muxes in the 
 ## Layout
 
 ```
-bin/        voice, build, render, make, review, new, doctor, link-skills; lib.mjs is shared
+bin/        voice, build, render, make, review, critics, new, doctor, setup, link-skills, usage; lib.mjs is shared, measure.mjs holds the packet's measurements, python.mjs the supported Python range
 kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.js (timeline, effects)
 themes/     shipshow, paper and launch; each a theme.css of tokens, plus fonts (launch: Space Grotesk and Space Mono, SIL OFL)
-skills/     explainer-video, critic-loop, tailor, theme and the nine critics
+skills/     the explainer and development skills, critic-loop, tailor, theme and the nine critics
 template/   what npm run new copies
 videos/     videos about this repo: how-it-works (the example) and why-shipshow (the pitch)
 skills/critic-grounding/scripts/  excerpt.mjs and check-excerpt.mjs, the excerpt check (run through the skill)
 skills/evidence-standard/scripts/  sandbox-run.sh, capture.mjs, verify-vendored.sh (run through the skill)
-docs/assets/  the README's images; the GIF is cut from out/how-it-works.mp4
-test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links
+docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images; the GIF is cut from out/how-it-works.mp4
+test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links, usage counting, the excerpt checker, the sandbox runner, the docs rule
 local/      gitignored, per person (tailor skill)
 ```
 
@@ -201,7 +248,7 @@ local/      gitignored, per person (tailor skill)
 - **OmniVoice can drop or repeat a word, and nothing here hears it back** (no speech recognition, below). Measured 2026-10-17: four template sentences read back exactly. Listen to a video before you ship it, and at 16 steps instead of 32 it dropped words on long lines, so `STEPS` stays 32. A sentence over about 45 words is the risk; split it.
 - **A take's identity includes the voice's bytes.** A clip replaced under the same name (or its `.txt` edited) is a different voice, so its takes are voiced again; a Kokoro take's key is unchanged from before OmniVoice, so existing takes stay valid.
 - **No speech recognition, on purpose.** `hyperframes transcribe` built whisper.cpp and then timed out downloading its model after six minutes. Timing comes from voicing each sentence separately (`bin/voice.mjs`), so a word inside a sentence is placed by its share of the letters. Do not add an ASR step to fix a cue a few hundred milliseconds off; split the sentence or use `data-cue="+seconds"`.
-- **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts every later take's number, so they re-voice; that costs about a second each.
+- **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts the number of every later sentence in that scene (numbering restarts per scene), so those re-voice; the cost per take has not been measured.
 - **Generated files are gitignored** (`videos/*/assets/`, `review/`, `index.html`, `meta.json`, `timing.json`). Never commit audio, frames or renders.
 - **The name is ShipShow**, one word, two capitals; the repo is `latent-variable/shipshow` (renamed from kokoro-explainers 2026-10-17, and GitHub redirects the old address). A rename also changes the PR reviewer's allowlist (latent-git-agents `config/repos.json` and `tests/repo-allowlist.test.mjs`), or PRs stop being reviewed.
 - **`hyperframes lint` warns `nested_structure_needs_subcomposition` and `timeline_track_too_dense`** on every video. Advisory: each scene is one section on one track by design. Errors still block.

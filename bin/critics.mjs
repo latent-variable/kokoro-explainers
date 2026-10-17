@@ -6,7 +6,9 @@
 import { config, die, reviewPlan, videoDir } from "./lib.mjs";
 
 const dir = videoDir(process.argv[2]);
-const plan = reviewPlan(config(dir));
+const cfg = config(dir);
+if (/^who watches/i.test(cfg.audience || "")) console.error(`warning: ${dir}/video.json still has the template's placeholder audience; critic-clarity and critic-engagement judge against it, so write the real one`);
+const plan = reviewPlan(cfg);
 if (process.argv.includes("--json")) {
   console.log(JSON.stringify(plan, null, 2));
   process.exit(0);

@@ -387,6 +387,110 @@ test("omnivoice says what to do about a voice it does not have and a speed outsi
   assert.match(r.stderr, /engine is "mystery"; it takes kokoro or omnivoice/);
 });
 
+test("usage counts each API call once, and sums the session with its subagents", async () => {
+  const { readSession } = await import("../bin/usage.mjs");
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  const line = (id, u, ts) => JSON.stringify({ type: "assistant", timestamp: ts, message: { id, model: "m", usage: u } });
+  const u = (i, o, w, r) => ({ input_tokens: i, output_tokens: o, cache_creation_input_tokens: w, cache_read_input_tokens: r });
+  // msg_a is streamed over two lines: the second, with the final output count, is the one that counts.
+  writeFileSync(join(root, "s.jsonl"), [
+    line("msg_a", u(2, 10, 100, 0), "2026-10-17T10:00:00Z"),
+    line("msg_a", u(2, 50, 100, 0), "2026-10-17T10:00:01Z"),
+    line("msg_b", u(1, 5, 0, 300), "2026-10-17T10:00:10Z"),
+    "not json",
+  ].join("\n"));
+  mkdirSync(join(root, "s", "subagents"), { recursive: true });
+  writeFileSync(join(root, "s", "subagents", "agent-abc123456.jsonl"), line("msg_c", u(3, 7, 0, 40), "2026-10-17T10:00:05Z"));
+  const [main, sub] = readSession(join(root, "s.jsonl"));
+  assert.deepEqual([main.calls, main.output, main.cacheWrite, main.cacheRead], [2, 55, 100, 300]);
+  assert.equal(main.peakContext, 301);
+  assert.equal(main.lastContext, 301);
+  assert.deepEqual([sub.name, sub.calls, sub.output, sub.peakContext], ["abc12345", 1, 7, 43]);
+});
+
+// Counts that appear in the docs are read from the tree, so a doc that quotes one goes stale loudly.
+function treeFacts() {
+  const names = readdirSync(join(REPO, "skills")).filter((n) => existsSync(join(REPO, "skills", n, "SKILL.md")));
+  let chars = 0, longest = 0;
+  for (const n of names) {
+    const text = readFileSync(join(REPO, "skills", n, "SKILL.md"), "utf8");
+    const m = text.match(/^description:\s*>?\s*\n((?:  .*\n)+)/m);
+    chars += n.length + (m ? m[1].split("\n").map((l) => l.trim()).filter(Boolean).join(" ").length : 0);
+    longest = Math.max(longest, text.split("\n").length - 1);
+  }
+  const critics = names.filter((n) => n.startsWith("critic-") && n !== "critic-loop");
+  const tests = (readFileSync(join(REPO, "test", "pipeline.test.mjs"), "utf8").match(/^test\(/gm) || []).length;
+  const word = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"][critics.length];
+  return { names, critics, chars, longest, tests, word };
+}
+
+test("the docs rule holds: both docs have content, every skill is listed, every critic is drawn, the counts they quote are true, and the plugin names match", () => {
+  const read = (f) => readFileSync(join(REPO, f), "utf8");
+  const agents = read("AGENTS.md");
+  assert.match(agents, /^## Docs that stay current$/m, "AGENTS.md lost its 'Docs that stay current' section");
+  const docs = {};
+  for (const f of ["docs/PRD.md", "docs/DESIGN.md"]) {
+    assert.ok(existsSync(join(REPO, f)), `${f} is missing`);
+    docs[f] = read(f);
+    assert.ok(docs[f].length > 2000, `${f} is nearly empty`);
+    assert.ok(agents.includes(f), `AGENTS.md does not name ${f}`);
+  }
+  const reviewed = docs["docs/PRD.md"].match(/^Last reviewed: (\d{4}-\d{2}-\d{2})/m);
+  assert.ok(reviewed, "docs/PRD.md has no 'Last reviewed' date");
+  const lastEdit = spawnSync("git", ["log", "-1", "--format=%cs", "--", "docs/PRD.md"], { cwd: REPO, encoding: "utf8" }).stdout.trim();
+  if (lastEdit) assert.ok(reviewed[1] >= lastEdit, `docs/PRD.md was last changed ${lastEdit} but says "Last reviewed: ${reviewed[1]}": bump the date when you review it`);
+  const { names, critics, chars, longest, tests, word } = treeFacts();
+  const rows = agents.split("\n").filter((l) => l.startsWith("|"));
+  const inTable = (n) => rows.some((l) => l.includes("`" + n + "`"));
+  assert.deepEqual(names.filter((n) => !inTable(n)), [], "skills missing from the AGENTS.md skills table");
+  assert.deepEqual(names.filter((n) => !docs["docs/PRD.md"].includes(n)), [], "skills missing from docs/PRD.md");
+  const svg = read("docs/assets/critics.svg").toLowerCase();
+  assert.deepEqual(critics.filter((c) => !svg.includes(`>${c.slice(7)}<`)), [], "critics missing from docs/assets/critics.svg");
+  // the numbers the docs quote must be the tree's numbers, as whole numbers ("longest 142" does not satisfy "1420")
+  const has = (doc, phrase) => new RegExp(`(?<!\\d)(?<!\\d,)(?<!\\d\\.)${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\d[\d,]*/g, (n) => n)}(?!,?\\d)(?!\\.\\d)`).test(doc);
+  const budget = `${names.length} skills, ${chars.toLocaleString("en-US")} characters`;
+  assert.ok(has(docs["docs/PRD.md"], budget), `docs/PRD.md (N6) must say "${budget}"`);
+  assert.ok(has(docs["docs/DESIGN.md"], budget), `docs/DESIGN.md (D13) must say "${budget}"`);
+  assert.ok(has(docs["docs/PRD.md"], `longest SKILL.md ${longest} lines`), `docs/PRD.md (N6) must say "longest SKILL.md ${longest} lines"`);
+  assert.ok(has(docs["docs/DESIGN.md"], `longest ${longest}`), `docs/DESIGN.md (D13) must say "longest ${longest}"`);
+  assert.ok(has(docs["docs/PRD.md"], `${tests} tests`), `docs/PRD.md (N9) must say "${tests} tests"`);
+  assert.ok(docs["docs/PRD.md"].includes(`Nine critics`.replace("Nine", word[0].toUpperCase() + word.slice(1))), `docs/PRD.md (F12) must say "${word[0].toUpperCase() + word.slice(1)} critics"`);
+  assert.ok(docs["docs/DESIGN.md"].includes(`${word} critics`) || docs["docs/DESIGN.md"].includes(`${word[0].toUpperCase() + word.slice(1)} critics`), `docs/DESIGN.md must say "${word} critics"`);
+  const plugin = JSON.parse(read(".claude-plugin/plugin.json"));
+  const market = JSON.parse(read(".claude-plugin/marketplace.json"));
+  assert.equal(plugin.name, "shipshow");
+  assert.equal(market.plugins[0].name, plugin.name, "the marketplace entry and plugin.json names differ");
+  assert.equal(plugin.version, undefined, "plugin.json must not set a version: the commit SHA versions the plugin (DESIGN D13)");
+  assert.ok(existsSync(join(REPO, "agents", "critic.md")));
+  assert.match(plugin.description, new RegExp(`${word} adversarial critics`), "plugin.json's description must name the critic count");
+});
+
+test("in CI, a change to code, skills, tests, the plugin, CI, dependencies, the sample or the agent docs comes with a substantive docs change, or 'docs: no change - <reason>'", { skip: !process.env.GITHUB_BASE_REF && "only checked on a pull request in CI" }, () => {
+  const base = `origin/${process.env.GITHUB_BASE_REF}`;
+  const git = (...a) => spawnSync("git", a, { cwd: REPO, encoding: "utf8" });
+  const diff = git("diff", "--name-only", `${base}...HEAD`);
+  if (diff.status !== 0) return; // no history to compare against: do not fail on a shallow checkout
+  const files = diff.stdout.split("\n").filter(Boolean);
+  const watched = (f) => /^(bin|kit|template|skills|agents|themes|test|sample_application|\.claude-plugin|\.github)\//.test(f) || ["package.json", "package-lock.json", "requirements.txt", "README.md", "AGENTS.md", "CLAUDE.md"].includes(f);
+  if (!files.some(watched)) return;
+  // a docs change counts when it adds at least 40 characters of text: a punctuation edit or a date bump does not
+  const hunk = git("diff", "-U0", `${base}...HEAD`, "--", "docs/PRD.md", "docs/DESIGN.md").stdout;
+  const added = hunk.split("\n").filter((l) => /^\+[^+]/.test(l) && !/^\+Last reviewed:/.test(l)).map((l) => l.slice(1).replace(/\s+/g, "")).join("");
+  const lastCommit = git("log", "--no-merges", "-1", "--format=%B").stdout; // the checkout is a merge commit, which says nothing
+  const override = `${process.env.PR_TITLE || ""}\n${lastCommit}`.match(/^docs: no change - \S.{9,}/m);
+  assert.ok(added.length >= 40 || override, "code, skills, tests, the plugin or the agent docs changed but docs/PRD.md and docs/DESIGN.md got no substantive change (under 40 characters of added text, or only the 'Last reviewed' date). Update them, or put 'docs: no change - <reason, at least ten characters>' in the PR title or the last non-merge commit message");
+});
+
+test("the plugin validates with exactly one warning, the deliberate missing version", { skip: spawnSync("claude", ["--version"], { encoding: "utf8" }).status !== 0 && "the claude CLI is not on PATH" }, () => {
+  const r = spawnSync("claude", ["plugin", "validate", ".", "--json"], { cwd: REPO, encoding: "utf8" });
+  const report = JSON.parse(r.stdout);
+  assert.equal(report.success, true, r.stdout.slice(0, 400));
+  const messages = [...(report.manifest?.warnings || []), ...(report.manifest?.errors || [])].map((w) => String(w.message || w));
+  assert.deepEqual(messages.filter((m) => !/version/i.test(m)), [], "the plugin has a warning other than the missing version");
+  assert.equal(report.manifest?.errors?.length || 0, 0);
+});
+
+
 test("check-excerpt: real lines pass, and every way of faking them fails", async () => {
   const { checkExcerpt, parseRanges } = await import("../skills/critic-grounding/scripts/excerpt.mjs");
   const src = ["@login_required", "def add(doc):", "    if not search:", "        return", "", "    payload = {}", "    for f in fields:", "        payload[f] = 1", "    return payload", "", "def stub():", "    ...", ""].join("\n");
@@ -507,6 +611,35 @@ test("sandbox-run: no network, writes only inside the scratch directory, and it 
   if (after !== clip) spawnSync("pbcopy", { input: clip }); // put the person's clipboard back before failing
   assert.notEqual(copy.status, 0, "pbcopy ran inside the sandbox");
   assert.equal(after, clip, "the sandbox changed the clipboard");
+});
+
+test("the packet's reading time counts code in tokens, and finds the longest still stretch of a scene", async () => {
+  const { readingSeconds, stillStretches, tokens, words } = await import("../bin/measure.mjs");
+  const code = ".join(Author.followers.of_type(Follower), isouter=True) .where(sa.or_( Follower.id == self.id,";
+  assert.equal(words(code), 9); // the old count: a code block passed the "short" check
+  assert.equal(tokens(code), 15);
+  assert.ok(readingSeconds(code) >= 9, "code needs about ten seconds, not three");
+  assert.ok(Math.abs(readingSeconds("Ben posts and Ana reads it later today") - 8 / 3.3) < 0.01); // prose is unchanged
+  assert.deepEqual(stillStretches({ start: 10, duration: 20 }, [12, 14, 28]), { seconds: 14, from: 14, to: 28 });
+  assert.deepEqual(stillStretches({ start: 0, duration: 5 }, []), { seconds: 5, from: 0, to: 5 });
+  assert.equal(stillStretches({ start: 0, duration: 10 }, [30, -3]).seconds, 10); // cues outside the scene are ignored
+});
+
+test("usage: a real-shape transcript is counted once per call, and the CLI runs from a path with a space or a symlink", () => {
+  const fixture = join(REPO, "test", "fixtures", "real-subagent-usage.jsonl");
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  mkdirSync(join(root, "sp ace"));
+  cpSync(join(REPO, "bin"), join(root, "sp ace", "bin"), { recursive: true });
+  symlinkSync(join(root, "sp ace", "bin"), join(root, "linkbin"));
+  const run = (bin) => spawnSync(process.execPath, [bin, fixture, "--json"], { encoding: "utf8" });
+  for (const bin of [join(REPO, "bin", "usage.mjs"), join(root, "sp ace", "bin", "usage.mjs"), join(root, "linkbin", "usage.mjs")]) {
+    const r = run(bin);
+    assert.equal(r.status, 0, `${bin}: ${r.stderr}`);
+    const total = JSON.parse(r.stdout).total;
+    // 14 usage lines are 8 distinct calls; expected values worked out from the file with a separate script
+    assert.deepEqual(total, { calls: 8, input: 16, output: 76, cacheWrite: 39548, cacheRead: 266264 }, bin);
+  }
+  assert.notEqual(spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs"), join(root, "nope.jsonl")], { encoding: "utf8" }).status, 0);
 });
 
 test("verify-vendored: MATCH only for the upstream tree with no edits and no untracked files, and it writes nothing into .git", () => {
@@ -667,6 +800,36 @@ test("verify-vendored: ignored files, assume-unchanged and skip-worktree are DIR
   assert.equal(run2("v", tree2).status, 1);
 });
 
+test("measure and usage: non-Latin text is read, prose with parentheses is prose, bad input is refused, and an ambiguous session is an error", async () => {
+  const { readingSeconds, stillStretches, words, looksLikeCode } = await import("../bin/measure.mjs");
+  assert.ok(readingSeconds("这是一个很长的中文句子需要读很久") > 3, "CJK text must take time to read");
+  assert.equal(words("Привет мир как дела сегодня"), 5);
+  assert.equal(looksLikeCode("It (usually) works fine for everyone here today"), false);
+  assert.equal(looksLikeCode("Author.followers.of_type(Follower)"), true);
+  assert.equal(looksLikeCode("withinBudget(campaign, ledger)"), true);
+  assert.throws(() => stillStretches({ start: 0, duration: Number.NaN }, [3]), /finite start and a positive duration/);
+  assert.throws(() => stillStretches({ start: 0, duration: 5 }, ["3"]), /finite/);
+  // usage: a folder named like a session id is not a transcript, an ambiguous prefix lists its candidates, flags are checked
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  const proj = join(root, REPO.replace(/[^A-Za-z0-9]/g, "-"));
+  mkdirSync(proj);
+  const line = JSON.stringify({ type: "assistant", timestamp: "2026-10-17T10:00:00Z", message: { id: "m1", model: "m", usage: { input_tokens: 1, output_tokens: 2, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 } } });
+  writeFileSync(join(proj, "aaa111.jsonl"), line + "\n{bad\n");
+  writeFileSync(join(proj, "aaa222.jsonl"), line + "\n");
+  mkdirSync(join(root, "aaa111")); // a folder in the cwd with the same name as a session prefix
+  const run = (...a) => spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs"), ...a], { cwd: root, encoding: "utf8", env: { ...process.env, CLAUDE_PROJECTS_DIR: root } });
+  const ambiguous = run("aaa");
+  assert.equal(ambiguous.status, 2);
+  assert.match(ambiguous.stderr, /matches 2 sessions: aaa111, aaa222/);
+  const bad = run("aaa111", "--json");
+  assert.equal(bad.status, 0, bad.stderr);
+  assert.match(bad.stderr, /1 line\(s\).*could not be read/);
+  assert.equal(JSON.parse(bad.stdout).total.calls, 1);
+  assert.equal(run("aaa222", "--jsno").status, 2);
+  assert.equal(run("zzz").status, 2);
+  assert.equal(spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs")], { cwd: root, encoding: "utf8", env: { ...process.env, CLAUDE_PROJECTS_DIR: join(root, "nowhere") } }).status, 2);
+});
+
 test("check-excerpt CLI: a missing value for --ranges or --marker is an error, never a silent success", () => {
   const script = join(REPO, "skills", "critic-grounding", "scripts", "check-excerpt.mjs");
   const dir = mkdtempSync(join(tmpdir(), "kx-test-"));
@@ -680,9 +843,22 @@ test("check-excerpt CLI: a missing value for --ranges or --marker is an error, n
   // the rule in skills/critic-grounding, and this test does not pretend otherwise.)
 });
 
+test("the packet's reading queue: simultaneous text waits its turn, so three paragraphs on one cue are late, not each fine", async () => {
+  const { readingQueue, readingSeconds } = await import("../bin/measure.mjs");
+  const para = Array.from({ length: 22 }, (_, i) => `word${i}`).join(" "); // 22 words, about 6.7 s alone
+  const one = readingSeconds(para);
+  assert.ok(Math.abs(one - 22 / 3.3) < 0.01);
+  const q = readingQueue([{ at: 51.2, text: para }, { at: 51.2, text: para }, { at: 51.2, text: para }], 60); // 8.8 s before the scene ends
+  assert.equal(q.filter((x) => x.late).length, 2, "the second and third cannot be finished before the scene ends");
+  assert.ok(Math.abs(q[2].readBy - (51.2 + 3 * one)) < 0.01);
+  assert.equal(readingQueue([{ at: 10, text: para }, { at: 30, text: para }], 60).some((x) => x.late), false, "spread out, each is read in time");
+  assert.equal(readingQueue([{ at: 59, text: para }], 60)[0].late, true, "a single paragraph too close to the end is late");
+  assert.throws(() => readingQueue([], Number.NaN), /finite/);
+});
+
 test("every script a skill names exists at the path the skill gives, and no skill uses a bare relative scripts/ path", () => {
   const skills = readdirSync(join(REPO, "skills")).filter((n) => existsSync(join(REPO, "skills", n, "SKILL.md")));
-  const files = [...skills.map((n) => ["skills/" + n + "/SKILL.md", n]), ...(existsSync(join(REPO, "agents", "critic.md")) ? [["agents/critic.md", null]] : [])];
+  const files = [...skills.map((n) => ["skills/" + n + "/SKILL.md", n]), ["agents/critic.md", null]];
   let found = 0;
   for (const [rel, own] of files) {
     let text = readFileSync(join(REPO, rel), "utf8");
@@ -696,6 +872,15 @@ test("every script a skill names exists at the path the skill gives, and no skil
     assert.equal(bare, null, `${rel} calls ${bare && bare[0]} by a bare relative path; use \${CLAUDE_SKILL_DIR}/scripts/... or the full skills/<name>/scripts/... path`);
   }
   assert.ok(found >= 6, "the check found almost no script paths: has the path form changed?");
+});
+
+test("python: 3.10 to 3.13 are supported, 3.14 and 3.9 are not, and setup picks the first supported interpreter", async () => {
+  const { supportedPython, pickPython } = await import("../bin/python.mjs");
+  for (const v of ["3.10", "3.11", "3.12", "3.13", "3.13.1"]) assert.equal(supportedPython(v), true, v);
+  for (const v of ["3.9", "3.14", "3.14.0", "4.0", "2.7", "", "x"]) assert.equal(supportedPython(v), false, v);
+  const versions = { "python3.13": null, "python3.12": "3.12", python3: "3.14" };
+  assert.deepEqual(pickPython(["python3.13", "python3.12", "python3"], (c) => versions[c] ?? null), { cmd: "python3.12", version: "3.12" });
+  assert.equal(pickPython(["python3"], () => "3.14"), null, "a machine with only 3.14 gets no interpreter, not a failing install");
 });
 
 test("capture: a sandboxed command cannot redirect the host-side write with a symlink, and a command that never ran is not recorded", { skip: process.platform !== "darwin" && "record needs the macOS sandbox" }, () => {
@@ -797,6 +982,65 @@ test("verify-vendored: repo-local git settings cannot hide an edit (fsmonitor, s
   assert.equal(spawnSync("sh", [script, "v", tree2], { cwd: wt, encoding: "utf8" }).status, 0);
 });
 
+test("round six small fixes: hyphenated numbers are two words, flags make code, bad input is refused, usage totals stay numbers, setup never recreates a wrong venv", async () => {
+  const { words, readingSeconds, looksLikeCode, readingQueue } = await import("../bin/measure.mjs");
+  assert.equal(words("eighty-one"), 2);
+  assert.equal(looksLikeCode("npm install --save-dev typescript"), true);
+  assert.equal(looksLikeCode("$ npm test"), true);
+  assert.equal(looksLikeCode("We use tools, e.g. a linter, and it works."), false, "e.g. does not make prose code");
+  assert.ok(readingSeconds("npm install --save-dev typescript") >= 2.5);
+  assert.throws(() => readingQueue([{ at: Number.NaN, text: "x" }], 10), /finite/);
+  assert.throws(() => readingQueue([{ at: 1, text: undefined }], 10), /string/);
+  const { parseRanges } = await import("../skills/critic-grounding/scripts/excerpt.mjs");
+  assert.throws(() => parseRanges("1-2,"), /empty entry/);
+  assert.throws(() => parseRanges("1-2,,3"), /empty entry/);
+  const dir = mkdtempSync(join(tmpdir(), "kx-test-"));
+  writeFileSync(join(dir, "s.py"), "a = 1\n");
+  writeFileSync(join(dir, "e.txt"), "a = 1\n");
+  const check = join(REPO, "skills", "critic-grounding", "scripts", "check-excerpt.mjs");
+  assert.equal(spawnSync(process.execPath, [check, join(dir, "s.py"), join(dir, "e.txt"), "--ranges", "1-1", "--ranges", "1-1"], { encoding: "utf8" }).status, 2, "--ranges twice");
+  // usage: a string count is a bad record counted as zero, never concatenated; a garbage timestamp is zero seconds; -j is not a session id
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  const rec = (id, usage, ts) => JSON.stringify({ type: "assistant", timestamp: ts, message: { id, model: "m", usage } });
+  writeFileSync(join(root, "s1.jsonl"), [rec("a", { input_tokens: "7", output_tokens: 5, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }, "garbage"), rec("b", { input_tokens: 1, output_tokens: 2, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }, "2026-10-17T10:00:00Z")].join("\n"));
+  const u = spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs"), join(root, "s1.jsonl"), "--json"], { encoding: "utf8" });
+  assert.equal(u.status, 0, u.stderr);
+  const total = JSON.parse(u.stdout).total;
+  assert.equal(typeof total.input, "number");
+  assert.equal(total.input, 1, "the string count was treated as zero, not added as text");
+  assert.match(u.stderr, /could not be read/);
+  assert.equal(spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs"), "-j"], { encoding: "utf8" }).status, 2);
+  // python / setup: an out-of-range interpreter is not accepted, and pythonVersion refuses an empty command
+  const { pythonVersion } = await import("../bin/python.mjs");
+  assert.equal(pythonVersion(""), null);
+  assert.equal(pythonVersion(undefined), null);
+});
+
+test("packet: a count or pulse is photographed after it finishes, a highlight or a line inside a shown block adds no reading, and a ss-code block puts critic-grounding on the floor", async () => {
+  const { settleFor, newReadingText, readingQueue } = await import("../bin/measure.mjs");
+  assert.equal(settleFor("count"), 1.4);
+  assert.equal(settleFor("pulse"), 1.4);
+  assert.equal(settleFor("up"), 0.8);
+  assert.equal(settleFor(""), 0.8);
+  const block = { text: "const total = a + b; return total;", anim: "up" };
+  assert.equal(newReadingText({ text: "return total;", anim: "highlight" }, [block]), "", "a highlight is not new reading");
+  assert.equal(newReadingText({ text: "return total;", anim: "up" }, [block]), "", "a line inside an earlier block is already counted there");
+  assert.equal(newReadingText({ text: "something else", anim: "up" }, [block]), "something else");
+  // a block, then each of its lines cued as it is named: only the block is read, so nothing is late
+  const lines = ["const total = a + b;", "return total;"];
+  const items = [{ at: 10, text: block.text }, ...lines.map((text, i) => ({ at: 12 + i, text: newReadingText({ text, anim: "highlight" }, [block]) }))];
+  assert.equal(readingQueue(items, 40).some((x) => x.late), false);
+  // ss-code and the floor
+  const { config, reviewPlan } = await import("../bin/lib.mjs");
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "demo");
+  cpSync(join(REPO, "template"), dir, { recursive: true });
+  writeFileSync(join(dir, "scenes.html"), '<section data-scene="01-intro"><div class="ss-code">x = 1</div></section>');
+  assert.equal(config(dir, []).shows_code, true, "a div with class ss-code is shown code, not just a pre or code element");
+  assert.ok(reviewPlan(config(dir, []), []).critics.includes("critic-grounding"));
+  assert.match(readFileSync(join(REPO, "kit", "base.css"), "utf8"), /\.ss-code \{[^}]*white-space: pre[^}]*\}/, ".ss-code must keep indentation");
+  assert.match(readFileSync(join(REPO, "kit", "base.css"), "utf8"), /\.ss-code \{[^}]*font-variant-ligatures: none/, ".ss-code must not draw >= or === as one glyph");
+});
+
 test("extract-excerpts: the text a viewer sees, without highlight spans or entities, ready for check-excerpt", () => {
   const dir = mkdtempSync(join(tmpdir(), "kx-test-"));
   const html = `<section data-scene="01-intro"><h1>x</h1></section>
@@ -823,4 +1067,36 @@ test("extract-excerpts: the text a viewer sees, without highlight spans or entit
   writeFileSync(join(dir, "none.html"), "<section data-scene=\"01\"><p>hi</p></section>");
   assert.equal(spawnSync(process.execPath, [join(REPO, "skills", "critic-grounding", "scripts", "extract-excerpts.mjs"), join(dir, "none.html"), join(dir, "o2")], { encoding: "utf8" }).status, 1);
   assert.equal(spawnSync(process.execPath, [join(REPO, "skills", "critic-grounding", "scripts", "extract-excerpts.mjs")], { encoding: "utf8" }).status, 2);
+});
+
+test("every skill and the critic agent has well-formed front matter: `claude plugin validate` only warns on a broken one", () => {
+  const front = (rel) => {
+    const text = readFileSync(join(REPO, rel), "utf8");
+    const m = text.match(/^---\n([\s\S]*?)\n---\n/);
+    assert.ok(m, `${rel} has no front matter`);
+    const get = (k) => (m[1].match(new RegExp(`^${k}:\\s*(.*)$`, "m")) || [])[1];
+    return { text: m[1], name: get("name"), folded: new RegExp(`^${"description"}:\\s*>`, "m").test(m[1]), desc: get("description") };
+  };
+  const names = readdirSync(join(REPO, "skills")).filter((n) => existsSync(join(REPO, "skills", n, "SKILL.md")));
+  for (const n of names) {
+    const f = front(`skills/${n}/SKILL.md`);
+    assert.equal(f.name, n, `skills/${n}/SKILL.md: name must equal the folder name`);
+    assert.match(f.name, /^[a-z0-9-]+$/, `${n}: name must be lower-case letters, digits and hyphens`);
+    const body = f.text.split("\n").slice(f.text.split("\n").findIndex((l) => l.startsWith("description:")) + 1).join(" ").trim();
+    assert.ok((f.folded ? body : f.desc || "").length >= 40, `skills/${n}/SKILL.md: the description is missing or tiny`);
+    assert.ok(readFileSync(join(REPO, "skills", n, "SKILL.md"), "utf8").split("\n").length < 500, `skills/${n}/SKILL.md is over 500 lines`);
+  }
+  const a = front("agents/critic.md");
+  assert.equal(a.name, "critic");
+  assert.match(a.text, /^tools:\s*\[.*"Skill".*\]/m, "agents/critic.md must list the Skill tool, which it needs to load a critic skill");
+  assert.match(a.text, /^description:\s*\S/m);
+});
+
+test("critics: a video still carrying the template's placeholder audience is warned about", () => {
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "demo");
+  cpSync(join(REPO, "template"), dir, { recursive: true });
+  const warn = spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), dir], { encoding: "utf8" });
+  assert.match(warn.stderr, /placeholder audience/);
+  writeFileSync(join(dir, "video.json"), JSON.stringify({ ...JSON.parse(readFileSync(join(dir, "video.json"), "utf8")), audience: "A developer who manages coding agents and has to explain an overspend to Finance." }));
+  assert.doesNotMatch(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), dir], { encoding: "utf8" }).stderr, /placeholder audience/);
 });

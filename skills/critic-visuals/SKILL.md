@@ -17,7 +17,8 @@ full frames). They are 1920 by 1080; judge them as a viewer on a laptop would se
 ## Criteria
 
 - **blocking:** text cut off, overlapping other text or running out of its box; a caption
-  covering content; anything unreadable.
+  covering content; anything unreadable. The captions sit in the bottom 176 px of the 1080 px frame
+  (`kit/base.css`, `.caps`: 56 px up, 120 px tall); a scene's own window (`.inner`) is above them.
 - **blocking:** text that fails contrast against what is behind it (WCAG AA: 4.5 to 1, or
   3 to 1 for text 24 px bold or larger).
 - **major:** text smaller than about 28 px, which video compression blurs.

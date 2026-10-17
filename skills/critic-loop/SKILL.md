@@ -11,6 +11,10 @@ description: >
 
 # Critic loop
 
+> **Needs a clone of the ShipShow repo**, set up with `npm install` (this skill uses `bin/`, `npm run` and
+> `AGENTS.md`). Outside one, say so and stop; the plugin alone ships the understanding skills
+> (`code-context`, `change-context`, `evidence-standard`).
+
 The agent that built a video is the worst judge of it: it knows what it meant, so it sees
 its intent instead of the frames. Its bias is to get it done. A critic's only bias is to
 find what is wrong. So the builder never reviews its own work, and every round uses fresh
@@ -70,8 +74,10 @@ decision video defaults to `quick` and every other to `standard`; a decision vid
 adds `critic-decision`.
 
 **The floor no dial lowers.** Whatever the caps, a video never ships with an open blocking
-finding from `critic-accuracy` (or, for a decision video, `critic-decision`): fix it and run
-that one critic once more, past the cap if need be; if it still fails, it goes to a person.
+finding from `critic-accuracy` (or, for a decision video, `critic-decision`, and for a video that shows
+code, output or captures, `critic-grounding`: set `"shows_code"` in `video.json`, or a `<pre>` or `<code>`
+in `scenes.html` sets it): fix it and run that one critic once more, past the cap if need be; if it
+still fails, it goes to a person.
 A `critics` list that leaves out a floor critic gets it added back (`npm run critics` says so).
 
 ## Who runs it
@@ -79,8 +85,11 @@ A `critics` list that leaves out a floor critic gets it added back (`npm run cri
 The builder runs the loop and fixes the findings. It does not judge them away. For each
 critic in the plan it starts a **new** agent, on the plan's model:
 
-- **Claude Code:** the Agent tool with a fresh general-purpose agent, never a fork (a fork
-  inherits the builder's context, and with it the builder's bias), with the plan's model.
+- **Claude Code:** the Agent tool with a fresh agent, never a fork (a fork inherits the builder's
+  context, and with it the builder's bias), with the plan's model. In the ShipShow plugin that is
+  `subagent_type: "shipshow:critic"`, which has Read, Grep, Glob, Bash and Skill and is told not to write
+  (not enforced); elsewhere a general-purpose agent. A judge from the builder's own model family shares
+  its blind spots, so say which model judged.
 - **Codex:** `codex exec --sandbox read-only` from an empty folder, with the frames passed as
   `-i <absolute path>` and the brief on stdin.
 - **Anything else:** any agent that starts with none of this conversation and can read files
@@ -100,6 +109,7 @@ finding first, then fix.
 | `critic-visuals` | Legibility, contrast, layout, composition, every frame finished |
 | `critic-consistency` | Same terms, names, look and conventions from start to end |
 | `critic-engagement` | Whether the intended viewer would keep watching; design made for that persona |
+| `critic-grounding` | For a video that shows code, output or captures: each is genuine, from the named commit |
 | `critic-decision` | For a decision video: the call is stated, options priced, one recommended with why |
 
 ## The brief
@@ -108,14 +118,16 @@ Give each critic objectives and evidence, never a procedure. How it looks is its
 
 ```
 You are a critic for an explainer video. Review it yourself; do not delegate.
-Load and follow skills/<critic>/SKILL.md. Judge only what that skill covers.
-Evidence, in videos/<name>/:
+Load and follow the critic skill (skills/<critic>/SKILL.md; `shipshow:<critic>` in the plugin). Judge only
+what that skill covers.
+Evidence, in <video dir> (videos/<name>/ or local/videos/<name>/):
   review/packet.md      the script with timings, pauses, cues, reading times
   review/frames/        stills after each cue and at each scene end (contact-sheet*.jpg)
   sources.md            the ground truth; a claim not supported here is a finding
   critics.md            this video's own bar, if present: it applies to you too
   video.json            who the video is for, its voice and speed
   brief.md              for a decision video: the decision as the working agent framed it
+  code at pin: <path>   the code base at the pin <sha>, so a claim can be re-checked (a throwaway copy)
   local/preferences.md, local/critics.md (repo root)   the person's own taste and bar, if present
 scenes.html and script/ are the source; read them only to point a fix at a line.
 Return only the JSON below. Stop when your skill's criteria are covered.
@@ -138,7 +150,8 @@ Return only the JSON below. Stop when your skill's criteria are covered.
       "evidence": "the measurement, frame or source line that shows it",
       "fix": "the smallest change that fixes it"
     }
-  ]
+  ],
+  "assets": [ { "asset": "...", "source": "...", "method": ["diff", "re-run", "static", "viewed"], "result": "genuine|trimmed|trimmed-misleading|unsupported|no-provenance" } ]
 }
 ```
 
@@ -147,11 +160,16 @@ Return only the JSON below. Stop when your skill's criteria are covered.
 - **minor:** polish.
 - **objective:** true when a measurement or a source settles it; false when it is taste.
 - `verdict` is `fail` when any finding is blocking or major.
+- `assets` is optional: a critic that checks shown evidence (`critic-grounding`) returns one row
+  per asset it checked, so the loop can see what was verified and how.
 
-Save each one as `videos/<name>/review/round-<n>/<critic>.json`.
+Save each one as `<video dir>/review/round-<n>/<critic>.json`.
 
 ## The loop
 
+0. Make the copy of the code at the pin a critic will check (`git archive <sha> <dir> | tar -x -C <tmp>`, or
+   the faithful clone in `evidence-standard`) and give its path in the brief; a critic never creates it. If
+   you cannot start critics, hand back not ready with each `not run` (`explain-handoff`).
 1. Run the plan's critics. Read every finding.
 2. Fix every finding at or above the plan's `until`: with `major`, every blocking finding
    and every objective major. A subjective major gets one pass: fix it or decline it with a
@@ -169,8 +187,8 @@ Save each one as `videos/<name>/review/round-<n>/<critic>.json`.
    three rounds, two critics contradict each other, or a round only finds problems in the
    previous round's fixes.
 
-Then write `videos/<name>/REVIEW.md`: each round, each critic's verdict, what was fixed,
-what was declined and why. It is committed with the video, so anyone can see the bar it
+Then write `<video dir>/REVIEW.md`: each round, each critic's verdict, what was fixed,
+what was declined and why. It is committed with the video when the video is in `videos/` (one in `local/` is not committed), so anyone can see the bar it
 cleared.
 
 ## A new critic
