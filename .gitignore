@@ -13,6 +13,9 @@ videos/*/.hyperframes/
 videos/*/renders/
 videos/*/review/
 
+# Your own preferences, critics, skills and private videos (skills/tailor)
+local/
+
 # Agent context (project-sync.sh)
 .agents/
 .claude/

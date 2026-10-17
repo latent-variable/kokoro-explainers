@@ -6,9 +6,13 @@ and what is expected of you. `README.md` is the same story for humans.
 ## What this is
 
 A pipeline that turns plain text into narrated explainer videos on one machine (a Kokoro
-voice, HyperFrames scenes), and a set of skills for agents to make them well. The first use
-is release explainers: a short video that keeps developers current on what changed in a
-project's release and what they need to do.
+voice, HyperFrames scenes), and a set of skills for agents to make them well. The everyday
+use is a decision video: an agent working on a feature hands off to a fresh explainer agent,
+which explains what the person needs to make a call. Feature and release explainers use the
+same skills.
+
+The skills in `skills/` are the team's baseline. Each person tailors on top of them in
+`local/`, which is never committed (`tailor` skill).
 
 ## Where things are
 
@@ -19,6 +23,7 @@ project's release and what they need to do.
 | `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor` |
 | `kit/` | The page and timeline every video shares |
 | `template/` | What `npm run new` copies |
+| `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
 
 ## Skills
 
@@ -26,7 +31,8 @@ project's release and what they need to do.
 |---|---|
 | `explainer-video` | Make or update a video. You are the builder |
 | `critic-loop` | Judge a video with fresh critics, fix, repeat until they pass; add a new critic |
-| `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement` | Be one critic, when the loop assigns you |
+| `tailor` | Record how one person wants their explainers, in `local/` |
+| `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision` | Be one critic, when the loop assigns you |
 
 ## What is expected
 
@@ -37,6 +43,12 @@ project's release and what they need to do.
 - **Every claim traces to `sources.md`.** A fact the sources lack is a gap to report, never
   one to fill in.
 - **A bar you keep wishing a video met becomes a critic** (`critic-loop`, *A new critic*).
+- **A video about another code base goes in `local/videos/`.** This repo is public.
+- **Skills set the bar, not the method** (team, 2026-10-17). They say what a good video is and
+  how it is judged. How an agent manages its context or plans its steps is its own business,
+  and a rule about it is friction the next model has to work around. The bars are not method:
+  who builds, who judges (a fresh agent), and where facts come from (the code, `sources.md`)
+  hold for every agent.
 
 ## Commands
 

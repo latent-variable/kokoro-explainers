@@ -7,7 +7,7 @@ import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { REPO, readWav, sentences, spoken, writeWav } from "../bin/lib.mjs";
+import { REPO, outName, readWav, sentences, spoken, writeWav } from "../bin/lib.mjs";
 
 test("sentences end at . ! or ? and a space, not inside a number or a file name", () => {
   assert.deepEqual(sentences("It costs 3.5 dollars. Open index.html now! Ready?  Yes."), [
@@ -84,4 +84,23 @@ test("build warns when a bare cue word occurs more than once in its scene", () =
   const r = spawnSync(process.execPath, [join(REPO, "bin", "build.mjs"), dir], { encoding: "utf8" });
   assert.equal(r.status, 0);
   assert.match(r.stderr, /data-cue="box" matches 2 words/);
+});
+
+test("skills link from skills/ and local/skills/, and a local one cannot shadow a shared one", async () => {
+  const { readlinkSync } = await import("node:fs");
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  for (const d of ["skills/explainer-video", "local/skills/critic-mine", "local/skills/explainer-video"]) {
+    mkdirSync(join(root, d), { recursive: true });
+    writeFileSync(join(root, d, "SKILL.md"), "---\nname: x\n---\n");
+  }
+  const r = spawnSync(process.execPath, [join(REPO, "bin", "link-skills.mjs"), root], { encoding: "utf8" });
+  assert.equal(r.status, 0);
+  assert.equal(readlinkSync(join(root, ".claude/skills/explainer-video")), join("..", "..", "skills", "explainer-video"));
+  assert.equal(readlinkSync(join(root, ".claude/skills/critic-mine")), join("..", "..", "local", "skills", "critic-mine"));
+  assert.match(r.stderr, /local\/skills\/explainer-video has the same name as a shared skill/);
+});
+
+test("renders of two folders that share a name do not overwrite each other", () => {
+  assert.equal(outName(join(REPO, "videos", "how-it-works")), "how-it-works");
+  assert.notEqual(outName(join(REPO, "local", "videos", "a", "demo")), outName(join(REPO, "local", "videos", "b", "demo")));
 });

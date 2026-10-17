@@ -1,7 +1,7 @@
 // Shared plumbing for the bin/ scripts: paths, the video's config, sentence splitting, WAV I/O.
 import { spawn } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { basename, dirname, join, resolve } from "node:path";
+import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -118,3 +118,11 @@ export function writeWav(path, { rate, channels, samples }) {
 }
 
 export const round = (x) => Math.round(x * 100) / 100;
+
+/** A render's file name, from the video's path, so two folders that share a name do not
+ *  overwrite each other: videos/how-it-works -> how-it-works, local/videos/a/demo -> local-videos-a-demo. */
+export function outName(dir) {
+  const rel = relative(REPO, resolve(dir));
+  if (rel.startsWith("..")) return basename(dir);
+  return rel.replace(/^videos[\\/]/, "").replace(/[\\/]+/g, "-");
+}
