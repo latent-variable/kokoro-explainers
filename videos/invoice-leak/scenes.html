@@ -1,0 +1,214 @@
+<style>
+  /* Layout only: colour, type and motion come from the buildday theme. Ember is the leak and
+     the cost, ice is information, green is what works or what we recommend. */
+  .card { background: var(--card); border: var(--border) solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .tag { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-2); white-space: nowrap; }
+  .tag b { color: var(--accent); font-weight: 700; margin-right: 14px; }
+  .big { font-family: var(--font-display); font-weight: 700; letter-spacing: var(--display-tracking); text-transform: uppercase; line-height: 0.9; }
+  .silver { background: linear-gradient(180deg, #ffffff 0%, var(--ink) 55%, #c9d2e3 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ember { background: linear-gradient(95deg, var(--accent) 0%, #ffc49e 70%, #ffe2cf 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hud { position: absolute; pointer-events: none; }
+  .hud i { position: absolute; width: 34px; height: 34px; border-color: rgba(142, 200, 255, 0.55); border-style: solid; border-width: 0; }
+  .hud i:nth-child(1) { left: 0; top: 0; border-left-width: 2px; border-top-width: 2px; }
+  .hud i:nth-child(2) { right: 0; top: 0; border-right-width: 2px; border-top-width: 2px; }
+  .hud i:nth-child(3) { left: 0; bottom: 0; border-left-width: 2px; border-bottom-width: 2px; }
+  .hud i:nth-child(4) { right: 0; bottom: 0; border-right-width: 2px; border-bottom-width: 2px; }
+  .ping { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgba(255, 122, 61, 0.7), 0 0 18px rgba(255, 122, 61, 0.8); margin-right: 16px; vertical-align: 2px; }
+  .mono { font-family: var(--font-mono); }
+
+  /* 01-leak */
+  .l-tag { position: absolute; left: var(--pad); top: 130px; }
+  .l-head { position: absolute; left: var(--pad); top: 210px; font-size: 140px; }
+  .l-head div { white-space: nowrap; }
+  .inv-row { position: absolute; left: var(--pad); right: var(--pad); top: 520px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px; }
+  .inv { padding: 22px 12px; text-align: center; border-color: rgba(255, 122, 61, 0.6); }
+  .inv .n { font-family: var(--font-mono); font-size: 36px; font-weight: 700; color: var(--ink); }
+  .inv .o { font-family: var(--font-mono); font-size: 29px; letter-spacing: 0.06em; color: var(--accent); margin-top: 8px; white-space: nowrap; }
+  .inv.own { border-color: rgba(74, 222, 128, 0.7); }
+  .inv.own .o { color: var(--good); }
+  .l-ask { position: absolute; left: var(--pad); right: var(--pad); top: 710px; font-size: 76px; }
+
+  /* 02-layers */
+  .y-tag { position: absolute; left: var(--pad); top: 130px; }
+  .y-head { position: absolute; left: var(--pad); top: 200px; font-size: 104px; white-space: nowrap; }
+  .y-line { position: absolute; left: var(--pad); right: var(--pad); top: 400px; height: 4px; border-radius: 2px; background: rgba(142, 200, 255, 0.25); }
+  .y-dot { position: absolute; top: 386px; left: var(--pad); width: 32px; height: 32px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 28px rgba(255, 122, 61, 0.95); }
+  .y-req { position: absolute; right: var(--pad); top: 346px; }
+  .layers { position: absolute; left: var(--pad); right: var(--pad); top: 450px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; }
+  .layer { height: 340px; padding: 28px 28px; display: flex; flex-direction: column; position: relative; }
+  .layer .no { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; color: var(--accent-2); }
+  .layer .nm { font-family: var(--font-display); font-weight: 700; font-size: 54px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 14px; line-height: 1; }
+  .layer .sub { font-family: var(--font-mono); font-size: 29px; color: var(--muted); margin-top: auto; line-height: 1.25; }
+  .layer.bug { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255, 122, 61, 0.6), 0 0 60px rgba(255, 122, 61, 0.35); }
+  .layer.bug .sub { color: var(--ink); }
+  .stamp { position: absolute; right: -14px; top: -34px; padding: 10px 22px; border: 3px solid var(--accent); border-radius: 10px; background: #1b0d05; color: var(--accent); font-family: var(--font-mono); font-weight: 700; font-size: 30px; letter-spacing: 0.1em; transform: rotate(4deg); white-space: nowrap; }
+
+  /* 03-gap */
+  .g-tag { position: absolute; left: var(--pad); top: 110px; }
+  .gcols { position: absolute; left: var(--pad); right: var(--pad); top: 175px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .gcol { height: 370px; padding: 36px 42px; display: flex; flex-direction: column; position: relative; }
+  .gcol .who { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-2); }
+  .gcol .big { font-size: 66px; margin-top: 20px; white-space: nowrap; }
+  .gcol .q { font-family: var(--font-display); font-size: 54px; font-weight: 500; margin-top: 18px; line-height: 1.1; }
+  .gcol .res { margin-top: auto; font-family: var(--font-mono); font-size: 34px; font-weight: 700; letter-spacing: 0.06em; }
+  .gcol.ok { border-color: rgba(74, 222, 128, 0.6); } .gcol.ok .res { color: var(--good); }
+  .gcol.no { border-color: var(--accent); box-shadow: 0 0 60px rgba(255, 122, 61, 0.3); } .gcol.no .res { color: var(--accent); }
+  .stride { position: absolute; left: var(--pad); right: var(--pad); top: 610px; display: flex; align-items: center; gap: 22px; }
+  .stride .tag { margin-right: 14px; }
+  .st { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 60px; font-weight: 700; color: var(--muted); opacity: 0.55; }
+  .st.hot { opacity: 1; color: #1b0d05; background: var(--accent); border-color: var(--accent); box-shadow: 0 0 40px rgba(255, 122, 61, 0.6); }
+  .st-note { position: absolute; left: var(--pad); right: var(--pad); top: 740px; display: flex; gap: 34px; font-family: var(--font-mono); font-size: 32px; color: var(--ink); white-space: nowrap; }
+  .st-note b { color: var(--accent); }
+
+  /* 04-options */
+  .o-tag { position: absolute; left: var(--pad); top: 100px; }
+  .ocols { position: absolute; left: var(--pad); right: var(--pad); top: 160px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .ocol { height: 535px; padding: 30px 32px; display: flex; flex-direction: column; }
+  .ocol .lay { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); white-space: nowrap; }
+  .ocol .nm { font-family: var(--font-display); font-weight: 700; font-size: 50px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 12px; line-height: 1; }
+  .ocol .nm span { color: var(--accent); margin-right: 12px; }
+  .ocol .time { font-family: var(--font-display); font-weight: 700; font-size: 84px; text-transform: uppercase; letter-spacing: -0.04em; margin-top: 18px; line-height: 1; }
+  .ocol .row { margin-top: 22px; padding: 14px 18px; border-radius: 12px; font-family: var(--font-display); font-size: 33px; font-weight: 500; line-height: 1.15; border: 2px solid; }
+  .ocol .row small { display: block; font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.14em; font-weight: 700; margin-bottom: 4px; }
+  .ocol .gain { border-color: rgba(74, 222, 128, 0.55); } .ocol .gain small { color: var(--good); }
+  .ocol .cost { border-color: rgba(255, 122, 61, 0.6); } .ocol .cost small { color: var(--accent); }
+  .nothing { position: absolute; left: var(--pad); right: var(--pad); top: 765px; padding: 16px 30px; display: flex; gap: 26px; align-items: center; font-family: var(--font-display); font-size: 40px; font-weight: 700; border-color: var(--accent); white-space: nowrap; }
+  .nothing .tag { color: var(--accent); }
+
+  /* 05-pick */
+  .r-tag { position: absolute; left: var(--pad); top: 100px; }
+  .rcols { position: absolute; left: var(--pad); right: var(--pad); top: 180px; display: flex; gap: 40px; align-items: stretch; }
+  .rc { width: 440px; height: 380px; padding: 28px 30px; display: flex; flex-direction: column; position: relative; margin-top: 50px; }
+  .rc.pick { width: 640px; height: 480px; margin-top: 0; border-color: var(--good); box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.6), 0 0 70px rgba(74, 222, 128, 0.3); }
+  .rc .when { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-2); }
+  .rc .nm { font-family: var(--font-display); font-weight: 700; font-size: 56px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 12px; line-height: 1; }
+  .rc .nm span { color: var(--accent); margin-right: 12px; }
+  .rc.pick .nm { font-size: 76px; } .rc.pick .nm span { color: var(--good); }
+  .rc .what { font-family: var(--font-display); font-size: 36px; font-weight: 500; margin-top: auto; line-height: 1.15; color: var(--ink); }
+  .rc .eta { font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: var(--muted); margin-top: 14px; }
+  .rc.pick .eta { color: var(--good); }
+  .rec { position: absolute; right: -16px; top: -36px; padding: 12px 26px; border: 3px solid var(--good); border-radius: 12px; background: #06140b; color: var(--good); font-family: var(--font-mono); font-size: 34px; font-weight: 700; letter-spacing: 0.08em; transform: rotate(3deg); white-space: nowrap; }
+  .why { position: absolute; left: var(--pad); right: var(--pad); top: 710px; padding: 20px 32px; display: flex; gap: 40px; align-items: center; border-color: rgba(74, 222, 128, 0.5); }
+  .why .tag { color: var(--good); }
+  .why .t { font-family: var(--font-display); font-size: 42px; font-weight: 700; white-space: nowrap; }
+  .est { position: absolute; left: var(--pad); top: 830px; font-family: var(--font-mono); font-size: 28px; color: var(--muted); letter-spacing: 0.04em; }
+</style>
+
+<section data-scene="01-leak">
+  <div class="tag l-tag" data-cue="+0.1" data-anim="fade"><span class="ping"></span><b>//</b>02:14 AM &middot; ledgerly access log</div>
+  <div class="big l-head">
+    <div class="silver" data-cue="Overnight" data-anim="up">User 88 opened</div>
+    <div class="ember" data-cue="seven" data-anim="slam">seven invoices.</div>
+  </div>
+  <div class="inv-row" data-cue="forty" data-anim="stagger">
+    <div class="inv card own"><div class="n">#1041</div><div class="o">THEIR OWN</div></div>
+    <div class="inv card"><div class="n">#1042</div><div class="o">ORG 7</div></div>
+    <div class="inv card"><div class="n">#1043</div><div class="o">ORG 31</div></div>
+    <div class="inv card"><div class="n">#1044</div><div class="o">ORG 7</div></div>
+    <div class="inv card"><div class="n">#1045</div><div class="o">ORG 19</div></div>
+    <div class="inv card"><div class="n">#1046</div><div class="o">ORG 4</div></div>
+    <div class="inv card"><div class="n">#1047</div><div class="o">ORG 31</div></div>
+  </div>
+  <div class="big l-ask ember" data-cue="Which" data-anim="slam">Which fix do we ship?</div>
+</section>
+
+<section data-scene="02-layers" data-transition="wipe">
+  <div class="tag y-tag" data-cue="+0.1" data-anim="fade"><b>//</b>one request, four layers</div>
+  <div class="big y-head silver" data-cue="Every" data-anim="up">Where does it break?</div>
+  <div class="y-line" data-cue="+0.2" data-anim="fade"></div>
+  <div class="y-dot" id="y-dot"></div>
+  <div class="tag y-req" data-cue="+0.2" data-anim="fade">request &rarr;</div>
+  <div class="layers">
+    <div class="layer card" data-cue="firewall#1" data-anim="up"><div class="no">LAYER 1</div><div class="nm">Firewall</div><div class="sub">sees path and address, never the owner</div></div>
+    <div class="layer card" data-cue="load" data-anim="up"><div class="no">LAYER 2</div><div class="nm">Load balancer</div><div class="sub">passes requests along</div></div>
+    <div class="layer card bug" data-cue="API#1" data-anim="up"><div class="stamp" data-cue="lives" data-anim="slam">BUG LIVES HERE</div><div class="no">LAYER 3</div><div class="nm">API</div><div class="sub">the code decides who gets what</div></div>
+    <div class="layer card" data-cue="database" data-anim="up"><div class="no">LAYER 4</div><div class="nm">Database</div><div class="sub">holds every company's rows</div></div>
+  </div>
+</section>
+
+<section data-scene="03-gap" data-transition="fade">
+  <div class="tag g-tag" data-cue="+0.1" data-anim="fade"><b>//</b>inside the API layer</div>
+  <div class="gcols">
+    <div class="gcol card ok" data-cue="Authentication" data-anim="left">
+      <div class="who">authentication</div><div class="big silver">Who are you?</div>
+      <div class="res" data-cue="works" data-anim="pop">&#10003; WORKS</div>
+    </div>
+    <div class="gcol card no" data-cue="Authorization" data-anim="right">
+      <div class="who">authorization</div><div class="big silver">May you touch this record?</div>
+      <div class="res" data-cue="Two" data-anim="slam">&#10005; MISSING ON 2 ROUTES</div>
+    </div>
+  </div>
+  <div class="stride" data-cue="STRIDE" data-anim="stagger">
+    <div class="tag"><b>//</b>STRIDE</div>
+    <div class="st card">S</div><div class="st card hot" id="st-t">T</div><div class="st card">R</div><div class="st card hot" id="st-i">I</div><div class="st card">D</div><div class="st card">E</div>
+  </div>
+  <div class="st-note">
+    <span data-cue="information" data-anim="up"><b>I</b> information disclosure</span>
+    <span data-cue="tampering" data-anim="up"><b>T</b> tampering</span>
+    <span data-cue="reads" data-anim="fade">log: reads only</span>
+  </div>
+</section>
+
+<section data-scene="04-options" data-transition="slide">
+  <div class="tag o-tag" data-cue="+0.1" data-anim="fade"><b>//</b>three fixes, side by side</div>
+  <div class="ocols">
+    <div class="ocol card" data-cue="firewall" data-anim="up">
+      <div class="lay">layer 1 &middot; firewall</div>
+      <div class="nm"><span>A</span>Firewall rule</div>
+      <div class="time ember">Minutes</div>
+      <div class="row gain" data-cue="Live" data-anim="fade"><small>GAINS</small>live fast, no code change</div>
+      <div class="row cost" data-cue="cannot" data-anim="fade"><small>COSTS</small>can't see owners; hole stays open</div>
+    </div>
+    <div class="ocol card" data-cue="ownership" data-anim="up">
+      <div class="lay">layer 3 &middot; API</div>
+      <div class="nm"><span>B</span>Ownership check</div>
+      <div class="time ember">~1 hour</div>
+      <div class="row gain" data-cue="hour" data-anim="fade"><small>GAINS</small>closes this hole</div>
+      <div class="row cost" data-cue="remember" data-anim="fade"><small>COSTS</small>every new route must remember</div>
+    </div>
+    <div class="ocol card" data-cue="database" data-anim="up">
+      <div class="lay">layer 4 &middot; database</div>
+      <div class="nm"><span>C</span>Row-level security</div>
+      <div class="time ember">Days</div>
+      <div class="row gain" data-cue="catches" data-anim="fade"><small>GAINS</small>catches forgetful code</div>
+      <div class="row cost" data-cue="lock" data-anim="fade"><small>COSTS</small>a mistake can lock customers out</div>
+    </div>
+  </div>
+  <div class="nothing card" data-cue="nothing" data-anim="slam"><span class="tag"><b>//</b>do nothing</span>every invoice stays open to every customer</div>
+</section>
+
+<section data-scene="05-pick" data-transition="fade">
+  <div class="tag r-tag" data-cue="+0.1" data-anim="fade"><b>//</b>the recommendation</div>
+  <div class="rcols">
+    <div class="rc card" data-cue="stopgap" data-anim="left">
+      <div class="when">stopgap</div><div class="nm"><span>A</span>Firewall rule</div>
+      <div class="what">buys time until B ships</div><div class="eta">MINUTES</div>
+    </div>
+    <div class="rc card pick" data-cue="Pick" data-anim="zoom">
+      <div class="rec" data-cue="now" data-anim="slam">&#10003; RECOMMENDED</div>
+      <div class="when">ship now</div><div class="nm"><span>B</span>Ownership check</div>
+      <div class="what">closes this hole, and it is small</div><div class="eta">~1 HOUR</div>
+    </div>
+    <div class="rc card" data-cue="plan" data-anim="right">
+      <div class="when">plan next</div><div class="nm"><span>C</span>Row-level security</div>
+      <div class="what">stops the next forgotten check</div><div class="eta">DAYS</div>
+    </div>
+  </div>
+  <div class="why card" data-cue="closes" data-anim="up">
+    <span class="tag"><b>//</b>why B</span><span class="t">closes this hole</span><span class="t" style="color: var(--muted);">&middot;</span><span class="t" data-cue="risky" data-anim="highlight">C is too risky to rush tonight</span>
+  </div>
+  <div class="est" data-cue="estimates" data-anim="fade">times are the working agent's estimates</div>
+</section>
+
+<script>
+  // A request travels the four layers; the ember dot stops at the API.
+  const at = (sel) => +document.querySelector(sel).dataset.at;
+  const s2 = +document.querySelector('[data-scene="02-layers"]').dataset.start;
+  const d2 = +document.querySelector('[data-scene="02-layers"]').dataset.duration;
+  gsap.set("#y-dot", { x: 0 });
+  tl.fromTo("#y-dot", { x: 0 }, { x: 1560, duration: Math.max(4, d2 - 2), ease: "power1.inOut" }, s2 + 0.4);
+  document.querySelectorAll(".ping").forEach((p) => {
+    tl.fromTo(p, { boxShadow: "0 0 0 0 rgba(255,122,61,0.7), 0 0 18px rgba(255,122,61,0.8)" },
+      { boxShadow: "0 0 0 14px rgba(255,122,61,0), 0 0 18px rgba(255,122,61,0.8)", duration: 1.2, repeat: 30, ease: "power1.out" }, 0);
+  });
+</script>

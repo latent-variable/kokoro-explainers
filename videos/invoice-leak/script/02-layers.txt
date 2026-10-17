@@ -1,0 +1,1 @@
+Every request crosses four layers: the firewall, the load balancer, the API, and the database. The firewall sees addresses and paths, never who owns an invoice. The bug lives in the API.

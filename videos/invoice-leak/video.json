@@ -1,0 +1,18 @@
+{
+  "title": "Close the invoice leak",
+  "kind": "decision",
+  "importance": "high",
+  "importance_reason": "ShipShow's live demo decision video at the LA AI Hackathon: a panel judges it, and it explains a security call to a non-specialist",
+  "audience": "An engineering lead who owns the call and is not a security specialist; has not read the code or the log.",
+  "theme": "buildday",
+  "engine": "omnivoice",
+  "voice": "eve",
+  "speed": 1.3,
+  "music": { "file": "local/music/launch-bed.wav", "volume": 0.2, "duck": 0.3 },
+  "say": {
+    "Ledgerly": "Ledger lee",
+    "WAF": "waff",
+    "STRIDE": "stride",
+    "Postgres": "Post gress"
+  }
+}

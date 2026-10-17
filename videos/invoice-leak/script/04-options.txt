@@ -1,0 +1,1 @@
+Three options. A is a firewall rule. Live in minutes, but it cannot know who owns an invoice, and the hole stays open. B is an ownership check in the two routes. About an hour, but every future route must remember it. C is row-level security in the database. It catches forgetful code, but takes days, and a mistake can lock customers out. Doing nothing leaves every invoice open.
