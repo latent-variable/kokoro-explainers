@@ -5,6 +5,15 @@ to tell it worked. Sources are Anthropic's own docs and engineering posts, read 
 at the end); where a source did not say something, it is marked **unconfirmed** rather than filled in. The repo facts
 were measured on the same day.
 
+## Progress
+
+| Step | Status |
+|---|---|
+| 0.1 results folder per video | done by hand for `videos/pacer-dev-journey` (PR #20); 0.2 automates it |
+| 2.0 commit project settings, 2.1 Bash guard, 2.2 protect files, 2.3 Stop hook, 2.7 read denials | done: DESIGN D36, `test/hooks.test.mjs` |
+| 3.1 read-only critic (without the Bash hook), 3.2 `maxTurns` and an explicit model | next PR |
+| everything else | not started |
+
 ## What the repo looks like today (measured)
 
 | Fact | Value | Best-practice yardstick |

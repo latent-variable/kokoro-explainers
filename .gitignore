@@ -18,4 +18,5 @@ local/
 
 # Agent context (project-sync.sh)
 .agents/
-.claude/
+.claude/skills/
+.claude/settings.local.json

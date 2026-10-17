@@ -425,6 +425,24 @@ project settings and rules cannot be committed. Nothing in the plan is done.
 cost or critic agreement is recorded. **Costs.** None yet; each step names how to tell it worked and the unconfirmed items
 to check first (plugin-shipped agent hooks, how a missing `version` resolves).
 
+### D36. Project hooks enforce the rules that were only prose (2026-10-17; plan steps 2.0 to 2.3, 2.7 of `docs/PLAN.md`)
+**Decision.** `.claude/settings.json` and `.claude/hooks/` are tracked (`.gitignore` ignores only `.claude/skills/`, the links
+`npm install` makes, and `.claude/settings.local.json`). Three hooks: **`guard-bash`** (PreToolUse on Bash) refuses `rm`,
+`unlink`, `shred`, `find -delete`, and the git commands that discard or rewrite work (`restore`, `clean`, `reset --hard`,
+`checkout --`, `branch -D`, `stash drop`, a force push), looking inside `sudo`, `xargs`, `bash -c`, `$( )` and backticks;
+**`protect-files`** (PreToolUse on Edit and Write) refuses `sample_application/src/` (the bugs are the demo), the recorded runs
+beside their SHA-256 and `package-lock.json`; **`stop-tests`** (Stop) runs `npm test` if the session changed anything the tests
+cover and exits 2 on a failure, once: `stop_hook_active` lets the second stop through, so an unfixable failure cannot loop.
+`permissions.deny` keeps `.env*` and `local/voices/` unread (a clone is somebody's voice). A person overrides on purpose with
+`SHIPSHOW_ALLOW_DESTRUCTIVE=1` or `SHIPSHOW_EDIT_SAMPLE=1`.
+**Why.** CLAUDE.md is advisory and hooks are enforced (Anthropic's memory and permissions docs); the repo's hard rules were prose
+plus CI. **Checked** by `test/hooks.test.mjs`, which feeds each hook payloads on stdin: 21 refused commands, 16 allowed ones,
+the override, bad input.
+**Costs.** The guard reads the command string, not what the shell will do: a script that deletes inside itself, or a command
+built from a variable, gets through; it is a seatbelt, not a sandbox (`sandbox-run.sh` is that). `npm test` needs `ffmpeg`
+(`doctor` says), and a machine without it hears about it at every first stop. Hooks run in the person's session and are
+loaded when it starts.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
