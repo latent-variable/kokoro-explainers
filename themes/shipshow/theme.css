@@ -41,6 +41,6 @@
   --entrance: up;             /* the data-anim an element gets when it names none */
   --camera: push;             /* none | push: a slow push-in over each scene */
   --ambient: glow;            /* none | glow | grid | dots */
-  --ambient-strength: 0.22;
+  --ambient-strength: 0.18;
   --progress: on;             /* on | off: a thin bar across the top */
 }

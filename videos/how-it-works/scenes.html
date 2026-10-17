@@ -30,7 +30,7 @@
   .code { position: absolute; top: 260px; left: var(--pad); width: 900px; height: 180px; padding: 30px 44px; border-radius: var(--radius); background: var(--code-bg); border: var(--border) solid var(--line); white-space: nowrap; font-size: 32px; line-height: 1.7; color: var(--code-ink); }
   .file { position: absolute; top: 480px; left: var(--pad); width: 900px; height: 260px; padding: 30px 44px; border-radius: var(--radius); background: var(--card); border: var(--border) solid var(--line); box-shadow: var(--shadow); }
   .fname { font-size: 28px; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 14px; }
-  .file .line { font-size: 40px; line-height: 1.4; }
+  .file .line { font-size: 40px; line-height: 1.4; text-wrap: balance; }
   .file mark { background: none; color: var(--accent); font-weight: 800; }
   .code .k { color: var(--accent-2); }
   .code .s { color: var(--accent); }
@@ -43,7 +43,7 @@
   .steps { top: 290px; display: flex; gap: 40px; }
   .step { flex: 1; padding: 36px 40px; border-radius: var(--radius); background: var(--card); border: var(--border) solid var(--line); box-shadow: var(--shadow); }
   .step b { display: block; font-size: 32px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
-  .step span { font-size: 40px; line-height: 1.35; }
+  .step span { font-size: 40px; line-height: 1.35; text-wrap: balance; }
   .render-cmd { top: 650px; text-align: center; }
 
   /* 05-close */
@@ -52,6 +52,10 @@
   .url { font-size: 56px; color: var(--accent-2); }
   .cmds { display: flex; flex-direction: column; align-items: center; gap: 18px; }
   .cmds .cmd { white-space: nowrap; }
+  section[data-scene="05-close"] .center { gap: 28px; }
+  section[data-scene="05-close"] .big { font-size: 84px; }
+  section[data-scene="05-close"] .cmds { gap: 14px; }
+  section[data-scene="05-close"] .cmds .cmd { font-size: 34px; padding: 18px 30px; }
 </style>
 
 <section data-scene="01-title" data-transition="fade">
@@ -110,7 +114,7 @@
   <div class="takeaway wide" style="top: 790px" data-cue="Change">Change one sentence: <em data-cue="only" data-anim="highlight">only that sentence</em> is voiced again.</div>
 </section>
 
-<section data-scene="05-close" data-transition="zoom">
+<section data-scene="05-close" data-transition="zoom" data-camera="none">
   <div class="center">
     <div class="big" id="close-head" data-cue="+0.2" data-anim="fade">Make your own</div>
     <div class="sub" data-cue="download" data-anim="fade">Runs on your machine, after a one-time download</div>

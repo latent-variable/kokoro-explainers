@@ -10,7 +10,7 @@ Sonnet; rounds 5 and 6 ran the subjective critics (clarity, visuals, engagement)
 | clarity | fail | fail | fail | fail | fail | pass |  |  |
 | pacing | fail | pass | pass | pass | pass | pass |  | pass |
 | sync | pass | pass | pass | pass | pass | pass |  | pass |
-| visuals | fail | fail (blocking) | pass | fail | not counted | pass | pass | running |
+| visuals | fail | fail (blocking) | pass | fail | not counted | pass | pass | fail |
 | consistency | fail | fail | pass | fail | pass | pass | pass | pass |
 | engagement | | | fail | pass | pass | |  | pass |
 
@@ -50,7 +50,12 @@ for a persona and be engaging.
   ambient glow, progress bar, typed, drawn, pulsing and highlighted entrances): pacing, sync,
   consistency, visuals and engagement. Engagement, on Opus, watched as a developer new to the
   repo and would have stopped nowhere; its one minor, the typed tagline pulling the eye from
-  the opening sentence, became a fade.
+  the opening sentence, became a fade. Visuals, on Opus, failed one objective major: the
+  close's stack started at the top edge and the camera push pressed it closer. The close
+  dropped the push and tightened; the highlight moved under the letters; card text wraps
+  evenly; the ambient glows were pulled apart so they no longer blur into grey.
+- **Round 9**: a fresh visuals critic on the fixes passed, minors only (layout taste in the
+  close and scene 3), accepted.
 
 The builder's own look between rounds caught two more before any critic did: a code line
 overflowing its box, and two cues landing on an earlier word than intended ("picture"

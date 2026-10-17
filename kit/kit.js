@@ -23,11 +23,12 @@
       // Ambient background: a slow drift under every scene.
       const ambient = token("--ambient", "none"), ambientEl = document.getElementById("ambient");
       if (ambient === "glow") {
-        ["--accent", "--accent-2", "--accent"].forEach((colour) => {
+        // Two glows, kept apart, so the theme's colours never blur into grey where they meet.
+        ["--accent", "--accent-2"].forEach((colour, i) => {
           const blob = document.createElement("div");
           blob.className = "blob";
           blob.style.background = `var(${colour})`;
-          blob.style.left = `${Math.round(rand() * 70)}%`;
+          blob.style.left = `${Math.round(i * 45 + rand() * 25)}%`;
           blob.style.top = `${Math.round(rand() * 55)}%`;
           ambientEl.appendChild(blob);
           tl.to(blob, { x: Math.round((rand() - 0.5) * 700), y: Math.round((rand() - 0.5) * 420), duration: TOTAL, ease: "sine.inOut" }, 0);
@@ -141,13 +142,13 @@
           tl.to(el, { opacity: 1, duration: 0.2 }, at);
           tl.to(state, { v: target, duration: 1.1, ease: "power2.out", onUpdate: () => { el.textContent = show(state.v); } }, at);
         },
-        // A marker sweeps under the words; the text itself is already there.
+        // A marker sweeps under the words, below the letters so it never muddies them.
         highlight(el, at) {
           gsap.set(el, {
-            backgroundImage: "linear-gradient(color-mix(in srgb, var(--accent) 35%, transparent), color-mix(in srgb, var(--accent) 35%, transparent))",
-            backgroundRepeat: "no-repeat", backgroundPosition: "0% 88%", backgroundSize: "0% 40%",
+            backgroundImage: "linear-gradient(var(--accent), var(--accent))",
+            backgroundRepeat: "no-repeat", backgroundPosition: "0% 100%", backgroundSize: "0% 12%",
           });
-          tl.to(el, { backgroundSize: "100% 40%", duration: 0.6, ease: "power2.out" }, at);
+          tl.to(el, { backgroundSize: "100% 12%", duration: 0.6, ease: "power2.out" }, at);
         },
         // Each child arrives in turn.
         stagger(el, at) {
