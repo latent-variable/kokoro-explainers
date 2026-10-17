@@ -4,7 +4,7 @@ The source of record is this repository's own history at commit `cada3b6`: the g
 commit messages, `AGENTS.md`, `README.md`, and `videos/how-it-works/REVIEW.md`. Nothing here
 comes from outside the repository.
 
-- Repository: https://github.com/latent-variable/kokoro-explainers
+- Repository: https://github.com/latent-variable/shipshow (renamed from kokoro-explainers; GitHub redirects the old address)
 - Commits: `9e3cde3` (pull request #1, the pipeline) and `cada3b6` (pull request #2, skills and critics)
 
 ## Claims
