@@ -10,13 +10,9 @@ Your agents work faster than you can follow. ShipShow turns what they did, and e
   <sub>A word in the script, tagged in the scene, appears as the voice says it. From <a href="videos/how-it-works">our own explainer</a>.</sub>
 </p>
 
-<p align="center">
-  <a href="videos/why-shipshow"><img src="docs/assets/pitch.jpg" width="720" alt="The ShipShow pitch video, 57 seconds: SHIPSHOW, a skill your coding agent loads, turns each call your agents hand you into a short video."></a>
-  <br>
-  <sub>The pitch, 57 seconds, made with ShipShow. <a href="videos/why-shipshow">Its script, scenes and review.</a></sub>
-</p>
+https://github.com/user-attachments/assets/5421baa1-c54d-4151-8cf4-6e5e20be889e
 
-<!-- To make the poster play: edit this file on GitHub, drag why-shipshow.mp4 onto this line, and delete the poster above. -->
+<p align="center"><sub>The pitch, 57 seconds, made with ShipShow. <a href="videos/why-shipshow">Its script, scenes and review.</a></sub></p>
 
 ## How it works
 
