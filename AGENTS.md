@@ -42,8 +42,10 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 - **The agent that builds a video never judges it.** Every critic is a fresh agent that has
   never seen the build: never a fork, never yourself. Its whole job is to find what is wrong.
-- **A video is done when its critics pass**, not when it renders: `REVIEW.md` records each
-  round. Which critics a video gets is in its `video.json`; its own bar is in `critics.md`.
+- **A video is done when its critics pass or its review plan's cap is reached**, never when it
+  merely renders: `REVIEW.md` records each round, and at the cap every open finding as
+  accepted or declined with its reason. The floor (accuracy, and decision for a decision
+  video) can never ship open. Which critics a video gets is in its `video.json`; its own bar is in `critics.md`.
 - **Every claim traces to `sources.md`.** A fact the sources lack is a gap to report, never
   one to fill in.
 - **A bar you keep wishing a video met becomes a critic** (`critic-loop`, *A new critic*).

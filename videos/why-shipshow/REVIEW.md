@@ -16,6 +16,9 @@ agents only.
 | consistency | fail | fail | pass | pass |
 | engagement | fail | fail | fail | fail (declined) |
 
+The plan's cap (four rounds) ended the loop with visuals and engagement still failing on
+findings declined below. The floor critic, accuracy, passed.
+
 ## What the critics changed
 
 - **Rounds 1 and 2.** The first draft failed everywhere. Pacing measured scenes well above
