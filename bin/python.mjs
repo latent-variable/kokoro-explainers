@@ -1,6 +1,7 @@
 // Which Python can run Kokoro. The pinned kokoro-onnx (requirements.txt) needs Python 3.10 to 3.13:
 // pip refuses it on 3.14 ("Requires-Python >=3.10,<3.14").
 import { spawnSync } from "node:child_process";
+import { join } from "node:path";
 
 export const MIN = [3, 10], MAX = [3, 13];
 export const supportedPython = (v) => {
@@ -24,4 +25,16 @@ export function pickPython(candidates = ["python3.13", "python3.12", "python3.11
     if (version && supportedPython(version)) return { cmd, version };
   }
   return null;
+}
+
+/** The commands `npm run setup` runs, in order: make .venv unless it exists, upgrade pip, install requirements.txt.
+ *  The upgrade comes first because a new venv's pip can be too old to find a current wheel: pip 22.3.1, which
+ *  Python 3.10 ships with, cannot find onnxruntime 1.20 and stops with "No matching distribution found". */
+export function setupSteps(repo, pythonCmd, venvExists) {
+  const pip = join(repo, ".venv", "bin", "pip");
+  return [
+    ...(venvExists ? [] : [[pythonCmd, ["-m", "venv", ".venv"]]]),
+    [pip, ["install", "--upgrade", "pip"]],
+    [pip, ["install", "-r", "requirements.txt"]],
+  ];
 }
