@@ -201,6 +201,9 @@ export function outName(dir) {
 // local/config.json "review", then the preset (a decision video's default is quick).
 export const BASE_CRITICS = ["critic-accuracy", "critic-clarity", "critic-pacing", "critic-sync", "critic-visuals", "critic-consistency", "critic-engagement"];
 export const TASTE_CRITICS = ["critic-clarity", "critic-visuals", "critic-engagement"];
+// The builder judges how much a video matters and records it in video.json "importance"
+// (skills/critic-loop, *How much review*); each level picks a preset.
+export const IMPORTANCE = { low: "quick", normal: "standard", high: "thorough" };
 export const PRESETS = {
   quick: { critics: ["critic-accuracy", "critic-sync", "critic-visuals"], rounds: 1, until: "blocking", model: "sonnet", final: null, frames: "scenes", rerun: "failed" },
   standard: { critics: BASE_CRITICS, rounds: 2, until: "major", model: "sonnet", final: null, frames: "cues", rerun: "failed" },
@@ -236,11 +239,17 @@ export function reviewPlan(cfg, argv = process.argv) {
   if (cfg.critics) die(`video.json "critics" moved into "review": {"critics": [...]} (skills/critic-loop)`);
   const cli = {};
   for (const k of ["preset", "rounds", "until", "model", "final", "frames", "rerun", "critics"]) if (flag(k, argv) !== undefined) cli[k] = flag(k, argv);
-  const layers = [localConfig().review || {}, cfg.review || {}, cli];
+  if (cfg.importance !== undefined && !IMPORTANCE[cfg.importance]) die(`video.json importance is "${cfg.importance}"; it takes ${Object.keys(IMPORTANCE).join(", ")}`);
+  // The agent's importance stands for a preset at the video's level, so it beats a person's
+  // general default, while a preset set on the video or a flag in the moment beats it.
+  const videoLayer = { ...(cfg.review || {}) };
+  if (!videoLayer.preset && cfg.importance) videoLayer.preset = IMPORTANCE[cfg.importance];
+  const layers = [localConfig().review || {}, videoLayer, cli];
   // A preset resets every dial set less specifically than it: a video's "quick" is not undone
   // by a person's "rounds": 4. Dials set at its own level or more specifically still apply.
   const from = layers.map((l) => !!l.preset).lastIndexOf(true);
   const preset = from >= 0 ? layers[from].preset : kind === "decision" ? "quick" : "standard";
+  const presetFrom = from === 2 ? "flag" : from === 1 ? (cfg.review?.preset ? "video.json review" : "importance") : from === 0 ? "local/config.json" : `${kind} default`;
   if (!PRESETS[preset]) die(`review preset is "${preset}"; it takes ${Object.keys(PRESETS).join(", ")}`);
   const plan = { ...PRESETS[preset], critics: [...PRESETS[preset].critics] };
   const overrides = [];
@@ -268,7 +277,7 @@ export function reviewPlan(cfg, argv = process.argv) {
   const worst = plan.rounds === 1 ? first : { min: first.min + (plan.rounds - 2) * (middle.min + REBUILD_MIN) + last.min + REBUILD_MIN, k: first.k + (plan.rounds - 2) * middle.k + last.k };
   const r = (x) => Math.round(x * 10) / 10;
   return {
-    video: cfg.title, kind, preset, ...plan, taste, floor, overrides, floorAdded: overrides.includes("critics") ? added : [],
+    video: cfg.title, kind, importance: cfg.importance || null, importanceReason: cfg.importance_reason || null, presetFrom, preset, ...plan, taste, floor, overrides, floorAdded: overrides.includes("critics") ? added : [],
     estimate: { firstRound: r(first.min), firstRoundTokens: Math.round(first.k), worst: r(worst.min), worstTokens: Math.round(worst.k) },
   };
 }

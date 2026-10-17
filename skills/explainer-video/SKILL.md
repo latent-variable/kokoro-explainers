@@ -124,9 +124,10 @@ you can see is broken.
 
 ## 5. The critic loop
 
-`npm run critics -- <folder>` prints how much review this video gets (critics, models,
-rounds, severity); set `video.json` `"kind"` (`decision`, `feature`, `release`) and, if the
-default is wrong for it, `"review"`. Then run `skills/critic-loop` to that plan, with the
+Decide how much review it deserves: set `video.json` `"kind"` (`decision`, `feature`,
+`release`), `"importance"` (`low`, `normal`, `high`) and a one-line `"importance_reason"`,
+judged as `critic-loop` says (*How much review*). `npm run critics -- <folder>` prints the
+plan that follows from it. Then run `skills/critic-loop` to that plan, with the
 video's own `critics.md`. Fix what they find, rebuild, regenerate the packet, run fresh
 critics, and stop at the cap.
 
