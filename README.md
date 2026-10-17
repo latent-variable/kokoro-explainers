@@ -49,6 +49,12 @@ Tell your agent how you like your videos ("faster", "open with the decision", "a
 
 Every video takes a theme: colours, fonts, layout and motion in one folder. Ship with `shipshow` or `paper`, or have your agent build one from a client's brand; `--theme paper` previews any theme on any video.
 
+<p align="center">
+  <img src="docs/assets/themes.jpg" width="100%" alt="The same moment of the same video in two themes: dark navy with orange in shipshow, warm paper with serif headlines and deep red in paper.">
+  <br>
+  <sub>Same video, same frame: <code>shipshow</code> and <code>paper</code>.</sub>
+</p>
+
 ## How we work
 
 - **Use it on your own work**, then turn whatever got in the way into a pull request.

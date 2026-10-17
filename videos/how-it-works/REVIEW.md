@@ -4,15 +4,15 @@ The critic loop (`skills/critic-loop`) as run on this video, 2026-10-17. Every c
 round was a fresh agent that had not seen the build or an earlier round. Rounds 1 to 4 ran on
 Sonnet; rounds 5 and 6 ran the subjective critics (clarity, visuals, engagement) on Opus.
 
-| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 |
-|---|---|---|---|---|---|---|---|
-| accuracy | pass | pass | fail | pass | pass | pass | pass |
-| clarity | fail | fail | fail | fail | fail | pass |  |
-| pacing | fail | pass | pass | pass | pass | pass |  |
-| sync | pass | pass | pass | pass | pass | pass |  |
-| visuals | fail | fail (blocking) | pass | fail | not counted | pass | pass |
-| consistency | fail | fail | pass | fail | pass | pass | pass |
-| engagement | | | fail | pass | pass | |  |
+| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 |
+|---|---|---|---|---|---|---|---|---|
+| accuracy | pass | pass | fail | pass | pass | pass | pass |  |
+| clarity | fail | fail | fail | fail | fail | pass |  |  |
+| pacing | fail | pass | pass | pass | pass | pass |  | pass |
+| sync | pass | pass | pass | pass | pass | pass |  | pass |
+| visuals | fail | fail (blocking) | pass | fail | not counted | pass | pass | running |
+| consistency | fail | fail | pass | fail | pass | pass | pass | pass |
+| engagement | | | fail | pass | pass | |  | pass |
 
 `critic-engagement` was added after round 2, from the team's point that videos must be made
 for a persona and be engaging.
@@ -45,6 +45,12 @@ for a persona and be engaging.
   screen): accuracy, consistency and visuals, the critics whose ground it touched. Accuracy's
   minor led to a check: the first render also downloads a headless Chrome, so the close now
   says "after a one-time download" rather than naming only the model.
+
+- **Round 8**, after speed (1.25 by default), themes and motion (transitions, camera push,
+  ambient glow, progress bar, typed, drawn, pulsing and highlighted entrances): pacing, sync,
+  consistency, visuals and engagement. Engagement, on Opus, watched as a developer new to the
+  repo and would have stopped nowhere; its one minor, the typed tagline pulling the eye from
+  the opening sentence, became a fade.
 
 The builder's own look between rounds caught two more before any critic did: a code line
 overflowing its box, and two cues landing on an earlier word than intended ("picture"
