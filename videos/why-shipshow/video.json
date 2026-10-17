@@ -6,7 +6,7 @@
   "audience": "A hackathon panelist or team lead who runs AI agents, developer or not, and makes calls on their work without time to read all of it; has never heard of ShipShow.",
   "theme": "buildday",
   "engine": "omnivoice",
-  "voice": "caro_davy",
+  "voice": "eve",
   "speed": 1.3,
   "music": { "file": "local/music/launch-bed.wav", "volume": 0.22, "duck": 0.3 },
   "say": {

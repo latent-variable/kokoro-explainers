@@ -119,9 +119,10 @@ timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-
 shows the rest; non-English voices need `espeak-ng` system-wide. **`omnivoice`** is higher quality and
 clones voices, on Apple Silicon only (MLX; `npm run setup:omnivoice`, then `"engine": "omnivoice"`). Its
 `voice` is a recording: a **built-in** one (`caro_davy`, the default, `bill_boerst`, `peter_yearsley`,
-`stuart_bell`, `marius`, `javert`: CC0 clips from kyutai/tts-voices, `bin/omnivoice-voices.json`) or a
+`stuart_bell`, `marius`, `javert`: CC0 clips from kyutai/tts-voices, `bin/omnivoice-voices.json`; and `eve`,
+VCTK speaker p361, CC BY 4.0, which a public video credits: "Voice: VCTK corpus, CC BY 4.0") or a
 **clone**, a 3 to 10 second clip at `local/voices/<name>.wav` with, optionally, the words spoken in it at
-`<name>.txt` beside it. `say` maps a written word to what the engine is told to say
+`<name>.txt` beside it (a clip that ends mid-word, or has no transcript, clones worse: Eve's silent takes, 2026-10-17). `say` maps a written word to what the engine is told to say
 (`"HyperFrames": "Hyper Frames"`); captions keep the written form.
 
 **Look.** A theme is `themes/<name>/theme.css` (or `local/themes/<name>/`, which wins): a
@@ -195,7 +196,7 @@ local/      gitignored, per person (tailor skill)
 - **espeak-ng fails when its data path is 160 characters or longer** (measured 2026-10-17: 159 works, 160 fails). It reports a missing `.../site-packages//phontab`, not a path error. A venv deep in a temp or worktree path hits this; `doctor` checks the length.
 - **OmniVoice is Apple Silicon only, and opt-in.** `requirements-omnivoice.txt` is separate so Kokoro installs anywhere; `doctor` lists the engine as `opt` until you ask with `--omnivoice`. `bin/omnivoice.py` voices every stale sentence in one process (the model loads once) from a job file `bin/voice.mjs` writes; a user-set `HYPERFRAMES_PYTHON` is its Python too, which is how the tests stand a fake worker in for it. The model and the built-in clips are pinned by revision in `bin/omnivoice-voices.json`.
 - **A clone is somebody's voice.** OmniVoice's own disclaimer prohibits unauthorized cloning and impersonation: clone yourself or someone who agreed. `local/` never leaves the machine, so a clone never reaches this public repo; keep it that way.
-- **OmniVoice can drop or repeat a word, and nothing here hears it back** (no speech recognition, below). Measured 2026-10-17: four template sentences read back exactly. Listen to a video before you ship it, and at 16 steps instead of 32 it dropped words on long lines, so `STEPS` stays 32. A sentence over about 45 words is the risk; split it.
+- **OmniVoice drops words when its window is too short, so speed is never applied by shortening it.** It fills the duration it is given: squeezed to 1.3x, 7 of 24 sentences lost or garbled words ("not a" vanished from "not a wall of logs"); generated at its natural length and then time-stretched (ffmpeg `atempo`), none did (measured 2026-10-17 with Whisper, why-shipshow). `bin/omnivoice.py` also trims the padding's silence from each take (13.8 s of a 67 s video was dead air) and re-voices a take that comes out silent. At 16 steps instead of 32 it dropped words on long lines, so `STEPS` stays 32. Nothing in the pipeline hears a take back: listen before you ship.
 - **A take's identity includes the voice's bytes.** A clip replaced under the same name (or its `.txt` edited) is a different voice, so its takes are voiced again; a Kokoro take's key is unchanged from before OmniVoice, so existing takes stay valid.
 - **No speech recognition, on purpose.** `hyperframes transcribe` built whisper.cpp and then timed out downloading its model after six minutes. Timing comes from voicing each sentence separately (`bin/voice.mjs`), so a word inside a sentence is placed by its share of the letters. Do not add an ASR step to fix a cue a few hundred milliseconds off; split the sentence or use `data-cue="+seconds"`.
 - **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts every later take's number, so they re-voice; that costs about a second each.
