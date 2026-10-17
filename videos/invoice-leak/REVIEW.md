@@ -164,3 +164,21 @@ The plan's last round: eight critics (accuracy, clarity, consistency, decision, 
 ### Left for the person
 - The length is about 97 s. Nobody has heard the voice back.
 - Decision-r3-4: the B and C pick-card cost lines are small (28 px or more) but dimmed with their cards.
+
+## Round 4 (the plan's last) and the floor re-check
+
+Eight critics. Clarity, engagement and sync passed. Fixed by the orchestrator, since the
+builder's context had grown costly: the times are now spoken as the agent's estimate where
+they first appear; "the list route already filters this way" is stated as a fact beside B's
+hour, not as its cause, and `sources.md` no longer calls it the working agent's reason; B's
+second cost (every new route must remember the check) is spoken; the time figures are neutral
+blue, since orange means a problem or cost; the option cards are tighter so the do-nothing bar
+clears them; and the speed is 1.0, after the person asked for slower and pacing measured every
+scene 16 to 20% over its target at 1.1.
+
+Accuracy and decision, the floor, ran once more past the cap and both passed.
+
+Accepted at the cap: pacing still measures scenes 1, 4 and 5 above the 1.0 target (263, 251
+and 248 syllables a minute against about 210) and the STRIDE block's reading time; the pick
+cards' gain and cost lines are styled differently from the option cards (consistency).
+Declined for good: cutting STRIDE (the person wants it kept).

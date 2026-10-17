@@ -80,98 +80,100 @@ ${body}
 const tag = (x, y, text, size = 18) => `<text x="${x}" y="${y}" class="jb" font-size="${size}" letter-spacing="${(size * 0.18).toFixed(1)}" fill="${C.ice}"><tspan fill="${C.ember}" font-weight="700">//</tspan> ${esc(text.toUpperCase())}</text>`;
 
 // ---- hero: the name, the line, and a decision video as ShipShow makes it ----
+// Sizes are for the README, which shows this 1280-wide image at about 880: nothing under 20.
 function hero() {
-  const W = 1280, H = 460;
+  const W = 1280, H = 520;
+  const X = 744, CW = 476;   // the decision card
   const opt = (y, letter, name, time, rec) => `
-    <g transform="translate(838 ${y})">
-      <rect width="344" height="50" rx="10" fill="${rec ? "#0c2418" : "url(#panel)"}" stroke="${rec ? C.green : C.line}" stroke-width="${rec ? 2 : 1.5}"/>
-      <text x="18" y="33" class="sg" font-size="22" font-weight="700" fill="${rec ? C.green : C.ember}">${letter}</text>
-      <text x="44" y="33" class="sg" font-size="20" font-weight="700" letter-spacing="-.4" fill="${C.ink}">${esc(name)}</text>
-      <text x="326" y="32" class="jb" font-size="15" text-anchor="end" fill="${C.muted}">${esc(time)}</text>
+    <g transform="translate(${X + 22} ${y})">
+      <rect width="${CW - 44}" height="62" rx="12" fill="${rec ? "#0c2418" : "url(#panel)"}" stroke="${rec ? C.green : C.line}" stroke-width="${rec ? 2.5 : 1.5}"/>
+      <text x="20" y="41" class="sg" font-size="28" font-weight="700" fill="${rec ? C.green : C.ember}">${letter}</text>
+      <text x="52" y="41" class="sg" font-size="26" font-weight="700" letter-spacing="-.5" fill="${C.ink}">${esc(name)}</text>
+      <text x="${CW - 64}" y="40" class="jb" font-size="21" text-anchor="end" fill="${C.ice}">${esc(time)}</text>
     </g>`;
   const body = `
-  ${tag(72, 112, "turn a shit show into a ship show")}
-  <text x="64" y="236" class="sg" font-size="128" font-weight="700" letter-spacing="-6" fill="url(#brand)">SHIPSHOW</text>
-  <text x="72" y="292" class="sg" font-size="27" font-weight="500" fill="${C.muted}">Narrated videos of what your agents did,</text>
-  <text x="72" y="328" class="sg" font-size="27" font-weight="500" fill="${C.muted}">and the calls they need from you.</text>
+  ${tag(72, 118, "turn a shit show into a ship show", 22)}
+  <text x="64" y="252" class="sg" font-size="122" font-weight="700" letter-spacing="-6" fill="url(#brand)">SHIPSHOW</text>
+  <text x="72" y="314" class="sg" font-size="30" font-weight="500" fill="${C.muted}">Narrated videos of what your</text>
+  <text x="72" y="354" class="sg" font-size="30" font-weight="500" fill="${C.muted}">agents did, and the calls they</text>
+  <text x="72" y="394" class="sg" font-size="30" font-weight="500" fill="${C.muted}">need from you.</text>
 
-  ${hud(812, 54, 396, 330)}
-  <rect x="824" y="66" width="372" height="306" rx="14" fill="url(#panel)" stroke="${C.ice}" stroke-opacity=".35" stroke-width="1.5"/>
-  <circle cx="846" cy="97" r="6" fill="${C.green}"/><circle cx="846" cy="97" r="11" fill="${C.green}" opacity=".25"/>
-  ${tag(860, 103, "decision video · 1:41", 14)}
-  <text x="842" y="146" class="sg" font-size="26" font-weight="700" letter-spacing="-.8" fill="${C.ink}">CLOSE THE INVOICE LEAK?</text>
-  ${opt(166, "A", "ROUTES OFF", "minutes", false)}
-  ${opt(226, "B", "OWNERSHIP CHECK", "~1 hour", true)}
-  ${opt(286, "C", "ROW-LEVEL SECURITY", "days", false)}
-  <g transform="translate(1086 214) rotate(-4)"><rect width="112" height="26" rx="6" fill="${C.bg}" stroke="${C.green}" stroke-width="2"/><text x="56" y="18" class="jb" font-size="12" font-weight="700" letter-spacing="1.2" text-anchor="middle" fill="${C.green}">✓ RECOMMENDED</text></g>
-  <rect x="842" y="350" width="336" height="5" rx="2.5" fill="${C.ice}" opacity=".15"/>
-  <rect x="842" y="350" width="236" height="5" rx="2.5" fill="url(#brand)"/>
+  ${hud(X - 14, 40, CW + 28, 392)}
+  <rect x="${X}" y="54" width="${CW}" height="364" rx="16" fill="url(#panel)" stroke="${C.ice}" stroke-opacity=".35" stroke-width="1.5"/>
+  <circle cx="${X + 28}" cy="92" r="7" fill="${C.green}"/><circle cx="${X + 28}" cy="92" r="13" fill="${C.green}" opacity=".25"/>
+  ${tag(X + 46, 99, "decision video · 1:41", 20)}
+  <text x="${X + 22}" y="150" class="sg" font-size="34" font-weight="700" letter-spacing="-1" fill="${C.ink}">CLOSE THE INVOICE LEAK?</text>
+  ${opt(174, "A", "ROUTES OFF", "minutes", false)}
+  ${opt(248, "B", "OWNERSHIP CHECK", "~1 hour", true)}
+  ${opt(322, "C", "ROW-LEVEL SECURITY", "days", false)}
+  <g transform="translate(${X + CW - 196} 230) rotate(-4)"><rect width="184" height="36" rx="8" fill="${C.bg}" stroke="${C.green}" stroke-width="2.5"/><text x="92" y="25" class="jb" font-size="20" font-weight="700" letter-spacing="1.5" text-anchor="middle" fill="${C.green}">✓ RECOMMENDED</text></g>
+  <rect x="${X + 22}" y="400" width="${CW - 44}" height="6" rx="3" fill="${C.ice}" opacity=".15"/>
+  <rect x="${X + 22}" y="400" width="${(CW - 44) * 0.7}" height="6" rx="3" fill="url(#brand)"/>
 
-  <rect x="836" y="398" width="348" height="40" rx="9" fill="${C.bg}" fill-opacity=".86"/>
-  <text x="1010" y="425" class="sg" font-size="20" font-weight="700" text-anchor="middle" fill="${C.ink}">the agent recommends <tspan fill="${C.peach}">option B</tspan></text>`;
-  return page(W, H, "ShipShow", "ShipShow: turn a shit show into a ship show. Narrated videos of what your agents did, and the calls they need from you. Beside the name, a decision video as ShipShow makes it: close the invoice leak, with three options, routes off in minutes, an ownership check in about an hour, recommended, and row-level security in days, and a caption reading: the agent recommends option B.", body);
+  <rect x="${X}" y="446" width="${CW}" height="52" rx="10" fill="${C.bg}" fill-opacity=".88"/>
+  <text x="${X + CW / 2}" y="481" class="sg" font-size="27" font-weight="700" text-anchor="middle" fill="${C.ink}">the agent recommends <tspan fill="${C.peach}">option B</tspan></text>`;
+  return page(W, H, "ShipShow", "ShipShow: turn a shit show into a ship show. Narrated videos of what your agents did, and the calls they need from you. Beside the name, a 1:41 decision video as ShipShow makes it, asking: close the invoice leak? Three options: routes off, in minutes; an ownership check, in about an hour, recommended; and row-level security, in days. A caption reads: the agent recommends option B.", body);
 }
 
 // ---- how it works: five steps, the loop back, and the MP4 ----
 function howItWorks() {
-  const W = 1280, H = 420;
+  const W = 1280, H = 470;
   const steps = [
-    ["01", "ASK", ["a question, or a call", "your agent needs"]],
-    ["02", "SCRIPT + SCENES", ["a fresh agent writes", "them from the code"]],
-    ["03", "VOICE", ["Kokoro or OmniVoice,", "on your machine"]],
-    ["04", "RENDER", ["HyperFrames shows", "each thing on its word"]],
-    ["05", "CRITICS", ["fresh agents judge it", "until it passes"]],
+    ["01", "ASK", ["a question, or", "a call your", "agent needs"]],
+    ["02", "SCRIPT + SCENES", ["a fresh agent", "writes them", "from the code"]],
+    ["03", "VOICE", ["Kokoro or", "OmniVoice, on", "your machine"]],
+    ["04", "RENDER", ["HyperFrames", "shows each thing", "on its word"]],
+    ["05", "CRITICS", ["fresh agents", "judge it until", "it passes"]],
   ];
-  const cw = 226, gap = 18, x0 = 39, y0 = 100, ch = 160;
+  const gap = 38, x0 = 36, cw = (W - 2 * x0 - 4 * gap) / 5, y0 = 96, ch = 206;
   const cx = (i) => x0 + i * (cw + gap);
+  const arrow = (x1, x2, y) => `<path d="M${x1} ${y}H${x2 - 2}" stroke="${C.ice}" stroke-width="3" stroke-linecap="round"/><path d="M${x2 - 11} ${y - 8}L${x2 - 1} ${y}L${x2 - 11} ${y + 8}" fill="none" stroke="${C.ice}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
   const cards = steps.map(([n, title, lines], i) => `
   <g transform="translate(${cx(i)} ${y0})">
     <rect width="${cw}" height="${ch}" rx="14" fill="url(#panel)" stroke="${i === 4 ? C.green : C.line}" stroke-width="1.5"/>
-    <text x="20" y="38" class="jb" font-size="16" font-weight="700" fill="${C.ember}">${n}</text>
-    <text x="20" y="78" class="sg" font-size="${title.length > 10 ? 23 : 27}" font-weight="700" letter-spacing="-.6" fill="${C.ink}">${esc(title)}</text>
-    <text x="20" y="114" class="sg" font-size="16" font-weight="500" fill="${C.muted}">${esc(lines[0])}</text>
-    <text x="20" y="137" class="sg" font-size="16" font-weight="500" fill="${C.muted}">${esc(lines[1])}</text>
-  </g>${i < 4 ? `<path d="M${cx(i) + cw + 4} ${y0 + ch / 2}h${gap - 8}" stroke="${C.ice}" stroke-width="2.5" stroke-linecap="round"/>` : ""}`).join("");
-  const bottom = y0 + ch, loopY = bottom + 46, loopFrom = cx(4) + 50, loopTo = cx(1) + cw / 2;
-  const pillX = cx(4) + 92, pillW = cw - 92, pillY = bottom + 28, mid = pillX + pillW / 2;
+    <text x="20" y="40" class="jb" font-size="20" font-weight="700" fill="${C.ember}">${n}</text>
+    <text x="20" y="82" class="sg" font-size="${title.length > 10 ? 23 : 30}" font-weight="700" letter-spacing="-.6" fill="${C.ink}">${esc(title)}</text>
+    ${lines.map((l, k) => `<text x="20" y="${122 + k * 27}" class="sg" font-size="21" font-weight="500" fill="${C.muted}">${esc(l)}</text>`).join("")}
+  </g>${i < 4 ? arrow(cx(i) + cw + 6, cx(i + 1) - 6, y0 + ch / 2) : ""}`).join("");
+  const bottom = y0 + ch, mid = cx(4) + cw / 2, pillW = 150, pillX = mid - pillW / 2, pillY = bottom + 38;
+  const loopFrom = cx(4) + 18, loopTo = cx(1) + cw / 2, loopY = bottom + 64;
   const body = `
-  ${tag(39, 64, "how it works")}
+  ${tag(36, 62, "how it works", 22)}
   ${cards}
-  <path d="M${loopFrom} ${bottom + 6}V${loopY}H${loopTo}V${bottom + 10}" fill="none" stroke="${C.ember}" stroke-width="2" stroke-dasharray="6 6"/>
-  <path d="M${loopTo - 7} ${bottom + 20}l7 -10l7 10" fill="none" stroke="${C.ember}" stroke-width="2"/>
-  <text x="${(loopFrom + loopTo) / 2}" y="${loopY + 32}" class="jb" font-size="16" letter-spacing="2" text-anchor="middle" fill="${C.ember}">FIX AND JUDGE AGAIN</text>
-  <path d="M${mid} ${bottom + 6}v${pillY - bottom - 12}" stroke="${C.ice}" stroke-width="2.5" stroke-linecap="round"/>
-  <rect x="${pillX}" y="${pillY}" width="${pillW}" height="56" rx="12" fill="${C.ember}" opacity=".45" filter="url(#glow)"/>
-  <rect x="${pillX}" y="${pillY}" width="${pillW}" height="56" rx="12" fill="url(#btn)"/>
-  <text x="${mid}" y="${pillY + 37}" class="sg" font-size="25" font-weight="700" text-anchor="middle" fill="#1b0d05">▶ MP4</text>
-  <text x="${pillX + pillW}" y="${pillY + 88}" class="sg" font-size="16" font-weight="500" text-anchor="end" fill="${C.muted}">you watch, then decide</text>`;
-  return page(W, H, "How it works", "Five steps. Ask: a question, or a call your agent needs. Script and scenes: a fresh agent writes them from the code. Voice: Kokoro or OmniVoice, on your machine. Render: HyperFrames shows each thing on its word. Critics: fresh agents judge it until it passes, and a failing round goes back to be fixed and judged again. Then an MP4 you watch before you decide.", body, { horizon: false });
+  <path d="M${loopFrom} ${bottom + 6}V${loopY}H${loopTo}V${bottom + 12}" fill="none" stroke="${C.ember}" stroke-width="2.5" stroke-dasharray="7 7"/>
+  <path d="M${loopTo - 9} ${bottom + 24}l9 -12l9 12" fill="none" stroke="${C.ember}" stroke-width="2.5"/>
+  <text x="${(loopFrom + loopTo) / 2}" y="${loopY + 38}" class="jb" font-size="21" letter-spacing="2" text-anchor="middle" fill="${C.ember}">FIX AND JUDGE AGAIN</text>
+  <path d="M${mid} ${bottom + 6}V${pillY - 4}" stroke="${C.ice}" stroke-width="3" stroke-linecap="round"/>
+  <rect x="${pillX}" y="${pillY}" width="${pillW}" height="60" rx="12" fill="${C.ember}" opacity=".45" filter="url(#glow)"/>
+  <rect x="${pillX}" y="${pillY}" width="${pillW}" height="60" rx="12" fill="url(#btn)"/>
+  <text x="${mid}" y="${pillY + 40}" class="sg" font-size="28" font-weight="700" text-anchor="middle" fill="#1b0d05">▶ MP4</text>
+  <text x="${mid}" y="${pillY + 96}" class="sg" font-size="21" font-weight="500" text-anchor="middle" fill="${C.muted}">you watch, then decide</text>`;
+  return page(W, H, "How it works", "Five steps. Ask: a question, or a call your agent needs. Script and scenes: a fresh agent writes them from the code. Voice: Kokoro or OmniVoice, on your machine. Render: HyperFrames shows each thing on its word. Critics: fresh agents judge it until it passes; a failing round loops back to the script and scenes to be fixed and judged again. Then an MP4 you watch before you decide.", body, { horizon: false });
 }
 
 // ---- the critics ----
 function critics() {
-  const W = 1280, H = 620;
+  const W = 1280, H = 666;
   const list = [
     ["Accuracy", "Is every claim true?"], ["Clarity", "Will they follow it?"], ["Pacing", "Can they keep up?"],
     ["Sync", "Is it shown when it’s said?"], ["Visuals", "Is every frame readable?"], ["Consistency", "One name for one thing?"],
     ["Engagement", "Would they keep watching?"], ["Decision", "Can they make the call?"], ["Grounding", "Is the evidence real?"],
   ];
-  const cw = 386, chh = 118, gx = 21, gy = 18, x0 = 40, y0 = 150;
+  const cw = 386, chh = 128, gx = 21, gy = 18, x0 = 40, y0 = 196;
   const cards = list.map(([name, q], i) => {
     const x = x0 + (i % 3) * (cw + gx), y = y0 + Math.floor(i / 3) * (chh + gy);
     return `
   <g transform="translate(${x} ${y})">
     <rect width="${cw}" height="${chh}" rx="14" fill="url(#panel)" stroke="${C.line}" stroke-width="1.5"/>
     <text x="24" y="50" class="sg" font-size="27" font-weight="700" letter-spacing="-.6" fill="${C.ink}">${esc(name.toUpperCase())}</text>
-    <text x="24" y="88" class="sg" font-size="20" font-weight="500" fill="${C.muted}">${esc(q)}</text>
-    <circle cx="${cw - 40}" cy="44" r="17" fill="#0c2418" stroke="${C.green}" stroke-width="2"/>
-    <path d="M${cw - 48} 44l6 6l11 -12" fill="none" stroke="${C.green}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="24" y="96" class="sg" font-size="25" font-weight="500" fill="#d6e0ee">${esc(q)}</text>
+    <text x="${cw - 24}" y="48" class="jb" font-size="20" font-weight="700" text-anchor="end" fill="${C.ember}">${String(i + 1).padStart(2, "0")}</text>
   </g>`;
   }).join("");
   const body = `
-  ${tag(40, 66, "the critics")}
-  <text x="40" y="114" class="sg" font-size="30" font-weight="700" letter-spacing="-.8" fill="${C.ink}">FRESH AGENTS, ONE QUESTION EACH.</text>
-  <text x="634" y="114" class="sg" font-size="22" font-weight="500" fill="${C.muted}">The agent that made the video never judges it.</text>
+  ${tag(40, 66, "the critics", 22)}
+  <text x="40" y="118" class="sg" font-size="36" font-weight="700" letter-spacing="-1" fill="${C.ink}">FRESH AGENTS, ONE QUESTION EACH.</text>
+  <text x="40" y="160" class="sg" font-size="26" font-weight="500" fill="#d6e0ee">The agent that made the video never judges it.</text>
   ${cards}`;
   return page(W, H, "The critics", "Nine critics, each a fresh agent with one question: Accuracy, is every claim true? Clarity, will they follow it? Pacing, can they keep up? Sync, is it shown when it is said? Visuals, is every frame readable? Consistency, one name for one thing? Engagement, would they keep watching? Decision, can they make the call? Grounding, is the evidence real? The agent that made the video never judges it.", body, { horizon: false });
 }
