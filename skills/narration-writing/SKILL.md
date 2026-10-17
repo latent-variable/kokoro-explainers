@@ -16,16 +16,20 @@ can be hard to hear. Write for the ear, then check it against the clock.
 
 - **One idea per scene**, in short sentences. The sentence is also the unit of timing: each
   one is voiced on its own, so a long sentence puts its cues at an estimate.
-- **Pace**: 150 to 165 words a minute is comfortable for technical content; under 130 or
-  over 175 fails `critic-pacing`. Kokoro at speed 1.0 reads near 190, so most videos want a
-  `"speed"` around 0.85 to 0.9 in `video.json`. Fix a fast scene with fewer words before
-  slowing the voice.
-- **A scene under 40 seconds.** Past that it holds two ideas.
+- **Pace is set by `speed` alone.** The packet's words a minute is speech-only: Kokoro reads
+  about 190 at speed 1.0, so words a minute is about 190 times `speed`, whatever a scene's word
+  count. `critic-pacing` holds the target and the limits; pick `speed` to land inside them (near
+  0.85) and read the packet to confirm. The template's `speed` of 1.0 is too fast to pass.
+- **Length is set by words.** A scene `critic-pacing` calls too long holds two ideas: cut words
+  or split it.
 - **What is said matches what is shown**, when it is shown. Name a thing as it appears, and
   put its `data-cue` on that word. If the sentence has the word twice, say `word#2` or split
   the sentence.
 - **Say what the viewer needs, not what the code says.** Do not read symbols, paths, flags or
-  long identifiers aloud; say what they mean, and show the literal on screen.
+  long identifiers aloud; say what they mean and show the literal on screen. When two names
+  sound alike (`follower_id`, `followed_id`) or one name covers two things, use the glossary's
+  spoken alias and put the literal beside it on the same cue. `data-cue` matches the start of a
+  spoken word, never an identifier.
 - **One name per thing, throughout** (`glossary`). Do not vary words for style.
 
 ## For the ear
@@ -37,7 +41,8 @@ can be hard to hear. Write for the ear, then check it against the clock.
 - Avoid homophones and look-alikes that can mislead by ear, and long strings of nouns.
 - A pause is a comma or a sentence end. `lead`, `gap` and `tail` in `video.json` set the
   silences; do not pad text to make them.
-- Do not announce structure ("in this section we will see"). Open on the point.
+- Do not announce structure ("in this section we will see"). Open on the point, and say why it
+  matters to the viewer.
 
 ## Pronunciation
 
@@ -48,10 +53,6 @@ keep the written form in captions:
 "say": { "HyperFrames": "Hyper Frames", "MP4": "M P 4", "npm": "N P M" }
 ```
 
-Listen to the first take of any new term before moving on. Do not add speech recognition to
-check it (`AGENTS.md`).
-
-## Check it
-
-`npm run review -- <folder>` writes `review/packet.md`: words a minute, every pause, every
-cue time. Read your own scenes against `critic-pacing`'s numbers before any critic is spent.
+Agents cannot hear the voice and there is no speech recognition here (`AGENTS.md`). Give every
+acronym, product name and odd identifier a spoken form up front; when a person reports a word
+said wrongly, add it to `"say"`.

@@ -26,9 +26,10 @@ skill). They tailor taste, never the truth bar.
 | **Feature** | Someone wants to know how a feature or system in a code base works | The code base | |
 | **Release** | A project ships and its developers need to know what changed | The release, changelog and pull requests | |
 
-**Where it lives.** A video about this repo, or one we mean to publish as an example, goes in
-`videos/`. A video about any other code base goes in `local/videos/<name>`, which is never
-committed: this repo is public, and a private code base's details must not reach it.
+**Where it lives** (`evidence-standard`). A video about this repo, a public sample vendored
+here, or one we mean to publish goes in `videos/`. A decision video, a private code base or
+someone's work in progress goes in `local/videos/<name>`, which is never committed: this repo
+is public.
 
 ### A decision video, handed off mid-work
 
@@ -60,6 +61,8 @@ checks against, so a claim that is not in it does not go in the video.
 - **Where each shown asset came from**: for every code excerpt, command, output or capture
   on screen, the commit and the command or file it was taken from (`critic-grounding` checks
   it). Copy it from the source; never retype it.
+- **Brief vs code** (decision video): each claim of the brief checked against the code, result
+  and `path:line` (`decision-brief`).
 - **What you left out and why**, so a critic can tell an omission from an oversight.
 
 A release explainer picks what a developer must know, in this order: breaking changes and
@@ -68,13 +71,16 @@ Not everything in the changelog earns a scene.
 
 ## 2. Script
 
+Order: `sources.md` with its Terms (`glossary`), then the plan (`explain-concept`), then the script
+(`narration-writing`).
+
 `npm run new -- <folder>`, then one file per scene in `script/`, read aloud in
 file-name order.
 
 - Spoken sentences, short. One idea per scene. The order a newcomer needs, not the order
   of the changelog.
-- About 150 to 165 words a minute is comfortable. Kokoro at speed 1.0 reads near 190, so
-  most videos want `"speed"` around 0.9 in `video.json`. The pacing critic measures it.
+- Pace is set by `"speed"` in `video.json`: Kokoro reads about 190 words a minute at 1.0, so
+  speed near 0.85 lands in `critic-pacing`'s target. The packet measures it.
 - Numbers and versions as they are said: "version two point four". Names Kokoro gets
   wrong go in `video.json` `"say"`; captions keep the written form.
 - A release explainer: what this release is, then breaking changes with before and after,

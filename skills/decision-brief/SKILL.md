@@ -16,8 +16,9 @@ you know. It does not script the video, and it is not the ground truth: the code
 explainer reads the code at the commit you name, and `critic-decision` checks the finished
 video against this brief.
 
-Write it to `brief.md` in a new `local/videos/<name>/` (a decision is about someone's work
-in progress, and this repo is public).
+Write it to `brief.md` in a new `local/videos/<name>/` (create `local/`; it is gitignored). A
+decision is about work in progress, so it goes there even when the code is this repo's;
+where things go is in `evidence-standard`. The video is not committed unless the person asks.
 
 ## What it contains
 
@@ -26,12 +27,12 @@ Decision: <one sentence the person could answer yes/no or A/B/C>
 Why now: <what is blocked until it is made>
 Options:
   A. <name>: <what it is>
-     Gains: ...   Costs / breaks: ...   Evidence: <path:line or test or run>
+     Gains: ...   Costs / breaks: <never empty, never "none">   Evidence: <path:line or test or run>
   B. ...
-If nobody decides: <what happens by default, and how soon>
+Doing nothing: <an option row, with its gains and costs>. If nobody decides: <what happens by default, and by when>
 My pick: <option> because <the reason, including what it trades away>
-What I may have wrong: <assumptions the person should check; where their call might differ>
-Read: <worktree or commit, and the code paths that matter>
+What I may have wrong: <at least one assumption, or the claims I checked and where>
+Read: <full SHA, or the patch or hash if uncommitted (`evidence-standard`); the paths that matter>
 Person: <who decides, what they already know>
 ```
 
@@ -43,17 +44,26 @@ Person: <who decides, what they already know>
 - **Doing nothing is an option** and is listed, with its consequence.
 - **Your recommendation is labelled as yours**, with its reason, so the person can see where
   they would differ. Naming "what I may have wrong" is part of the recommendation.
-- **Facts carry evidence.** A claim with no path, test or run is marked as a guess.
-- **Exact commit.** "Read the code at `<sha>` on `<branch>`", never "the latest".
+- **Facts carry evidence and a tag** (`evidence-standard`). A claim with no path, test or run
+  is marked as a guess.
+- **Exact pin.** A full SHA, never "the latest" or a branch. Uncommitted code is committed to a
+  local WIP branch or handed over as a patch or a content hash; do not push it.
 - **No script.** Do not write scenes, narration or what to show; that is the explainer's job.
 
 ## Receiving one
 
-If you are the explainer agent: read the code first, then the brief. Where they disagree the
-code wins, and the disagreement goes into the video and your hand-back, not into silence.
-Options the brief omits but the code reveals are added; options the code does not support
-are dropped. Then `explain-concept` and `explainer-video`; `critic-decision` joins the
-critics.
+If you are the explainer agent: read the code first, then the brief.
+
+1. **Check every brief claim against the code** and write the result into `sources.md` before
+   scripting: confirmed, contradicted or not checked, each with `path:line`. A claim is a lead,
+   not evidence (`evidence-standard`).
+2. **Derive each option's costs from the code yourself.** The brief's list is a floor. A blank
+   or "none" cost is a defect: report it and fill it from the code.
+3. Options the brief omits but the code reveals are added; options the code does not support
+   are dropped.
+4. Every contradiction, and every cost you added, goes into the video and the hand-back.
+
+Then `explain-concept` and `explainer-video`; `critic-decision` joins the critics.
 
 ## Hand-back
 

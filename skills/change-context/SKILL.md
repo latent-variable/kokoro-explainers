@@ -17,15 +17,22 @@ evidence, and stated, observed and inferred stay apart.
 
 ## The bar
 
-1. **Both ends are named.** The base and the head, as commits or a tag range, and whether the
-   change is merged. A "latest" is not a reference.
+Follow `evidence-standard` (tags, pins, safe running, where it goes). For a change:
+
+1. **Both ends are pinned**: full SHAs for base, head and the merge-base. A branch name is not
+   a reference; it moves, so record what it pointed to.
 2. **Intent comes from people; behaviour comes from code.** The PR description, linked issues,
-   commit messages and review comments say *why*. The diff, tests and runs say *what*. Where
-   they disagree, that is a finding, and the code wins.
-3. **Every behavioural claim is a before and an after**, each with evidence: "`x` returned 200
-   with an empty body; now 400. `path:line` at base and at head."
-4. **Unknowns are listed, never filled.** A reason you cannot find, a path you did not read, a
-   test you could not run: say it, and where you looked.
+   commit messages and review comments say *why*; the diff, tests and runs say *what*. If none
+   of them states a reason, write `Why: not stated (looked at: <where>)`. Do not infer a motive.
+   A commit message that misdescribes its diff is a finding.
+3. **A commit's label is a claim, not evidence.** Read every hunk of every commit in the range.
+   Set aside only hunks that are provably behaviour-neutral, and list each with its reason.
+   Changed defaults, limits, ordering and status codes are never neutral; list them on their own.
+4. **Every behavioural claim is a before and an after**, each with evidence; a new thing is
+   "did not exist at base", a removed one "absent at head".
+5. **Run the tests at base and at head**, in a worktree or scratch clone (`evidence-standard`),
+   or say "not run" under Open questions.
+6. **Unknowns are listed, never filled.**
 
 ## What it covers
 
@@ -36,14 +43,18 @@ evidence, and stated, observed and inferred stay apart.
 - **Behaviour before and after.** For each user- or caller-visible effect: inputs, outputs,
   errors, side effects, defaults, config and flags. Run the old and new where that is safe
   and cheap; otherwise read the code paths and the tests.
-- **Interfaces and compatibility.** Changed signatures, endpoints, schemas, file formats, env
-  vars, dependencies and versions. Mark each **breaking** (callers must change), **additive**,
+- **Interfaces and compatibility.** Changed signatures, endpoints, status codes, response keys,
+  schemas, file formats, config defaults and limits, env vars, dependencies and versions. Mark each **breaking** (callers must change), **additive**,
   or **internal**, and say what a caller does about each breaking one.
 - **Requirements touched.** Functional behaviour now guaranteed or no longer guaranteed, and
   non-functional effects (performance, reliability, security, observability, operations);
   see `code-context` for where each shows. Say which the change measurably affects and which
   you only suspect.
-- **Evidence it works.** Tests added or changed and what they prove; what is *not* tested;
+- **Data and migrations.** Each migration: its parent against the existing heads (run the
+  tool's heads check on a throwaway database), whether a downgrade exists, whether models and
+  migration agree, and what happens to existing rows.
+- **Evidence it works.** Tests added or changed and what they prove. For each changed test,
+  show the old and new assertion and say whether it widens, narrows or moves what is guaranteed; what is *not* tested;
   CI status as observed, not assumed.
 - **Risk and rollback.** What could go wrong, what migrates, what is irreversible, how to
   undo it.
@@ -52,23 +63,26 @@ evidence, and stated, observed and inferred stay apart.
 
 ## Reading the change
 
-For a PR: `gh pr view <n> --json title,body,commits,files,reviews` and `gh pr diff <n>`. For a
-range: `git log --oneline <base>..<head>` and `git diff <base>...<head>`. For a release: the
-release page, the changelog at the new tag and the pull requests it lists (`explainer-video`).
-Read the tests with the code: they are the change's own claim about behaviour.
+For a PR: `gh pr view <n> --json title,body,commits,files,reviews` and `gh pr diff <n>` (say
+"gh unavailable" if it is). For a range: `git rev-parse` for both ends, `git merge-base`, then
+`git log -p <base>..<head>` or `git show --stat` per commit **as well as** `git diff
+<base>...<head>`: the range diff squashes commits and hides what a label disguises, and
+reverts inside the range. For a release: the release page, the changelog at the new tag and the
+pull requests it lists (`explainer-video`). Read the tests with the code.
 
 ## Form
 
-`context.md` (or `sources.md` when it feeds a video): the change in two sentences, the base and
-head, then the covered items as evidence-backed lines, then open questions. Each line is one
-claim and its evidence:
+`context.md` (or `sources.md` when it feeds a video): the change in two sentences, the pinned
+ends, then tagged lines, then Findings and Open questions:
 
 ```
-- <before>, now <after>. <path>:<line> (<base>), <path>:<line> (<head>); test "<name>"
+[read] added: <thing>; did not exist at <base>. <path>:<line> (head)
+[read] removed: <thing>. <path>:<line> (base)
+[read] <before>, now <after>. <path>:<line> (base), <path>:<line> (head); test "<name>"
+[ran]  $ <command> (<cwd>, <sha>, exit <n>) -> <output>
 ```
 
-Another team's change goes in `local/`; this repo is public. A change to this repo that is to
-be published as an example goes in the video's folder.
+Where it goes: `evidence-standard`. Never write it inside the repo you are reading.
 
 ## Handing it on
 

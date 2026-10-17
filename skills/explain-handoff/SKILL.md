@@ -14,37 +14,44 @@ and what a viewer who skips it should know, without making the viewer trust you:
 and the review are there to check.
 
 Only hand back a video whose critics have passed and whose `REVIEW.md` says so. If they have
-not, say that instead, with what is still open.
+not, return the **not ready** form below, never the ready one.
 
 ## The hand-back
 
-Return, in this order, as a message and not a new file in the repo:
+Return as a message, not a new file in the repo. The first line is the status.
 
 ```
-Video: <path to the MP4, e.g. out/<name>.mp4>   Length: <m:ss>
+Status: ready | not ready
+Video: <path to the MP4, e.g. out/<name>.mp4, or "none">   Length: <m:ss, from ffprobe on the MP4>
 For: <the viewer and what they can do after>
 In short: <two or three lines: what it covers>
 Next: <the action the viewer should take>
-Recommendation: <decision video only: the option and the reason; and where the code overruled the brief>
-Checked: <critics that passed, rounds, anything declined and why>
-Unsure: <open questions from sources.md; anything you could not verify>
-Sources: <sources.md path, commit read>
+Recommendation: <decision video only: the option and the reason>
+Brief vs code: <claims checked: N; contradicted: which; costs added: which>
+Checked: <every critic this video requires, each passed / not run / declined, with REVIEW.md round>
+Unsure: <open questions from sources.md, and what you did not read or run>
+As of: <commit or hash the video is true for>   Sources: <sources.md path>
 ```
+
+When not ready: `Status: not ready`, `Video: none`, `Open:` (critics or rounds outstanding) and
+`Next:` (what happens now). Leave out In short and Recommendation, or mark them provisional.
 
 ## The bar
 
-- **The path is real.** Confirm the file exists and play-length matches the packet. Never
+- **The path is real.** Confirm the file exists and read its length from `ffprobe`. Never
   report an MP4 you have not seen exist.
-- **Honest status.** Say what was checked and what was not: a Kokoro voice that could not be
-  run, a command shown but not re-run, a critic skipped. Do not hedge what was verified.
+- **Honest status.** List every required critic, not only the ones that passed, and what was
+  not checked: a voice that could not be run, a command not re-run, a critic skipped. Do not
+  hedge what was verified.
 - **Unsure is not hidden.** An open question in `sources.md` appears in the hand-back.
 - **A decision video returns the call framed and the pick**, plus any place the code
   disagreed with the brief (`decision-brief`).
-- **Ship only what belongs.** For `videos/<name>/` commit `sources.md`, `script/`,
-  `scenes.html`, `video.json`, `critics.md`, `REVIEW.md`. Never audio, frames or renders. A
-  video in `local/videos/` is never committed. Do not push or publish anything unless asked.
-- **Stale warning.** The video is true as of the commit in `sources.md`. Say so; a later
-  change means updating it (`explainer-video`, *Updating one*).
+- **Never commit, push or publish unless the person asks.**
+- **If asked to commit** a video in `videos/<name>/`: only `sources.md`, `script/`, `scenes.html`,
+  `video.json`, `critics.md`, `REVIEW.md`. Never audio, frames or renders. A video in
+  `local/videos/` is not committed; say so in the hand-back.
+- **Stale warning.** The video is true as of the `As of` line. A later change means updating
+  it (`explainer-video`, *Updating one*).
 
 ## For other agents
 

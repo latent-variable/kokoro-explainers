@@ -104,3 +104,24 @@ test("renders of two folders that share a name do not overwrite each other", () 
   assert.equal(outName(join(REPO, "videos", "how-it-works")), "how-it-works");
   assert.notEqual(outName(join(REPO, "local", "videos", "a", "demo")), outName(join(REPO, "local", "videos", "b", "demo")));
 });
+
+test("usage counts each API call once, and sums the session with its subagents", async () => {
+  const { readSession } = await import("../bin/usage.mjs");
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  const line = (id, u, ts) => JSON.stringify({ type: "assistant", timestamp: ts, message: { id, model: "m", usage: u } });
+  const u = (i, o, w, r) => ({ input_tokens: i, output_tokens: o, cache_creation_input_tokens: w, cache_read_input_tokens: r });
+  // msg_a is streamed over two lines: the second, with the final output count, is the one that counts.
+  writeFileSync(join(root, "s.jsonl"), [
+    line("msg_a", u(2, 10, 100, 0), "2026-10-17T10:00:00Z"),
+    line("msg_a", u(2, 50, 100, 0), "2026-10-17T10:00:01Z"),
+    line("msg_b", u(1, 5, 0, 300), "2026-10-17T10:00:10Z"),
+    "not json",
+  ].join("\n"));
+  mkdirSync(join(root, "s", "subagents"), { recursive: true });
+  writeFileSync(join(root, "s", "subagents", "agent-abc123456.jsonl"), line("msg_c", u(3, 7, 0, 40), "2026-10-17T10:00:05Z"));
+  const [main, sub] = readSession(join(root, "s.jsonl"));
+  assert.deepEqual([main.calls, main.output, main.cacheWrite, main.cacheRead], [2, 55, 100, 300]);
+  assert.equal(main.peakContext, 301);
+  assert.equal(main.lastContext, 301);
+  assert.deepEqual([sub.name, sub.calls, sub.output, sub.peakContext], ["abc12345", 1, 7, 43]);
+});

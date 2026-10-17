@@ -20,7 +20,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 |---|---|
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
-| `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor` |
+| `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor`; and `usage` (token and context tracking) |
 | `kit/` | The page and timeline every video shares |
 | `template/` | What `npm run new` copies |
 | `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
@@ -31,6 +31,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 |---|---|
 | `repo-context` | Get oriented before changing this repo: shape, commands, traps, how to validate |
 | `change-context` | Understand a change (diff, PR, release): why, before and after, breaking, risk |
+| `evidence-standard` | The shared rules for evidence: tags, pins, safe running, absence, where results go |
 | `code-context` | Understand any code base: purpose, functional and non-functional requirements, API behaviour, evidenced and with unknowns listed |
 | `explain-concept` | Plan a video: viewer, outcome, one idea per scene, the picture for each |
 | `decision-brief` | Hand a decision to a fresh explainer: options, costs, pick, exact commit |
@@ -62,6 +63,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 - `npm run doctor`: what the machine is missing. Run it first on a fresh clone.
 - `npm test`: no Kokoro needed; CI runs only this.
+- `npm run usage`: tokens and context per agent for the newest Claude Code session of this repo, subagents included (`-- <session id>` for another, `-- --json` for data). Read from the transcripts Claude Code writes under `~/.claude/projects/`; set `CLAUDE_PROJECTS_DIR` to read from elsewhere.
 - `npm run make -- videos/<name>`: the end-to-end path (voice, build, lint, render). `npm run review -- videos/<name>` then writes the critics' evidence. A change to `bin/`, `kit/` or `template/` is validated by running it on `videos/how-it-works` and looking at frames: `npx hyperframes snapshot videos/how-it-works --at <seconds>`.
 
 ## Traps

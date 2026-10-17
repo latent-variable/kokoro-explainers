@@ -18,17 +18,16 @@ fail it.
 
 ## The bar
 
-1. **Every statement names its evidence**: `path:line` at a commit, a test name, a config
-   key, a doc link, or a command you ran and its output. A statement with none is a guess,
-   and is labelled as one.
-2. **Three kinds of knowing stay apart**:
-   - *Stated*: a README, docs, a spec or a comment says so.
-   - *Observed*: the code does it, or you ran it and saw it.
-   - *Inferred*: you conclude it from the above.
-   Where stated and observed disagree, that disagreement is a finding, and the code wins.
-3. **Unknowns are listed, never filled.** What you could not find, run or verify goes under
-   "Open questions" with where you looked.
-4. **Scope is said.** Name the commit or branch you read and what you did not read.
+Follow `evidence-standard`: it sets the tags, the pin, the safe way to run code and where the
+result goes. In short:
+
+1. **Every statement names its evidence and its kind**: `[stated]`, `[read]`, `[ran]` or
+   `[inferred]`. A statement with neither is a guess, and is labelled as one.
+2. **Disagreement is a finding.** Where docs and code differ, it goes in a Findings list; the
+   code wins.
+3. **Unknowns are listed, never filled**, under "Open questions" with where you looked.
+4. **Scope is said.** Answer the question asked first. Name the pin and what you did not read.
+   Sections with no evidence are omitted, not padded; aim for 40 to 80 lines.
 
 ## What a good context covers
 
@@ -39,7 +38,8 @@ do. Evidence: README, docs, package metadata, the shape of the public surface.
 specs, strongest first: tests and fixtures (executable specs), API schemas (OpenAPI,
 GraphQL, protobuf, route tables, CLI `--help`), types and validation rules, docs, then
 issues and PRs. Write each as a testable sentence ("`POST /x` rejects an empty body with
-400") with its evidence.
+400") with its evidence, and say whether a test covers it. Code that no test covers is
+marked `untested`; issues and pull requests need the network, so say when you skipped them.
 
 **Non-functional requirements**: how well it must do it. These are rarely written down, so
 read for the traces they leave:
@@ -53,42 +53,49 @@ read for the traces they leave:
 | Portability and operations | Supported platforms and versions, install and deploy files, CI, config and environment variables |
 | Maintainability | Test coverage and style, module boundaries, dependency choices and pins, documented traps |
 
-Say which qualities the code actually enforces, which are only claimed, and which are absent.
+Write these as "the code enforces X" (`[read]`), never "the requirement is X" unless a
+source states it. Say which qualities the code enforces, which a source only claims, and which
+are absent. "No stated non-functional requirements found" is a valid line.
 
 **Behaviour of code and APIs.** For each entry point that matters: inputs and their
 validation, outputs, errors and status codes, side effects (files, network, database,
 other processes), ordering and concurrency assumptions, and what happens on failure.
-Trace the real path from entry point to effect. Prefer to *run* it (a test, a CLI call, a
-local request) over reading and assuming, when that is safe. Never run anything that sends
-data out, spends money or changes shared state without being told it may.
+Trace the real path from entry point to effect. Prefer to *run* it over reading and assuming, but only inside the safe envelope in
+`evidence-standard`; otherwise mark the claim `[read]` and say it was not run. Check what
+happens on malformed input for each entry point, and back every "all" and "never" with a run
+or a search.
 
-**Data and multimodal inputs.** What kinds of data it accepts and produces (text, images,
+**Data and multimodal inputs** (omit if none). What kinds of data it accepts and produces (text, images,
 audio, video, tables, documents), their formats, size limits, where they are stored, and
-what transforms them. Say where a modality is handled by an external service.
+what transforms them. Say where a modality is handled by an external service, and list every
+outbound call and what data leaves (this is also a security trace).
 
 **Dependencies and boundaries.** External services, models and libraries it relies on, what
 breaks without each, and which parts are generated, vendored or private.
 
-**Decisions and traps.** Choices that look odd and why (look in `AGENTS.md`, ADRs, commit
-messages, comments), and known sharp edges.
+**Decisions and traps.** Choices that look odd and why (`AGENTS.md`, ADRs, commit messages, comments; for
+vendored code, the upstream history), and known sharp edges. If none exist, say "no decision
+records found; looked at <where>".
 
 ## Form
 
-Write `context.md` (or `sources.md` when the context feeds a video), short enough to read
-in one sitting: a purpose paragraph, then the requirements and behaviours as evidence-backed
-lines, then open questions. Each line is one claim and its evidence:
+`context.md` by default, or `sources.md` when the context feeds a video. A Scope header
+(pin, not read, run or not), a purpose paragraph, then the requirements and behaviours as tagged
+lines, then Findings and Open questions:
 
 ```
-- <one testable claim>. <path>:<line> (<commit>); test "<test name>"
+[read] <one testable claim>. <path>:<line>   untested
+[read] absent: <thing>; searched: <command>; result: none
+[ran]  $ <command> (<cwd>, <commit>, exit <n>) -> <first lines of output>
 ```
 
-Where it goes: for another person's code, in `local/` (this repo is public; a private code
-base's details must not reach it). For a video about this repo, in the video's folder.
+Where it goes: `evidence-standard`.
 
 ## Handing it on
 
 - **To an explainer video**: the claims become `sources.md` (`explainer-video`, step 1);
-  keep the evidence column, since `critic-accuracy` checks against it.
+  keep the tag and evidence on each line, since `critic-accuracy` and `critic-grounding` check
+  against them.
 - **To a developer**: pair it with `repo-context` when the code base is this one.
-- **To another agent**: pass the file and the commit, not your conclusions alone. A fresh
+- **To another agent**: pass the file and the pin, not your conclusions alone. A fresh
   reader should be able to verify a line without asking you.

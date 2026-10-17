@@ -10,35 +10,59 @@ description: >
 # Critic: grounding
 
 **Judges:** whether what the viewer *sees as evidence* is genuine: copied or captured, not
-retyped, tidied or imagined. Not whether a claim is true (`critic-accuracy` checks claims
-against `sources.md`) or whether it is shown at the right moment (`critic-sync`). A claim can
-be true while the output shown for it was never produced; this critic catches that.
+retyped, tidied or imagined. It owns every shown excerpt, command and output; `critic-accuracy`
+owns claims and prose, and `critic-sync` owns timing. A defect that is both is reported here,
+and accuracy cites "see grounding".
 
-**Evidence:** `sources.md` (each shown asset should have its provenance there: the commit, the
-command or file, and when it was captured), the cue table and frames in `review/`, and the
-code itself. Check out the commit `sources.md` names, or read it with `git show`, and compare.
-Re-run a captured command when it is safe and cheap; never run anything that sends data out,
-spends money or changes shared state.
+**Evidence:** `sources.md` (each shown asset needs provenance: commit, command or file with
+line range, capture date, exit code), the cue table, the **rendered frames** (not only the
+packet text: the text can be right and the pixels wrong), and the code itself. Follow
+`evidence-standard` for pins and for running anything.
+
+## Method
+
+For each shown asset, check it yourself and record how:
+
+- **Code excerpt:** extract the shown text, normalise only whitespace, and confirm it is an
+  ordered subsequence of the named file at the pinned commit, with every gap marked `…` and the
+  line range in `sources.md` matching what is shown. A literal diff catches one-token changes
+  ("600" shown for "3600") that reading does not.
+- **Command and output:** re-run it inside `evidence-standard`'s envelope and compare, or, when
+  it cannot be run, check what is checkable statically (counts, names, paths, that the command
+  exists) against the saved capture file. A capture file is `command, cwd, commit, exit code,
+  date` plus the output; no capture file is no provenance.
+- **Pin:** the commit in `sources.md` equals the pin of record (the repo's HEAD, or the
+  upstream SHA in `SOURCE.md` for vendored code). If it cannot be checked out, compare against
+  the vendored tree or a fresh clone of the upstream SHA and say which.
+- **Screenshot or recording:** compare against the capture file and the code it shows; look for
+  cropped prompts, edited values and missing failures.
+
+Return a per-asset table with the JSON: asset, source, method (`diff`, `re-run`, `static`),
+result (`genuine`, `trimmed`, `unsupported`).
 
 ## Criteria
 
-- **blocking:** on-screen code, command output, a request or response, or a log that does not
-  match the named commit or a real run: a line added, removed, reordered or invented.
-- **blocking:** a command shown as runnable that does not run as shown from the stated place
-  (a missing flag, a wrong path, a step it depends on that is not shown).
-- **blocking:** a shown asset with no provenance in `sources.md`. If the video cannot say where
-  it came from, the viewer cannot trust it. Report the gap; never ask for one to be made up.
-- **major:** an excerpt trimmed so that it changes the meaning, or "output" abbreviated without
-  a visible mark (`…`) saying so.
-- **major:** values that look real but are placeholders (ids, timestamps, numbers) presented as
-  captured, or captured values that leak secrets or private data.
-- **major:** an asset captured at an older commit than the one `sources.md` says the video is
-  true for, or code shown that the named commit has since changed.
-- **minor:** a capture whose command or file is not named on screen or in `sources.md`, so the
-  next edit cannot reproduce it.
+- **blocking:** shown code, output, request, response or log that does not match the pinned
+  commit or a real run: a line added, removed, reordered, spliced or invented.
+- **blocking:** a command shown as runnable that does not run as shown from the stated place.
+- **blocking:** a shown asset with no provenance. The viewer cannot tell genuine from invented.
+  Report the gap; never ask for one to be made up.
+- **major:** any asset you could not trace or reproduce is `unsupported`. The verdict cannot be
+  `pass` while one exists.
+- **major:** a trim, marked or not, after which a developer would infer different behaviour
+  (drop the omitted lines and ask: does a guard, branch, default or error path vanish?).
+  `sources.md` lists what each trim omits. Code spliced from non-adjacent lines with no `…`.
+- **major:** placeholder values presented as captured, or a capture that leaks a secret,
+  private data, or a development default shown as if real.
+- **major:** an asset captured at a different commit or environment (OS, language or
+  dependency version) than `sources.md` says the video is true for; a capture that is a
+  cherry-picked pass with failing cases left out; two files stitched into one block.
+- **minor:** a provenance line missing one of its parts (commit, command or file with range,
+  date, exit code), so the next edit cannot reproduce it.
 - **minor:** a diagram's labels or arrows that assert something the code does not do.
 
-For each finding, give the shown line, the real one and where you found it.
+Narration and alt text that quote output are assets too.
 
-**Done:** when every on-screen code block, command, output and captured image has been traced
-to its source once, and each is marked genuine, trimmed (visibly) or unsupported.
+For each finding give the shown line, the real one and where you found it.
+
+**Done:** when every asset in the per-asset table has a method and a result.

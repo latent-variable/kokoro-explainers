@@ -12,12 +12,13 @@ description: >
 
 The step between "we know the facts" and "we write the script". `code-context` says what is
 true; this decides what a particular person needs of it, and in what shape. A video that
-states every true thing teaches nothing. Write the result as `plan.md` in the video's
-folder. It is the builder's to write and the critics never see it, only the video.
+states every true thing teaches nothing. A `plan.md` in the video's folder is an aid; the
+bars below are judged on the video itself (`critic-clarity`, `critic-engagement`).
 
 ## 1. The viewer and the outcome
 
-Two sentences, before anything else, and `video.json` `"audience"` repeats the first:
+The video names its viewer and what they can do after, and `video.json` `"audience"` says
+the first. Two sentences you can write before anything else:
 
 - **Who watches**: their role, what they already know, what they will not know.
 - **What they can do afterwards** that they could not before: make a call, review a change,
@@ -30,11 +31,16 @@ Two sentences, before anything else, and `video.json` `"audience"` repeats the f
 
 From `sources.md`, keep only what the outcome needs. Order the rest by what the viewer must
 know first, not by how the code is laid out or how the work happened. Each cut claim goes in
-`sources.md` under "left out and why", so a critic can tell an omission from an oversight.
+`sources.md` under "left out and why" (marked as not claims), so a critic can tell an
+omission from an oversight.
 
 - One idea per scene. A scene that needs "and also" is two.
 - The first scene says what the video is about and why the viewer cares. A decision video
   states the call in a sentence they could answer.
+- **If the code contradicts the framing** (the brief asks how a post is delivered; nothing
+  delivers it), scene 1 states the real mechanism, the plan records the correction, and the
+  person is told.
+- **A worked example with concrete values comes before any general statement.**
 - The last scene says what to do next.
 - A newcomer's order usually runs: the problem, the idea, one worked example, how it goes
   wrong or what it costs, then what to do.
@@ -54,15 +60,20 @@ picture by what the idea *is*, not by what is easy to draw:
 | A number or comparison | The number large, one comparison, nothing else on screen |
 | Something abstract | One concrete example before the general statement |
 
-Real code, commands and output beat a paraphrase of them. Anything shown must be in
-`sources.md`, copied from the commit it names, never retyped from memory.
+Real code, commands and output beat a paraphrase of them, but only the lines being named:
+narrow shown code to them and cue each as it is spoken, so the voice points at the screen.
+Anything shown must be in `sources.md`, copied from the pin it names, never retyped.
+
+**What the kit renders natively:** entrances on a cue (`up`, `fade`, `pop`, `left`, `right`,
+`grow`). Exit, swap, arrows, line highlight and counters need a custom `<script>` in
+`scenes.html`; choose a picture the kit can make or plan the script.
 
 ## 4. Fit it to the format
 
-- A quick decision video: one to two minutes, three to five scenes.
-- Text stays at or above 28 px and out of the bottom 180 px (captions).
-- A scene past 40 seconds is two ideas. A screen with no change for 12 seconds while the
-  voice goes on is a gap in the plan.
+The numbers (reading speed, scene length, text size, caption area) live in the critics that
+judge them: `critic-pacing`, `critic-visuals`. Plan to them; do not copy them here. A quick
+decision video is one to two minutes and three to five scenes; a feature or release video
+runs as long as its idea needs.
 
 ## The plan
 
