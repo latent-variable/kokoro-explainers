@@ -1,1 +1,1 @@
-Write the traps down in a file agents read first. Never let the builder judge its own work. Turn a problem you hit into a fix, through a pull request. And this video counts as finished only when its own critics pass.
+Write traps in a file agents read first. Never let the builder judge its own work. Turn a problem into a fix, through a pull request. This video is finished only when its critics pass.

@@ -30,7 +30,7 @@
   /* 03-traps */
   .agents { top: 380px; left: 140px; width: 1640px; padding: 30px 44px 36px; }
   .agents .fname { font-size: 32px; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 18px; }
-  .row { font-size: 42px; line-height: 1.35; padding: 12px 0; border-top: 2px solid var(--line); }
+  .row { position: relative; font-size: 42px; line-height: 1.35; padding: 12px 0; border-top: 2px solid var(--line); }
   .row mark { background: none; color: var(--accent); font-weight: 800; }
 
   /* 04-critics */
@@ -38,7 +38,7 @@
   .builder b { margin: 0; }
   .grid { position: absolute; top: 470px; left: 140px; width: 1640px; display: flex; flex-wrap: wrap; gap: 16px; }
   .grid .chip { font-size: 38px; padding: 18px 22px; position: relative; }
-  .ring { position: absolute; inset: -6px; border: 3px solid var(--accent); border-radius: 22px; }
+  .ring { position: absolute; inset: -4px; border: 3px solid var(--accent); border-radius: 14px; }
   .fresh { top: 620px; left: 140px; width: 1640px; height: 130px; padding: 26px 44px; border-color: var(--accent); display: flex; align-items: center; gap: 36px; }
   .fresh b { margin: 0; }
 
@@ -86,7 +86,7 @@
   <h2 data-cue="+0.1" data-anim="left">Traps, written down</h2>
   <div class="card agents" data-cue="+0.3" data-anim="fade">
     <div class="fname mono">AGENTS.md &middot; the file agents read first</div>
-    <div class="row">Start here: what the project is, where things live, what is expected</div>
+    <div class="row">Start here: what the project is, where things live, what is expected<i class="ring" data-cue="written" data-anim="fade"></i></div>
     <div class="row" data-cue="skipping">Traps: no speech recognition, <mark>on purpose</mark></div>
   </div>
 </section>
@@ -120,9 +120,9 @@
 <section data-scene="06-close">
   <h2 data-cue="+0.1" data-anim="left">What a team could take</h2>
   <div class="rules">
-    <div class="rule" data-cue="Write">Write the traps down in a file <em>agents read first</em></div>
+    <div class="rule" data-cue="Write">Write traps in a file <em>agents read first</em></div>
     <div class="rule" data-cue="Never">Never let the <em>builder judge</em> its own work</div>
-    <div class="rule" data-cue="problem">Turn a <em>problem you hit</em> into a fix, through a pull request</div>
+    <div class="rule" data-cue="problem">Turn a <em>problem</em> into a fix, through a pull request</div>
     <div class="rule" data-cue="video">This video: finished only when its <em>critics pass</em></div>
   </div>
 </section>
