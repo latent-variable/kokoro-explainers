@@ -98,7 +98,7 @@ dropped (F19 stays open). The demo therefore speaks to an adtech company's pain:
 | F30 | Apply Anthropic's agent best practices: a smaller always-on context, hooks that enforce the hard rules, a read-only critic in fact, per-run results and evals with an independent judge. The step-by-step plan, with sources and what is unconfirmed, is `docs/PLAN.md` | planned |
 | F20 | Per-person preferences and private videos stay local (`tailor`, `local/`) | done in this repo; elsewhere a skill checks `local/` is ignored and uses `.git/info/exclude` |
 | F21 | Run code to verify a claim without harm: a sandbox script, a faithful scratch copy, no network, writes confined (`evidence-standard`) | done on macOS; Linux untested |
-| F22 | Scaffold and diagnose: `npm run new` from `template/`, `npm run setup` (picks a Python in 3.10 to 3.13, the range the pinned Kokoro supports), `npm run doctor` for what the machine lacks, a draft render mode | done |
+| F22 | Scaffold and diagnose: `npm run new` from `template/`, `npm run setup` (picks a Python in 3.10 to 3.13, the range the pinned Kokoro supports, and upgrades the new venv's pip before installing), `npm run doctor` for what the machine lacks, a draft render mode | done |
 
 ## Non-functional requirements
 
@@ -112,7 +112,7 @@ dropped (F19 stays open). The demo therefore speaks to an adtech company's pain:
 | N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 22 skills, 7,882 characters (about 1,971 tokens) of names and descriptions; longest SKILL.md 206 lines (a test checks these figures against the tree) | done |
 | N7 | **Reproducible.** A voice take is cached by text, voice and speed; generated files are gitignored | `assets/voice/*.key` | done |
 | N8 | **Observable.** Token and context use is readable per agent | `npm run usage` | done |
-| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (48 tests; the sandbox and capture tests run on macOS only, the CI docs check only on a pull request) | done; 3 tests need `npm install` (the build cue test, the bare-cue warning and the flair test) |
+| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (49 tests; the sandbox and capture tests run on macOS only, the CI docs check only on a pull request) | done; 3 tests need `npm install` (the build cue test, the bare-cue warning and the flair test) |
 | N10 | **Portable.** The pipeline is tested on macOS; CI runs the unit tests on Linux (`ubuntu-latest`) | `README.md`, `.github/workflows/ci.yml` | open: pipeline on Linux untried |
 | N11 | **Attribution.** The sample is original (its `SOURCE.md` says what it is and is not based on); Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its standard licence | `sample_application/SOURCE.md`, `README.md` | done |
 | N12 | **Reviewable.** Every change is a pull request with CI and an automated review; a rename changes the reviewer's allowlist | `AGENTS.md`, traps | done |
