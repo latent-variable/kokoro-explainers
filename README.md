@@ -16,12 +16,16 @@ Your agents change code faster than you can read it. ShipShow hands you a short 
 
 <p align="center">
   <img src="docs/assets/how-it-works.svg" width="100%" alt="Five steps: a script, one text file per scene; Kokoro voices each sentence locally; HyperFrames shows each thing on its word; fresh critic agents judge it until it passes; you get an MP4 to watch before you decide.">
+  <br>
+  <sub>Script &rarr; Voice &rarr; Scenes &rarr; Critics &rarr; Video</sub>
 </p>
 
 [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) does the voice and [HyperFrames](https://hyperframes.heygen.com) draws and records the scenes. Your agent writes the script and the scenes, and a panel of critic agents decides when the video is done.
 
 <p align="center">
   <img src="docs/assets/critics.svg" width="100%" alt="The critics: fresh agents, one question each. Accuracy, clarity, pacing, sync, visuals, consistency, engagement and decision.">
+  <br>
+  <sub>Accuracy &middot; Clarity &middot; Pacing &middot; Sync &middot; Visuals &middot; Consistency &middot; Engagement &middot; Decision</sub>
 </p>
 
 ## Set it up
@@ -30,16 +34,15 @@ Node.js 22+, Python 3.10+ and ffmpeg (tested on macOS):
 
 ```
 npm install
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
 npm run doctor
 npm run make -- videos/how-it-works
 ```
 
 The first run downloads the voice model (about 340 MB) and, if needed, a headless Chrome (about 190 MB). Then ask your agent for one:
 
-```
-Make me a ShipShow video on the retry logic you just wrote. I need to decide whether to ship it today.
-```
+> Make me a ShipShow video on the retry logic you just wrote. I need to decide whether to ship it today.
 
 ## Make it yours
 
