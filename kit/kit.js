@@ -54,8 +54,15 @@
         layer.className = ambient;
         ambientEl.appendChild(layer);
         tl.fromTo(layer, { x: 0, y: 0 }, { x: -Math.round(60 + rand() * 120), y: -Math.round(30 + rand() * 80), duration: TOTAL, ease: "none" }, 0);
+      } else if (ambient === "horizon") {
+        // A planet's rim low in the frame: a gridded arc lit along its edge, rising slowly.
+        const planet = document.createElement("div");
+        planet.className = "horizon";
+        planet.setAttribute("data-layout-allow-overflow", "");
+        ambientEl.appendChild(planet);
+        tl.fromTo(planet, { y: 60 }, { y: -40, duration: TOTAL, ease: "sine.inOut" }, 0);
       } else if (ambient !== "none") {
-        throw new Error(`unknown --ambient ${ambient}: none, glow, grid, dots or stars`);
+        throw new Error(`unknown --ambient ${ambient}: none, glow, grid, dots, stars or horizon`);
       }
       });
 
@@ -232,10 +239,34 @@
         tl.to(el, a[1], at);
       });
 
+      let lastEnd = -1;
       document.querySelectorAll(".cap span").forEach((c) => {
         const t = +c.parentElement.dataset.start, e = t + +c.parentElement.dataset.duration;
+        const follows = t - lastEnd < 0.1;   // the next line of a sentence: no blink between lines
+        lastEnd = e;
+        const words = [...c.querySelectorAll(".w")];
         gsap.set(c, { opacity: 0 });
-        tl.to(c, { opacity: 1, duration: 0.15 }, t);
+        if (!words.length) {
+          tl.to(c, { opacity: 1, duration: 0.15 }, t);
+        } else {
+          // Karaoke: the line pops in, each word lights in the accent as the voice reaches it,
+          // then settles to the ink colour; words not yet spoken wait dimmed.
+          if (follows) {
+            tl.set(c, { opacity: 1 }, t);
+            tl.fromTo(c, { y: 6 }, { y: 0, duration: 0.12, immediateRender: false }, t);
+          } else {
+            gsap.set(c, { scale: 0.92, y: 14 });
+            tl.to(c, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "back.out(2)" }, t);
+          }
+          gsap.set(words, { opacity: 0.38 });
+          words.forEach((w, i) => {
+            const at = Math.max(t, +w.dataset.wordAt), next = words[i + 1] ? +words[i + 1].dataset.wordAt : e;
+            // A lift and a glow, never a scale: a scaled word grows into the spaces beside it.
+            const hot = colour("--cap-hot", colour("--accent", "#ff7a3d"));
+            tl.to(w, { opacity: 1, color: hot, y: -3, textShadow: `0 0 18px ${hot}`, duration: 0.08 }, at);
+            tl.to(w, { color: colour("--cap-ink", "#ffffff"), y: 0, textShadow: "0 0 0px rgba(0,0,0,0)", duration: 0.18 }, Math.max(at + 0.1, next));
+          });
+        }
         tl.set(c, { opacity: 0 }, e);
       });
 

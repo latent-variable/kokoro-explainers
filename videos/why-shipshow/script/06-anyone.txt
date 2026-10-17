@@ -1,0 +1,1 @@
+A hiring agent wants to cut four hundred applicants to twelve. A finance agent wants to refund a customer. A coding agent wants to rewrite your retry logic. Each one hands you a video, not a wall of logs.

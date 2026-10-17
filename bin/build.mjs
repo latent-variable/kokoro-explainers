@@ -22,6 +22,12 @@ const dir = videoDir(process.argv[2]);
 const cfg = config(dir);
 if (!existsSync(join(dir, "timing.json"))) die("no timing.json yet: node bin/voice.mjs first");
 const timing = JSON.parse(readFileSync(join(dir, "timing.json"), "utf8"));
+const theme = themeCss(cfg.theme, dir);
+// Captions: "plain" shows each line whole; "karaoke" lights each word as the voice reaches it,
+// in shorter lines (theme tokens --cap-style and --cap-words).
+const token = (name, fallback) => theme.match(new RegExp(`${name}:\\s*([\\w.-]+)`))?.[1] ?? fallback;
+const KARAOKE = token("--cap-style", "plain") === "karaoke";
+const CAP_WORDS = +token("--cap-words", LINE_WORDS);
 const byId = Object.fromEntries(timing.scenes.map((s) => [s.id, s]));
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -54,17 +60,17 @@ function cueTime(scene, cue, where) {
   return round(Math.max(scene.start + 0.1, hits[+nth - 1].at - CUE_LEAD));
 }
 
-/** A sentence cut into caption lines: at a comma once five words are in, and at LINE_WORDS (a line never ends on a function word). */
+/** A sentence cut into caption lines: at a comma or colon once a few words are in, and at CAP_WORDS (a line never ends on a function word). */
 function lines(text) {
   const out = [];
   let cur = [];
   for (const w of text.split(" ")) {
     cur.push(w);
-    if ((w.endsWith(",") && cur.length >= 5) || cur.length >= LINE_WORDS) {
+    if ((/[,:]$/.test(w) && cur.length >= Math.min(5, Math.ceil(CAP_WORDS / 2))) || cur.length >= CAP_WORDS) {
       const carry = [];
       // A line of nothing but function words has no line to stay on, so it all carries, unless it is
       // already at the limit: then the limit wins and it is kept whole.
-      if (cur.length < LINE_WORDS || !cur.every((x) => WEAK.has(norm(x)))) {
+      if (cur.length < CAP_WORDS || !cur.every((x) => WEAK.has(norm(x)))) {
         while (cur.length && WEAK.has(norm(cur[cur.length - 1]))) carry.unshift(cur.pop());
       }
       if (cur.length) out.push(cur);
@@ -83,17 +89,23 @@ function captions() {
       let before = 0;
       for (const line of lines(s.text)) {
         const len = line.replace(/\s/g, "").length;
-        caps.push({ t: s.start + (before / total) * s.duration, e: s.start + ((before + len) / total) * s.duration + 0.3, text: line });
+        const at = (n) => round(s.start + (n / total) * s.duration);
+        let into = before;
+        const words = line.split(" ").map((w) => ((into += w.length), { w, at: at(into - w.length) }));
+        caps.push({ t: s.start + (before / total) * s.duration, e: s.start + ((before + len) / total) * s.duration + 0.3, text: line, words });
         before += len;
       }
     }
   }
   // One track: a line ends before the next one starts.
   caps.forEach((c, i) => {
-    if (caps[i + 1]) c.e = Math.min(c.e, caps[i + 1].t - 0.05);
+    if (caps[i + 1]) c.e = Math.min(c.e, caps[i + 1].t - 0.02);   // under one frame at 30 fps
   });
   return caps
-    .map((c, i) => `        <div id="cap-${String(i).padStart(3, "0")}" class="clip cap" data-start="${round(c.t)}" data-duration="${round(c.e - c.t)}" data-track-index="20"><span>${esc(c.text)}</span></div>`)
+    .map((c, i) => {
+      const body = KARAOKE ? c.words.map((x) => `<b class="w" data-word-at="${x.at}">${esc(x.w)}</b>`).join(" ") : esc(c.text);
+      return `        <div id="cap-${String(i).padStart(3, "0")}" class="clip cap" data-start="${round(c.t)}" data-duration="${round(c.e - c.t)}" data-track-index="20"><span>${body}</span></div>`;
+    })
     .join("\n");
 }
 
@@ -122,7 +134,7 @@ const html = readFileSync(join(REPO, "kit", "shell.html"), "utf8")
   .replace("{{music}}", music ? `<audio id="music" src="assets/music.wav" data-start="0" data-duration="${timing.total}" data-track-index="31" data-volume="1"></audio>` : "")
   .replaceAll("{{title}}", esc(cfg.title))
   .replaceAll("{{total}}", String(timing.total))
-  .replace("{{theme}}", () => themeCss(cfg.theme, dir))
+  .replace("{{theme}}", () => theme)
   .replace("{{base}}", () => readFileSync(join(REPO, "kit", "base.css"), "utf8"))
   .replace("{{flair}}", () => flairCss(cfg.flair))
   .replaceAll("{{seed}}", String(cfg.seed ?? seedFor(basename(dir))))

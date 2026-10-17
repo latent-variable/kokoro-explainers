@@ -23,6 +23,12 @@ body { background: var(--bg); overflow: hidden; }
 #progress { position: absolute; left: 0; top: 0; width: 100%; height: 6px; z-index: 3;
   background: var(--progress-fill, var(--accent)); transform: scaleX(0); transform-origin: left center; }
 #ambient .stars { position: absolute; inset: 0; }
+#ambient .horizon { position: absolute; left: -40%; width: 180%; top: 72%; aspect-ratio: 1; border-radius: 50%;
+  background: linear-gradient(rgba(142, 200, 255, 0.14) 1px, transparent 1px) 0 0 / 80px 80px,
+    linear-gradient(90deg, rgba(142, 200, 255, 0.14) 1px, transparent 1px) 0 0 / 80px 80px,
+    radial-gradient(circle at 50% 0%, #0d1530, var(--bg) 40%);
+  border-top: 2px solid rgba(142, 200, 255, 0.55);
+  box-shadow: 0 -10px 60px rgba(255, 122, 61, 0.35), 0 -40px 220px rgba(255, 122, 61, 0.22), inset 0 30px 80px rgba(142, 200, 255, 0.12); }
 #ambient .star { position: absolute; border-radius: 50%; background: var(--ink); }
 
 /* Captions. */
@@ -31,8 +37,10 @@ body { background: var(--bg); overflow: hidden; }
 .cap span {
   max-width: 1500px; padding: 14px 28px; border-radius: var(--cap-radius);
   background: var(--cap-bg); color: var(--cap-ink); font-family: var(--cap-font, var(--font));
-  font-size: var(--cap-size); line-height: 1.25; font-weight: 500; text-align: center;
+  font-size: var(--cap-size); line-height: 1.25; font-weight: var(--cap-weight, 500); text-align: center;
+  letter-spacing: var(--cap-tracking, normal); text-transform: var(--cap-case, none);
 }
+.cap .w { display: inline-block; font-weight: inherit; }
 
 /* Pieces a scene can use, so a theme restyles them. */
 .ss-heading {

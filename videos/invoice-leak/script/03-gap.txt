@@ -1,0 +1,1 @@
+Authentication, who you are, works. Authorization, may you touch this record, is missing on two routes: opening an invoice, and changing its status. On the STRIDE threat checklist, this hole hits three: reading what you should not, changing it, and doing more than you are allowed.

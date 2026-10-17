@@ -1,0 +1,9 @@
+# Edge firewall. Runs before the load balancer; sees requests, never the database.
+managed_rules:
+  - sql_injection
+  - cross_site_scripting
+rate_limits:
+  - match: { path_prefix: "/" }
+    limit: 600          # requests per minute per IP
+    action: block
+custom_rules: []        # none yet

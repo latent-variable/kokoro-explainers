@@ -1,1 +1,0 @@
-ShipShow voices and renders those videos on your own machine. Your agent writes a short script and the scenes. A small local voice called Kokoro reads it. HyperFrames, an open source renderer, turns it into an MP4. No API key for the voice or the render.

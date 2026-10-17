@@ -26,7 +26,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
 | `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor`, `critics`; and `usage` (token and context tracking) |
 | `kit/` | The page, base styles and timeline every video shares |
-| `themes/` | Shared themes (`shipshow`, `paper`, `launch`); a client's goes in `local/themes/` |
+| `themes/` | Shared themes (`shipshow`, `paper`, `launch`, `buildday`); a client's goes in `local/themes/` |
 | `template/` | What `npm run new` copies |
 | `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
 
@@ -154,9 +154,10 @@ timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-
 shows the rest; non-English voices need `espeak-ng` system-wide. **`omnivoice`** is higher quality and
 clones voices, on Apple Silicon only (MLX; `npm run setup:omnivoice`, then `"engine": "omnivoice"`). Its
 `voice` is a recording: a **built-in** one (`caro_davy`, the default, `bill_boerst`, `peter_yearsley`,
-`stuart_bell`, `marius`, `javert`: CC0 clips from kyutai/tts-voices, `bin/omnivoice-voices.json`) or a
+`stuart_bell`, `marius`, `javert`: CC0 clips from kyutai/tts-voices, `bin/omnivoice-voices.json`; and `eve`,
+VCTK speaker p361, CC BY 4.0, which a public video credits: "Voice: VCTK corpus, CC BY 4.0") or a
 **clone**, a 3 to 10 second clip at `local/voices/<name>.wav` with, optionally, the words spoken in it at
-`<name>.txt` beside it. `say` maps a written word to what the engine is told to say
+`<name>.txt` beside it (a clip that ends mid-word, or has no transcript, clones worse: Eve's silent takes, 2026-10-17). `say` maps a written word to what the engine is told to say
 (`"HyperFrames": "Hyper Frames"`); captions keep the written form.
 
 **Look.** A theme is `themes/<name>/theme.css` (or `local/themes/<name>/`, which wins): a
@@ -169,7 +170,7 @@ too, or a theme cannot restyle it.
 
 **Motion.** Theme tokens `--transition` (`none`, `fade`, `rise`, `slide`, `zoom`, `wipe`,
 `flash`), `--camera` (`none`, `push`: a slow push-in per scene), `--ambient` (`none`, `glow`,
-`grid`, `dots`, `stars`, or several: `stars glow`), `--ambient-strength`, `--progress` (`on`, `off`) and `--entrance`. `video.json`
+`grid`, `dots`, `stars`, `horizon` (a lit planet rim low in the frame), or several: `stars glow`), `--ambient-strength`, `--progress` (`on`, `off`) and `--entrance`. `video.json`
 `"flair"` overrides them for one video; a section's `data-transition` or `data-camera` for
 one scene. Ambient motion is seeded from the video's name (`"seed"` to change it), so a
 render is repeatable and each video moves its own way.
@@ -214,14 +215,14 @@ HyperFrames renders the page frame by frame in headless Chrome and muxes in the 
 ```
 bin/        voice, build, render, make, review, critics, new, doctor, setup, link-skills, usage; lib.mjs is shared, measure.mjs holds the packet's measurements, python.mjs the supported Python range
 kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.js (timeline, effects)
-themes/     shipshow, paper and launch; each a theme.css of tokens, plus fonts (launch: Space Grotesk and Space Mono, SIL OFL)
+themes/     shipshow, paper, launch and buildday; each a theme.css of tokens, plus fonts (Space Grotesk, Space Mono, JetBrains Mono: SIL OFL)
 skills/     the explainer and development skills, critic-loop, tailor, theme and the nine critics
 template/   what npm run new copies
 videos/     videos about this repo: how-it-works (the example) and why-shipshow (the pitch)
 skills/critic-grounding/scripts/  excerpt.mjs and check-excerpt.mjs, the excerpt check (run through the skill)
 skills/evidence-standard/scripts/  sandbox-run.sh, capture.mjs, verify-vendored.sh (run through the skill)
 sample_application/  pacer-demo, a toy ad-spend pacer built by three agents in a day: the Aperiam demo (README, history/, agents/; ANSWER.md is a spoiler)
-docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images; the GIF is cut from out/how-it-works.mp4
+docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images: make-assets.mjs draws the SVGs (fonts embedded); demo.gif and themes.jpg are frames of videos/invoice-leak
 test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links, usage counting, the excerpt checker, the sandbox runner, the docs rule
 local/      gitignored, per person (tailor skill)
 ```
@@ -233,7 +234,7 @@ local/      gitignored, per person (tailor skill)
 - **espeak-ng fails when its data path is 160 characters or longer** (measured 2026-10-17: 159 works, 160 fails). It reports a missing `.../site-packages//phontab`, not a path error. A venv deep in a temp or worktree path hits this; `doctor` checks the length.
 - **OmniVoice is Apple Silicon only, and opt-in.** `requirements-omnivoice.txt` is separate so Kokoro installs anywhere; `doctor` lists the engine as `opt` until you ask with `--omnivoice`. `bin/omnivoice.py` voices every stale sentence in one process (the model loads once) from a job file `bin/voice.mjs` writes; a user-set `HYPERFRAMES_PYTHON` is its Python too, which is how the tests stand a fake worker in for it. The model and the built-in clips are pinned by revision in `bin/omnivoice-voices.json`.
 - **A clone is somebody's voice.** OmniVoice's own disclaimer prohibits unauthorized cloning and impersonation: clone yourself or someone who agreed. `local/` never leaves the machine, so a clone never reaches this public repo; keep it that way.
-- **OmniVoice can drop or repeat a word, and nothing here hears it back** (no speech recognition, below). Measured 2026-10-17: four template sentences read back exactly. Listen to a video before you ship it, and at 16 steps instead of 32 it dropped words on long lines, so `STEPS` stays 32. A sentence over about 45 words is the risk; split it.
+- **OmniVoice drops words when its window is too short, so speed is never applied by shortening it.** It fills the duration it is given: squeezed to 1.3x, 7 of 24 sentences lost or garbled words ("not a" vanished from "not a wall of logs"); generated at its natural length and then time-stretched (ffmpeg `atempo`), none did (measured 2026-10-17 with Whisper, why-shipshow). `bin/omnivoice.py` also trims the padding's silence from each take (13.8 s of a 67 s video was dead air) and re-voices a take that comes out silent. At 16 steps instead of 32 it dropped words on long lines, so `STEPS` stays 32. Nothing in the pipeline hears a take back: listen before you ship.
 - **A take's identity includes the voice's bytes.** A clip replaced under the same name (or its `.txt` edited) is a different voice, so its takes are voiced again; a Kokoro take's key is unchanged from before OmniVoice, so existing takes stay valid.
 - **No speech recognition, on purpose.** `hyperframes transcribe` built whisper.cpp and then timed out downloading its model after six minutes. Timing comes from voicing each sentence separately (`bin/voice.mjs`), so a word inside a sentence is placed by its share of the letters. Do not add an ASR step to fix a cue a few hundred milliseconds off; split the sentence or use `data-cue="+seconds"`.
 - **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts the number of every later sentence in that scene (numbering restarts per scene), so those re-voice; the cost per take has not been measured.

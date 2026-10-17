@@ -32,7 +32,7 @@ const plan = scenes(dir).map((s) => ({
     const wav = join(vdir, `${s.id}-${String(i + 1).padStart(2, "0")}.wav`);
     // A Kokoro take's key is unchanged from before omnivoice existed, so its takes stay valid.
     const key = JSON.stringify(omni
-      ? { engine: "omnivoice", say, voice: cfg.omni.identity, speed: cfg.speed }
+      ? { engine: "omnivoice", say, voice: cfg.omni.identity, speed: cfg.speed, take: "natural+trim+stretch" }
       : { say, voice: cfg.voice, speed: cfg.kokoroSpeed });
     const keyFile = wav.replace(/\.wav$/, ".key");
     const fresh = existsSync(wav) && existsSync(keyFile) && readFileSync(keyFile, "utf8") === key;

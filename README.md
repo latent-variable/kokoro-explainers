@@ -1,29 +1,31 @@
 <p align="center">
-  <img src="docs/assets/hero.svg" width="100%" alt="ShipShow. Turn a shit show into a ship show: short narrated videos of what your agents changed, so you understand it and ship it.">
+  <img src="docs/assets/hero.svg" width="100%" alt="ShipShow. Turn a shit show into a ship show: narrated videos of what your agents did, and the calls they need from you. Beside the name, a 1:41 decision video asking: close the invoice leak? Three options, routes off, an ownership check and row-level security, with the ownership check recommended.">
 </p>
 
-Your agents change code faster than you can read it. ShipShow hands you a short narrated video of what changed and what you need to decide, so you merge code you understand. It runs on your own machine.
+Your agents work faster than you can follow. ShipShow turns what they did, and each call they need from you, into a short narrated video, so you decide knowing what you are deciding. It runs on your own machine.
 
 <p align="center">
-  <img src="docs/assets/demo.gif" width="720" alt="A scene from ShipShow's own explainer: a line of the script, the HTML tag on the word 'appears', and the word popping onto the video as the voice says it.">
+  <img src="docs/assets/demo.gif" width="720" alt="A scene from a ShipShow decision video: a request crosses four layers, firewall, load balancer, API and database; the firewall card says it never sees the owner, and a BUG LIVES HERE tag lands on the API as the voice says it, with each caption word lighting up as it is spoken.">
   <br>
-  <sub>A word in the script, tagged in the scene, appears as the voice says it. From <a href="videos/how-it-works">our own explainer</a>.</sub>
+  <sub>Each thing appears as the voice names it. From <a href="videos/invoice-leak">a decision video</a>: a coding agent found a security hole and needs your call.</sub>
 </p>
 
-<!-- The full how-it-works video goes here. -->
+https://github.com/user-attachments/assets/5421baa1-c54d-4151-8cf4-6e5e20be889e
+
+<p align="center"><sub>The pitch, 57 seconds, made with ShipShow. <a href="videos/why-shipshow">Its script, scenes and review.</a></sub></p>
 
 ## How it works
 
 <p align="center">
-  <img src="docs/assets/how-it-works.svg" width="100%" alt="Five steps: a script, one text file per scene; Kokoro voices each sentence locally; HyperFrames shows each thing on its word; fresh critic agents judge it until it passes; you get an MP4 to watch before you decide.">
+  <img src="docs/assets/how-it-works.svg" width="100%" alt="Five steps. Ask: a question, or a call your agent needs. Script and scenes: a fresh agent writes them from the code. Voice: Kokoro or OmniVoice, on your machine. Render: HyperFrames shows each thing on its word. Critics: fresh agents judge it until it passes; a failing round loops back to the script and scenes to be fixed and judged again. Then an MP4 you watch before you decide.">
   <br>
-  <sub>Script &rarr; Voice &rarr; Scenes &rarr; Critics &rarr; Video</sub>
+  <sub>Ask &rarr; Script + scenes &rarr; Voice &rarr; Render &rarr; Critics &rarr; MP4</sub>
 </p>
 
-[Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) does the voice and [HyperFrames](https://hyperframes.heygen.com) draws and records the scenes. Your agent writes the script and the scenes, and a panel of critic agents decides when the video is done.
+[Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) or [OmniVoice](https://github.com/k2-fsa/OmniVoice) does the voice and [HyperFrames](https://hyperframes.heygen.com) draws and records the scenes. Your agent writes the script and the scenes, and a panel of critic agents decides when the video is done.
 
 <p align="center">
-  <img src="docs/assets/critics.svg" width="100%" alt="The critics: fresh agents, one question each. Accuracy, clarity, pacing, sync, visuals, consistency, engagement, decision and grounding.">
+  <img src="docs/assets/critics.svg" width="100%" alt="The critics: fresh agents, one question each; the agent that made the video never judges it. Nine numbered cards: accuracy, is every claim true? Clarity, will they follow it? Pacing, can they keep up? Sync, is it shown when it is said? Visuals, is every frame readable? Consistency, one name for one thing? Engagement, would they keep watching? Decision, can they make the call? Grounding, is the evidence real?">
   <br>
   <sub>Accuracy &middot; Clarity &middot; Pacing &middot; Sync &middot; Visuals &middot; Consistency &middot; Engagement &middot; Decision &middot; Grounding</sub>
 </p>
@@ -57,12 +59,12 @@ Tell your agent how you like your videos ("faster", "open with the decision", "a
 
 **A better voice, or your own.** On a Mac with Apple Silicon, `npm run setup:omnivoice` adds [OmniVoice](https://github.com/k2-fsa/OmniVoice): speech we find clearer and more natural, and it can clone a voice from a few seconds of recording. Put a clip at `local/voices/<name>.wav` (yours, or someone who agreed), and `npm run make -- <folder> --engine omnivoice --voice <name>` tries it. Kokoro stays the default and runs anywhere. Review effort is yours too: a `quick` review takes about a minute of critics, `thorough` up to six (`npm run critics -- <folder>` shows the plan).
 
-Every video takes a theme: colours, fonts, layout and motion in one folder. Ship with `shipshow`, `paper` or `launch` (the neon one [our pitch video](videos/why-shipshow) wears), or have your agent build one from a client's brand; `--theme paper` previews any theme on any video. A video can also carry a music bed, which drops under the voice while it speaks.
+Every video takes a theme: colours, fonts, layout and motion in one folder. Ship with `shipshow`, `paper`, `launch` or `buildday` (the look of [our pitch](videos/why-shipshow), from the LA AI Hackathon's page, with captions that light each word as it is spoken), or have your agent build one from a client's brand; `--theme paper` previews any theme on any video. A video can also carry a music bed, which drops under the voice while it speaks.
 
 <p align="center">
-  <img src="docs/assets/themes.jpg" width="100%" alt="The same moment of the same video in two themes: dark navy with orange in shipshow, warm paper with serif headlines and deep red in paper.">
+  <img src="docs/assets/themes.jpg" width="100%" alt="The same moment of the same video in four themes: shipshow, dark navy with orange; paper, warm cream with serif headlines and deep red; launch, violet night with hot pink and cyan; buildday, deep space navy with ember and ice blue and a planet horizon.">
   <br>
-  <sub>Same video, same frame: <code>shipshow</code> and <code>paper</code>.</sub>
+  <sub>Same video, same frame: <code>shipshow</code>, <code>paper</code>, <code>launch</code> and <code>buildday</code>.</sub>
 </p>
 
 ## How we work
