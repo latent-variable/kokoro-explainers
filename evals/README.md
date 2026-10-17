@@ -52,7 +52,7 @@ are regression tests, and harder planted defects are the next cases to write.
 
 Trigger-first descriptions ("Use when ...", from Anthropic's skills docs) were tried on all 22 skills and measured here at 5 to 8
 runs a cell: the evidence standard fired 19 of 21 runs on the old text and 6 of 16 on the rewrite; `narration-writing` 18 of 21
-against 7 of 16; `change-context` 14 of 21 against 4 of 16. The rewrite was reverted (DESIGN D39). To reproduce, put a description
+against 7 of 16; `change-context` 14 of 21 against 4 of 16. The rewrite was reverted (DESIGN D41). To reproduce, put a description
 variant in a worktree, copy `evals/` in, and run `npm run evals -- --tag trigger --ablation none --runs 8`.
 
 ## Writing a case

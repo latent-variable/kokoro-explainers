@@ -426,7 +426,7 @@ requirements install). A test locks the order in, so the upgrade cannot slip beh
 **Costs.** One more pip call, and a network fetch, on every setup. `npm run setup:omnivoice` still installs with the venv's
 current pip, so an old venv needs `npm run setup` first.
 
-### D36. A plan, not a change: Claude best practices (2026-10-17)
+### D38. A plan, not a change: Claude best practices (2026-10-17)
 **Decision.** Wrote `docs/PLAN.md` from Anthropic's docs and engineering posts (read by a research agent on 2026-10-17) and
 measured facts about this repo: `AGENTS.md` is 263 lines against a 200-line yardstick, no skill description puts its trigger
 first, `agents/critic.md` is read-only only by instruction, there are no hooks, and `.claude/` is gitignored whole, so
@@ -435,7 +435,7 @@ project settings and rules cannot be committed. Nothing in the plan is done.
 cost or critic agreement is recorded. **Costs.** None yet; each step names how to tell it worked and the unconfirmed items
 to check first (plugin-shipped agent hooks, how a missing `version` resolves).
 
-### D37. Project hooks enforce the rules that were only prose (2026-10-17; plan steps 2.0 to 2.3, 2.7 of `docs/PLAN.md`)
+### D39. Project hooks enforce the rules that were only prose (2026-10-17; plan steps 2.0 to 2.3, 2.7 of `docs/PLAN.md`)
 **Decision.** `.claude/settings.json` and `.claude/hooks/` are tracked (`.gitignore` ignores only `.claude/skills/`, the links
 `npm install` makes, and `.claude/settings.local.json`). Three hooks: **`guard-bash`** (PreToolUse on Bash) refuses `rm`,
 `unlink`, `shred`, `find -delete`, and the git commands that discard or rewrite work (`restore`, `clean`, `reset --hard`,
@@ -457,7 +457,7 @@ built from a variable, gets through; it is a seatbelt, not a sandbox (`sandbox-r
 (`doctor` says), and a machine without it hears about it at every first stop. Hooks run in the person's session and are
 loaded when it starts.
 
-### D38. The critic cannot Write or Edit, and stops after 40 turns (2026-10-17; supersedes the critic agent paragraph of D13)
+### D40. The critic cannot Write or Edit, and stops after 40 turns (2026-10-17; supersedes the critic agent paragraph of D13)
 **Decision.** `agents/critic.md` adds `disallowedTools: ["Write", "Edit", "NotebookEdit"]`, `maxTurns: 40` and `model: sonnet`
 (was `inherit`). The loop's `model` dial still overrides the agent's model, so a person who asks for another judge gets it.
 D13 said the critic was "told, not enforced"; the writing tools are now enforced, Bash is not (it can still redirect or
@@ -471,7 +471,7 @@ among the tools it saw, which this change did not cause (`tools` is unchanged) a
 plugin-shipped agent's own hooks run is unconfirmed, so the Bash limit stays a stated one. **Costs.** A critic that needs more than 40 turns
 stops early and returns what it has; raise `maxTurns` if a longer video needs it.
 
-### D39. Descriptions keep what the skill is first and "Load when ..." last; a size ceiling; two skills pre-approve their scripts (2026-10-17; plan 1.3, 1.4, 1.6)
+### D41. Descriptions keep what the skill is first and "Load when ..." last; a size ceiling; two skills pre-approve their scripts (2026-10-17; plan 1.3, 1.4, 1.6)
 **Decision.** The 22 descriptions stay as they were: what the skill does, then "Load when ...". A test asserts that each says when to
 load, a ceiling of 600 characters a description, and 20,000 characters (about 5,000 tokens) a `SKILL.md`. `critic-grounding` and
 `evidence-standard` gain `allowed-tools` for their bundled scripts (`Bash(node ${CLAUDE_SKILL_DIR}/scripts/*)` and the sibling
@@ -489,7 +489,7 @@ a change to what triggers a skill is checked with the evals (the next PR in this
 every variant: a question about a pasted snippet is answered without the skill, whatever the wording.
 **Costs.** The descriptions are not shorter than before (7,882 characters with names, about 1,971 tokens).
 
-### D40. A video's results/ folder is written from files that exist (2026-10-17; plan 0.2)
+### D42. A video's results/ folder is written from files that exist (2026-10-17; plan 0.2)
 **Decision.** `node bin/results.mjs <video> start` records when a run began; `node bin/results.mjs <video>` then writes
 `results/run.json` (plan, video stats, versions), `usage-delta.json`, `critic-rounds.json`, `run.md`, and copies each
 `review/*.txt` capture that has a `.sha256` beside it. `bin/usage.mjs` gained `--since` and `--until`, which keep only the API
@@ -505,7 +505,7 @@ to a transcript. Whether the person agreed with a critic is not recorded anywher
 **Costs.** The window is by timestamp, so work in the same session outside the video lands in it too (the builder's row is the
 session's, not the video's alone); mark `start` at the beginning and keep a video's work together.
 
-### D41. The plugin has an eval suite, built from our own failures (2026-10-17; plan 5.1 to 5.3)
+### D43. The plugin has an eval suite, built from our own failures (2026-10-17; plan 5.1 to 5.3)
 **Decision.** `evals/` holds 12 cases for `claude plugin eval`: five `trigger` cases (a task in natural words, no skill named; a
 `tool_used: Skill` grader) and seven `quality` cases (the skill is named; deterministic graders first, then one `llm` judge written as PASS
 and FAIL conditions), each run three times with the plugin and three times without (`--ablation with-without`, the default). `npm run
@@ -517,14 +517,14 @@ with no gap marker, an unsupported claim, a yen budget read as cents).
 **What it found.** The understanding skills lift the answer when they load (`code-context` +0.42, the evidence standard +0.33 to +0.50,
 narration +0.17) and often do not load on a plain question (`trigger-code-context` 0 of 3 on every wording). The critic skills add
 nothing on these cases (a bare agent also catches the planted defects), so they are regression tests until harder defects are planted. And it
-caught a regression before it shipped: the trigger-first description rewrite (D39) lowered triggering and was reverted.
+caught a regression before it shipped: the trigger-first description rewrite (D41) lowered triggering and was reverted.
 **Judge.** An `llm` grader uses Sonnet (`--judge-model`), the same family as the agent under test, so it shares its blind spots (the earlier
 caution of D20); the deterministic graders do not. Two of my own cases were wrong at first (a rubric that failed correct extra findings; a case
 that gave the skill no code, so it rightly refused), found by reading the transcripts (`--keep-temp`), not the scores.
 **Not done.** A person labelling critic findings right or wrong (plan 5.4); a harder critic set; the suite in CI (5.5); `pass^k`.
 **Costs.** Each run is a Claude session on the person's credential. Three runs a case is few: a cell moved 2 of 5 to 7 of 8 between runs of the same text.
 
-### D42. The plugin installs from an empty config (2026-10-17; plan 4.1 to 4.3)
+### D44. The plugin installs from an empty config (2026-10-17; plan 4.1 to 4.3)
 **Checked** with `CLAUDE_CONFIG_DIR` pointed at an empty folder on Claude Code 2.1.302, three ways. (1) `claude plugin install shipshow
 --marketplace latent-variable/shipshow`, the README's command exactly: it clones the repo, adds the marketplace and installs. (2) `claude plugin
 marketplace add latent-variable/shipshow`, then `claude plugin install shipshow@shipshow`. (3) A local-folder marketplace
@@ -537,21 +537,21 @@ does what D13 assumed. The plugin's `bin/` is **not** on the PATH of a Bash comm
 it). From a **local folder**: 381 MB, because a folder source copies untracked files too (`node_modules/`, `out/`, the videos' assets).
 A person trying the plugin from a checkout should expect that; the GitHub path does not.
 **Not checked.** The skills' behaviour inside the installed copy beyond the listing (the evals run against the checkout, not the cache);
-that `${CLAUDE_PLUGIN_ROOT}` paths in `agents/critic.md` resolve in the cache copy (a run through the plugin, in D38, loaded the agent but
+that `${CLAUDE_PLUGIN_ROOT}` paths in `agents/critic.md` resolve in the cache copy (a run through the plugin, in D40, loaded the agent but
 did not run a script); updating (`claude plugin update`) after a new commit.
 **Costs.** None: this is a record. The README's "works once this is on `main`" is replaced by the tried version.
 
-### D43. AGENTS.md stays whole: plan steps 1.1 and 1.2 declined (2026-10-17)
+### D45. AGENTS.md stays whole: plan steps 1.1 and 1.2 declined (2026-10-17)
 **Decision.** `AGENTS.md` (269 lines, 24.7 KB, about 6,200 tokens a session) is not split into a shorter file plus `.claude/rules/` files.
 **Why.** (1) `AGENTS.md` itself records the owner's call (2026-10-17, *For the PR reviewer*): the code-level reference lives there on purpose, the
 README stays short for people, and this file is where agents find the code; a plan step cannot override that. (2) `AGENTS.md` is the file
 other agents (Codex and the like) read; `.claude/rules/` is Claude Code's, so a split would hide the reference from them. (3) The 200-line
-yardstick (Anthropic's memory docs) is about how well rules are followed; no failure from this file's length has been seen or measured, and the evals (D41)
-are the way to test it if one shows up. A rule that matters here is also a hook (D37), not a line in this file.
+yardstick (Anthropic's memory docs) is about how well rules are followed; no failure from this file's length has been seen or measured, and the evals (D43)
+are the way to test it if one shows up. A rule that matters here is also a hook (D39), not a line in this file.
 **Would reverse if** an eval or a transcript shows a rule in the later sections being missed, or a session's context is measurably squeezed by it.
 **Costs.** About 6,200 tokens in every session, which is the price of one file every agent reads.
 
-### D44. The packet's own limits are linted before a critic is spent (2026-10-17; plan 6.1)
+### D46. The packet's own limits are linted before a critic is spent (2026-10-17; plan 6.1)
 **Decision.** `bin/lint-packet.mjs` (`npm run lint-packet -- <video>`) reads `review/packet.md` and reports each limit
 `critic-pacing`'s skill states that the packet measures: a scene more than 15% off the syllable target or over 40 s, a pause over 2 s
 that is not the last, sentences under 0.25 s apart or a scene change under 0.8 s, text flagged short or late, a stretch with nothing new
@@ -567,9 +567,9 @@ stretch of 8.73 s in the fix scene) that both critics let pass.
 **Costs.** It parses the packet's markdown, so a change to `bin/review.mjs`'s tables breaks it (a test on a fixture says so, and an
 unreadable packet is an error, never a pass). The limits are copied from the skill's prose: change one, change both.
 
-### D45. Plan steps declined or left for a person (2026-10-17)
+### D47. Plan steps declined or left for a person (2026-10-17)
 **1.5 `disable-model-invocation` on `explainer-video`, `critic-loop` and `tailor`: declined.** It would drop about 1,460 characters
-(about 365 tokens a turn) of descriptions, but also the automatic loading: the evals (D41) show `critic-loop` firing 3 of 3 on natural
+(about 365 tokens a turn) of descriptions, but also the automatic loading: the evals (D43) show `critic-loop` firing 3 of 3 on natural
 words, and a skill that stops firing is the larger cost.
 **5.5 The evals in CI: left out** while runs cost money and a cell moved from 2 of 5 to 7 of 8 between runs of the same text; gate on them after the
 scores settle, with `--threshold`, pinned models and a budget.

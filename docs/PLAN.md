@@ -10,16 +10,16 @@ were measured on the same day.
 | Step | Status |
 |---|---|
 | 0.1 results folder per video | done by hand for `videos/pacer-dev-journey` (PR #20); 0.2 automates it |
-| 2.0 commit project settings, 2.1 Bash guard, 2.2 protect files, 2.3 Stop hook, 2.7 read denials | done: DESIGN D37, `test/hooks.test.mjs` |
-| 3.1 read-only critic (Write, Edit, NotebookEdit denied; the Bash hook is not done), 3.2 `maxTurns` and an explicit model | done: DESIGN D38, checked with a headless run |
-| 1.3 trigger-first descriptions | tried and reverted: it lowered triggering (evidence standard 19/21 to 6/16); DESIGN D39 |
-| 1.4 size ceiling (as a test), 1.6 `allowed-tools` | done: DESIGN D39 |
-| 0.2 `bin/results.mjs` and `usage --since`; 2.6 dropped (usage.mjs reads the transcripts already) | done: DESIGN D40, `test/results.test.mjs` |
-| 5.1 evals, 5.2 with and without the plugin, 5.3 several runs | done: DESIGN D41, `evals/`, `test/evals.test.mjs`; 5.4 (a person labels critic findings) and 5.5 (CI) not done |
-| 4.1 clean-machine install, 4.2 `bin/` on the PATH, 4.3 version from the commit | done: DESIGN D42 (installs three ways; `bin/` not on the PATH; version is the SHA) |
-| 1.1 shorten `AGENTS.md`, 1.2 path-scoped rules | declined: DESIGN D43 (the owner put the reference there on purpose; other agents read only that file) |
-| 6.1 lint the packet | done, smaller than planned: DESIGN D44 (a linter beside `critic-pacing`, which was 10% of the loop's tokens) |
-| 1.5 `disable-model-invocation`, 5.5 CI evals | declined or left out: DESIGN D45; 5.4 (a person labels findings) needs a person; 6.2 to 6.4 not started |
+| 2.0 commit project settings, 2.1 Bash guard, 2.2 protect files, 2.3 Stop hook, 2.7 read denials | done: DESIGN D39, `test/hooks.test.mjs` |
+| 3.1 read-only critic (Write, Edit, NotebookEdit denied; the Bash hook is not done), 3.2 `maxTurns` and an explicit model | done: DESIGN D40, checked with a headless run |
+| 1.3 trigger-first descriptions | tried and reverted: it lowered triggering (evidence standard 19/21 to 6/16); DESIGN D41 |
+| 1.4 size ceiling (as a test), 1.6 `allowed-tools` | done: DESIGN D41 |
+| 0.2 `bin/results.mjs` and `usage --since`; 2.6 dropped (usage.mjs reads the transcripts already) | done: DESIGN D42, `test/results.test.mjs` |
+| 5.1 evals, 5.2 with and without the plugin, 5.3 several runs | done: DESIGN D43, `evals/`, `test/evals.test.mjs`; 5.4 (a person labels critic findings) and 5.5 (CI) not done |
+| 4.1 clean-machine install, 4.2 `bin/` on the PATH, 4.3 version from the commit | done: DESIGN D44 (installs three ways; `bin/` not on the PATH; version is the SHA) |
+| 1.1 shorten `AGENTS.md`, 1.2 path-scoped rules | declined: DESIGN D45 (the owner put the reference there on purpose; other agents read only that file) |
+| 6.1 lint the packet | done, smaller than planned: DESIGN D46 (a linter beside `critic-pacing`, which was 10% of the loop's tokens) |
+| 1.5 `disable-model-invocation`, 5.5 CI evals | declined or left out: DESIGN D47; 5.4 (a person labels findings) needs a person; 6.2 to 6.4 not started |
 | the rest of the plan | not started |
 
 ## What the repo looks like today (measured)
