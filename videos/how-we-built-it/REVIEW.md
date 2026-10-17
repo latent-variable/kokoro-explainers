@@ -6,14 +6,15 @@ every round was a fresh agent that had not seen the build or an earlier round, a
 round 5 attempt to run clarity and visuals on Opus was rejected by the workspace rate limit
 (HTTP 429, one input token a minute), so both were rerun on Sonnet.
 
-**Status: the four critics run all pass in round 7.** Pacing, consistency and engagement were not run.
+**Status: not done.** Round 7 passed the four critics then run, but pacing was added afterwards and each later round found new problems. Round 9 fails on pacing, clarity, sync and visuals; accuracy passes. Consistency and engagement were not run.
 
-| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 |
-|---|---|---|---|---|---|---|---|
-| accuracy | fail | fail | pass | fail | pass | pass | pass |
-| clarity | fail | fail | fail | fail | fail | fail | pass |
-| sync | fail | pass | fail | pass | pass | pass | pass |
-| visuals | fail | fail | pass | fail | fail | pass | pass |
+| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 |
+|---|---|---|---|---|---|---|---|---|---|
+| accuracy | fail | fail | pass | fail | pass | pass | pass | pass | pass |
+| clarity | fail | fail | fail | fail | fail | fail | pass | fail | fail |
+| sync | fail | pass | fail | pass | pass | pass | pass | pass | fail |
+| visuals | fail | fail | pass | fail | fail | pass | pass | fail | fail |
+| pacing | | | | | | | fail | pass | fail |
 
 ## What the critics changed
 
@@ -38,7 +39,9 @@ round 5 attempt to run clarity and visuals on Opus was rejected by the workspace
   chip row. Fixed. Clarity: the "first video" in the loop scene was never named; it is now "the
   project's first video, how it works".
 - **Round 6.** Accuracy, sync and visuals pass. Clarity fails on two majors (below).
-- **Round 7.** After the clarity rewrite below, all four pass.
+- **Round 7.** After the clarity rewrite below, accuracy, clarity, sync and visuals pass. Pacing, run for the first time, fails: scenes 5 and 6 read above 175 words a minute. Fixed by trimming both scripts and slowing the voice from 0.85 to 0.80 (0.78 was tried and was too slow).
+- **Round 8.** Pacing, accuracy and sync pass. Clarity (two majors: the loop's warning sentence, and a pull-request takeaway with no setup) and visuals (captions ending on "a"/"to") fail. The caption splitter in `bin/build.mjs` now carries a trailing function word to the next line; the loop sentence, takeaway, example-video name and the `AGENTS.md` wording were rewritten.
+- **Round 9.** Accuracy passes. Pacing fails on one objective major, the new "Also caught" card (24 words, up 6.0 s, needs 7.3 s). Visuals fails on two majors from the round 8 highlight on the traps card (no padding; still on the wrong line). Sync fails on two majors: the Tried card and the traps line each land several seconds after the voice names them. Clarity fails on a new major: scene 2 never says the pipeline generates the voice from the text.
 
 The builder's own look between rounds caught the heading-only openings and the "start time" line
 sitting against the chip box before any critic did.
@@ -62,6 +65,13 @@ video, called how it works" and states what the warning is for. Round 7 passes.
   the same phrase in round 2. Declined.
 - **Round 2, clarity:** cut the espeak and phonemizer detail to one example. Done (phonemizer cut,
   espeak kept as the one example); see the open item above.
+
+## Why the loop stopped at round 9
+
+Two escalation cases from `critic-loop`: a round finding mostly problems in the previous round's
+fixes (the pacing and visuals majors are the round 8 card and highlight), and critics pulling
+against each other. Round 8 sync asked for the Tried card to wait until "tried"; round 9 sync asks
+for it to land on "recognition". Clarity has raised a different major in each round since round 7.
 
 ## Accepted minors
 
