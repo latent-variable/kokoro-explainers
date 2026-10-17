@@ -42,11 +42,47 @@ function gitReason(args) {
   return null;
 }
 
+// A heredoc body is text, not commands: cut it out of the command. One with a quoted delimiter is inert (nothing in
+// it runs); one without can hold $( ) and backticks, which still run, so those bodies are returned to be scanned.
+export function splitHeredocs(cmd) {
+  const bodies = [];
+  const rest = cmd.replace(/<<-?[ \t]*(['"]?)([A-Za-z_][A-Za-z0-9_]*)\1[^\n]*\n([\s\S]*?)(?:\n[ \t]*\2[ \t]*(?=\n|$)|$)/g, (m, q, _tag, body) => {
+    if (!q) bodies.push(body);
+    return m.slice(0, m.indexOf("\n"));
+  });
+  return { rest, bodies };
+}
+
+// The text of each $( ) and backtick substitution outside single quotes, where it would not run.
+export function substitutions(s) {
+  const out = [];
+  let sq = false;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c === "\\") { i++; continue; }
+    if (c === "'" && !sq) { sq = true; continue; }
+    if (c === "'" && sq) { sq = false; continue; }
+    if (sq) continue;
+    if (c === "$" && s[i + 1] === "(") {
+      let d = 1, j = i + 2;
+      for (; j < s.length && d; j++) { if (s[j] === "(") d++; else if (s[j] === ")") d--; }
+      out.push(s.slice(i + 2, j - 1));
+    } else if (c === "`") {
+      const j = s.indexOf("`", i + 1);
+      if (j < 0) break;
+      out.push(s.slice(i + 1, j));
+      i = j;
+    }
+  }
+  return out;
+}
+
 // Why a command is refused, or null.
-export function reason(cmd, depth = 0) {
+export function reason(full, depth = 0) {
   if (depth > 3) return null;
-  for (const inner of [...cmd.matchAll(/\$\(([^()]*)\)/g), ...cmd.matchAll(/`([^`]*)`/g)]) {
-    const r = reason(inner[1], depth + 1);
+  const { rest: cmd, bodies } = splitHeredocs(full);
+  for (const inner of [...substitutions(cmd), ...bodies.flatMap(substitutions)]) {
+    const r = reason(inner, depth + 1);
     if (r) return r;
   }
   for (let w of segments(cmd)) {

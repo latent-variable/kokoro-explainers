@@ -438,6 +438,10 @@ cover and exits 2 on a failure, once: `stop_hook_active` lets the second stop th
 **Why.** CLAUDE.md is advisory and hooks are enforced (Anthropic's memory and permissions docs); the repo's hard rules were prose
 plus CI. **Checked** by `test/hooks.test.mjs`, which feeds each hook payloads on stdin: 21 refused commands, 16 allowed ones,
 the override, bad input.
+**Found by using it.** The hook was live in the session that wrote it and, on its first run, refused a pull-request body
+(a heredoc whose markdown had `rm` in backticks): it read backticks as command substitution everywhere. A heredoc body with a
+quoted delimiter is now text, and substitutions are looked for only outside single quotes (an unquoted heredoc and double
+quotes still run them, so `"`rm x`"` is refused, correctly).
 **Costs.** The guard reads the command string, not what the shell will do: a script that deletes inside itself, or a command
 built from a variable, gets through; it is a seatbelt, not a sandbox (`sandbox-run.sh` is that). `npm test` needs `ffmpeg`
 (`doctor` says), and a machine without it hears about it at every first stop. Hooks run in the person's session and are

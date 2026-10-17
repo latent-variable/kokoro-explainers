@@ -23,6 +23,13 @@ test("hooks: the Bash guard refuses what deletes or rewrites work, and lets ordi
     "mv a b", "rmdir empty", "npm test", "echo 'rm is a command'", "grep -rn \"git restore\" docs", "git commit -m 'never run git clean'", "node bin/make.mjs videos/x"]) {
     assert.equal(bash(c).status, 0, `${c} should pass`);
   }
+  // text is not a command: a quoted heredoc (a PR body full of backticks), single quotes; but an unquoted heredoc or double quotes still run substitutions
+  for (const c of ["gh pr create --body-file /dev/stdin <<'EOF'\nrefuses `rm`, `unlink` and git `restore`\nrm -rf notes\nEOF", "cat > f <<'EOF'\n`rm -rf x`\nEOF", "echo '`rm -rf x`'", "echo '$(rm a)'", "git commit -m 'note: `rm` is refused'"]) {
+    assert.equal(bash(c).status, 0, `${JSON.stringify(c)} is text and should pass`);
+  }
+  for (const c of ["cat <<EOF\n$(rm a)\nEOF", "echo \"`rm x`\"", "cat <<'EOF'\nfine\nEOF\nrm after.txt"]) {
+    assert.equal(bash(c).status, 2, `${JSON.stringify(c)} runs rm and should be refused`);
+  }
   assert.equal(bash("rm -rf build", { SHIPSHOW_ALLOW_DESTRUCTIVE: "1" }).status, 0, "a person can allow it on purpose");
   assert.equal(hook("guard-bash.mjs", { tool_name: "Bash", tool_input: {} }).status, 0, "no command is not an error");
   assert.equal(spawnSync(process.execPath, [join(REPO, ".claude", "hooks", "guard-bash.mjs")], { input: "not json", encoding: "utf8" }).status, 0, "bad input does not block");
