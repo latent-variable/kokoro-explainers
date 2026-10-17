@@ -13,7 +13,8 @@ said (`critic-clarity`) or whether a cue matches its word (`critic-sync`).
 
 **Evidence:** `review/packet.md` measures most of this: the video's speed and the target it
 sets, words a minute per scene, every pause, every cue's time and how long its text stays up
-against its reading time.
+against its reading time (code is counted in identifier tokens, at a slower reading speed than
+prose), and the *Stillness* table, the longest stretch of each scene in which nothing new appears.
 
 The person chose the speed (`video.json`, their `local/config.json`, or `--speed`), so judge
 against the target it sets: about 210 syllables a minute times the speed (the packet states
@@ -28,6 +29,9 @@ looks fast by words and is not by ear. A faster video is what they asked for, no
 - **minor:** a speed outside 0.8 to 1.6, said once, so the person knows it is unusual.
 - **major:** on-screen text marked "short" in the cue table: it leaves before a viewer could
   read it while listening.
+- **major:** text marked "late": reading in order, with text that lands together or soon after queued, the
+  viewer cannot finish it before its scene ends. (A highlight or a line cued inside a block already shown adds
+  no reading, so it is never late.)
 - **major:** a pause over 2 seconds anywhere but the very end, or a screen with no change
   (no cue, no new scene) for over 12 seconds while the voice goes on.
 - **major:** a scene over 40 seconds. It almost always holds two ideas.
