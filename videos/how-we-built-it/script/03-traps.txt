@@ -1,1 +1,1 @@
-Coding agents read a file called AGENTS.md first. The traps this project hit are written in it, such as skipping speech recognition. Another: a very long data path breaks the voice engine, and the error reports a missing file.
+Coding agents read a file called AGENTS.md first. So what is written there is in front of the next agent from the start. The traps this project hit are in it, such as skipping speech recognition.
