@@ -1,0 +1,185 @@
+<style>
+  /* Layout only: colour, type and motion come from the launch theme. */
+  h2 { position: absolute; top: var(--heading-top); left: var(--pad); font-family: var(--font-display); font-size: var(--heading-size); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
+  .mono { font-family: var(--font-mono); }
+  .pink { color: var(--accent); } .cyan { color: var(--accent-2); } .lime { color: var(--accent-3); }
+  .card { background: var(--card); border: var(--border) solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .label { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-2); }
+
+  /* 01-hook */
+  .hook { position: absolute; left: var(--pad); top: 210px; width: 980px; }
+  .hook .l1 { font-family: var(--font-display); font-size: 104px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.02; }
+  .hook .l2 { font-family: var(--font-display); font-size: 64px; font-weight: 500; color: var(--muted); margin-top: 18px; }
+  .mess { position: absolute; right: 120px; top: 70px; width: 600px; height: 700px; }
+  .mess .chip { position: absolute; padding: 18px 26px; font-family: var(--font-mono); font-size: 30px; font-weight: 700; white-space: nowrap; }
+  .chip.pr { border-color: var(--accent-2); color: var(--accent-2); }
+  .chip.bad { border-color: var(--bad); color: var(--bad); }
+  .shit { position: absolute; left: var(--pad); top: 620px; font-family: var(--font-display); font-size: 150px; font-weight: 700; letter-spacing: -0.04em; color: var(--accent); transform-origin: left center; }
+
+  /* 02-karpathy */
+  .quote { position: absolute; left: var(--pad); top: 140px; width: 1000px; padding: 46px 52px; }
+  .quote .who { font-family: var(--font-mono); font-size: 28px; color: var(--accent-2); letter-spacing: 0.04em; }
+  .quote p { font-family: var(--font-display); font-size: 46px; line-height: 1.28; font-weight: 500; margin-top: 22px; }
+  .quote p + p { margin-top: 26px; }
+  .quote .mark { color: var(--accent); font-weight: 700; }
+  .ladder { position: absolute; right: var(--pad); top: 150px; width: 560px; display: flex; flex-direction: column-reverse; gap: 22px; }
+  .rung { padding: 22px 30px; font-size: 38px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+  .rung small { font-family: var(--font-mono); font-size: 28px; color: var(--muted); font-weight: 400; }
+  .rung.top { border-color: var(--accent-3); color: var(--accent-3); box-shadow: 0 0 60px rgba(198, 255, 61, 0.22); }
+
+  /* 03-how */
+  .pipe { position: absolute; left: var(--pad); right: var(--pad); top: 290px; display: flex; align-items: center; justify-content: space-between; }
+  .node { width: 320px; height: 240px; padding: 32px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+  .node b { font-family: var(--font-display); font-size: 46px; font-weight: 700; }
+  .node span { font-size: 32px; color: var(--muted); }
+  .node.out { border-color: var(--accent); }
+  .node.out b { color: var(--accent); }
+  .link { width: 90px; height: 40px; }
+  .link path { fill: none; stroke: var(--accent-2); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .stamp { position: absolute; right: 200px; top: 640px; padding: 18px 34px; border: 5px solid var(--accent-3); border-radius: 14px; color: var(--accent-3); font-family: var(--font-mono); font-size: 44px; font-weight: 700; transform: rotate(-6deg); }
+  .aside { position: absolute; left: var(--pad); top: 640px; width: 1060px; font-size: 38px; color: var(--muted); line-height: 1.35; }
+  .aside q { color: var(--ink); }
+
+  /* 04-decide */
+  .opts { position: absolute; left: var(--pad); top: 250px; width: 1120px; display: flex; gap: 40px; }
+  .opt { flex: 1; padding: 44px 48px; }
+  .opt h3 { font-family: var(--font-display); font-size: 60px; margin-bottom: 30px; }
+  .bar { height: 34px; border-radius: 17px; margin: 14px 0 28px; }
+  .bar.gain { background: var(--accent-3); } .bar.cost { background: var(--accent); }
+  .opt .k { font-family: var(--font-mono); font-size: 32px; color: var(--muted); }
+  .rec { position: absolute; right: 160px; top: 340px; padding: 26px 40px; border: 6px solid var(--accent-3); border-radius: 18px; color: var(--accent-3); font-family: var(--font-display); font-size: 64px; font-weight: 700; transform: rotate(-5deg); text-align: center; line-height: 1.05; }
+  .rec small { display: block; font-family: var(--font-mono); font-size: 28px; font-weight: 400; margin-top: 8px; }
+  .you { position: absolute; left: var(--pad); top: 730px; font-family: var(--font-display); font-size: 72px; font-weight: 700; }
+
+  /* 05-critics */
+  .panel { position: absolute; left: var(--pad); top: 250px; width: 1140px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .panel .c { padding: 28px 24px; font-size: 34px; font-weight: 700; text-align: center; }
+  .panel .c.hot { border-color: var(--accent-3); color: var(--accent-3); }
+  .ask { position: absolute; left: var(--pad); top: 560px; width: 1140px; display: flex; flex-direction: column; gap: 22px; }
+  .ask div { font-family: var(--font-display); font-size: 56px; font-weight: 500; }
+  .meter { position: absolute; right: var(--pad); top: 250px; width: 440px; padding: 36px 38px; }
+  .meter .seg { height: 96px; border-radius: 12px; margin-top: 16px; display: flex; align-items: center; padding-left: 24px; font-family: var(--font-mono); font-size: 30px; font-weight: 700; }
+  .seg.lo { background: #2a2050; color: var(--muted); }
+  .seg.mid { background: #3b2c70; color: var(--ink); }
+  .seg.hi { background: var(--accent); color: #1a0b1e; }
+
+  /* 06-yours */
+  .swatches { position: absolute; left: var(--pad); top: 280px; display: flex; gap: 36px; }
+  .sw { width: 380px; height: 320px; border-radius: var(--radius); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; border: 3px solid transparent; }
+  .sw b { font-size: 44px; font-weight: 700; }
+  .sw .dots { display: flex; gap: 12px; }
+  .sw .dots i { width: 40px; height: 40px; border-radius: 50%; display: block; }
+  .sw.ship { background: #0f1420; color: #eef2f8; } .sw.ship b { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  .sw.paper { background: #f6f1e7; color: #1d1b18; } .sw.paper b { font-family: Georgia, serif; }
+  .sw.launch { background: var(--card); color: var(--ink); border-color: var(--accent); }
+  .this { position: absolute; left: calc(var(--pad) + 2 * 416px + 60px); top: 640px; padding: 12px 24px; border-radius: 999px; background: var(--accent); color: #1a0b1e; font-family: var(--font-mono); font-size: 30px; font-weight: 700; }
+  .speed { position: absolute; right: var(--pad); top: 600px; font-family: var(--font-display); font-size: 120px; font-weight: 700; color: var(--accent-2); letter-spacing: -0.04em; }
+  .speed small { font-family: var(--font-mono); font-size: 30px; color: var(--muted); display: block; letter-spacing: 0.05em; }
+
+  /* 07-close */
+  .end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
+  .from { position: relative; font-family: var(--font-display); font-size: 110px; font-weight: 700; color: var(--muted); letter-spacing: -0.04em; }
+  .strike { position: absolute; left: -12px; right: -12px; top: 52%; height: 12px; border-radius: 6px; background: var(--accent); }
+  .to { font-family: var(--font-display); font-size: 170px; font-weight: 700; letter-spacing: -0.05em; background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .url { font-family: var(--font-mono); font-size: 46px; color: var(--accent-2); }
+</style>
+
+<section data-scene="01-hook">
+  <div class="hook">
+    <div class="l1" data-cue="agents" data-anim="scramble">Agents ship faster</div>
+    <div class="l2" data-cue="faster" data-anim="up">than you can read.</div>
+  </div>
+  <div class="mess" data-cue="pull" data-anim="stagger">
+    <div class="chip card pr" style="left: 40px; top: 0px; transform: rotate(-6deg)">PR #812</div>
+    <div class="chip card" style="left: 250px; top: 90px; transform: rotate(5deg)">+2,184 −967</div>
+    <div class="chip card bad" style="left: 10px; top: 200px; transform: rotate(-3deg)">merge conflict</div>
+    <div class="chip card pr" style="left: 300px; top: 300px; transform: rotate(8deg)">PR #813</div>
+    <div class="chip card bad" style="left: 60px; top: 410px; transform: rotate(-9deg)">CI: failing</div>
+    <div class="chip card" style="left: 270px; top: 520px; transform: rotate(4deg)">47 unread</div>
+  </div>
+  <div class="shit" data-cue="shit" data-anim="glitch">shit show.</div>
+</section>
+
+<section data-scene="02-karpathy" data-transition="wipe">
+  <div class="quote card" data-cue="Karpathy" data-anim="left">
+    <div class="who">Andrej Karpathy &middot; on X &middot; Oct 2, 2026</div>
+    <p data-cue="lot" data-anim="type">&ldquo;&hellip;a lot more of our work will rise up the abstractions into oversight and understanding.&rdquo;</p>
+    <p data-cue="output" data-anim="type">&ldquo;The output format I am most bullish on is fully custom / bespoke <span class="mark">explainer videos</span>&hellip;&rdquo;</p>
+  </div>
+  <div class="ladder" data-cue="format" data-anim="stagger">
+    <div class="rung card">Writing <small>good</small></div>
+    <div class="rung card">Diagrams <small>even better</small></div>
+    <div class="rung card">Web pages <small>even better</small></div>
+    <div class="rung card top">Explainer videos <small class="lime">most bullish</small></div>
+  </div>
+</section>
+
+<section data-scene="03-how" data-transition="flash">
+  <h2 data-cue="+0.1" data-anim="left">On <span class="pink">your</span> machine</h2>
+  <div class="pipe">
+    <div class="node card" data-cue="script" data-anim="pop"><b class="mono">script/</b><span>your agent writes it</span></div>
+    <svg class="link" viewBox="0 0 110 40" data-cue="Kokoro" data-anim="draw"><path d="M6 20 H100 M86 8 L100 20 L86 32"/></svg>
+    <div class="node card" data-cue="Kokoro" data-anim="pop"><b>Kokoro</b><span>a small local voice</span></div>
+    <svg class="link" viewBox="0 0 110 40" data-cue="HyperFrames" data-anim="draw"><path d="M6 20 H100 M86 8 L100 20 L86 32"/></svg>
+    <div class="node card" data-cue="HyperFrames" data-anim="pop"><b>HyperFrames</b><span>draws every frame</span></div>
+    <svg class="link" viewBox="0 0 110 40" data-cue="frame#2" data-anim="draw"><path d="M6 20 H100 M86 8 L100 20 L86 32"/></svg>
+    <div class="node card out" data-cue="frame#2" data-anim="slam"><b>MP4</b><span>yours to watch</span></div>
+  </div>
+  <div class="aside" data-cue="machine" data-anim="fade"><q>decent free alternatives that use your local compute</q> &middot; Karpathy, same post</div>
+  <div class="stamp" data-cue="API" data-anim="slam">NO API KEY</div>
+</section>
+
+<section data-scene="04-decide" data-transition="slide">
+  <h2 data-cue="+0.1" data-anim="left">When you have to <span class="lime">decide</span></h2>
+  <div class="opts">
+    <div class="opt card" data-cue="options" data-anim="up">
+      <h3>Option A</h3>
+      <div class="k">gains</div><div class="bar gain" style="width: 55%" data-cue="costs" data-anim="grow"></div>
+      <div class="k">costs</div><div class="bar cost" style="width: 85%" data-cue="costs" data-anim="grow"></div>
+    </div>
+    <div class="opt card" data-cue="options" data-anim="up">
+      <h3>Option B</h3>
+      <div class="k">gains</div><div class="bar gain" style="width: 80%" data-cue="costs" data-anim="grow"></div>
+      <div class="k">costs</div><div class="bar cost" style="width: 35%" data-cue="costs" data-anim="grow"></div>
+    </div>
+  </div>
+  <div class="rec" data-cue="recommendation" data-anim="slam">Pick B<small>and here is why</small></div>
+  <div class="you" data-cue="call" data-anim="pulse">You make the call.</div>
+</section>
+
+<section data-scene="05-critics" data-transition="zoom">
+  <h2 data-cue="+0.1" data-anim="left">The critics</h2>
+  <div class="panel" data-cue="panel" data-anim="stagger">
+    <div class="c card hot">Accuracy</div><div class="c card hot">Sync</div><div class="c card">Clarity</div><div class="c card">Pacing</div>
+    <div class="c card">Visuals</div><div class="c card">Consistency</div><div class="c card">Engagement</div><div class="c card">Decision</div>
+  </div>
+  <div class="ask">
+    <div data-cue="true" data-anim="up">Is every claim <span class="lime" data-cue="true" data-anim="highlight">true</span>?</div>
+    <div data-cue="shown" data-anim="up">Is it shown when it&rsquo;s said?</div>
+  </div>
+  <div class="meter card" data-cue="decides" data-anim="right">
+    <div class="label">How hard they look</div>
+    <div class="seg lo" data-cue="hard" data-anim="grow">low</div>
+    <div class="seg mid" data-cue="much" data-anim="grow">normal</div>
+    <div class="seg hi" data-cue="matters" data-anim="pulse">high</div>
+  </div>
+</section>
+
+<section data-scene="06-yours" data-transition="flash">
+  <h2 data-cue="+0.1" data-anim="left">Make it <span class="cyan">yours</span></h2>
+  <div class="swatches" data-cue="theme" data-anim="stagger">
+    <div class="sw ship"><b>shipshow</b><div class="dots"><i style="background:#ffb454"></i><i style="background:#7cc4ff"></i><i style="background:#182033"></i></div></div>
+    <div class="sw paper"><b>paper</b><div class="dots"><i style="background:#b3261e"></i><i style="background:#1f5f8b"></i><i style="background:#d9cfbd"></i></div></div>
+    <div class="sw launch"><b>launch</b><div class="dots"><i style="background:#ff3d8b"></i><i style="background:#2de2e6"></i><i style="background:#c6ff3d"></i></div></div>
+  </div>
+  <div class="this" data-cue="own" data-anim="pop">this video &uarr;</div>
+  <div class="speed" data-cue="Speed" data-anim="fade"><small>SPEED</small><span data-cue="Speed" data-anim="count">1.25&times;</span></div>
+</section>
+
+<section data-scene="07-close" data-transition="zoom" data-camera="none">
+  <div class="end">
+    <div class="from" data-cue="shit" data-anim="glitch">shit show<div class="strike" data-cue="into" data-anim="grow"></div></div>
+    <div class="to" data-cue="ship#1" data-anim="slam">ship show</div>
+    <div class="url" data-cue="GitHub" data-anim="type">github.com/latent-variable/shipshow</div>
+  </div>
+</section>

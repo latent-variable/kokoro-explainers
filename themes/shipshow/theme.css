@@ -7,6 +7,7 @@
   --muted: #b4bdcd;
   --accent: #ffb454;          /* the thing to look at */
   --accent-2: #7cc4ff;        /* a second voice: links, files, the sea */
+  --accent-3: #7ee0a1;        /* a third, used sparingly */
   --card: #182033;
   --line: #2c3854;
   --code-bg: #0a0e17;
@@ -37,10 +38,11 @@
   --cap-radius: 12px;
 
   /* motion: the defaults a video's flair can override (video.json "flair") */
-  --transition: rise;         /* none | fade | rise | slide | zoom | wipe */
+  --transition: rise;         /* none | fade | rise | slide | zoom | wipe | flash */
   --entrance: up;             /* the data-anim an element gets when it names none */
   --camera: push;             /* none | push: a slow push-in over each scene */
-  --ambient: glow;            /* none | glow | grid | dots */
+  --ambient: glow;            /* none | glow | grid | dots | stars, or several: "stars glow" */
   --ambient-strength: 0.18;
   --progress: on;             /* on | off: a thin bar across the top */
+  --progress-fill: var(--accent);
 }

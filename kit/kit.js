@@ -20,9 +20,25 @@
         return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
       };
 
-      // Ambient background: a slow drift under every scene.
-      const ambient = token("--ambient", "none"), ambientEl = document.getElementById("ambient");
-      if (ambient === "glow") {
+      // Ambient background: a slow drift under every scene; several may layer ("stars glow").
+      const ambientEl = document.getElementById("ambient");
+      token("--ambient", "none").split(/\s+/).forEach((ambient) => {
+      if (ambient === "stars") {
+        // Three layers of seeded stars, the nearer ones bigger and faster: parallax.
+        [[90, 1.4, 60], [45, 2.2, 140], [18, 3.2, 260]].forEach(([count, size, drift]) => {
+          const layer = document.createElement("div");
+          layer.className = "stars";
+          for (let i = 0; i < count; i++) {
+            const star = document.createElement("div");
+            star.className = "star";
+            const s = size * (0.6 + rand() * 0.8);
+            Object.assign(star.style, { left: `${(rand() * 100).toFixed(2)}%`, top: `${(rand() * 100).toFixed(2)}%`, width: `${s.toFixed(1)}px`, height: `${s.toFixed(1)}px`, opacity: (0.25 + rand() * 0.6).toFixed(2) });
+            layer.appendChild(star);
+          }
+          ambientEl.appendChild(layer);
+          tl.fromTo(layer, { x: 0 }, { x: -Math.round(drift * (TOTAL / 60)), duration: TOTAL, ease: "none" }, 0);
+        });
+      } else if (ambient === "glow") {
         // Two glows, kept apart, so the theme's colours never blur into grey where they meet.
         ["--accent", "--accent-2"].forEach((colour, i) => {
           const blob = document.createElement("div");
@@ -39,8 +55,9 @@
         ambientEl.appendChild(layer);
         tl.fromTo(layer, { x: 0, y: 0 }, { x: -Math.round(60 + rand() * 120), y: -Math.round(30 + rand() * 80), duration: TOTAL, ease: "none" }, 0);
       } else if (ambient !== "none") {
-        throw new Error(`unknown --ambient ${ambient}: none, glow, grid or dots`);
+        throw new Error(`unknown --ambient ${ambient}: none, glow, grid, dots or stars`);
       }
+      });
 
       // Progress bar across the top.
       const progress = document.getElementById("progress");
@@ -56,8 +73,9 @@
         slide: { opacity: 0, x: 140 },
         zoom: { opacity: 0, scale: 0.94 },
         wipe: { clipPath: "inset(0% 100% 0% 0%)" },
+        flash: { opacity: 0, scale: 1.06, filter: "brightness(2.4)" },
       };
-      const SETTLED = { opacity: 1, x: 0, y: 0, scale: 1, clipPath: "inset(0% 0% 0% 0%)" };
+      const SETTLED = { opacity: 1, x: 0, y: 0, scale: 1, clipPath: "inset(0% 0% 0% 0%)", filter: "brightness(1)" };
       document.querySelectorAll("section.scene").forEach((el) => {
         const inner = el.querySelector(":scope > .inner"), cam = inner.querySelector(":scope > .cam");
         const start = +el.dataset.start, dur = +el.dataset.duration, end = start + dur;
@@ -163,6 +181,41 @@
           tl.to(el, { scale: 1.08, duration: 0.18, yoyo: true, repeat: 3, ease: "sine.inOut" }, at + 0.5);
         },
       };
+      // Glyphs a scramble passes through; picked by a hash of position and progress, so the
+      // same frame always shows the same glyphs.
+      const GLYPHS = "!<>-_/[]{}=+*^?#ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";
+      const glyph = (i, step) => GLYPHS[Math.abs(Math.imul(i + 1, 2654435761) ^ Math.imul(step + 7, 40503) ^ SEED) % GLYPHS.length];
+      const colour = (name, fallback) => token(name, fallback);
+      Object.assign(SPECIAL, {
+        // Decodes from noise, left to right.
+        scramble(el, at) {
+          const text = el.textContent, state = { p: 0 };
+          const show = () => {
+            const shown = Math.floor(state.p * text.length), step = Math.floor(state.p * 24);
+            el.textContent = [...text].map((ch, i) => (i < shown || /\s/.test(ch) ? ch : glyph(i, step))).join("");
+          };
+          show();
+          gsap.set(el, { opacity: 0 });
+          tl.to(el, { opacity: 1, duration: 0.1 }, at);
+          tl.to(state, { p: 1, duration: Math.min(1.2, 0.3 + text.length * 0.03), ease: "none", onUpdate: show }, at);
+        },
+        // Arrives split into colour channels, jitters, then settles.
+        glitch(el, at) {
+          const a = colour("--accent", "#ff3d8b"), b = colour("--accent-2", "#2de2e6");
+          gsap.set(el, { opacity: 0 });
+          tl.fromTo(el, { opacity: 0, x: -18, textShadow: `6px 0 ${a}, -6px 0 ${b}` }, { opacity: 1, x: 0, duration: 0.07, immediateRender: false }, at);
+          tl.to(el, { x: 10, skewX: -8, duration: 0.05 }, at + 0.1);
+          tl.to(el, { x: -6, skewX: 6, duration: 0.05 }, at + 0.16);
+          tl.to(el, { x: 0, skewX: 0, textShadow: `0px 0 ${a}00, 0px 0 ${b}00`, duration: 0.3, ease: "power2.out" }, at + 0.22);
+        },
+        // Lands big and hard, with a short shake.
+        slam(el, at) {
+          gsap.set(el, { opacity: 0, scale: 2.4 });
+          tl.to(el, { opacity: 1, scale: 1, duration: 0.32, ease: "power4.in" }, at);
+          tl.to(el, { x: 7, duration: 0.04, yoyo: true, repeat: 5, ease: "none" }, at + 0.32);
+          tl.set(el, { x: 0 }, at + 0.56);
+        },
+      });
       const ANIMS = [...Object.keys(SIMPLE), ...Object.keys(SPECIAL)];
       document.querySelectorAll("[data-at]").forEach((el) => {
         const name = el.dataset.anim || token("--entrance", "up"), at = +el.dataset.at;
