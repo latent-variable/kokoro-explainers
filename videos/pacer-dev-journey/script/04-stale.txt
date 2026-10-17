@@ -1,0 +1,1 @@
+The second cause is in the ledger. To cut database writes, it saves once every five hundred records, and all three campaigns share that batch. But spent only reads what has been saved. So pacing keeps serving for a whole batch after the budget is gone. The dollar campaign alone ends at one hundred five percent. Tokyo alone climbs to one hundred seventy-five.

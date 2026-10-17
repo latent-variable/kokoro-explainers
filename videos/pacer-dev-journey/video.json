@@ -1,0 +1,13 @@
+{
+  "title": "Tokyo spent 181%: a developer's afternoon with the pacer",
+  "kind": "feature",
+  "importance": "normal",
+  "importance_reason": "an internal demo for the Aperiam pitch: wrong claims would embarrass the demo, but nobody ships on it",
+  "audience": "A developer at an adtech startup who has inherited the overspend: reads JavaScript, knows what a daily budget and a ledger are, and after the video can find the two causes, say why every test passed, and know the shape of the fix.",
+  "voice": "af_heart",
+  "say": {
+    "US": "U S",
+    "EUR": "euro",
+    "JPY": "yen"
+  }
+}

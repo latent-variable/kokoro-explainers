@@ -1,0 +1,1 @@
+The fix is two small changes. Pacing converts the budget to cents before it compares. And spent adds what is still waiting in the buffer, so batching saves writes without hiding spend. Rerun the same morning, and all three campaigns land at one hundred percent, a few cents over, because the check runs before the bill. The contract test passes, with its todo marks removed.

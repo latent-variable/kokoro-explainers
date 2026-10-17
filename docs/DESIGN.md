@@ -375,6 +375,15 @@ syllables-a-minute pace target next to this branch's measured reading queue and 
 past the 12-word limit) and the `how-we-built-it` video. Nothing on this branch touches captions; the merge was clean.
 **Costs.** None known; the test count is now 47.
 
+### D31. A plan, not a change: Claude best practices (2026-10-17)
+**Decision.** Wrote `docs/PLAN.md` from Anthropic's docs and engineering posts (read by a research agent on 2026-10-17) and
+measured facts about this repo: `AGENTS.md` is 263 lines against a 200-line yardstick, no skill description puts its trigger
+first, `agents/critic.md` is read-only only by instruction, there are no hooks, and `.claude/` is gitignored whole, so
+project settings and rules cannot be committed. Nothing in the plan is done.
+**Why.** Hard rules here ("never delete", "docs stay current", "the sample stays buggy") are prose plus CI, and no run's
+cost or critic agreement is recorded. **Costs.** None yet; each step names how to tell it worked and the unconfirmed items
+to check first (plugin-shipped agent hooks, how a missing `version` resolves).
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.

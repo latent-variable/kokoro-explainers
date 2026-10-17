@@ -1,0 +1,1 @@
+Pacing comes down to one line. It compares spent, which the ledger keeps in US cents, with the daily budget, which is in the campaign's own minor units. For dollars, those match. Yen have no minor unit. Fifteen thousand yen is a hundred dollars, but pacing reads it as fifteen thousand cents, a hundred fifty dollars. Run Tokyo alone, and it stops at one hundred fifty percent.
