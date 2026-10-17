@@ -3,7 +3,7 @@
 // build test writes its own timing.json, as bin/voice.mjs would.
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -124,4 +124,15 @@ test("usage counts each API call once, and sums the session with its subagents",
   assert.equal(main.peakContext, 301);
   assert.equal(main.lastContext, 301);
   assert.deepEqual([sub.name, sub.calls, sub.output, sub.peakContext], ["abc12345", 1, 7, 43]);
+});
+
+test("the PRD and design docs exist, AGENTS.md names them, and every skill is in its skills table", () => {
+  const agents = readFileSync(join(REPO, "AGENTS.md"), "utf8");
+  for (const f of ["docs/PRD.md", "docs/DESIGN.md"]) {
+    assert.ok(existsSync(join(REPO, f)), `${f} is missing`);
+    assert.ok(agents.includes(f), `AGENTS.md does not name ${f}`);
+  }
+  const listed = (name) => agents.includes("`" + name + "`");
+  const skills = readdirSync(join(REPO, "skills")).filter((n) => existsSync(join(REPO, "skills", n, "SKILL.md")));
+  assert.deepEqual(skills.filter((n) => !listed(n)), [], "skills missing from the AGENTS.md skills table");
 });

@@ -20,6 +20,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Path | What |
 |---|---|
+| `docs/PRD.md`, `docs/DESIGN.md` | The requirements, and the design decisions and behaviour. Kept current (*Docs that stay current*) |
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
 | `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor`; and `usage` (token and context tracking) |
@@ -60,6 +61,33 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
   and a rule about it is friction the next model has to work around. The bars are not method:
   who builds, who judges (a fresh agent), and where facts come from (the code, `sources.md`)
   hold for every agent.
+
+## Docs that stay current
+
+Two files record what the project must do and why it is built the way it is. They are part of
+the work, not paperwork after it:
+
+| File | Holds | Update it when |
+|---|---|---|
+| `docs/PRD.md` | Problem, users, goals, functional and non-functional requirements with status, scope, open questions | A requirement is added, changed, dropped or finished; the status of an F or N line moves; an open question is answered or raised |
+| `docs/DESIGN.md` | How it fits together, the decision log, observable behaviour, how the design was tested | You make a design decision, change how something behaves, reverse an earlier choice, or learn a trap |
+
+**Update them in the same change as the code, skill or doc that moved them**, before you commit.
+A change that touches `bin/`, `kit/`, `template/`, a skill, the critics or the plugin layout
+and leaves both files untouched needs a reason in the commit message ("no requirement or
+decision changed").
+
+- A new decision is a new entry at the end of the log: number, date, decision, why, what it
+  costs. Never rewrite a past entry; supersede it with a new one that names it.
+- A requirement keeps its ID. Move its status (done, in progress, planned, open) rather than
+  deleting it.
+- Behaviour lines name the file they come from, so they can be checked. Verify a line before
+  you write it: read the code or run it.
+- Ground a decision in evidence: a file, a measurement, a finding in `skills/REVIEW.md`, or a
+  source you read. What you do not know goes in the PRD's open questions, not in a guess.
+- When you add or rename a skill, list it in the skills table below and in the PRD.
+- `npm test` fails if either file is missing, if this section no longer names them, or if a
+  skill is not listed in the skills table.
 
 ## Set up
 
@@ -136,7 +164,7 @@ skills/     the explainer and development skills, critic-loop, tailor and the ni
 template/   what npm run new copies
 videos/     videos about this repo; how-it-works is the example
 sample_application/  a vendored sample app (microblog, MIT) the skills are tested on; see its SOURCE.md
-docs/assets/  the README's images; the GIF is cut from out/how-it-works.mp4
+docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images; the GIF is cut from out/how-it-works.mp4
 test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links
 local/      gitignored, per person (tailor skill)
 ```
