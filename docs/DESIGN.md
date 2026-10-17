@@ -505,6 +505,25 @@ to a transcript. Whether the person agreed with a critic is not recorded anywher
 **Costs.** The window is by timestamp, so work in the same session outside the video lands in it too (the builder's row is the
 session's, not the video's alone); mark `start` at the beginning and keep a video's work together.
 
+### D41. The plugin has an eval suite, built from our own failures (2026-10-17; plan 5.1 to 5.3)
+**Decision.** `evals/` holds 12 cases for `claude plugin eval`: five `trigger` cases (a task in natural words, no skill named; a
+`tool_used: Skill` grader) and seven `quality` cases (the skill is named; deterministic graders first, then one `llm` judge written as PASS
+and FAIL conditions), each run three times with the plugin and three times without (`--ablation with-without`, the default). `npm run
+evals` runs them on Sonnet with `--no-publish`, `--trust-plugin` (our own plugin) and `--max-cost-usd 15`: about $2.40 and 3 minutes for
+72 runs. `test/evals.test.mjs` checks the suite's shape without a model. It is not in CI: it costs money and varies between runs.
+**Why.** "Start with 20 to 50 tasks from real failures; prefer deterministic graders; a 100% pass rate gives no signal"
+(Anthropic's eval posts); and a skill's value is its difference from a bare agent. The cases are the red-team findings (a changed number, dropped lines
+with no gap marker, an unsupported claim, a yen budget read as cents).
+**What it found.** The understanding skills lift the answer when they load (`code-context` +0.42, the evidence standard +0.33 to +0.50,
+narration +0.17) and often do not load on a plain question (`trigger-code-context` 0 of 3 on every wording). The critic skills add
+nothing on these cases (a bare agent also catches the planted defects), so they are regression tests until harder defects are planted. And it
+caught a regression before it shipped: the trigger-first description rewrite (D39) lowered triggering and was reverted.
+**Judge.** An `llm` grader uses Sonnet (`--judge-model`), the same family as the agent under test, so it shares its blind spots (the earlier
+caution of D20); the deterministic graders do not. Two of my own cases were wrong at first (a rubric that failed correct extra findings; a case
+that gave the skill no code, so it rightly refused), found by reading the transcripts (`--keep-temp`), not the scores.
+**Not done.** A person labelling critic findings right or wrong (plan 5.4); a harder critic set; the suite in CI (5.5); `pass^k`.
+**Costs.** Each run is a Claude session on the person's credential. Three runs a case is few: a cell moved 2 of 5 to 7 of 8 between runs of the same text.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
