@@ -19,7 +19,7 @@ critics that have never seen the video before.
 
 The builder runs the loop and fixes the findings. It does not judge them away. For each
 critic in `video.json` `"critics"` (default: the first seven below; a decision video adds
-`critic-decision`), plus any the person added in `local/skills/`, it starts a **new** agent:
+`critic-decision`; a video that shows code, output or captures adds `critic-grounding`), plus any the person added in `local/skills/`, it starts a **new** agent:
 
 - **Claude Code:** the Agent tool with a fresh general-purpose agent, never a fork (a fork
   inherits the builder's context, and with it the builder's bias). Sonnet is enough for most
@@ -43,6 +43,7 @@ finding first, then fix.
 | `critic-visuals` | Legibility, contrast, layout, composition, every frame finished |
 | `critic-consistency` | Same terms, names, look and conventions from start to end |
 | `critic-engagement` | Whether the intended viewer would keep watching; design made for that persona |
+| `critic-grounding` | For a video that shows code, output or captures: each is genuine, from the named commit |
 | `critic-decision` | For a decision video: the call is stated, options priced, one recommended with why |
 
 ## The brief

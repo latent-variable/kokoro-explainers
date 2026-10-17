@@ -57,6 +57,9 @@ checks against, so a claim that is not in it does not go in the video.
   `gh release view <tag> -R <owner>/<repo>`, `gh api repos/<owner>/<repo>/compare/<old>...<new>`,
   the project's `CHANGELOG.md` at the new tag.
 - **The claims the video will make**, one line each, with the link that supports it.
+- **Where each shown asset came from**: for every code excerpt, command, output or capture
+  on screen, the commit and the command or file it was taken from (`critic-grounding` checks
+  it). Copy it from the source; never retype it.
 - **What you left out and why**, so a critic can tell an omission from an oversight.
 
 A release explainer picks what a developer must know, in this order: breaking changes and

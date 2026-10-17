@@ -92,6 +92,7 @@ Agents make these videos through skills in `skills/` (`npm install` links them i
 | `critic-visuals` | Legibility, contrast, layout, every frame finished |
 | `critic-consistency` | Same names, terms and look from start to end |
 | `critic-engagement` | Whether the intended viewer would keep watching, and the design is made for them |
+| `critic-grounding` | For a video that shows code, output or captures: whether each is genuine and from the named commit |
 | `critic-decision` | For a decision video: whether a person who watches once can make the call |
 
 A decision video adds `critic-decision`: the call is stated, every option has its gain and its cost, one is recommended with the reason, and doing nothing is accounted for.
@@ -141,7 +142,7 @@ bin/make.mjs       all of the above, plus lint
 bin/new.mjs        a new video folder from template/
 bin/review.mjs     the evidence critics judge: packet.md and frames
 bin/doctor.mjs     what this machine is missing
-skills/            explainer-video, critic-loop, tailor and the eight critics
+skills/            explainer-video, critic-loop, tailor, the development skills and the nine critics
 kit/shell.html     the page every video shares: canvas, captions, audio
 kit/kit.js         the timeline every video shares
 template/          the starting point for a new video

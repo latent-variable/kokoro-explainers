@@ -29,10 +29,18 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Skill | Load it to |
 |---|---|
+| `repo-context` | Get oriented before changing this repo: shape, commands, traps, how to validate |
+| `change-context` | Understand a change (diff, PR, release): why, before and after, breaking, risk |
+| `code-context` | Understand any code base: purpose, functional and non-functional requirements, API behaviour, evidenced and with unknowns listed |
+| `explain-concept` | Plan a video: viewer, outcome, one idea per scene, the picture for each |
+| `decision-brief` | Hand a decision to a fresh explainer: options, costs, pick, exact commit |
+| `narration-writing` | Write a script for the ear: pace, numbers, pronunciation |
+| `glossary` | One name per concept, across script, captions and scenes |
+| `explain-handoff` | Return a finished video with its status, next step and open questions |
 | `explainer-video` | Make or update a video. You are the builder |
 | `critic-loop` | Judge a video with fresh critics, fix, repeat until they pass; add a new critic |
 | `tailor` | Record how one person wants their explainers, in `local/` |
-| `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision` | Be one critic, when the loop assigns you |
+| `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision`, `critic-grounding` | Be one critic, when the loop assigns you |
 
 ## What is expected
 
