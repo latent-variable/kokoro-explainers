@@ -15,16 +15,18 @@ Development, not video-making: to make a video, load `explainer-video`. To under
 to the point of changing the code safely. It points at the sources of truth instead of
 restating them, because a copy goes stale and the code does not.
 
-## Read, in this order
+## Where the truth is
 
-1. `AGENTS.md`: what the project is, where things are, what is expected, the traps. The
-   traps are the point; each one cost someone time.
-2. `README.md`: the short human story. The `data-cue` and `video.json` reference, the commands and the layout are in `AGENTS.md`.
-3. `.agents/memory/MEMORY.md` when it exists (gitignored project memory).
-4. `git log --oneline -15`: what changed lately and why. Commit subjects here are
-   `type: summary (#PR)`.
-5. The files you will touch, then their neighbours. `bin/` is about 640 lines in total:
-   read the step you change and the one before and after it.
+You know your own way of reading a repo; these are the sources worth reaching for before you change code.
+
+- `AGENTS.md`: what the project is, where things are, what is expected, the traps. The
+  traps are the point; each one cost someone time.
+- `README.md`: the short human story. The `data-cue` and `video.json` reference, the commands and the layout are in `AGENTS.md`.
+- `.agents/memory/MEMORY.md` when it exists (gitignored project memory).
+- `git log --oneline -15`: what changed lately and why. Commit subjects here are
+  `type: summary (#PR)`.
+- The files you will touch and their neighbours. `bin/` is about 640 lines in total:
+  the step you change and the ones around it are what matter.
 
 ## The shape
 

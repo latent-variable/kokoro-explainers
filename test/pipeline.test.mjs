@@ -1067,7 +1067,7 @@ test("extract-excerpts: the text a viewer sees, without highlight spans or entit
 </span>…
   return "ok";
 }</pre>
-  <div class="ss-code"><div>nested</div> line two</div>
+  <div class="ss-code"><div>nested</div> line two &rarr; end</div>
 </section>`;
   writeFileSync(join(dir, "scenes.html"), html);
   const out = join(dir, "out");
@@ -1077,7 +1077,7 @@ test("extract-excerpts: the text a viewer sees, without highlight spans or entit
   assert.equal(list.length, 2);
   assert.deepEqual([list[0].scene, list[0].source, list[0].ranges], ["03-batching", "src/ledger.mjs", "2-3,5-5"]);
   assert.equal(readFileSync(list[0].file, "utf8"), 'export function f(a, b) {\n  if (a >= b) { return a && b; }\n…\n  return "ok";\n}');
-  assert.equal(readFileSync(list[1].file, "utf8"), "nested line two");
+  assert.equal(readFileSync(list[1].file, "utf8"), "nested line two \u2192 end", "&rarr; is the arrow the viewer sees, not ->");
   assert.match(list[0].check, /check-excerpt\.mjs .* --ranges 2-3,5-5/);
   // no code shown: exit 1; bad usage: exit 2
   writeFileSync(join(dir, "none.html"), "<section data-scene=\"01\"><p>hi</p></section>");

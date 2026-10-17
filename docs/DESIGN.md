@@ -5,6 +5,25 @@ the same change (`AGENTS.md`, *Docs that stay current*). Requirements are in
 [PRD.md](PRD.md). Add decisions at the end of the log; do not rewrite a past one, supersede it
 with a new entry that names it. Dates are absolute.
 
+## Keeping these files current
+
+The rule itself is in `AGENTS.md`; the detail that does not need to be in every agent's context is here.
+
+- A new decision is a new entry at the end of the log: number, date, decision, why, what it
+  costs. Never rewrite a past entry; supersede it with a new one that names it.
+- A requirement keeps its ID. Move its status (done, in progress, planned, open) rather than
+  deleting it.
+- Behaviour lines name the file they come from, so they can be checked. Verify a line before
+  you write it: read the code or run it.
+- Ground a decision in evidence: a file, a measurement, a finding in `skills/REVIEW.md`, or a
+  source you read. What you do not know goes in the PRD's open questions, not in a guess.
+- `npm test` fails if either file is missing or empty, if `AGENTS.md` loses its *Docs that stay current* heading, if a skill
+  is missing from the skills table or the PRD, if a critic is missing from `docs/assets/critics.svg`, if
+  a number the docs quote (skills, characters of descriptions, longest `SKILL.md`, tests, critics) is not
+  the tree's, or, in CI on a pull request, if code, skills, the plugin, CI, `package.json` or the README
+  changed and the docs got no real change (whitespace and the `Last reviewed` date do not count) and no
+  `docs: no change - <reason>`. It makes a stale number loud, not a stale claim: read the docs you touch.
+
 ## How it fits together
 
 ```
