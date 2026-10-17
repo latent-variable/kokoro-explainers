@@ -162,6 +162,9 @@ Save each one as `<video dir>/review/round-<n>/<critic>.json`.
 
 ## The loop
 
+0. Make the copy of the code at the pin a critic will check (`git archive <sha> <dir> | tar -x -C <tmp>`, or
+   the faithful clone in `evidence-standard`) and give its path in the brief; a critic never creates it. If
+   you cannot start critics, hand back not ready with each `not run` (`explain-handoff`).
 1. Run the plan's critics. Read every finding.
 2. Fix every finding at or above the plan's `until`: with `major`, every blocking finding
    and every objective major. A subjective major gets one pass: fix it or decline it with a

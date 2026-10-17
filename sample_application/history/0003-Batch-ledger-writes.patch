@@ -1,4 +1,4 @@
-From 7bc674a3b021e99b0cb64a006a5682981151bc7f Mon Sep 17 00:00:00 2001
+From c01791881132805d939e41446d38954331171e97 Mon Sep 17 00:00:00 2001
 From: agent-throughput <agent-throughput@example.invalid>
 Date: Thu, 15 Oct 2026 11:00:00 -0700
 Subject: [PATCH 3/5] Batch ledger writes

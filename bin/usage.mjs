@@ -15,9 +15,10 @@ const projects = process.env.CLAUDE_PROJECTS_DIR || join(homedir(), ".claude", "
 // One agent's transcript: sum usage per API call (a call can span several lines).
 export function readTranscript(file) {
   const calls = new Map();
-  let first = null, last = null, model = null;
+  let first = null, last = null, model = null, bad = 0;
   for (const line of readFileSync(file, "utf8").split("\n")) {
-    let d; try { d = JSON.parse(line); } catch { continue; }
+    if (!line.trim()) continue;
+    let d; try { d = JSON.parse(line); } catch { bad++; continue; }
     if (d.timestamp) { first ??= d.timestamp; last = d.timestamp; }
     const u = d.message?.usage;
     if (d.type !== "assistant" || !u) continue;
@@ -26,7 +27,7 @@ export function readTranscript(file) {
     const prev = calls.get(id);
     if (!prev || (u.output_tokens || 0) >= prev.output_tokens) calls.set(id, u);
   }
-  const t = { calls: calls.size, input: 0, output: 0, cacheWrite: 0, cacheRead: 0, peakContext: 0, lastContext: 0, model, first, last };
+  const t = { bad, calls: calls.size, input: 0, output: 0, cacheWrite: 0, cacheRead: 0, peakContext: 0, lastContext: 0, model, first, last };
   for (const u of calls.values()) {
     const ctx = (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0);
     t.input += u.input_tokens || 0; t.output += u.output_tokens || 0;
@@ -50,13 +51,20 @@ export function readSession(file) {
 }
 
 export function findSession(arg, repo = REPO) {
-  if (arg && existsSync(resolve(arg))) return resolve(arg);
+  // a path to a transcript file is used as it is; anything else is a session id prefix
+  if (arg && existsSync(resolve(arg)) && statSync(resolve(arg)).isFile()) return resolve(arg);
   const dir = join(projects, resolve(repo).replace(/[^A-Za-z0-9]/g, "-"));
-  if (!existsSync(dir)) throw new Error(`no transcripts at ${dir}`);
+  if (!existsSync(dir)) throw new Error(`no transcripts at ${dir} (set CLAUDE_PROJECTS_DIR, or pass a transcript file)`);
   const all = readdirSync(dir).filter((f) => f.endsWith(".jsonl")).map((f) => join(dir, f));
-  const hit = arg ? all.find((f) => basename(f).startsWith(arg)) : all.sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs)[0];
-  if (!hit) throw new Error(arg ? `no session starting ${arg} in ${dir}` : `no sessions in ${dir}`);
-  return hit;
+  if (arg) {
+    const hits = all.filter((f) => basename(f).startsWith(arg));
+    if (hits.length > 1) throw new Error(`"${arg}" matches ${hits.length} sessions: ${hits.map((f) => basename(f, ".jsonl")).join(", ")}`);
+    if (!hits.length) throw new Error(`no session starting ${arg} in ${dir}`);
+    return hits[0];
+  }
+  const newest = all.sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs)[0];
+  if (!newest) throw new Error(`no sessions in ${dir}`);
+  return newest;
 }
 
 const k = (n) => (n >= 1e6 ? (n / 1e6).toFixed(2) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "k" : String(n));
@@ -67,8 +75,16 @@ let entry = false;
 try { entry = process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)); } catch { entry = false; }
 if (entry) {
   const args = process.argv.slice(2), json = args.includes("--json");
-  const file = findSession(args.find((a) => !a.startsWith("--")));
-  const agents = readSession(file);
+  const unknown = args.filter((a) => a.startsWith("--") && a !== "--json");
+  if (unknown.length) { console.error(`unknown option ${unknown[0]}; usage: node bin/usage.mjs [session id | transcript file] [--json]`); process.exit(2); }
+  let file, agents;
+  try {
+    file = findSession(args.find((a) => !a.startsWith("--")));
+    agents = readSession(file);
+  } catch (e) { console.error(`error: ${e.message}`); process.exit(2); }
+  const bad = agents.reduce((n, a) => n + (a.bad || 0), 0);
+  if (bad) console.error(`warning: ${bad} line(s) in the transcript(s) could not be read; the figures may undercount`);
+  if (agents.every((a) => a.calls === 0)) console.error("warning: no usage records found in this transcript");
   const total = agents.reduce((s, a) => ({ calls: s.calls + a.calls, input: s.input + a.input, output: s.output + a.output, cacheWrite: s.cacheWrite + a.cacheWrite, cacheRead: s.cacheRead + a.cacheRead }), { calls: 0, input: 0, output: 0, cacheWrite: 0, cacheRead: 0 });
   if (json) { console.log(JSON.stringify({ session: basename(file, ".jsonl"), agents, total }, null, 2)); process.exit(0); }
   console.log(`session ${basename(file, ".jsonl")}`);

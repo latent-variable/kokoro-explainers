@@ -73,7 +73,10 @@ malformed inputs to check (`evidence-standard`) and mark each outcome `[ran]` or
 "not run". Trace which layer an error handler or a check lives in before you claim it applies
 everywhere: a blueprint handler does not see routing errors; a form check does not guard an API.
 Compare each validation rule across every entry point (a rule in a form but not in the API or the
-model is a bypass), and name the handler layer for each error status (`evidence-standard`).
+model is a bypass), and name the handler layer for each error status (`evidence-standard`). For every value
+that is compared or combined across modules (a spend against a budget, a count against a limit), name
+each side's unit or type and the line that states it: two values that look alike and differ in unit are
+where defects between correct-looking changes hide.
 Also list what does **not** happen (a push, a notification, a cache, a fan-out), each as an
 `absent:` line, and say which test covers each traced path or that none does.
 

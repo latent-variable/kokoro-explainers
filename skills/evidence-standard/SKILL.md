@@ -10,8 +10,10 @@ description: >
 # Evidence standard
 
 One place for the rules the context, brief and critic skills share, so they cannot drift. The scripts
-named here sit in `scripts/` next to this file (`${CLAUDE_SKILL_DIR}/scripts/` when this skill is
-invoked): `sandbox-run.sh`, `capture.mjs`, `verify-vendored.sh`.
+named here are `sandbox-run.sh`, `capture.mjs` and `verify-vendored.sh`, in `${CLAUDE_SKILL_DIR}/scripts/`
+(from the repo root: `skills/evidence-standard/scripts/`). Always call them by that full path: a call made after
+`cd <copy>` has no relative `scripts/` to find, and the working directory in an installed plugin is the
+user's repo.
 
 ## Tag every line
 
@@ -63,14 +65,16 @@ State once, in a **Scope** header, what you read, at what pin, what you did not 
 ran anything. Then cite against it.
 
 - **Committed code**: the full SHA (`git rev-parse HEAD`). A branch name moves; it is not a pin.
-- **Vendored code**: two labelled pins. The repo's HEAD, which `path:line` cites resolve against
+- **Vendored code** (a directory whose `SOURCE.md` names an upstream commit or tree hash): two labelled pins. The repo's HEAD, which `path:line` cites resolve against
   (`git show HEAD:<path>`), and the upstream SHA from its `SOURCE.md`. "Unmodified" is `[stated]`
-  until `sh scripts/verify-vendored.sh <dir> <upstream tree hash>` prints `MATCH` (read-only; it also
+  until `sh "${CLAUDE_SKILL_DIR}/scripts/verify-vendored.sh" <dir> <upstream tree hash>` prints `MATCH` (read-only; it also
   fails on edits and on untracked files). It checks the repo it runs in, so run it before deleting
   `.git` from a copy; it does not verify an archive copy. Never pin vendored code to the repo's HEAD alone.
 - **Uncommitted code**: a patch or a content hash (`git hash-object`, or a hash of a tar) beside the
   context. A local branch only if the person asks. Do not push.
 - **A change**: `Base: <sha>  Head: <sha>  Merge-base: <sha>  Commits: <git rev-list --reverse base..head>`.
+  A history that exists only as patches or a replay script inside the host repo (a synthetic one) has two
+  pins: the host repo's HEAD, which the patches and notes resolve against, and the replayed repo's SHAs.
   Re-run `git rev-parse` before you finish; if the head moved, redo it. Write `${sha}:path`, not
   `$sha:path`: zsh reads the colon as a modifier.
 
@@ -88,23 +92,25 @@ Run only inside this envelope and record it as `[ran]`. Otherwise the claim stay
    worktree add` writes into the source repo's `.git`; use it only on a repo you own. Never run in the
    target's own tree or by switching the user's checked-out branch. In the copy, delete `.env*`,
    `.flaskenv` and any other dotfile the code reads for configuration, `.git`, and local databases; the
-   app may load them even under a scrubbed environment. For a change, a copy at base and a copy at head,
+   app may load them even under a scrubbed environment. If you cannot delete files (a hook may forbid it),
+   use `git archive`: it has no `.git` and no untracked dotfiles to begin with. For a change, a copy at base and a copy at head,
    and the base's test files copied into the head copy (`git show ${base}:<path> > <copy>/<path>`).
 2. **`cd "<copy>" || exit 1` before anything that writes.** A relative path that runs after a failed
    `cd` writes into the real repo; this happened in testing. (`stop` is not a command.)
-3. **Run through `sh scripts/sandbox-run.sh <copy> <command>`.** It starts from an empty environment,
+3. **Run through `sh "${CLAUDE_SKILL_DIR}/scripts/sandbox-run.sh" <copy> <command>`.** It starts from an empty environment,
    sets `HOME` and `TMPDIR` inside the copy, denies the network, confines file writes to the copy, denies
    the clipboard and preference daemons (`pbcopy`, `defaults write`), denies reading `~/.ssh`, `~/.aws`,
    `~/.gnupg`, `~/.kube`, `~/.docker`, `~/.claude`, `~/.config`, the keychains and token files, and denies
    `open` and `osascript`. It refuses `$HOME`, `/` and a directory holding a `.git`. Pass the copy's root;
-   run inside a subdirectory with `sh -c 'cd <subdir> && ...'`. It adds `.sandbox-home` and `.sandbox-tmp`,
+   run inside a subdirectory, or with a shell glob, through `sh -c 'cd <subdir> && ...'`; `node --test test/`
+   needs the glob form (`test/*.test.mjs`) on Node 22. It adds `.sandbox-home` and `.sandbox-tmp`,
    which are not part of the pin. Tested on macOS (`sandbox-exec`); on any other system it refuses rather
    than run unsandboxed (Linux: `bwrap --unshare-net` is the likely tool and is untested here). Known
    limits: other reads are not confined, any daemon not listed is reachable, BSD `mktemp` with no template
    ignores `TMPDIR` and fails, and it is not a defence against hostile code. Point every service URL the
    code reads (database, cache, queue, mail, search) at a temp or dead value too: defaults such as `redis://`
    name a developer's real local service.
-4. **Record a run you will show as a capture:** `node scripts/capture.mjs record <copy> <capture file> --
+4. **Record a run you will show as a capture:** `node "${CLAUDE_SKILL_DIR}/scripts/capture.mjs" record <copy> <capture file> --
    <command>` (set `PIN` to the commit). It writes the header (command, dir, pin, date, exit), a line
    holding only `---`, the raw stdout and stderr, and `<capture file>.sha256`, the SHA-256 of the whole
    file. `capture.mjs verify <capture file>` recomputes it. Keep captures somewhere gitignored
@@ -130,7 +136,8 @@ hand-back (`explain-handoff`).
 
 Name the output root: this repo's checkout, or an absolute scratch directory outside the code base you
 read. Never inside that code base ("the directory you read"), and never in its `.git` without the
-person's consent. In this repo: `videos/<name>/` for its own code and `sample_application/`; `local/`
+person's consent. In this repo: `videos/<name>/` for its own code and a video about `sample_application/` (the directory
+read is the sample, and `videos/` is outside it); `local/`
 (gitignored here, and only here) for any other code base, any private or in-progress work, and every
 decision video and brief. In another repo, a path under that repo is only for something the person
 asked to keep there; otherwise use the scratch directory. Anything that may reach a public repo has

@@ -28,9 +28,10 @@ can be hard to hear. Write for the ear, then check it against the clock.
   put its `data-cue` on that word. If the sentence has the word twice, say `word#2` or split
   the sentence.
 - **Say what the viewer needs, not what the code says.** Do not read symbols, paths, flags or long
-  identifiers aloud; say what they mean and show the literal on screen. Name any file or function you
-  speak by an alias recorded in the glossary ("the models file" is ambiguous when two folders each
-  have a `routes.py`: say which). When two names sound alike (`follower_id`, `followed_id`) or one
+  identifiers aloud; say what they mean and show the literal on screen. Whatever you say that differs from a code
+  name is an alias, recorded in the glossary with its literal on screen at the same cue ("the budget check"
+  for `withinBudget`; where the viewer must find it, tie the two in one sentence; "the models file" is
+  ambiguous when two folders each have a `routes.py`: say which). When two names sound alike (`follower_id`, `followed_id`) or one
   name covers two things, write the alias **in the script itself**, so voice, captions and cue timing
   agree, and show the literal on screen at the same cue. Captions are built from the script, so a
   caption shows the alias and the screen shows the literal: that is expected, and the critics are

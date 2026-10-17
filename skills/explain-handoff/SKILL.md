@@ -28,8 +28,8 @@ For: <the viewer, and what they can do after>
 In short: <two or three lines>
 Next: <the action the viewer should take>
 Recommendation: <decision video: the option and why. The agent working on this picks B because ...>
-Overruled claims the pick's reason depended on: <the brief's `Pick rests on` IDs that are contradicted, partly or not checked, or none>
-Brief vs code: <every brief claim ID appears once: confirmed ..; contradicted ..; partly ..; not checked ..; costs added ..; options added or dropped ..>
+Overruled claims the pick's reason depended on: <the brief's `Pick rests on` IDs that are contradicted, partly or not checked, plus any added cost (`X`) or contradiction that bears on the recommended option, or none>
+Brief vs code: <every brief claim ID (`C`) appears once: confirmed ..; contradicted ..; partly ..; not checked ..; then what you added, by `X` ID: costs ..; options added or dropped ..; brief faults ..>
 Checked: <every required critic: passed | not run | declined | removed from video.json by <who>, with the REVIEW.md path and round>
 Unsure: <open questions from sources.md; assumptions and "by when" claims not checked; what you did not read or run>
 Read at: repo HEAD <sha> / upstream <sha | none> / patch or hash <h | none>   Run: <yes | no>   Sources: <sources.md path>   Stored: <path; "not committed" for local/>
@@ -52,7 +52,8 @@ The paths in `Draft` and `Sources` must exist. Leave out In short and Recommenda
 mark them provisional. The brief-versus-code findings are often the most useful thing a waiting agent
 can get early. The explainer does not judge whether the pick "still holds": that is the working agent's call. The
 `Overruled` line is mechanical: the intersection of the brief's `Pick rests on` with the claims that are
-contradicted, partly confirmed or not checked.
+contradicted, partly confirmed or not checked, plus every `X` item that touches the recommended option.
+The brief numbers its own clauses, so a reason that carries no ID is itself a brief fault to report.
 
 ## The bar
 

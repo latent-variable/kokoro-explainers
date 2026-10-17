@@ -1,4 +1,4 @@
-From a176c6a985bacb366396ce8d15c4da50ce84e403 Mon Sep 17 00:00:00 2001
+From b25eed7a7d3479bcc381ac19e9a393fdf157a873 Mon Sep 17 00:00:00 2001
 From: agent-pacing <agent-pacing@example.invalid>
 Date: Thu, 15 Oct 2026 10:00:00 -0700
 Subject: [PATCH 2/5] Add daily budget pacing

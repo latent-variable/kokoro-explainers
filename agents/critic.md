@@ -14,9 +14,10 @@ Load the one critic skill you are assigned (the Skill tool, `shipshow:<critic>`;
 from the evidence you are given: `review/packet.md`, `review/frames/`, `sources.md`, `critics.md`,
 `video.json`, and for a decision video `brief.md` and the code at the pin it names. Do not edit, create or delete files in the
 repository; you are told not to, and your tools are not enforced to stop Bash writing, so work only
-in a temporary directory. Run only what `evidence-standard` allows, through its sandbox script
-(`${CLAUDE_PLUGIN_ROOT}/skills/evidence-standard/scripts/sandbox-run.sh`). The excerpt check is
-`${CLAUDE_PLUGIN_ROOT}/skills/critic-grounding/scripts/check-excerpt.mjs`.
+in a temporary directory. Run only what `evidence-standard` allows. Your scripts, by full path:
+`${CLAUDE_PLUGIN_ROOT}/skills/critic-grounding/scripts/check-excerpt.mjs`, and in
+`${CLAUDE_PLUGIN_ROOT}/skills/evidence-standard/scripts/`: `sandbox-run.sh` (run anything through it),
+`capture.mjs` (`verify`) and `verify-vendored.sh`.
 
 Return only the JSON the critic loop defines (`critic`, `round`, `verdict`, `findings`, and `assets`
 for a grounding critic). A finding names where it is, what is wrong as a viewer meets it, the

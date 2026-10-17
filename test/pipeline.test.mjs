@@ -286,7 +286,10 @@ test("the docs rule holds: both docs have content, every skill is listed, every 
     assert.ok(docs[f].length > 2000, `${f} is nearly empty`);
     assert.ok(agents.includes(f), `AGENTS.md does not name ${f}`);
   }
-  assert.match(docs["docs/PRD.md"], /^Last reviewed: \d{4}-\d{2}-\d{2}/m, "docs/PRD.md has no 'Last reviewed' date");
+  const reviewed = docs["docs/PRD.md"].match(/^Last reviewed: (\d{4}-\d{2}-\d{2})/m);
+  assert.ok(reviewed, "docs/PRD.md has no 'Last reviewed' date");
+  const lastEdit = spawnSync("git", ["log", "-1", "--format=%cs", "--", "docs/PRD.md"], { cwd: REPO, encoding: "utf8" }).stdout.trim();
+  if (lastEdit) assert.ok(reviewed[1] >= lastEdit, `docs/PRD.md was last changed ${lastEdit} but says "Last reviewed: ${reviewed[1]}": bump the date when you review it`);
   const { names, critics, chars, longest, tests, word } = treeFacts();
   const rows = agents.split("\n").filter((l) => l.startsWith("|"));
   const inTable = (n) => rows.some((l) => l.includes("`" + n + "`"));
@@ -294,13 +297,14 @@ test("the docs rule holds: both docs have content, every skill is listed, every 
   assert.deepEqual(names.filter((n) => !docs["docs/PRD.md"].includes(n)), [], "skills missing from docs/PRD.md");
   const svg = read("docs/assets/critics.svg").toLowerCase();
   assert.deepEqual(critics.filter((c) => !svg.includes(`>${c.slice(7)}<`)), [], "critics missing from docs/assets/critics.svg");
-  // the numbers the docs quote must be the tree's numbers
+  // the numbers the docs quote must be the tree's numbers, as whole numbers ("longest 142" does not satisfy "1420")
+  const has = (doc, phrase) => new RegExp(`(?<!\\d)(?<!\\d,)(?<!\\d\\.)${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\d[\d,]*/g, (n) => n)}(?!,?\\d)(?!\\.\\d)`).test(doc);
   const budget = `${names.length} skills, ${chars.toLocaleString("en-US")} characters`;
-  assert.ok(docs["docs/PRD.md"].includes(budget), `docs/PRD.md (N6) must say "${budget}"`);
-  assert.ok(docs["docs/DESIGN.md"].includes(budget), `docs/DESIGN.md (D13) must say "${budget}"`);
-  assert.ok(docs["docs/PRD.md"].includes(`longest SKILL.md ${longest} lines`), `docs/PRD.md (N6) must say "longest SKILL.md ${longest} lines"`);
-  assert.ok(docs["docs/DESIGN.md"].includes(`longest ${longest}`), `docs/DESIGN.md (D13) must say "longest ${longest}"`);
-  assert.ok(docs["docs/PRD.md"].includes(`${tests} tests`), `docs/PRD.md (N9) must say "${tests} tests"`);
+  assert.ok(has(docs["docs/PRD.md"], budget), `docs/PRD.md (N6) must say "${budget}"`);
+  assert.ok(has(docs["docs/DESIGN.md"], budget), `docs/DESIGN.md (D13) must say "${budget}"`);
+  assert.ok(has(docs["docs/PRD.md"], `longest SKILL.md ${longest} lines`), `docs/PRD.md (N6) must say "longest SKILL.md ${longest} lines"`);
+  assert.ok(has(docs["docs/DESIGN.md"], `longest ${longest}`), `docs/DESIGN.md (D13) must say "longest ${longest}"`);
+  assert.ok(has(docs["docs/PRD.md"], `${tests} tests`), `docs/PRD.md (N9) must say "${tests} tests"`);
   assert.ok(docs["docs/PRD.md"].includes(`Nine critics`.replace("Nine", word[0].toUpperCase() + word.slice(1))), `docs/PRD.md (F12) must say "${word[0].toUpperCase() + word.slice(1)} critics"`);
   assert.ok(docs["docs/DESIGN.md"].includes(`${word} critics`) || docs["docs/DESIGN.md"].includes(`${word[0].toUpperCase() + word.slice(1)} critics`), `docs/DESIGN.md must say "${word} critics"`);
   const plugin = JSON.parse(read(".claude-plugin/plugin.json"));
@@ -312,21 +316,31 @@ test("the docs rule holds: both docs have content, every skill is listed, every 
   assert.match(plugin.description, new RegExp(`${word} adversarial critics`), "plugin.json's description must name the critic count");
 });
 
-test("in CI, a change to code, skills, the plugin, CI or the README comes with a real docs change, or 'docs: no change - <reason>'", { skip: !process.env.GITHUB_BASE_REF && "only checked on a pull request in CI" }, () => {
+test("in CI, a change to code, skills, tests, the plugin, CI, dependencies, the sample or the agent docs comes with a substantive docs change, or 'docs: no change - <reason>'", { skip: !process.env.GITHUB_BASE_REF && "only checked on a pull request in CI" }, () => {
   const base = `origin/${process.env.GITHUB_BASE_REF}`;
   const git = (...a) => spawnSync("git", a, { cwd: REPO, encoding: "utf8" });
   const diff = git("diff", "--name-only", `${base}...HEAD`);
   if (diff.status !== 0) return; // no history to compare against: do not fail on a shallow checkout
   const files = diff.stdout.split("\n").filter(Boolean);
-  const touchedCode = files.some((f) => /^(bin|kit|template|skills|agents|\.claude-plugin|\.github)\//.test(f) || f === "package.json" || f === "README.md");
-  if (!touchedCode) return;
-  // a docs change counts only if some changed line is not whitespace and not the "Last reviewed" date
+  const watched = (f) => /^(bin|kit|template|skills|agents|themes|test|sample_application|\.claude-plugin|\.github)\//.test(f) || ["package.json", "package-lock.json", "requirements.txt", "README.md", "AGENTS.md", "CLAUDE.md"].includes(f);
+  if (!files.some(watched)) return;
+  // a docs change counts when it adds at least 40 characters of text: a punctuation edit or a date bump does not
   const hunk = git("diff", "-U0", `${base}...HEAD`, "--", "docs/PRD.md", "docs/DESIGN.md").stdout;
-  const real = hunk.split("\n").filter((l) => /^[+-][^+-]/.test(l) && l.slice(1).trim() && !/^[+-]Last reviewed:/.test(l));
-  const last = git("log", "-1", "--format=%B").stdout;
-  const override = `${process.env.PR_TITLE || ""}\n${last}`.match(/^docs: no change - \S.{9,}/m);
-  assert.ok(real.length > 0 || override, "code, skills or plugin files changed but docs/PRD.md and docs/DESIGN.md got no real change (whitespace and the 'Last reviewed' date do not count). Update them, or put 'docs: no change - <reason, at least ten characters>' in the PR title or the last commit message");
+  const added = hunk.split("\n").filter((l) => /^\+[^+]/.test(l) && !/^\+Last reviewed:/.test(l)).map((l) => l.slice(1).replace(/\s+/g, "")).join("");
+  const lastCommit = git("log", "--no-merges", "-1", "--format=%B").stdout; // the checkout is a merge commit, which says nothing
+  const override = `${process.env.PR_TITLE || ""}\n${lastCommit}`.match(/^docs: no change - \S.{9,}/m);
+  assert.ok(added.length >= 40 || override, "code, skills, tests, the plugin or the agent docs changed but docs/PRD.md and docs/DESIGN.md got no substantive change (under 40 characters of added text, or only the 'Last reviewed' date). Update them, or put 'docs: no change - <reason, at least ten characters>' in the PR title or the last non-merge commit message");
 });
+
+test("the plugin validates with exactly one warning, the deliberate missing version", { skip: spawnSync("claude", ["--version"], { encoding: "utf8" }).status !== 0 && "the claude CLI is not on PATH" }, () => {
+  const r = spawnSync("claude", ["plugin", "validate", ".", "--json"], { cwd: REPO, encoding: "utf8" });
+  const report = JSON.parse(r.stdout);
+  assert.equal(report.success, true, r.stdout.slice(0, 400));
+  const messages = [...(report.manifest?.warnings || []), ...(report.manifest?.errors || [])].map((w) => String(w.message || w));
+  assert.deepEqual(messages.filter((m) => !/version/i.test(m)), [], "the plugin has a warning other than the missing version");
+  assert.equal(report.manifest?.errors?.length || 0, 0);
+});
+
 
 test("check-excerpt: real lines pass, and every way of faking them fails", async () => {
   const { checkExcerpt, parseRanges } = await import("../skills/critic-grounding/scripts/excerpt.mjs");
@@ -517,7 +531,7 @@ test("capture: record keeps the command's own exit code, verify catches a change
   const rec = node("record", dir, file, "--", "sh", "-c", "echo hello; echo oops >&2; exit 3");
   assert.equal(rec.status, 0, rec.stderr);
   const text = readFileSync(file, "utf8");
-  assert.match(text, /^# command: sh -c echo hello; echo oops >&2; exit 3$/m);
+  assert.match(text, /^# command: \["sh","-c","echo hello; echo oops >&2; exit 3"\]$/m);
   assert.match(text, /^# exit: 3$/m); // 3 is also a code the sandbox script uses; it must not be mistaken for a refusal
   assert.ok(text.endsWith("\n---\nhello\noops\n"));
   assert.equal(node("verify", file).status, 0);
@@ -532,6 +546,24 @@ test("capture: record keeps the command's own exit code, verify catches a change
   writeFileSync(join(dir, "nosidecar.txt"), text);
   assert.equal(node("verify", join(dir, "nosidecar.txt")).status, 2);
   assert.equal(node("record", process.env.HOME, join(dir, "x.txt"), "--", "true").status, 2);
+  // a newline in an argument cannot forge a header line, the delimiter or an exit status; quoting is kept
+  const f2 = join(dir, "c2.txt");
+  assert.equal(node("record", dir, f2, "--", "sh", "-c", 'echo "$0"', "x\n# exit: 0\n---\nfake").status, 0);
+  const t2 = readFileSync(f2, "utf8");
+  assert.equal(t2.split("\n").filter((l) => l === "---").length, 2, "one delimiter from the recorder, one echoed by the command's output");
+  assert.match(t2.split("\n---\n")[0], /^# command: \[.*x\\n# exit: 0\\n---\\nfake"\]$/m);
+  assert.match(t2, /^# exit: 0$/m);
+  assert.match(t2.split("\n---\n")[0].split("\n").filter((l) => l.startsWith("# exit")).join("|"), /^# exit: 0$/, "exactly one exit line in the header");
+  // an uppercase sidecar is the same hash; a directory or an unreadable sidecar is exit 2 with JSON, not a stack trace
+  writeFileSync(`${f2}.sha256`, readFileSync(`${f2}.sha256`, "utf8").toUpperCase());
+  assert.equal(node("verify", f2).status, 0);
+  mkdirSync(join(dir, "adir"));
+  writeFileSync(join(dir, "adir.sha256"), "x");
+  const onDir = node("verify", join(dir, "adir"));
+  assert.equal(onDir.status, 2);
+  assert.doesNotThrow(() => JSON.parse(onDir.stdout));
+  // nothing is run when the output directory is missing
+  assert.equal(node("record", dir, join(dir, "nope", "c.txt"), "--", "true").status, 2);
 });
 
 test("the sample application behaves as its README says: its tests pass, one known failure is a todo, and the scenario overspends", () => {
@@ -541,7 +573,7 @@ test("the sample application behaves as its README says: its tests pass, one kno
   const tests = spawnSync(process.execPath, ["--test", ...readdirSync(join(sample, "test")).filter((f) => f.endsWith(".test.mjs")).map((f) => join("test", f))], { cwd: sample, encoding: "utf8", env });
   assert.equal(tests.status, 0, tests.stdout.slice(-600));
   assert.match(tests.stdout, /^# fail 0$/m);
-  assert.match(tests.stdout, /^# todo 1$/m, "the budget contract test should be the one known failure, marked todo");
+  assert.match(tests.stdout, /^# todo 2$/m, "the budget contract test should hold the two known failures (EUR under, JPY over), marked todo");
   const scenario = spawnSync(process.execPath, [join("scenario", "overspend.mjs")], { cwd: sample, encoding: "utf8" });
   assert.equal(scenario.status, 0, scenario.stderr);
   const percent = Object.fromEntries(scenario.stdout.split("\n").filter((l) => /\d+%/.test(l)).map((l) => [l.slice(0, 3).trim(), +l.match(/(\d+)%/)[1]]));
@@ -566,4 +598,154 @@ test("critic plan: a video that shows code gets critic-grounding on the floor, w
   const vj = JSON.parse(readFileSync(join(dir, "video.json"), "utf8"));
   writeFileSync(join(dir, "video.json"), JSON.stringify({ ...vj, shows_code: false }));
   assert.equal(config(dir, []).shows_code, false, "an explicit value in video.json wins");
+});
+
+test("sandbox-run: a directory name cannot widen the profile, the real home stays protected without $HOME, and system roots are refused", { skip: process.platform !== "darwin" && "sandbox-exec is macOS only" }, () => {
+  const sbx = join(REPO, "skills", "evidence-standard", "scripts", "sandbox-run.sh");
+  const base = mkdtempSync(join(tmpdir(), "kx-sbx-"));
+  const other = mkdtempSync(join(tmpdir(), "kx-sbx-other-"));
+  // a name with a quote and a closing parenthesis, built to splice a second permission into a string profile
+  const tricky = join(base, `t") (subpath "${other}`);
+  mkdirSync(tricky, { recursive: true }); // the injected text holds a path, so this is nested directories
+  const run = (dir, env, ...cmd) => spawnSync(sbx, [dir, ...cmd], { encoding: "utf8", env: env || process.env });
+  assert.equal(run(tricky, null, "sh", "-c", "echo inside > f && cat f").stdout.trim(), "inside", "a directory with quotes in its name still works");
+  assert.notEqual(run(tricky, null, "sh", "-c", `echo X > '${join(other, "inj")}'`).status, 0);
+  assert.equal(existsSync(join(other, "inj")), false, "a quote in the directory name added write access elsewhere");
+  // the credential denials follow the user database, not $HOME
+  const noHome = { ...process.env }; delete noHome.HOME;
+  const ssh = join(spawnSync("sh", ["-c", `dscl . -read /Users/$(id -un) NFSHomeDirectory | awk '{print $2}'`], { encoding: "utf8" }).stdout.trim(), ".ssh");
+  if (existsSync(ssh)) assert.notEqual(run(base, noHome, "ls", ssh).status, 0, "~/.ssh was readable with HOME unset");
+  for (const dir of ["/", "/tmp", "/Users", dirname(process.env.HOME), process.env.HOME]) assert.equal(spawnSync(sbx, [dir, "true"], { encoding: "utf8" }).status, 2, `${dir} must be refused`);
+  assert.notEqual(run(base, null, "/usr/bin/open").status, 0, "open ran inside the sandbox");
+  assert.equal(run(base, null, "env").stdout.split("\n").filter((l) => /^(PATH|LANG|HOME|TMPDIR)=/.test(l)).length >= 3, true);
+  assert.equal(run(base, null, "env").stdout.split("\n").filter(Boolean).every((l) => /^(PATH|LANG|HOME|TMPDIR|PWD|SHLVL|_|OLDPWD|__CF_USER_TEXT_ENCODING)=/.test(l)), true, "the environment held more than PATH, LANG, HOME and TMPDIR");
+});
+
+test("verify-vendored: ignored files, assume-unchanged and skip-worktree are DIRTY, bad arguments are exit 2, and it does not touch .git/index", () => {
+  const script = join(REPO, "skills", "evidence-standard", "scripts", "verify-vendored.sh");
+  const git = (cwd, ...a) => spawnSync("git", ["-c", "user.name=t", "-c", "user.email=t@example.invalid", ...a], { cwd, encoding: "utf8" });
+  const repo = mkdtempSync(join(tmpdir(), "kx-vend2-"));
+  git(repo, "init", "-q");
+  mkdirSync(join(repo, "v"));
+  writeFileSync(join(repo, "v", "a.py"), "a = 1\n");
+  writeFileSync(join(repo, "v", "b.py"), "b = 2\n");
+  writeFileSync(join(repo, ".gitignore"), "*.pyc\n");
+  git(repo, "add", "-A");
+  git(repo, "commit", "-q", "-m", "vendor v");
+  const tree = git(repo, "rev-parse", "HEAD:v").stdout.trim();
+  const run = (...a) => spawnSync("sh", [script, ...a], { cwd: repo, encoding: "utf8" });
+  assert.equal(run("v", tree).status, 0);
+  assert.equal(run("v", tree.toUpperCase()).status, 0, "an uppercase hash is the same hash");
+  // bad usage is exit 2, never a git error code or a false MISMATCH
+  for (const args of [["-v", tree], [":x", tree], ["", tree], ["v", "abc"], ["v", "zz".repeat(20)], ["v"]]) assert.equal(run(...args).status, 2, JSON.stringify(args));
+  // the index is not rewritten by a check
+  const idx = join(repo, ".git", "index");
+  writeFileSync(join(repo, "v", "a.py"), "a = 1\n"); // same bytes, newer mtime: a plain `git status` would refresh the index
+  const before = readFileSync(idx);
+  assert.equal(run("v", tree).status, 0);
+  assert.deepEqual(readFileSync(idx), before, "the check rewrote .git/index");
+  // a gitignored file added inside the directory
+  writeFileSync(join(repo, "v", "x.pyc"), "junk");
+  assert.match(run("v", tree).stdout, /DIRTY/);
+  assert.equal(run("v", tree).status, 1);
+  writeFileSync(join(repo, "v", "x.pyc"), "junk"); // still there; remove it by overwriting nothing: check the next cases in a fresh repo
+  const repo2 = mkdtempSync(join(tmpdir(), "kx-vend3-"));
+  git(repo2, "init", "-q");
+  mkdirSync(join(repo2, "v"));
+  writeFileSync(join(repo2, "v", "a.py"), "a = 1\n");
+  git(repo2, "add", "-A");
+  git(repo2, "commit", "-q", "-m", "vendor v");
+  const tree2 = git(repo2, "rev-parse", "HEAD:v").stdout.trim();
+  const run2 = (...a) => spawnSync("sh", [script, ...a], { cwd: repo2, encoding: "utf8" });
+  assert.equal(run2("v", tree2).status, 0);
+  writeFileSync(join(repo2, "v", "a.py"), "a = 999\n");
+  git(repo2, "update-index", "--assume-unchanged", "v/a.py"); // an edit git has been told to ignore
+  assert.match(run2("v", tree2).stdout, /hidden from git/);
+  assert.equal(run2("v", tree2).status, 1);
+  git(repo2, "update-index", "--no-assume-unchanged", "v/a.py");
+  git(repo2, "update-index", "--skip-worktree", "v/a.py");
+  assert.equal(run2("v", tree2).status, 1);
+});
+
+test("measure and usage: non-Latin text is read, prose with parentheses is prose, bad input is refused, and an ambiguous session is an error", async () => {
+  const { readingSeconds, stillStretches, words, looksLikeCode } = await import("../bin/measure.mjs");
+  assert.ok(readingSeconds("这是一个很长的中文句子需要读很久") > 3, "CJK text must take time to read");
+  assert.equal(words("Привет мир как дела сегодня"), 5);
+  assert.equal(looksLikeCode("It (usually) works fine for everyone here today"), false);
+  assert.equal(looksLikeCode("Author.followers.of_type(Follower)"), true);
+  assert.equal(looksLikeCode("withinBudget(campaign, ledger)"), true);
+  assert.throws(() => stillStretches({ start: 0, duration: Number.NaN }, [3]), /finite start and a positive duration/);
+  assert.throws(() => stillStretches({ start: 0, duration: 5 }, ["3"]), /finite/);
+  // usage: a folder named like a session id is not a transcript, an ambiguous prefix lists its candidates, flags are checked
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  const proj = join(root, REPO.replace(/[^A-Za-z0-9]/g, "-"));
+  mkdirSync(proj);
+  const line = JSON.stringify({ type: "assistant", timestamp: "2026-10-17T10:00:00Z", message: { id: "m1", model: "m", usage: { input_tokens: 1, output_tokens: 2, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 } } });
+  writeFileSync(join(proj, "aaa111.jsonl"), line + "\n{bad\n");
+  writeFileSync(join(proj, "aaa222.jsonl"), line + "\n");
+  mkdirSync(join(root, "aaa111")); // a folder in the cwd with the same name as a session prefix
+  const run = (...a) => spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs"), ...a], { cwd: root, encoding: "utf8", env: { ...process.env, CLAUDE_PROJECTS_DIR: root } });
+  const ambiguous = run("aaa");
+  assert.equal(ambiguous.status, 2);
+  assert.match(ambiguous.stderr, /matches 2 sessions: aaa111, aaa222/);
+  const bad = run("aaa111", "--json");
+  assert.equal(bad.status, 0, bad.stderr);
+  assert.match(bad.stderr, /1 line\(s\).*could not be read/);
+  assert.equal(JSON.parse(bad.stdout).total.calls, 1);
+  assert.equal(run("aaa222", "--jsno").status, 2);
+  assert.equal(run("zzz").status, 2);
+  assert.equal(spawnSync(process.execPath, [join(REPO, "bin", "usage.mjs")], { cwd: root, encoding: "utf8", env: { ...process.env, CLAUDE_PROJECTS_DIR: join(root, "nowhere") } }).status, 2);
+});
+
+test("check-excerpt CLI: a missing value for --ranges or --marker is an error, never a silent success", () => {
+  const script = join(REPO, "skills", "critic-grounding", "scripts", "check-excerpt.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "kx-test-"));
+  writeFileSync(join(dir, "s.py"), "a = 1\nb = 2\n");
+  writeFileSync(join(dir, "e.txt"), "a = 1\n");
+  const run = (...a) => spawnSync(process.execPath, [script, ...a], { encoding: "utf8" });
+  assert.equal(run(join(dir, "s.py"), join(dir, "e.txt"), "--ranges", "1-1", "--marker").status, 2);
+  assert.equal(run(join(dir, "s.py"), join(dir, "e.txt"), "--ranges").status, 2);
+  assert.equal(run(join(dir, "s.py"), join(dir, "e.txt"), "--ranges", "--marker", "x").status, 2);
+  // (A closed stdout cannot be detected: Node reopens it as /dev/null at startup. "No output is not a pass" is
+  // the rule in skills/critic-grounding, and this test does not pretend otherwise.)
+});
+
+test("the packet's reading queue: simultaneous text waits its turn, so three paragraphs on one cue are late, not each fine", async () => {
+  const { readingQueue, readingSeconds } = await import("../bin/measure.mjs");
+  const para = Array.from({ length: 22 }, (_, i) => `word${i}`).join(" "); // 22 words, about 6.7 s alone
+  const one = readingSeconds(para);
+  assert.ok(Math.abs(one - 22 / 3.3) < 0.01);
+  const q = readingQueue([{ at: 51.2, text: para }, { at: 51.2, text: para }, { at: 51.2, text: para }], 60); // 8.8 s before the scene ends
+  assert.equal(q.filter((x) => x.late).length, 2, "the second and third cannot be finished before the scene ends");
+  assert.ok(Math.abs(q[2].readBy - (51.2 + 3 * one)) < 0.01);
+  assert.equal(readingQueue([{ at: 10, text: para }, { at: 30, text: para }], 60).some((x) => x.late), false, "spread out, each is read in time");
+  assert.equal(readingQueue([{ at: 59, text: para }], 60)[0].late, true, "a single paragraph too close to the end is late");
+  assert.throws(() => readingQueue([], Number.NaN), /finite/);
+});
+
+test("every script a skill names exists at the path the skill gives, and no skill uses a bare relative scripts/ path", () => {
+  const skills = readdirSync(join(REPO, "skills")).filter((n) => existsSync(join(REPO, "skills", n, "SKILL.md")));
+  const files = [...skills.map((n) => ["skills/" + n + "/SKILL.md", n]), ["agents/critic.md", null]];
+  let found = 0;
+  for (const [rel, own] of files) {
+    let text = readFileSync(join(REPO, rel), "utf8");
+    const resolveTo = [];
+    // the three forms that resolve: this skill's own, a sibling's, and from the repo root or an installed plugin root
+    text = text.replace(/\$\{CLAUDE_SKILL_DIR\}\/\.\.\/([\w-]+)\/scripts\/([\w.-]+)/g, (_, skill, f) => (resolveTo.push(["skills", skill, "scripts", f]), ""));
+    text = text.replace(/\$\{CLAUDE_SKILL_DIR\}\/scripts\/([\w.-]+)/g, (_, f) => (resolveTo.push(["skills", own || "?", "scripts", f]), ""));
+    text = text.replace(/(?:\$\{CLAUDE_PLUGIN_ROOT\}\/)?skills\/([\w-]+)\/scripts\/([\w.-]+)/g, (_, skill, f) => (resolveTo.push(["skills", skill, "scripts", f]), ""));
+    for (const parts of resolveTo) { found++; assert.ok(existsSync(join(REPO, ...parts)), `${rel} names ${parts.join("/")}, which does not exist`); }
+    const bare = text.match(/(?<![\w/.-])scripts\/[\w.-]+\.(?:mjs|sh)\b/g);
+    assert.equal(bare, null, `${rel} calls ${bare && bare[0]} by a bare relative path; use \${CLAUDE_SKILL_DIR}/scripts/... or the full skills/<name>/scripts/... path`);
+  }
+  assert.ok(found >= 6, "the check found almost no script paths: has the path form changed?");
+});
+
+test("python: 3.10 to 3.13 are supported, 3.14 and 3.9 are not, and setup picks the first supported interpreter", async () => {
+  const { supportedPython, pickPython } = await import("../bin/python.mjs");
+  for (const v of ["3.10", "3.11", "3.12", "3.13", "3.13.1"]) assert.equal(supportedPython(v), true, v);
+  for (const v of ["3.9", "3.14", "3.14.0", "4.0", "2.7", "", "x"]) assert.equal(supportedPython(v), false, v);
+  const versions = { "python3.13": null, "python3.12": "3.12", python3: "3.14" };
+  assert.deepEqual(pickPython(["python3.13", "python3.12", "python3"], (c) => versions[c] ?? null), { cmd: "python3.12", version: "3.12" });
+  assert.equal(pickPython(["python3"], () => "3.14"), null, "a machine with only 3.14 gets no interpreter, not a failing install");
 });

@@ -38,7 +38,7 @@ Needs Claude Code 2.1.275 or later, and works once this is on `main`. Three skil
 
 ## Set it up
 
-Node.js 22+, Python 3.10+ and ffmpeg (tested on macOS):
+Node.js 22+, Python 3.10 to 3.13 (not newer: the pinned Kokoro does not support it) and ffmpeg (tested on macOS):
 
 ```
 npm install
@@ -71,4 +71,4 @@ Every video takes a theme: colours, fonts, layout and motion in one folder. Ship
 
 Everything about the code, the skills and the commands is in [AGENTS.md](AGENTS.md).
 
-<sub>Made for the amperium.ai hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>
+<sub>Made for a hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>

@@ -6,7 +6,7 @@ Modelled on `videos/how-it-works/REVIEW.md`. Dates are 2026-10-17. Design conseq
 
 ## Method
 
-Five fresh adversarial agents per round, none seeing an earlier round or each other. Each loaded
+Five or six fresh adversarial agents per round (one per skill group, plus a docs and plugin auditor from round 3), none seeing an earlier round or each other. Each loaded
 one skill group, applied it to `sample_application/` (microblog) and then attacked it: verified its
 own claims against the code, planted defects of its own and checked whether the skill's method
 caught them, and looked for ambiguity, contradiction, unsafe steps and ways to follow the skill
@@ -28,14 +28,15 @@ paths, the sentence splitter, the `or stop` recipe, the unportable `\b` in `git 
 
 Findings are blocking / major / minor.
 
-| Skill group | Round 1 | Round 2 | Round 3 | Round 4 |
-|---|---|---|---|---|
-| `code-context`, `evidence-standard` | 0 / 6 / 7 | 0 / 7 / 5 | 0 / 6 / 4 | 0 / 2 / 9 (34 commands run, 4 wrong) |
-| `change-context` | 1 / 4 / 3 | 0 / 3 / 4 | 0 / 1 / 6 | 0 / 1 / 6 (11 traps, 11 caught, 10 by the method) |
-| `explain-concept`, `narration-writing`, `glossary` | 0 / 7 / 4 | 0 / 2 / 5 | 0 / 1 / 8 | 0 / 3 / 6 |
-| `decision-brief`, `explain-handoff`, `critic-decision` | 0 / 6 / 4 | 0 / 6 / 6 | 0 / 7 / 6 | 0 / 4 / 5 (7 planted, 6 surfaced by the text) |
-| `critic-grounding` and its scripts | 2 / 6 / 1 | 0 / 7 / 3 | 1 / 10 / 4 | 0 / 2 / 6 (8 planted, 7 caught by the text; 2 script false passes, 2 sandbox escapes) |
-| docs and plugin packaging | | | 0 / 5 / 9 | 0 / 3 / 11 (94 statements checked, 13 wrong) |
+| Skill group | Round 1 | Round 2 | Round 3 | Round 4 | Round 5 |
+|---|---|---|---|---|---|
+| `code-context`, `evidence-standard` | 0 / 6 / 7 | 0 / 7 / 5 | 0 / 6 / 4 | 0 / 2 / 9 (34 commands run, 4 wrong) | see below |
+| `change-context` | 1 / 4 / 3 | 0 / 3 / 4 | 0 / 1 / 6 | 0 / 1 / 6 (11 traps, 11 caught, 10 by the method) | see below |
+| the three understanding skills used to find the sample's bug (new in round 5) | | | | | 0 / 0 / 5: found all 5 planted problems, 3 by the skills' text |
+| `explain-concept`, `narration-writing`, `glossary` | 0 / 7 / 4 | 0 / 2 / 5 | 0 / 1 / 8 | 0 / 3 / 6 | 0 / 5 / 6 (a deliberately bad video built from the skills) |
+| `decision-brief`, `explain-handoff`, `critic-decision` | 0 / 6 / 4 | 0 / 6 / 6 | 0 / 7 / 6 | 0 / 4 / 5 (6 of 7 surfaced) | 0 / 4 / 4 (6 planted, 4 surfaced) |
+| `critic-grounding` and the scripts | 2 / 6 / 1 | 0 / 7 / 3 | 1 / 10 / 4 | 0 / 2 / 6 | 0 / 2 / 7 (3 false passes, 1 silent exit, 2 sandbox escapes) |
+| docs and plugin packaging | | | 0 / 5 / 9 | 0 / 3 / 11 | 0 / 6 / 9 (96 statements checked, 19 wrong; 66 commands run, 3 wrong) |
 
 Planted defects, by what caught them: round 1 caught none of the behaviour changes or wrong claims by the
 skills' method; round 2 the `change-context` traps and 3 of 4 grounding defects; round 3 all 10
@@ -120,23 +121,53 @@ followed.
 | The docs rule was met in letter by a trailing space or an override on any commit; counts and the critic wording were stale; the "works in any repo" claim was overstated | Structural, count-driven rule (DESIGN D22); only three skills claimed standalone; critic described as "told, not enforced"; figures refreshed |
 | The sample (microblog) needed an install the safe-running rules forbid, and did not speak to the company | Replaced by a dependency-free ad-spend pacer built by three agents in one day (DESIGN D21) |
 
-## Still open after round 4
+## What round 5 found, and what changed
 
-- Linux sandbox commands (`bwrap --unshare-net`) are not tested here; the sandbox script refuses off macOS.
-- `critic-grounding`'s rendered-frames check has no mechanical method: it is "viewed", and the excerpt
-  check does not see absolute indentation, tabs against spaces, a hidden marker, or an unmarked cut at the
-  start or end.
-- The sandbox is not a defence against hostile code: other reads are not confined, and any daemon not
-  listed in its profile is reachable.
-- The plugin ships every tracked file and has a `bin/` and a `package.json` at its root; whether an install
-  runs `npm install` is untested (DESIGN D13).
-- Decision skills still depend on prose a builder can satisfy without evidence; only the claim-ID
-  reconciliation is a candidate for a script.
-- The kit cannot highlight a line, draw an arrow, or exit and swap an element; there is no per-scene
-  speed, so an outlier scene is fixed by merging or splitting sentences.
-- The red-team rounds ran against microblog; the new sample (`pacer-demo`) has had only the round-5 check below.
-- No Opus judge (the workspace is Sonnet-only).
+Round 5 added the test that matters most for the demo: an agent playing the developer, who has to find the
+sample's bug using only the skills. It found all five planted problems (the units mismatch, the stale spend
+from batching, the tests edited to fit, the false claims in the hand-off notes, the missing contract test); the
+skills' text led it to three (the false claims, the edited tests, the missing test), and it found the units
+mismatch and the stale read by reading the code. The skills make claims checkable; they did not find the bug,
+and the demo should not say they did. Its verdict on relatability: "Strong. An adtech developer will recognise
+a USD ledger against a local-currency budget, minor-unit confusion (yen has no cents), a batched counter that
+gates a spend decision, and the passing-tests-by-parameter edit."
 
-## Round 5
+| Finding | Change |
+|---|---|
+| **Merge with main:** `origin/main` had moved four commits (speed as a multiplier, themes, review plans, importance) and reversed this branch's pace guidance | Merged; adopted main's design; withdrew D15 and the 0.8 start; dropped the critics list from the template; `critic-grounding` added to the plan's floor (`shows_code`); D24 |
+| `sandbox-run.sh`: a directory name with a quote spliced into the profile string and added write access anywhere | Paths are `-D` parameters; real home from the user database; roots and ancestors of home refused; `screencapture` and `say` denied; tests with the exact attack |
+| `verify-vendored.sh` said MATCH with a gitignored file, or an `--assume-unchanged` or `--skip-worktree` edit; it rewrote `.git/index` and leaked temp directories | Those cases are DIRTY; argument validation; `--no-optional-locks`; cleanup trap; tests |
+| `capture.mjs`: a forged capture verified; an uppercase sidecar or a directory crashed or misreported; a newline in a command forged header lines | JSON-encoded header with the argv array; case-insensitive; exit 2 with JSON; the message says integrity only; tests |
+| `check-excerpt`: a dangling `--marker` was accepted; `measure`: non-Latin text read as zero; `usage`: ambiguous prefixes picked silently | Fixed with tests. A closed stdout cannot be detected (Node reopens it as `/dev/null`): recorded as a limit |
+| The packet's reading check was per element, so three simultaneous paragraphs each passed | A reading queue and a `needs` and `flag` column; tests; run end to end |
+| Script paths did not resolve from where the text put the reader; `critic-grounding` named a script in another skill's folder | Every call is a full `${CLAUDE_SKILL_DIR}` path; a test checks that every named script exists and that no skill uses a bare `scripts/` path |
+| Nothing required a video to answer its question or to test a claim of cause | `explain-concept`, `critic-clarity` (blocking) and `critic-accuracy`: the first scene poses the question and the last answers it; a "because" needs a `[ran]` counterfactual or an `[inferred]` tag |
+| The two-pin rule keyed on any `SOURCE.md`, which the original sample has too | Keyed on a `SOURCE.md` that names an upstream commit or tree hash |
+| The alias rules contradicted each other and cost about 40 words | One rule: any spoken name that differs from the code is an alias, recorded and with its literal on screen; a tie sentence only where the viewer must find the thing in code |
+| A builder met the excerpt rules only when the critic enforced them | A "Showing code" block in `explainer-video` (indentation, marker, gutter not in the text node, ranges, check it yourself first) |
+| Decision skills: the overruled line trusted the brief's author; a thin cost was not a fault; a narrow search confirmed a wrong absence; the output root contradicted itself | Every clause numbered, `C`, `S`, `X` namespaces; a thin cost is a brief fault; absence searches re-run case-insensitively under several names; "the code base" defined; who copies the brief; a hand-back `not ready` when critics cannot be started; an overflow rule |
+| The sample's story was too tidy; its base commit named yen before currency existed; its contract test checked only one side | Two independent bugs said so; history rebuilt with a clean base; the contract test runs the campaigns together and checks both sides (USD passes, EUR and JPY are `todo`); every number in `ANSWER.md` reproduced |
+| `python3` is 3.14 on a current machine and the pinned Kokoro needs 3.10 to 3.13 | `bin/setup.mjs` picks a supported interpreter; `doctor` checks it (D26) |
+| The docs rule was still met in letter (a punctuation edit, an override on a merge commit, substring counts) | 40 characters of added text; override from the PR title or the last non-merge commit; whole-number counts; the PRD review date must not predate its last edit; wider trigger list; `claude plugin validate` asserted in a test |
+| D13 contradicted the README on which skills are standalone; stale counts; the README footer named a domain that does not resolve | Aligned on three standalone skills; counts read from the tree; footer neutral |
 
-Pending: fresh agents on the round-four fixes and on the new sample.
+## Still open after round 5
+
+- Not fixed from round 5: `build.mjs` warns on every ambiguous cue word even when the first match is intended (six warnings on a clean
+  four-scene video); some numbers and rules still repeat across skills; a builder cannot yet measure the 0.8-era pace question
+  (main's design replaced it, but Kokoro is not installed here, so no new audio has been measured).
+- Linux sandbox commands (`bwrap --unshare-net`) are not tested; the script refuses off macOS.
+- `critic-grounding`'s rendered-frames check is "viewed"; the excerpt check does not see absolute indentation,
+  tabs against spaces, a hidden marker or an unmarked cut at either end.
+- The sandbox is not a defence against hostile code: other reads are not confined and any daemon not listed is reachable.
+- `capture.mjs` proves integrity, not provenance; only re-running does.
+- The plugin ships every tracked file, has a `bin/` and a `package.json` at its root, and was never installed on a
+  clean machine (D13).
+- The decision skills still rely on prose a builder can satisfy without evidence; the claim-ID reconciliation
+  is the candidate for a script.
+- The red-team rounds used Sonnet only (the workspace limits agents to it; six Opus agents were refused with
+  HTTP 429), so every judge shares the builder's model family.
+
+## Round 6
+
+Pending: fresh agents on the round-five fixes, the merge with main and the sample.

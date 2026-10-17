@@ -1,6 +1,7 @@
 name: ci
 on:
   pull_request:
+    types: [opened, synchronize, reopened, edited]   # edited: a PR title carries the docs override
   push:
     branches: [main]
 jobs:

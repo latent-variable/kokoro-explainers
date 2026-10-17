@@ -1,29 +1,29 @@
-From e4fb65a3b7fc4d498362b74b6cdab5a6c9108940 Mon Sep 17 00:00:00 2001
+From de06c43843286378de32ddaadf7fbb0008da9119 Mon Sep 17 00:00:00 2001
 From: agent-currency <agent-currency@example.invalid>
 Date: Thu, 15 Oct 2026 14:00:00 -0700
 Subject: [PATCH 4/5] Support EUR and JPY campaigns
 
 ---
- src/campaign.mjs     |  6 +++---
+ src/campaign.mjs     |  7 ++++---
  src/fx.mjs           | 19 +++++++++++++++++++
  src/report.mjs       | 12 ++++++++++++
  test/fx.test.mjs     | 14 ++++++++++++++
  test/report.test.mjs | 12 ++++++++++++
- 5 files changed, 60 insertions(+), 3 deletions(-)
+ 5 files changed, 61 insertions(+), 3 deletions(-)
  create mode 100644 src/fx.mjs
  create mode 100644 src/report.mjs
  create mode 100644 test/fx.test.mjs
  create mode 100644 test/report.test.mjs
 
 diff --git a/src/campaign.mjs b/src/campaign.mjs
-index 3af8a72..04e2bc0 100644
+index a9af2de..04e2bc0 100644
 --- a/src/campaign.mjs
 +++ b/src/campaign.mjs
-@@ -1,5 +1,5 @@
- // A campaign has a daily budget in the minor units of its own currency:
--// cents for USD, whole yen for JPY.
+@@ -1,4 +1,5 @@
+-// A campaign has a daily budget in cents.
 -export function campaign({ id, name, dailyBudget }) {
 -  return { id, name, dailyBudget };
++// A campaign has a daily budget in the minor units of its own currency:
 +// cents for USD and EUR, whole yen for JPY (yen has no minor unit).
 +export function campaign({ id, name, currency = "USD", dailyBudget }) {
 +  return { id, name, currency, dailyBudget };

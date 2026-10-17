@@ -7,14 +7,18 @@
 // Prints JSON { ok, segments, gaps, problems, warnings }.
 // Exit 0: every segment matches (read the gaps yourself). Exit 1: a segment does not match, or nothing was
 // checked. Exit 2: bad usage or input. This file always runs main(), so it cannot exit 0 without output.
-import { readFileSync } from "node:fs";
+import { readFileSync, writeSync } from "node:fs";
 import { checkExcerpt, parseRanges } from "./excerpt.mjs";
 
 function main(argv) {
   const args = [], opts = {};
   for (let i = 0; i < argv.length; i++) {
-    if (argv[i] === "--ranges") opts.ranges = argv[++i];
-    else if (argv[i] === "--marker") opts.marker = argv[++i];
+    if (argv[i] === "--ranges" || argv[i] === "--marker") {
+      const value = argv[i + 1];
+      if (value === undefined || value.startsWith("--")) { console.error(`${argv[i]} needs a value`); return 2; }
+      opts[argv[i].slice(2)] = value;
+      i++;
+    }
     else if (argv[i] === "--ascii-markers") opts.asciiMarkers = true;
     else if (argv[i].startsWith("--")) { console.error(`unknown option ${argv[i]}`); return 2; }
     else args.push(argv[i]);
@@ -30,7 +34,12 @@ function main(argv) {
     console.error(`error: ${e.message}`);
     return 2;
   }
-  console.log(JSON.stringify(r, null, 2));
+  try {
+    writeSync(1, JSON.stringify(r, null, 2) + "\n");
+  } catch (e) {
+    console.error(`error: could not write the result (${e.code || e.message})`); // for example stdout closed
+    return 2;
+  }
   return r.ok ? 0 : 1;
 }
 

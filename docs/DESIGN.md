@@ -129,7 +129,7 @@ pins users to it until someone bumps it, so it is omitted and the commit SHA ver
 with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
 namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
 every turn (measured: 22 skills, 7,869 characters, about 1,970 tokens), so descriptions stay short
-and SKILL.md under 500 lines (longest 198). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
+and SKILL.md under 500 lines (longest 201). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
 the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
 and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
 a plugin root is not loaded as context. A plugin runs with the user's privileges.
@@ -137,9 +137,9 @@ a plugin root is not loaded as context. A plugin runs with the user's privileges
 not to write. Bash can write, so it is told, not enforced; the sandbox script is the enforcement for
 anything it runs. `critic-loop` names `shipshow:critic` for Claude Code.
 **Known limits, not fixed.**
-- `source: "./"` copies every tracked file: 101 files, about 509 KB as of this commit (not checked by a
-  test), of which `skills/`, `agents/` and the manifests are about 127 KB. The rest (the sample app, videos, docs, tests, `package-lock.json`)
-  is dead weight in the user's plugin cache. A plugin in a subdirectory would fix it, but the skills,
+- `source: "./"` copies every tracked file (`git ls-files` counts them; about half a megabyte when this was
+  written, a fifth of it skills, agents and manifests; not checked by a test). The rest (the sample app, videos,
+  docs, tests, `package-lock.json`) is dead weight in the user's plugin cache. A plugin in a subdirectory would fix it, but the skills,
   `npm run skills` and this repo's conventions live at the root; that restructuring is deferred.
 - A `bin/` at a plugin root is the reserved executables directory: its files go on the Bash tool's
   `PATH`, and claude.ai and Cowork do not install a plugin that has one. Ours are non-executable,
@@ -148,12 +148,16 @@ anything it runs. `critic-loop` names `shipshow:critic` for Claude Code.
 - Installed in a clone of this repo, every skill loads twice (the plugin and `.claude/skills`).
 - Skills refer to each other by bare name (`critic-loop`); how that resolves under the
   `/shipshow:` namespace is untested.
-- Which skills work outside a clone: the understanding and brief skills (`code-context`,
-  `change-context`, `evidence-standard`, `decision-brief`, `explain-concept`, `glossary`,
-  `narration-writing`, `explain-handoff`) with caveats (they cite `AGENTS.md` and `local/`; `local/`
-  is gitignored only here, so they check and use `.git/info/exclude`). `explainer-video`, `critic-loop`,
-  the nine critics (they judge `review/packet.md`) and `tailor` need this repo cloned and set up.
-  `repo-context` is for this repo only.
+- Which skills work outside a clone: three. `code-context`, `change-context` and `evidence-standard` need
+  no repo files (running code needs macOS, for the sandbox). The rest produce an artifact only the pipeline
+  consumes (`decision-brief`, `explain-concept`, `glossary`, `narration-writing`, `explain-handoff`: a brief,
+  a plan, names, a script, a hand-back) or run or judge it (`explainer-video`, `critic-loop`, the nine
+  critics, `theme`, `tailor`), and need this repo cloned and set up. They also cite `AGENTS.md`. `local/` is
+  gitignored only here, so a skill that writes private material elsewhere first checks `git check-ignore
+  local/` and uses `.git/info/exclude` with the person's consent. `repo-context` is for this repo only.
+- `claude plugin validate .` passes with one warning, the missing version; that is weak evidence (a broken
+  skill front matter also only warns), so a test runs it when the CLI is present and asserts the warning is
+  the version and nothing else.
 - The root has a `package.json` and a lockfile, so an install may try to install Node dependencies into
   the plugin cache (the docs describe runtime dependencies; whether `devDependencies` such as
   `hyperframes` are installed is untested).
@@ -235,8 +239,8 @@ finds, not proof. `critic-loop` still recommends a stronger model for a public r
 account allows it".
 
 ### D21. The sample is a pacing service built by three agents in one day (2026-10-17; replaces D11)
-**Decision.** `sample_application/` is `pacer-demo`, a toy ad-spend pacer of about 150 lines of
-dependency-free Node, written for this demo and not Aperiam's code. Three agents each take one task: budget
+**Decision.** `sample_application/` is `pacer-demo`, a toy ad-spend pacer of about 80 lines of
+dependency-free Node (about 230 with its tests and scenario), written for this demo and not Aperiam's code. Three agents each take one task: budget
 pacing, batched ledger writes, and EUR and JPY campaigns. Each is correct for its task and each gets its
 tests green; the morning after, the same traffic gives a US campaign 111% of budget, a EUR one 93% and a
 yen one 181%, and no note says why. **Why.** The goal is a problem a developer who manages many agents would
@@ -256,20 +260,25 @@ the documented percentages, and the README table matches.
 
 ### D22. The docs rule is structural and count-driven (2026-10-17; replaces the first form of the docs test)
 **Decision.** `npm test` checks that both docs have content, that every skill is in the `AGENTS.md` table and
-the PRD, every critic is in `critics.svg`, the plugin names match, and that the numbers the docs quote (skills,
-characters of descriptions, longest `SKILL.md`, test count, the number of critics) are the tree's. In CI, a
-change to `bin/`, `kit/`, `template/`, `skills/`, `agents/`, `.claude-plugin/`, `.github/`, `package.json` or
-`README.md` needs a docs change with a real changed line (whitespace and the `Last reviewed` date do not count),
-or `docs: no change - <reason>` in the PR title or last commit. **Why.** The round-four auditor met the first
-form in letter while docs rotted: a trailing space satisfied it, an override on any commit passed, reversing a
-decision with its entry untouched passed. **Still not caught:** a docs change that is real but wrong; the rule
-makes a stale number loud, not a stale claim.
+the PRD, every critic is in `critics.svg`, the plugin names match, that the numbers the docs quote (skills,
+characters of descriptions, longest `SKILL.md`, test count, the number of critics) are the tree's as whole
+numbers, that the PRD's `Last reviewed` date is not older than its last edit, and that every script a skill names
+exists at the path it gives. In CI, a change to `bin/`, `kit/`, `template/`, `skills/`, `agents/`, `themes/`,
+`test/`, `sample_application/`, `.claude-plugin/`, `.github/`, `package.json`, the lockfile, `requirements.txt`,
+`README.md`, `AGENTS.md` or `CLAUDE.md` needs a docs change that adds at least 40 characters of text (a
+punctuation edit or the review date does not count), or `docs: no change - <reason>` in the PR title or the
+last non-merge commit (the CI checkout is a merge commit, which says nothing). **Why.** The round-four and
+round-five auditors met earlier forms in letter while docs rotted: a trailing space, a punctuation edit, an
+override on any commit, a substring match (`longest 142` satisfies `1420`), a reversed decision with its entry
+untouched. **Still not caught:** a docs change that is real but wrong, a reversed decision whose entry someone
+leaves true-sounding, and a PR title edit does not re-run CI unless the workflow listens for it. The rule makes
+a stale number loud, not a stale claim.
 
 ### D23. The packet measures stillness and counts code in tokens (2026-10-17)
 **Decision.** `bin/measure.mjs` holds the two measurements the review packet makes about on-screen time.
-Reading time for code counts identifier tokens (`Author.followers.of_type` is three) at 1.5 a second instead
-of words at 3.3, because a five-line query counted as 9 words passed the "short" check while taking about ten
-seconds to read; a new *Stillness* table gives each scene's longest stretch with nothing new on screen.
+Reading time for code counts identifier tokens (`Author.followers.of_type` is four: an underscore splits one)
+at 1.5 a second instead of words at 3.3, because a two-line query counted as 9 words passed the "short" check
+while taking about ten seconds to read; a new *Stillness* table gives each scene's longest stretch with nothing new on screen.
 `critic-pacing` holds the limit, so the number lives in one place.
 
 ### D24. Main's speed, themes and review plans are adopted (2026-10-17; supersedes D15)
@@ -285,13 +294,33 @@ list removes it, and `explain-handoff` takes the critic set from the plan instea
 template keeps `audience`, which two skills read. **Consequence.** The docs and `narration-writing` no longer
 say "start at 0.8"; the review packet prints the speed and the target.
 
+### D25. Round five hardened the scripts, and the reading check queues (2026-10-17)
+**Decision.** `sandbox-run.sh` passes paths as `sandbox-exec -D` parameters, so a directory name containing a
+quote can no longer add write permission (found: it wrote outside the scratch directory), takes the home
+directory from the user database, refuses system roots and ancestors of home, passes only PATH and LANG, and
+denies `screencapture` and `say`. `verify-vendored.sh` also fails on gitignored files and on
+`--assume-unchanged` or `--skip-worktree` edits, validates its arguments, runs `git --no-optional-locks` so it
+leaves `.git/index` alone, and cleans its temporary directory. `capture.mjs` JSON-encodes its header (the
+command as an argv array, so a newline cannot forge a header line or an exit status), compares hashes
+case-insensitively, exits 2 on unreadable input, and says `ok` is integrity, not provenance (an unkeyed hash
+can be forged; the critic still re-runs the command). The packet's reading check is a queue: a viewer reads in
+order, so text that lands together waits, and anything unreadable before its scene ends is `late`. **Known
+limit:** a closed stdout cannot be detected, because Node reopens it as `/dev/null` at startup; "no output is
+not a pass" is the rule.
+
+### D26. Setup picks a Python Kokoro supports (2026-10-17)
+**Decision.** `npm run setup` runs `bin/setup.mjs`, which takes the first of python3.13 to 3.10, then
+`python3`, that is in range; `doctor` checks the version. **Why.** The pinned `kokoro-onnx 0.6.1` requires
+Python 3.10 to 3.13, and `python3` is 3.14 on a current Homebrew machine, where pip refuses it (checked).
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
 
 **The pipeline** (`bin/`, `kit/`)
 - `voice` voices one sentence at a time and writes `timing.json`. A take is cached by its text,
-  voice and speed, so inserting a sentence re-voices every later take (about a second each).
+  voice and speed, so inserting a sentence re-voices every later sentence in that scene (numbering restarts per
+  scene; the cost per take has not been measured).
 - `build` writes `index.html` from `scenes.html` and the timing. It stops on a cue word its
   scene never says and warns when a bare cue word occurs more than once in its scene. A cue
   matches the start of a spoken word across the whole scene, so use `word#n` or a distinctive
@@ -308,8 +337,8 @@ What an agent or person observes. Each line is checkable against the cited file.
   the source; exit 1 on a mismatch, an empty excerpt or an
   ambiguous or wrong range; exit 2 on bad usage or input. It lists each gap with a preview and flags
   guards, branches, decorators and early exits.
-- `sandbox-run.sh <dir> <cmd>` runs with no network, writes confined to `<dir>`, the clipboard and
-  preference daemons denied, and credential folders unreadable; it refuses (exit 3) where it cannot sandbox
+- `sandbox-run.sh <dir> <cmd>` runs with no network, writes confined to `<dir>` (paths are profile parameters, not
+  text), the clipboard and preference daemons denied, and credential folders under the real home unreadable; it refuses (exit 3) where it cannot sandbox
   and exits 2 for `$HOME`, `/`, a directory holding `.git`, or bad usage.
 - `capture.mjs record <dir> <file> -- <cmd>` writes a header, a `---` line and the raw output plus a
   `.sha256` of the whole file, and keeps the command's own exit code; `verify` exits 0 matching, 1 altered,

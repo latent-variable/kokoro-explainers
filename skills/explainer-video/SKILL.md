@@ -26,8 +26,8 @@ skill). They tailor taste, never the truth bar.
 | **Feature** | Someone wants to know how a feature or system in a code base works | The code base | |
 | **Release** | A project ships and its developers need to know what changed | The release, changelog and pull requests | |
 
-**Where it lives** (`evidence-standard`). A video about this repo, a public sample vendored
-here, or one we mean to publish goes in `videos/`. A decision video, a private code base or
+**Where it lives** (`evidence-standard`). A video about this repo or the sample app (`sample_application/`, original code written for it),
+or one we mean to publish, goes in `videos/`. A decision video, a private code base or
 someone's work in progress goes in `local/videos/<name>`, which is never committed: this repo
 is public.
 
@@ -58,7 +58,8 @@ Write `sources.md` in the video's folder before any script. It is the ground tru
 checks against, so a claim that is not in it does not go in the video.
 
 - **The source of record**, linked: for a decision or feature video, file paths at the
-  commit you read; for a release, the release page, the tag range, the changelog, the pull
+  commit you read (two pins for a directory whose `SOURCE.md` names an upstream commit or tree hash; one
+  repo pin for original code, saying so); for a release, the release page, the tag range, the changelog, the pull
   requests, the docs. For a GitHub release:
   `gh release view <tag> -R <owner>/<repo>`, `gh api repos/<owner>/<repo>/compare/<old>...<new>`,
   the project's `CHANGELOG.md` at the new tag.
@@ -108,6 +109,22 @@ that gives this video its look. Each element arrives on the word that introduces
   measures it.
 - Text size and the caption area are `critic-visuals`' numbers; the packet and frames show
   whether you meet them.
+
+### Showing code
+
+The critic checks every excerpt with a script (`critic-grounding`), so build it to pass. Use the kit's
+`.ss-code` block and:
+
+- **Whole contiguous lines**, keeping each segment's original indentation relative to the other segments
+  (a dedent, or a line shown inside a block it is not in, fails). A uniform shift of the whole excerpt is fine.
+- **A marker line for each gap**: a line holding only `…` (not `...`, which is a real line in some languages),
+  and `sources.md` lists the lines each gap omits.
+- **The gutter is not text in the code node.** The file name and line numbers come from CSS or a `data-`
+  attribute, so that the text extracted from the node is only code; they must equal the file and range in
+  `sources.md`. Ranges run from the first to the last non-blank line of each segment.
+- **Check it yourself first:** copy the excerpt text out of `scenes.html`, extract the source from the pin
+  (`git show ${pin}:<path>`), and run `node "${CLAUDE_SKILL_DIR}/../critic-grounding/scripts/check-excerpt.mjs"
+  <source> <excerpt> --ranges <ranges>`. A `ok: true` and a gap list you have read is what the critic will see.
 
 ### Give it its own feel
 

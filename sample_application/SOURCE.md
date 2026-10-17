@@ -22,7 +22,8 @@ same day. `amperium.ai`, named in this repository's README, does not resolve.
 **Name and domain.** The person who asked for this demo says the firm is now at `amperiu.vc`. On 2026-10-17
 neither `amperiu.vc` nor `amperium.vc` resolved from the machine that fetched the pages, so the quotes
 above are from `aperiam.vc` and nothing here has been checked against the new address. The demo's code
-does not depend on the name.
+does not depend on the name. Whether `amperiu.vc` and `aperiam.vc` are the same firm is the person's
+identification, not something checked here.
 
 ## Verify the history
 

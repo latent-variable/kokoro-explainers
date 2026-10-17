@@ -36,6 +36,11 @@ know first, not by how the code is laid out or how the work happened. Each cut c
 omission from an oversight.
 
 - One idea per scene. A scene that needs "and also" is two.
+- **The first scene poses the question the viewer has, and the last scene answers it in a sentence**: the
+  question in the title or the brief. A video that is true on every line and never answers it has failed. A
+  claim of cause ("because", "the cause is") is `[ran]` where removing the cause changes the result, or it is
+  `[inferred]` and the open question is said: a hidden false premise ("the tests passed, so each change is
+  right") is a premise to test, not to repeat.
 - The first scene says what the video is about and why the viewer cares. A decision video
   states the call in a sentence they could answer.
 - **A worked example with concrete values comes before any general statement**, including in

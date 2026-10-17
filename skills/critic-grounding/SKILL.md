@@ -19,7 +19,8 @@ grounding".
 capture date, exit code), `review/packet.md` (the script, for spoken quotes), the cue table, the
 **rendered frames** (the text can be right and the pixels wrong), and the code itself at the pin: the
 brief or `sources.md` gives its path and SHA. Follow `evidence-standard` for pins and for running
-anything; its scripts are `scripts/` beside that skill.
+anything; its scripts are `${CLAUDE_SKILL_DIR}/../evidence-standard/scripts/` (`skills/evidence-standard/scripts/` from the
+repo root).
 
 ## Method
 
@@ -28,8 +29,8 @@ For each shown asset, check it yourself and record how:
 - **Code excerpt.** Extract the source from the pin, not from a working tree (`git show ${pin}:<path> >
   <tmp>`; for vendored code that is `git show HEAD:<path>`, plus `verify-vendored.sh` for "unmodified"),
   save the shown text to a file, and run `node "${CLAUDE_SKILL_DIR}/scripts/check-excerpt.mjs" <source>
-  <excerpt> --ranges <ranges from sources.md>` (if `${CLAUDE_SKILL_DIR}` shows unexpanded, the script is
-  `scripts/check-excerpt.mjs` beside this file). Exit 0 and `ok: true` means every segment between `…`
+  <excerpt> --ranges <ranges from sources.md>` (if `${CLAUDE_SKILL_DIR}` shows unexpanded, it is
+  `skills/critic-grounding/scripts/check-excerpt.mjs` from the repo root). Exit 0 and `ok: true` means every segment between `…`
   markers is consecutive lines of the file, in order, with the same text and relative indentation, at the
   stated lines, and that the segments sit at the same relative depth to one another as in the source. It
   catches a one-token change (`600` for `3600`), a splice of non-adjacent lines, a dedent, a statement
@@ -45,12 +46,14 @@ For each shown asset, check it yourself and record how:
 - **Command and output.** Re-run it with `evidence-standard`'s `sandbox-run.sh` and compare, exactly or
   after stripping what is nondeterministic (timestamps, ids, timings), saying which. A capture is a file
   made by `capture.mjs record` (header, a `---` line, the raw output) with a `.sha256` sidecar over the
-  whole file: run `node scripts/capture.mjs verify <capture>`. **A mismatch (exit 1) means the capture was
+  whole file: run `node "${CLAUDE_SKILL_DIR}/../evidence-standard/scripts/capture.mjs" verify <capture>`; `ok` means integrity only, not that the command ran. **A mismatch (exit 1) means the capture was
   altered: blocking.** No sidecar or no capture file (exit 2) is `unsupported`. A capture that cannot be
   re-run (dependencies absent, a service needed) is checked statically (counts of tests, names, paths,
   that the command exists) and is `unsupported`: a self-written capture proves nothing by itself.
-- **Pin.** For code under a directory with a `SOURCE.md`, `sources.md` must name both pins
-  (`evidence-standard`); a repo-HEAD pin alone is a major finding.
+- **Pin.** For code under a directory whose `SOURCE.md` names an upstream commit or tree hash,
+  `sources.md` must name both pins (`evidence-standard`); a repo-HEAD pin alone is a major finding.
+  Where `SOURCE.md` names none (original code kept in this repo), one repo pin is enough, and `sources.md`
+  says the directory is original code.
 - **Screenshot or recording.** Look at the frame (method `viewed`) and compare it with the capture and the
   code. A code asset that exists only as pixels, with no text node in `scenes.html` to extract, is
   `unsupported`. Map each frame to its asset id, so a stale frame after a cue is caught.

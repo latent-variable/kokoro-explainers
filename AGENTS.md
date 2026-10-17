@@ -20,7 +20,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Path | What |
 |---|---|
-| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the `critic` agent (read-only tools plus Skill, told not to write). Validate with `claude plugin validate .` (one expected warning: no `version`) |
+| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the `critic` agent (Read, Grep, Glob, Bash and Skill; told not to write, not enforced). Validate with `claude plugin validate .` (one expected warning: no `version`) |
 | `docs/PRD.md`, `docs/DESIGN.md` | The requirements, and the design decisions and behaviour. Kept current (*Docs that stay current*) |
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
@@ -99,7 +99,7 @@ of ten characters or more) in the PR title or the last commit message.
 
 ## Set up
 
-Node.js 22+, Python 3.10+ and ffmpeg; tested on macOS.
+Node.js 22+, Python 3.10 to 3.13 (`npm run setup` picks one; `doctor` checks it) and ffmpeg; tested on macOS.
 
 ```
 npm install                                                       # HyperFrames, GSAP; links skills into .claude/skills
@@ -199,7 +199,7 @@ HyperFrames renders the page frame by frame in headless Chrome and muxes in the 
 ## Layout
 
 ```
-bin/        voice, build, render, make, review, critics, new, doctor, link-skills, usage; lib.mjs is shared, measure.mjs holds the packet's two measurements
+bin/        voice, build, render, make, review, critics, new, doctor, setup, link-skills, usage; lib.mjs is shared, measure.mjs holds the packet's measurements, python.mjs the supported Python range
 kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.js (timeline, effects)
 themes/     shipshow and paper; each a theme.css of tokens, plus fonts and images
 skills/     the explainer and development skills, critic-loop, tailor, theme and the nine critics

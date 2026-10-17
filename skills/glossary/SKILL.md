@@ -33,18 +33,15 @@ script is cheaper than finding a conflict in round three; revise it when the pla
 - **One name per concept**, in narration, captions, on-screen labels, commands and file
   names. Listing the synonyms you will *not* use is what stops drift.
 - **One concept per name.** If a word names two things (a scene and a step), rename one.
-- **Use the source's name** for what the viewer will meet for real: a flag, a type, an endpoint.
-  Where that name cannot be heard unambiguously or means two things, record a **spoken alias**
-  in the entry and show the literal beside it on the same cue (`narration-writing`). One
-  source name, one concept. When the code overloads a name (`followers` is a table, a relationship
-  and an alias inside one query), the entry labels each meaning and the scene shows which line is
-  which, because a verbatim excerpt cannot be renamed. A spoken alias is followed, in a later scene,
-  by the literal being said or tied to it on screen. Every file or function named aloud has an alias
-  entry.
-- **Aliases are for sound-alike or ambiguous names only**, not for every identifier. Each alias is tied to
-  its literal by one spoken sentence ("the reader, which the code calls `follower_id`"), so the viewer
-  who opens the editor finds the name. An alias is a second spoken name for a concept the screen shows,
-  so the Terms entry lists it and a critic still checks that it means what the code means.
+- **Use the source's name** for what the viewer will meet for real: a flag, a type, an endpoint. **An alias
+  is any spoken name that differs from the code name**, and one rule governs it: it is recorded in the
+  Terms entry and the literal is on screen at the same cue (`narration-writing`). If the viewer must find
+  the thing in the code, one spoken sentence also ties the two ("the reader, which the code calls
+  `follower_id`"); for anything else the on-screen label at the cue is the tie. Alias a name only when it
+  cannot be heard unambiguously, means two things, or is too long to say. One source name, one concept.
+  When the code overloads a name (`followers` is a table, a relationship and an alias inside one query),
+  the entry labels each meaning and the scene shows which line is which, because a verbatim excerpt cannot
+  be renamed. A second spoken name for a concept is still checked: it must mean what the code means.
 - **A word the source lacks is a decision.** If the brief's own word ("timeline") is absent
   from the code, the glossary says so, the video's title and `video.json` use the real mechanism, and
   the one corrective mention of the missing word is exempt from the ban list.

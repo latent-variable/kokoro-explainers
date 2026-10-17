@@ -8,7 +8,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { BASE_WPM, HF, REPO, config, die, reviewPlan, round, run, videoDir } from "./lib.mjs";
-import { READ_CODE_TPS, READ_WPS, readingSeconds, stillStretches, words } from "./measure.mjs";
+import { READ_CODE_TPS, READ_WPS, readingQueue, readingSeconds, stillStretches, words } from "./measure.mjs";
 
 const SETTLE = 0.8;         // a still this long after a cue, once its entrance has finished
 
@@ -32,6 +32,7 @@ function elementText(i) {
   return inner.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&rarr;/g, "->").replace(/\s+/g, " ").trim();
 }
 
+const sceneEndOf = (id) => { const sc = timing.scenes.find((x) => x.id === id); return sc.start + sc.duration; };
 const sceneAt = (t) => timing.scenes.find((s) => t >= s.start && t < s.start + s.duration) || timing.scenes.at(-1);
 const sentenceAt = (t) => {
   const s = sceneAt(t);
@@ -86,11 +87,16 @@ for (const s of timing.scenes) {
   out.push("");
 }
 out.push("## Pauses", "", "Silence before each sentence, and after the last.", "", md(pauses.map((p) => [p.at, p.length, p.between]), ["at (s)", "seconds", "between"]), "");
-out.push("## Cues", "", `Each element that arrives on a word: when it lands, what is being said then, and how long it stays up. Reading time assumes ${READ_WPS} words a second for prose and ${READ_CODE_TPS} identifier tokens a second for code; "short" means it leaves before a viewer could read it while listening.`, "");
+out.push("## Cues", "", `Each element that arrives on a word: when it lands, what is being said then, and how long it stays up. Reading time assumes ${READ_WPS} words a second for prose and ${READ_CODE_TPS} identifier tokens a second for code; "short" means it leaves before a viewer could read it while listening, and "late" means that, reading in order, the viewer cannot finish it before its scene ends.`, "");
+// Reading is queued: a viewer reads in order, so text that lands together or in quick succession waits.
+const queued = new Map();
+for (const sc of timing.scenes) for (const q of readingQueue(cues.filter((c) => c.scene === sc.id), sc.start + sc.duration)) queued.set(q, q);
 out.push(md(cues.map((c) => {
-  const need = round(readingSeconds(c.text));
-  return [c.at, c.scene, `\`${c.cue}\``, c.text.slice(0, 90), c.saying, `${c.up} s${c.up < need ? ` (short: needs ${need})` : ""}`];
-}), ["at (s)", "scene", "cue", "on screen", "being said", "stays up"]), "");
+  const q = [...queued.values()].find((x) => x.at === c.at && x.cue === c.cue && x.text === c.text);
+  const need = round(q.need);
+  const flags = [c.up < need ? `short: stays up ${c.up}` : "", q.late ? `late: read by ${round(q.readBy)} s, the scene ends at ${round(sceneEndOf(c.scene))} s` : ""].filter(Boolean);
+  return [c.at, c.scene, `\`${c.cue}\``, c.text.slice(0, 90), c.saying, `${c.up} s`, `${need} s`, flags.length ? `(${flags.join("; ")})` : ""];
+}), ["at (s)", "scene", "cue", "on screen", "being said", "stays up", "needs", "flag"]), "");
 out.push("## Stillness", "", "The longest stretch of each scene in which nothing new appears: the scene's start, each cue and its end are the moments something changes.", "");
 out.push(md(timing.scenes.map((sc) => {
   const st = stillStretches(sc, cues.filter((c) => c.scene === sc.id).map((c) => c.at));
