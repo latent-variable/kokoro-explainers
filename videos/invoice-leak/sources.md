@@ -44,5 +44,5 @@ was checked against the code, not trusted alone.
 - **company** is the video's word for an organization (`org_id`); the log chips say "CO. 7". **customers** means the people who would lose access. **options** (not "fixes") are A, B and C.
 - **ownership check** (option B) is the check that the invoice belongs to the caller's company (`and org_id = $2`); the voice says "ownership check" once, then "option B".
 - Option C's one gain is worded one way everywhere: "a forgotten check can't leak" (from the brief: it stops the next forgotten check becoming a leak).
-- B's "about an hour, because the list route already filters by company" is the working agent's reason; the code supports the pattern (`api/routes/invoices.js` line 10, `[read]`); the hour itself is its estimate.
+- B: "about an hour" is the working agent's estimate (`brief.md`). "The list route already filters this way" is a separate fact, `[read]` in `api/routes/invoices.js` line 10; the video states it beside the estimate, not as its cause.
 - "doing more than you are allowed" is STRIDE's elevation of privilege as `docs/threat-model.md` words it.
