@@ -84,6 +84,7 @@
   .nothing { position: absolute; left: var(--pad); right: var(--pad); top: 822px; padding: 12px 30px; display: flex; gap: 26px; align-items: center; font-family: var(--font-display); font-size: 38px; font-weight: 700; border-color: var(--accent); white-space: nowrap; }
   .nothing .tag { color: var(--accent); }
 
+  .credit { position: absolute; right: 110px; bottom: 10px; font-family: var(--font-mono); font-size: 22px; color: var(--muted); letter-spacing: 0.04em; }
   /* 05-pick */
   .r-tag { position: absolute; left: var(--pad); top: 95px; }
   .rcols { position: absolute; left: var(--pad); right: var(--pad); top: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; align-items: stretch; }
@@ -217,6 +218,7 @@
 </section>
 
 <section data-scene="05-pick" data-transition="fade">
+  <div class="credit" data-cue="+0.1" data-anim="fade">voice: VCTK corpus (CC BY 4.0) &middot; OmniVoice &middot; HyperFrames</div>
   <div class="tag r-tag" data-cue="+0.1" data-anim="fade"><b>//</b>the agent's pick</div>
   <div class="rcols">
     <div class="rc card dim" id="a-card">
