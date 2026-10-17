@@ -32,11 +32,12 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Skill | Load it to |
 |---|---|
+| `evidence-standard` | The shared rules for evidence: tags, pins, safe running, absence, where results go |
 | `explainer-video` | Make or update a video. You are the builder |
 | `critic-loop` | Judge a video with fresh critics, fix, repeat until they pass; add a new critic |
 | `tailor` | Record how one person wants their explainers, in `local/` |
 | `theme` | Make a theme, usually from a client's brand |
-| `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision` | Be one critic, when the loop assigns you |
+| `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision`, `critic-grounding` | Be one critic, when the loop assigns you |
 
 ## What is expected
 
@@ -97,7 +98,7 @@ A change to `bin/`, `kit/` or `template/` is validated by running `make` and `re
 |---|---|
 | `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. A sentence ends at `.`, `!` or `?` and a space |
 | `scenes.html` | One `<section data-scene="01-intro">` per script file, a `<style>` for the look, optionally a `<script>` |
-| `video.json` | `title`, `kind` (`decision`, `feature`, `release`), `importance` and `importance_reason` (set by the builder), `voice`, `speed`, `theme`, `flair`, `review`, `say`, `audience`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
+| `video.json` | `title`, `kind` (`decision`, `feature`, `release`), `importance` and `importance_reason` (set by the builder), `shows_code` (puts `critic-grounding` on the floor; read from `scenes.html` when absent: a `<pre>`, `<code>` or `.ss-code` sets it, and `false` cannot lower it), `voice`, `speed`, `theme`, `flair`, `review`, `say`, `audience`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
 | `sources.md` | Every claim the video makes, with its source |
 | `critics.md` | This video's own bar, applied by every critic |
 | `brief.md` | A decision video's handoff from the agent that asked for it |
@@ -180,9 +181,11 @@ HyperFrames renders the page frame by frame in headless Chrome and muxes in the 
 bin/        voice, build, render, make, review, new, doctor, link-skills; lib.mjs is shared
 kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.js (timeline, effects)
 themes/     shipshow, paper and launch; each a theme.css of tokens, plus fonts (launch: Space Grotesk and Space Mono, SIL OFL)
-skills/     explainer-video, critic-loop, tailor, theme and the eight critics
+skills/     explainer-video, critic-loop, tailor, theme and the nine critics
 template/   what npm run new copies
 videos/     videos about this repo: how-it-works (the example) and why-shipshow (the pitch)
+skills/critic-grounding/scripts/  excerpt.mjs and check-excerpt.mjs, the excerpt check (run through the skill)
+skills/evidence-standard/scripts/  sandbox-run.sh, capture.mjs, verify-vendored.sh (run through the skill)
 docs/assets/  the README's images; the GIF is cut from out/how-it-works.mp4
 test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links
 local/      gitignored, per person (tailor skill)
