@@ -155,7 +155,7 @@ Generated files (voice takes, `narration.wav`, `timing.json`, `index.html`, rend
 
 - **Use it on your own work.** Each of us makes explainers for something we actually need explained: a repo, a pull request, a feature, a release (HyperFrames itself is a good first subject). Real use is what finds the gaps.
 - **Friction becomes a pull request.** Anything that slowed you down or that you did not like, tell your agent to fix it here and open a PR. A bar you keep wishing a video met becomes a critic.
-- **Every change goes through a pull request.** `main` takes no direct pushes: a PR needs CI green and its review conversations resolved, and every PR gets an automated review.
+- **Every change goes through a pull request.** `main` takes no direct pushes: a PR needs CI green, and every PR gets an automated review whose blocking findings are fixed (or declined with a reason) before it merges.
 
 ## Licenses
 
