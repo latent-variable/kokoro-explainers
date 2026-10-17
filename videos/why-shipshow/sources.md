@@ -3,7 +3,7 @@
 ## Andrej Karpathy, on X, 2026-10-02
 
 https://x.com/karpathy/status/2105819303471976479 (text read through the fxtwitter API, 2026-10-17).
-Every Karpathy line on screen is quoted from it exactly; the narration paraphrases only where
+The date is the post's UTC timestamp (2026-10-02 00:37 UTC; the evening of Oct 1 in US time zones). Every Karpathy line on screen is quoted from it exactly; the narration paraphrases only where
 it says so below.
 
 - "As LLMs get better, they will do more and more of the legwork autonomously, and a lot more of our work will rise up the abstractions into oversight and understanding."
@@ -20,24 +20,24 @@ it says so below.
 | The pull request chips (PR #812, +2,184 −967, merge conflict, CI: failing, 47 unread) | Illustrations of a busy queue, not real data |
 | "Keeping up is a shit show" / "Turn the shit show into a ship show" | The project's own line (`README.md`) |
 | ShipShow turns each change into a short video you can watch | `skills/explainer-video` (decision, feature and release videos); `videos/how-it-works` is one |
-| Karpathy: as models get better, a lot more of our work will rise into oversight and understanding | The post, summary point 1. The narration keeps "as models get better" and shortens "rise up the abstractions into" to "rise into"; the card quotes it exactly from "our work" on |
+| Karpathy: as models do more of the legwork, more of our work rises into oversight and understanding | The post, summary point 1 ("they will do more and more of the legwork autonomously, and a lot more of our work will rise up the abstractions into oversight and understanding"), shortened in the narration; the card quotes it exactly from "our work" on |
 | Karpathy: the format he is most bullish on is custom explainer videos, on any topic | The post, *Explainer videos* |
 | The ladder: writing, then diagrams, web pages and explainer videos, each "even better", videos "most bullish" | The post's own order and words; no other label is his |
-| ShipShow makes those videos on your own machine | `bin/voice.mjs` (Kokoro, local), `bin/render.mjs` (HyperFrames, local headless Chrome) |
+| ShipShow voices and renders those videos on your own machine (the agent that writes the script is the person's own) | `bin/voice.mjs` (Kokoro, local), `bin/render.mjs` (HyperFrames, local headless Chrome) |
 | Your agent writes a short script and the scenes | `skills/explainer-video` |
 | A small local voice called Kokoro reads it | Kokoro-82M, run by `hyperframes tts` on the CPU (`AGENTS.md`) |
-| HyperFrames renders it to an MP4 | `hyperframes render` (`bin/render.mjs`); the frame shown is from `videos/how-it-works` |
+| HyperFrames, an open source renderer, turns it into an MP4 | `hyperframes render` (`bin/render.mjs`); HyperFrames is Apache 2.0 (`node_modules/hyperframes/package.json`); the frame shown is from `videos/how-it-works` |
 | No API key for the voice or the render | No step in `bin/` takes a key; the models download once. The agent that writes the script is the person's own |
-| Most days, you will use it when your agent needs your call | `AGENTS.md` *What this is*: "The everyday use is a decision video" |
+| The everyday use is when your agent needs your call | `AGENTS.md` *What this is*: "The everyday use is a decision video" |
 | Mid-change, your agent asks: rewrite the retry logic, or patch it? | An illustrative decision, not a real one; the options, bars, "Patch it" and the frame labelled "the video you watch" are an example of the shape |
 | It hands that question to a fresh explainer agent, one that did not write the code | `skills/explainer-video`, *A decision video, handed off mid-work*: a fresh agent, "so the video is made by one that has not absorbed its reasoning" |
 | Soon after, you watch both options, what each costs, and a recommendation | Same section; `critic-decision`. Build time not measured, so "soon after", not a number |
 | Other agents act as critics and check it, so you can trust a video you did not check yourself | `skills/critic-loop`: each critic is a fresh agent; the builder never judges its own video |
-| The critic chips: seven, plus Decision marked "decision videos" | `bin/lib.mjs` `BASE_CRITICS` (seven) and `skills/critic-loop`: a decision video adds `critic-decision` |
+| The critic chips, labelled "the critics a video can get; how many run depends on the video": seven, plus Decision marked "decision videos" | `bin/lib.mjs` `BASE_CRITICS` (seven) and `skills/critic-loop`: a decision video adds `critic-decision` |
 | On our own explainer video, one caught a setup step we had left out; fixed before it shipped | `videos/how-it-works/REVIEW.md`, round 3: critic-accuracy found that "clone it and run npm install" implied that was the whole setup, which also needs the Python environment; fixed in that round, before the video merged |
 | Speed it up to watch faster (shown: 1.5x, `--speed`), or pick a theme, even one built from a client's brand | `--speed` and `speed` (1.25 by default, 0.5 to 2), `themes/`, `skills/theme` |
 | The "this video" tag on launch | `video.json` `"theme": "launch"` (`themes/launch`) |
-| ShipShow is open source, on GitHub; clone it, follow the setup in its README, then ask your agent for a video of your last change | `LICENSE` (MIT); github.com/latent-variable/shipshow; `README.md` *Set it up*; `skills/explainer-video` |
+| ShipShow is open source, on GitHub; clone it, run the setup in its README, then point your agent at it and ask for a video of your last change | `LICENSE` (MIT); github.com/latent-variable/shipshow; `README.md` *Set it up*; `skills/explainer-video` |
 
 ## Left out
 

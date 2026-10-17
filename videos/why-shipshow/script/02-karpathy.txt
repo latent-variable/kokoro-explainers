@@ -1,1 +1,1 @@
-Andrej Karpathy wrote that as models get better, a lot more of our work will rise into oversight and understanding. The output format he is most bullish on is custom explainer videos, on any topic.
+Andrej Karpathy wrote that as models do more of the legwork, more of our work rises into oversight and understanding. And the format he is most bullish on is custom explainer videos.

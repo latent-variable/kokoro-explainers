@@ -22,7 +22,7 @@
   .turn b { font-family: var(--font-display); font-size: 92px; font-weight: 700; letter-spacing: -0.04em; color: var(--accent-2); }
 
   /* 02-karpathy */
-  .quote { position: absolute; left: var(--pad); top: 150px; width: 1020px; padding: 46px 52px; min-height: 560px; }
+  .quote { position: absolute; left: var(--pad); top: 150px; width: 1020px; padding: 46px 52px; }
   .quote p { font-family: var(--font-display); font-size: 46px; line-height: 1.28; font-weight: 500; margin-top: 24px; }
   .quote .mark { color: var(--accent-3); font-weight: 700; }
   .ladder { position: absolute; right: var(--pad); top: 150px; width: 560px; display: flex; flex-direction: column; gap: 22px; }
@@ -33,16 +33,18 @@
   .ladder-note { position: absolute; right: var(--pad); top: 700px; width: 560px; font-family: var(--font-mono); font-size: 30px; color: var(--ink); white-space: nowrap; }
 
   /* 03-how */
-  .pipe { position: absolute; left: var(--pad); right: var(--pad); top: 260px; display: flex; align-items: center; justify-content: space-between; }
-  .node { width: 300px; height: 250px; padding: 28px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
-  .node b { font-family: var(--font-display); font-size: 40px; font-weight: 700; white-space: nowrap; }
-  .node span { font-size: 32px; color: var(--muted); }
-  .node.out { width: 420px; height: 300px; border-color: var(--accent-2); padding: 18px; gap: 10px; }
-  .node.out img { width: 100%; border-radius: 10px; display: block; }
-  .node.out b { color: var(--accent-2); font-size: 36px; }
+  .pipe { position: absolute; left: var(--pad); right: var(--pad); top: 220px; display: flex; align-items: center; justify-content: space-between; }
+  .node { width: 330px; height: 190px; padding: 26px 30px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+  .node b { font-family: var(--font-display); font-size: 38px; font-weight: 700; white-space: nowrap; }
+  .node span { font-size: 30px; color: var(--muted); }
+  .node.out { border-color: var(--accent-2); }
+  .node.out b { color: var(--accent-2); }
   .link { width: 64px; height: 40px; }
   .link path { fill: none; stroke: var(--accent-2); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
-  .stamp { position: absolute; right: 190px; top: 640px; padding: 18px 34px; border: 5px solid var(--accent-3); border-radius: 14px; color: var(--accent-3); font-family: var(--font-mono); font-size: 40px; font-weight: 700; transform: rotate(-5deg); text-align: center; line-height: 1.15; }
+  .real { position: absolute; right: var(--pad); top: 450px; width: 640px; padding: 14px; margin: 0; border-color: var(--accent-2); }
+  .real img { width: 100%; display: block; border-radius: 10px; }
+  .real figcaption { font-size: 30px; color: var(--ink); margin-top: 10px; }
+  .stamp { position: absolute; left: var(--pad); top: 560px; padding: 20px 36px; border: 5px solid var(--accent-3); border-radius: 14px; color: var(--accent-3); font-family: var(--font-mono); font-size: 48px; font-weight: 700; transform: rotate(-4deg); text-align: center; line-height: 1.15; }
   .stamp small { display: block; font-size: 30px; font-weight: 400; }
 
   /* 04-decide */
@@ -51,9 +53,9 @@
   .hand .who-chip { padding: 16px 26px; font-family: var(--font-mono); font-size: 32px; font-weight: 700; }
   .hand .arrow-svg { width: 100px; height: 40px; }
   .hand .arrow-svg path { fill: none; stroke: var(--accent-2); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
-  .hand .note { font-size: 30px; color: var(--ink); }
-  .screen { position: absolute; left: var(--pad); top: 420px; width: 1640px; height: 340px; padding: 26px 34px; border-color: var(--accent-2); }
-  .screen-label { font-size: 30px; color: var(--accent-2); }
+  .hand .note { font-size: 32px; color: var(--ink); }
+  .screen { position: absolute; left: var(--pad); top: 420px; width: 1640px; height: 370px; padding: 26px 34px 40px; border-color: var(--accent-2); }
+  .screen-label { font-size: 32px; color: var(--accent-2); }
   .screen .opts { display: flex; gap: 34px; align-items: center; margin-top: 16px; }
   .opt { width: 520px; padding: 22px 34px; }
   .opt h3 { font-family: var(--font-display); font-size: 46px; margin-bottom: 8px; }
@@ -63,16 +65,17 @@
   .bar.gain { background: var(--accent-3); } .bar.cost { background: var(--accent); }
   .rec { margin-left: 30px; padding: 22px 34px; border: 6px solid var(--accent-3); border-radius: 18px; color: var(--accent-3); font-family: var(--font-display); font-size: 58px; font-weight: 700; transform: rotate(-5deg); text-align: center; line-height: 1.05; }
   .rec small { display: block; font-family: var(--font-mono); font-size: 30px; font-weight: 400; margin-top: 8px; }
-  .screen-bar { position: absolute; left: 34px; right: 34px; bottom: 22px; height: 6px; border-radius: 3px; background: var(--progress-fill, var(--accent)); opacity: 0.8; }
+  .screen-bar { position: absolute; left: 34px; right: 34px; bottom: 16px; height: 6px; border-radius: 3px; background: var(--progress-fill, var(--accent)); opacity: 0.8; }
   .you { position: absolute; right: var(--pad); top: 118px; font-family: var(--font-display); font-size: 56px; font-weight: 700; color: var(--accent-3); }
 
   /* 05-critics */
-  .panel { position: absolute; left: var(--pad); top: 250px; width: 1640px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .roster { position: absolute; left: var(--pad); top: 222px; font-size: 30px; color: var(--ink); }
+  .panel { position: absolute; left: var(--pad); top: 280px; width: 1640px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
   .panel .c { padding: 22px 18px; font-size: 34px; font-weight: 700; text-align: center; }
   .panel .c.dim { border-style: dashed; color: var(--muted); }
-  .panel .c small { display: block; font-family: var(--font-mono); font-size: 28px; font-weight: 400; margin-top: 4px; }
-  .trust { position: absolute; left: var(--pad); top: 770px; font-family: var(--font-display); font-size: 46px; font-weight: 500; color: var(--accent-2); }
-  .catch { position: absolute; left: var(--pad); top: 480px; width: 1640px; padding: 26px 36px; }
+  .panel .c small { display: block; font-family: var(--font-mono); font-size: 30px; font-weight: 400; margin-top: 4px; }
+  .trust { position: absolute; left: var(--pad); top: 790px; font-family: var(--font-display); font-size: 46px; font-weight: 500; color: var(--accent-2); }
+  .catch { position: absolute; left: var(--pad); top: 560px; width: 1640px; padding: 26px 36px; }
   .catch .was { font-size: 38px; margin-top: 10px; }
   .catch .was s { color: var(--bad); text-decoration-thickness: 4px; }
   .catch .now { font-size: 38px; margin-top: 10px; color: var(--accent-3); }
@@ -97,7 +100,8 @@
   .strike { position: absolute; left: -12px; right: -12px; top: 52%; height: 12px; border-radius: 6px; background: var(--accent); }
   .to { font-family: var(--font-display); font-size: 160px; font-weight: 700; letter-spacing: -0.05em; background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .url { font-family: var(--font-mono); font-size: 48px; color: var(--accent-2); }
-  .cta { font-size: 36px; color: var(--ink); padding: 14px 30px; border: 2px solid var(--line); border-radius: 999px; }
+  .steps { display: flex; gap: 14px; font-size: 34px; color: var(--ink); }
+  .steps span { padding: 12px 24px; border: 2px solid var(--line); border-radius: 999px; }
 </style>
 
 <section data-scene="01-hook">
@@ -123,18 +127,18 @@
 <section data-scene="02-karpathy" data-transition="wipe">
   <div class="quote card" data-cue="+0.1" data-anim="left">
     <div class="who">Andrej Karpathy &middot; on X &middot; Oct 2, 2026</div>
-    <p data-cue="lot" data-anim="type">&ldquo;&hellip;our work will rise up the abstractions into oversight and understanding.&rdquo;</p>
-    <p data-cue="output" data-anim="type">&ldquo;The output format I am most bullish on is fully custom / bespoke <span class="mark">explainer videos</span>&hellip;&rdquo;</p>
+    <p data-cue="+0.4" data-anim="fade">&ldquo;&hellip;our work will rise up the abstractions into oversight and understanding.&rdquo;</p>
+    <p data-cue="format" data-anim="fade">&ldquo;&hellip;most bullish on is fully custom / bespoke <span class="mark">explainer videos</span>&hellip;&rdquo;</p>
   </div>
   <div class="ladder">
     <div class="rung card top" data-cue="explainer" data-anim="pulse">Explainer videos <small class="mono">most bullish</small></div>
-    <div class="rungs" data-cue="format" data-anim="stagger">
+    <div class="rungs" data-cue="bullish" data-anim="stagger">
       <div class="rung card">Web pages <small>even better</small></div>
       <div class="rung card">Diagrams <small>even better</small></div>
       <div class="rung card">Writing</div>
     </div>
   </div>
-  <div class="ladder-note" data-cue="format" data-anim="fade">formats he ranks</div>
+  <div class="ladder-note" data-cue="bullish" data-anim="fade">formats he ranks</div>
 </section>
 
 <section data-scene="03-how" data-transition="flash">
@@ -144,10 +148,14 @@
     <svg class="link" viewBox="0 0 80 40" data-cue="Kokoro" data-anim="draw"><path d="M4 20 H72 M60 9 L72 20 L60 31"/></svg>
     <div class="node card" data-cue="Kokoro" data-anim="pop"><b>Kokoro</b><span>a small local voice</span></div>
     <svg class="link" viewBox="0 0 80 40" data-cue="HyperFrames" data-anim="draw"><path d="M4 20 H72 M60 9 L72 20 L60 31"/></svg>
-    <div class="node card" data-cue="HyperFrames" data-anim="pop"><b>HyperFrames</b><span>renders it</span></div>
+    <div class="node card" data-cue="HyperFrames" data-anim="pop"><b>HyperFrames</b><span>an open source renderer</span></div>
     <svg class="link" viewBox="0 0 80 40" data-cue="MP4" data-anim="draw"><path d="M4 20 H72 M60 9 L72 20 L60 31"/></svg>
-    <div class="node card out" data-cue="MP4" data-anim="slam"><img src="img/real-frame.jpg" alt="A frame from ShipShow's own explainer"><b>your MP4</b></div>
+    <div class="node card out" data-cue="MP4" data-anim="pop"><b>your MP4</b><span>below: a real frame</span></div>
   </div>
+  <figure class="real card" data-cue="MP4" data-anim="zoom">
+    <img src="img/real-frame.jpg" alt="A frame from ShipShow's own explainer: a script line, its tag, and the word appearing">
+    <figcaption class="mono">a frame from our own explainer</figcaption>
+  </figure>
   <div class="stamp" data-cue="API" data-anim="slam">NO API KEY<small>for voice or render</small></div>
 </section>
 
@@ -165,15 +173,15 @@
     <div class="opts">
       <div class="opt card">
         <h3>Rewrite</h3>
-        <div class="row"><div class="k">gains</div><div class="bar gain" style="width: 300px" data-cue="costs" data-anim="grow"></div></div>
+        <div class="row"><div class="k">gains</div><div class="bar gain" style="width: 300px" data-cue="options" data-anim="grow"></div></div>
         <div class="row"><div class="k">costs</div><div class="bar cost" style="width: 330px" data-cue="costs" data-anim="grow"></div></div>
       </div>
       <div class="opt card">
         <h3>Patch</h3>
-        <div class="row"><div class="k">gains</div><div class="bar gain" style="width: 220px" data-cue="costs" data-anim="grow"></div></div>
+        <div class="row"><div class="k">gains</div><div class="bar gain" style="width: 220px" data-cue="options" data-anim="grow"></div></div>
         <div class="row"><div class="k">costs</div><div class="bar cost" style="width: 90px" data-cue="costs" data-anim="grow"></div></div>
       </div>
-      <div class="rec" data-cue="recommendation" data-anim="slam">Patch it<small>and here is why</small></div>
+      <div class="rec" data-cue="recommendation" data-anim="pop">Patch it<small>and here is why</small></div>
     </div>
     <div class="screen-bar"></div>
   </div>
@@ -182,11 +190,12 @@
 
 <section data-scene="05-critics" data-transition="zoom">
   <h2 data-cue="+0.1" data-anim="glitch">The <em>critics</em></h2>
+  <div class="roster mono" data-cue="critics" data-anim="fade">the critics a video can get; how many run depends on the video</div>
   <div class="panel" data-cue="critics" data-anim="stagger">
     <div class="c card">Accuracy</div><div class="c card">Sync</div><div class="c card">Clarity</div><div class="c card">Pacing</div>
     <div class="c card">Visuals</div><div class="c card">Consistency</div><div class="c card">Engagement</div><div class="c card dim">Decision<small>decision videos</small></div>
   </div>
-  <div class="trust" data-cue="So" data-anim="up">so you can trust what you did not check yourself</div>
+  <div class="trust" data-cue="So" data-anim="up">so you can trust a video you did not check yourself</div>
   <div class="catch card" data-cue="explainer" data-anim="up">
     <div class="who">critic-accuracy, on our own video</div>
     <div class="was"><s>&ldquo;run npm install&rdquo;</s> missed the Python setup</div>
@@ -196,7 +205,7 @@
 
 <section data-scene="06-yours" data-transition="flash">
   <h2 data-cue="+0.1" data-anim="left">Make it <em>yours</em></h2>
-  <div class="speed" data-cue="Speed" data-anim="fade"><small>WATCH FASTER &middot; --speed</small><span data-cue="Speed" data-anim="count">1.5&times;</span></div>
+  <div class="speed" data-cue="Speed" data-anim="fade"><small>WATCH FASTER &middot; --speed 1.5, for example</small><span data-cue="Speed" data-anim="count">1.5&times;</span></div>
   <div class="swatches">
     <div class="sw ship" data-cue="theme" data-anim="up"><b>shipshow</b><div class="dots"><i style="background:#ffb454"></i><i style="background:#7cc4ff"></i><i style="background:#182033"></i></div></div>
     <div class="sw paper" data-cue="theme" data-anim="up"><b>paper</b><div class="dots"><i style="background:#b3261e"></i><i style="background:#1f5f8b"></i><i style="background:#d9cfbd"></i></div></div>
@@ -210,7 +219,7 @@
     <div class="from" data-cue="shit" data-anim="glitch">shit show<div class="strike" data-cue="into" data-anim="grow"></div></div>
     <div class="to" data-cue="ship#1" data-anim="slam">ship show</div>
     <div class="url" data-cue="open" data-anim="up">github.com/latent-variable/shipshow</div>
-    <div class="cta mono" data-cue="Clone" data-anim="pop">clone &rarr; README setup &rarr; ask your agent</div>
+    <div class="steps mono"><span data-cue="Clone" data-anim="pop">clone</span><span data-cue="README" data-anim="pop">&rarr; README setup</span><span data-cue="point" data-anim="pop">&rarr; point your agent at it</span></div>
   </div>
 </section>
 
