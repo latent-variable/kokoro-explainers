@@ -236,3 +236,98 @@ test("importance: the builder's call picks the preset; a person's explicit prese
   writeFileSync(join(bad, "video.json"), JSON.stringify({ importance: "urgent" }));
   assert.match(spawnSync(process.execPath, [join(REPO, "bin", "critics.mjs"), bad], { encoding: "utf8" }).stderr, /importance is "urgent"/);
 });
+
+// The omnivoice engine. The model itself needs a Mac and about 2 GB, so a fake worker stands in for
+// bin/omnivoice.py: it writes a one-second tone per job and records the job file it was given.
+const fakeLocal = () => {
+  const local = mkdtempSync(join(tmpdir(), "kx-local-"));
+  mkdirSync(join(local, "voices"));
+  writeFileSync(join(local, "voices", "mine.wav"), "not really audio");
+  writeFileSync(join(local, "voices", "mine.txt"), " The words in the clip. \n");
+  return local;
+};
+const fakeWorker = () => {
+  const path = join(mkdtempSync(join(tmpdir(), "kx-py-")), "python");
+  writeFileSync(path, `#!${process.execPath}
+import { appendFileSync, readFileSync } from "node:fs";
+import { writeWav } from ${JSON.stringify(join(REPO, "bin", "lib.mjs"))};
+const spec = JSON.parse(readFileSync(process.argv[3], "utf8"));
+appendFileSync(process.argv[3] + ".log", JSON.stringify(spec) + "\\n");
+for (const j of spec.jobs) writeWav(j.wav, { rate: 24000, channels: 1, samples: new Int16Array(24000) });
+`, { mode: 0o755 });
+  return path;
+};
+const voiceRun = (dir, local, py, ...args) => spawnSync(process.execPath, [join(REPO, "bin", "voice.mjs"), dir, ...args], {
+  encoding: "utf8", env: { ...process.env, SHIPSHOW_LOCAL: local, HYPERFRAMES_PYTHON: py },
+});
+const newVideo = () => {
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "demo");
+  cpSync(join(REPO, "template"), dir, { recursive: true });
+  return dir;
+};
+
+test("an omnivoice voice is a clone in local/voices or a built-in, and a replaced clip is a new voice", async () => {
+  const { omniVoice, OMNI } = await import("../bin/lib.mjs?omni=1");
+  const local = fakeLocal();
+  process.env.SHIPSHOW_LOCAL = local;
+  try {
+    const clone = omniVoice("mine");
+    assert.equal(clone.text, "The words in the clip.");
+    assert.match(clone.identity, /^mine@[0-9a-f]{16}$/);
+    writeFileSync(join(local, "voices", "mine.wav"), "another recording");
+    assert.notEqual(omniVoice("mine").identity, clone.identity);
+    assert.equal(omniVoice("caro_davy").identity, `caro_davy@${OMNI.voicesRevision}`);
+    assert.equal(omniVoice("af_heart"), undefined, "a Kokoro voice is not an omnivoice one");
+  } finally {
+    delete process.env.SHIPSHOW_LOCAL;
+  }
+});
+
+test("omnivoice voices only the stale sentences, and a different voice or speed voices them again", () => {
+  const dir = newVideo(), local = fakeLocal(), py = fakeWorker();
+  const jobsOf = () => readFileSync(join(dir, "assets", "omnivoice-jobs.json.log"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+
+  let r = voiceRun(dir, local, py, "--engine", "omnivoice");
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(jobsOf().length, 1);
+  assert.equal(jobsOf()[0].jobs.length, 4, "the template has four sentences");
+  assert.equal(jobsOf()[0].voice.name, "caro_davy", "the template's Kokoro voice gives way to the engine's default");
+  assert.equal(JSON.parse(readFileSync(join(dir, "timing.json"), "utf8")).engine, "omnivoice");
+
+  r = voiceRun(dir, local, py, "--engine", "omnivoice");
+  assert.match(r.stdout, /every sentence already voiced/);
+  assert.equal(jobsOf().length, 1, "nothing went to the worker");
+
+  r = voiceRun(dir, local, py, "--engine", "omnivoice", "--voice", "mine");
+  const clone = jobsOf()[1];
+  assert.equal(clone.jobs.length, 4, "a new voice re-voices every take");
+  assert.equal(clone.voice.text, "The words in the clip.");
+  assert.match(clone.voice.wav, /mine\.wav$/);
+
+  voiceRun(dir, local, py, "--engine", "omnivoice", "--voice", "mine", "--speed", "1.1");
+  assert.equal(jobsOf()[2].jobs.length, 4, "a new speed re-voices every take");
+  assert.equal(jobsOf()[2].speed, 1.1);
+});
+
+test("omnivoice says what to do about a voice it does not have and a speed outside its range", () => {
+  const dir = newVideo(), local = fakeLocal(), py = fakeWorker();
+  let r = voiceRun(dir, local, py, "--engine", "omnivoice", "--voice", "nobody");
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /no omnivoice voice "nobody".*caro_davy.*yours \(local\/voices\/\) are mine/s);
+  // The documented route: engine set in video.json, on a template that names a Kokoro voice.
+  const own = newVideo();
+  const cfg = JSON.parse(readFileSync(join(own, "video.json"), "utf8"));
+  writeFileSync(join(own, "video.json"), JSON.stringify({ ...cfg, engine: "omnivoice" }));
+  r = voiceRun(own, local, py);
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(JSON.parse(readFileSync(join(own, "assets", "omnivoice-jobs.json.log"), "utf8").trim()).voice.name, "caro_davy");
+  writeFileSync(join(own, "video.json"), JSON.stringify({ ...cfg, engine: "omnivoice", voice: "carro_davy" }));
+  r = voiceRun(own, local, py);
+  assert.notEqual(r.status, 0, "a typo in an omnivoice voice name is not swapped for the default");
+  assert.match(r.stderr, /no omnivoice voice "carro_davy"/);
+  r = voiceRun(dir, local, py, "--engine", "omnivoice", "--speed", "1.5");
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /speed 1\.5 is outside 1 to 1\.3/);
+  r = voiceRun(dir, local, py, "--engine", "mystery");
+  assert.match(r.stderr, /engine is "mystery"; it takes kokoro or omnivoice/);
+});
