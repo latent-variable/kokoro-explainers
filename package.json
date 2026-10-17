@@ -17,7 +17,9 @@
     "preview": "hyperframes preview",
     "render": "node bin/render.mjs",
     "make": "node bin/make.mjs",
-    "test": "node --test test/*.test.mjs"
+    "review": "node bin/review.mjs",
+    "test": "node --test test/*.test.mjs",
+    "postinstall": "node bin/link-skills.mjs"
   },
   "devDependencies": {
     "gsap": "3.14.2",

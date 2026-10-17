@@ -4,7 +4,9 @@ Narrated explainer videos made from plain text, on your own machine. You write a
 
 Nothing is sent to a cloud service. The voice model is about 340 MB and runs on the CPU.
 
-Built for the amperium.ai hackathon.
+Built for the amperium.ai hackathon. The first use is release explainers: a short video that keeps developers current on what changed in a project's release and what they need to do.
+
+<!-- The rendered how-it-works video goes here once it has cleared its critics. -->
 
 ## Set it up
 
@@ -32,13 +34,14 @@ That writes `out/how-it-works.mp4`: a one-minute video that explains this repo. 
 npm run new -- videos/my-video
 ```
 
-Then edit three things in `videos/my-video/`:
+Then edit these in `videos/my-video/`:
 
 | File | What it is |
 |---|---|
 | `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. Short spoken sentences. |
 | `scenes.html` | One `<section data-scene="01-intro">` per script file, plus a `<style>` for the look. |
-| `video.json` | The voice, its speed, and pronunciation fixes. |
+| `video.json` | The voice, its speed, pronunciation fixes, who it is for, and its critics. |
+| `sources.md` | The facts the video may state, each with its source. |
 
 Run `npm run make -- videos/my-video` again after any change. Only sentences whose text changed are voiced again.
 
@@ -73,6 +76,27 @@ For anything more, add a `<script>` to `scenes.html`. It runs after the shared t
 - `say`: what Kokoro is told to say for a word it gets wrong. Captions still show the word as written.
 - `lead`, `gap`, `tail` (seconds, optional): the pause before a scene's first sentence, between sentences, and after its last.
 
+## Skills and critics
+
+Agents make these videos through skills in `skills/` (`npm install` links them into `.claude/skills/` for Claude Code; `AGENTS.md` points every other agent at them).
+
+- **`explainer-video`** builds a video: facts into `sources.md` first, then the script, the scenes, the voice and the render.
+- **`critic-loop`** judges it. Each critic is a fresh agent that never saw the build, because the agent that made something is the worst judge of it. Critics return findings with a severity; the builder fixes them and runs fresh critics until none is blocking or major. `REVIEW.md` records the rounds.
+
+| Critic | Judges |
+|---|---|
+| `critic-accuracy` | Every claim, spoken or shown, against the video's `sources.md` |
+| `critic-clarity` | Whether the intended viewer follows it and knows what to do |
+| `critic-pacing` | Speaking rate, pauses, scene length, time to read on-screen text |
+| `critic-sync` | Whether what is shown matches what is being said, when it is said |
+| `critic-visuals` | Legibility, contrast, layout, every frame finished |
+| `critic-consistency` | Same names, terms and look from start to end |
+| `critic-engagement` | Whether the intended viewer would keep watching, and the design is made for them |
+
+A video picks its critics in `video.json` (`"critics"`) and can add its own bar in `critics.md`, such as "every breaking change shows before and after code". When the same bar keeps coming back, it becomes a new critic skill.
+
+`npm run review -- videos/x` writes the evidence the critics judge: the script with timings, words a minute per scene, every pause, every cue with what is being said when it lands, reading time for on-screen text, and a still after each cue and at each scene end.
+
 ## The steps, one at a time
 
 | Command | What it does |
@@ -83,6 +107,7 @@ For anything more, add a `<script>` to `scenes.html`. It runs after the shared t
 | `npm run preview -- videos/x` | Opens the composition in the HyperFrames studio to scrub through it |
 | `npm run render -- videos/x` | Records it to `out/x.mp4` (`--draft` for a fast, lower-quality pass) |
 | `npm run make -- videos/x` | Voice, build, lint and render in one go |
+| `npm run review -- videos/x` | The critics' evidence: `review/packet.md` and `review/frames/` |
 
 ## How it works
 
@@ -98,7 +123,9 @@ bin/build.mjs      scenes.html + timing.json -> index.html (the HyperFrames comp
 bin/render.mjs     index.html -> out/<name>.mp4
 bin/make.mjs       all of the above, plus lint
 bin/new.mjs        a new video folder from template/
+bin/review.mjs     the evidence critics judge: packet.md and frames
 bin/doctor.mjs     what this machine is missing
+skills/            explainer-video, critic-loop and the seven critics
 kit/shell.html     the page every video shares: canvas, captions, audio
 kit/kit.js         the timeline every video shares
 template/          the starting point for a new video
@@ -107,6 +134,12 @@ test/              npm test: sentence splitting, pronunciation swaps, cue and ca
 ```
 
 Generated files (voice takes, `narration.wav`, `timing.json`, `index.html`, renders) are not committed.
+
+## How we work
+
+- **Use it on your own work.** Each of us makes explainers for something we actually need explained: a repo, a pull request, a feature, a release (HyperFrames itself is a good first subject). Real use is what finds the gaps.
+- **Friction becomes a pull request.** Anything that slowed you down or that you did not like, tell your agent to fix it here and open a PR. A bar you keep wishing a video met becomes a critic.
+- **Every change goes through a pull request.** `main` takes no direct pushes: a PR needs CI green and its review conversations resolved, and every PR gets an automated review.
 
 ## Licenses
 

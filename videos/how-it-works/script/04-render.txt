@@ -1,1 +1,1 @@
-Last, the render. One command voices the script, builds the page, and records it frame by frame into an MP4. Change a sentence and run it again. Only that sentence is voiced again.
+Last, the render. One command voices the script, builds the page, and records it frame by frame into an MP4. Change a sentence and run it again, and only that sentence is voiced again.

@@ -1,0 +1,33 @@
+---
+name: critic-clarity
+description: >
+  Critic for whether an explainer video teaches: the intended viewer follows it on one
+  viewing, understands what changed and why it matters, and knows what to do next. Load
+  when the critic loop assigns you this critic.
+---
+
+# Critic: clarity
+
+**Judges:** the content as teaching, for the viewer `video.json` and `sources.md` describe
+(for a release video: a developer who uses the project and has not read the release notes).
+Not truth (`critic-accuracy`) or speed (`critic-pacing`).
+
+**Evidence:** the script in `review/packet.md`, read as that viewer hears it once, at speed,
+with no rewind; the frames for what they see alongside it.
+
+## Criteria
+
+- **blocking:** the viewer cannot tell what the video is about within its first scene.
+- **blocking:** a release video that never says what the viewer must do (upgrade, change
+  this call, nothing), or says it so vaguely they could not act on it.
+- **major:** a term, acronym or concept used before it is explained, or never explained,
+  that this viewer would not know.
+- **major:** a scene that carries two ideas, or an order that makes the viewer hold
+  something unexplained for more than a scene.
+- **major:** time spent on what this viewer does not need, while something they need is
+  thin. Name both.
+- **minor:** a sentence that is hard to follow by ear: long, nested, or with the point at
+  the end.
+
+**Done:** when you have walked the whole script once as that viewer and said where they
+would get lost, and what they leave knowing.

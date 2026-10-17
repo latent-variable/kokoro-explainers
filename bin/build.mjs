@@ -42,6 +42,11 @@ function cueTime(scene, cue, where) {
   const [word, nth = "1"] = cue.split("#");
   const hits = wordTimes(scene).filter((w) => norm(w.word).startsWith(norm(word)));
   if (hits.length < +nth) die(`${where}: data-cue="${cue}", but scene ${scene.id} says "${word}" ${hits.length} time(s)`);
+  // A bare word that occurs more than once lands on the first, which is easy to miss
+  // ("picture" also matches "pictures"): say so, and how to pick another.
+  if (!cue.includes("#") && hits.length > 1) {
+    console.warn(`${where}: data-cue="${cue}" matches ${hits.length} words (${hits.map((h) => h.word).join(", ")}); landing on the first. Add #2, #3... to pick another.`);
+  }
   return round(Math.max(scene.start + 0.1, hits[+nth - 1].at - CUE_LEAD));
 }
 
