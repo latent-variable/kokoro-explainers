@@ -71,16 +71,17 @@ Not everything in the changelog earns a scene.
 
 ## 2. Script
 
-Order: `sources.md` with its Terms (`glossary`), then the plan (`explain-concept`), then the script
-(`narration-writing`).
+A workable order, not a required one: `sources.md` with its Terms (`glossary`), the plan
+(`explain-concept`), then the script (`narration-writing`). Revise the Terms when the plan cuts
+a concept.
 
 `npm run new -- <folder>`, then one file per scene in `script/`, read aloud in
 file-name order.
 
 - Spoken sentences, short. One idea per scene. The order a newcomer needs, not the order
   of the changelog.
-- Pace is set by `"speed"` in `video.json`: Kokoro reads about 190 words a minute at 1.0, so
-  speed near 0.85 lands in `critic-pacing`'s target. The packet measures it.
+- Pace: choose `"speed"` in `video.json` from the packet (`narration-writing`); the numbers
+  live in `critic-pacing`.
 - Numbers and versions as they are said: "version two point four". Names Kokoro gets
   wrong go in `video.json` `"say"`; captions keep the written form.
 - A release explainer: what this release is, then breaking changes with before and after,
@@ -96,8 +97,8 @@ that gives this video its look. Each element arrives on the word that introduces
   paraphrase of it.
 - Text a viewer must read stays up long enough to read while listening; the packet
   measures it.
-- 28 px is the smallest text that stays legible after video compression. Keep the bottom
-  180 px for captions.
+- Text size and the caption area are `critic-visuals`' numbers; the packet and frames show
+  whether you meet them.
 
 ## 4. Make it, then the evidence
 

@@ -82,7 +82,8 @@ Return only the JSON below. Stop when your skill's criteria are covered.
       "evidence": "the measurement, frame or source line that shows it",
       "fix": "the smallest change that fixes it"
     }
-  ]
+  ],
+  "assets": [ { "asset": "...", "source": "...", "method": "diff|re-run|static|viewed", "result": "..." } ]
 }
 ```
 
@@ -91,6 +92,8 @@ Return only the JSON below. Stop when your skill's criteria are covered.
 - **minor:** polish.
 - **objective:** true when a measurement or a source settles it; false when it is taste.
 - `verdict` is `fail` when any finding is blocking or major.
+- `assets` is optional: a critic that checks shown evidence (`critic-grounding`) returns one row
+  per asset it checked, so the loop can see what was verified and how.
 
 Save each one as `videos/<name>/review/round-<n>/<critic>.json`.
 

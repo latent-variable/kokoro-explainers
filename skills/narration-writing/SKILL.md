@@ -16,25 +16,34 @@ can be hard to hear. Write for the ear, then check it against the clock.
 
 - **One idea per scene**, in short sentences. The sentence is also the unit of timing: each
   one is voiced on its own, so a long sentence puts its cues at an estimate.
-- **Pace is set by `speed` alone.** The packet's words a minute is speech-only: Kokoro reads
-  about 190 at speed 1.0, so words a minute is about 190 times `speed`, whatever a scene's word
-  count. `critic-pacing` holds the target and the limits; pick `speed` to land inside them (near
-  0.85) and read the packet to confirm. The template's `speed` of 1.0 is too fast to pass.
+- **Pace comes from measurement.** `critic-pacing` holds the target and the limits; this skill
+  holds none of the numbers. Kokoro reads roughly 190 words a minute at speed 1.0 and scenes
+  vary by about plus or minus 10% at one speed, so choose `speed` from the packet's per-scene
+  words a minute (start near 0.8), not from a formula. The packet's rate is speech-only, so
+  cutting words does not change it: fix a scene that is still out of band by rewording it
+  (shorter or longer sentences, fewer digits and identifiers). The template's `speed` of 1.0
+  is too fast to pass.
 - **Length is set by words.** A scene `critic-pacing` calls too long holds two ideas: cut words
   or split it.
 - **What is said matches what is shown**, when it is shown. Name a thing as it appears, and
   put its `data-cue` on that word. If the sentence has the word twice, say `word#2` or split
   the sentence.
 - **Say what the viewer needs, not what the code says.** Do not read symbols, paths, flags or
-  long identifiers aloud; say what they mean and show the literal on screen. When two names
-  sound alike (`follower_id`, `followed_id`) or one name covers two things, use the glossary's
-  spoken alias and put the literal beside it on the same cue. `data-cue` matches the start of a
-  spoken word, never an identifier.
+  long identifiers aloud; say what they mean and show the literal on screen. When two names sound
+  alike (`follower_id`, `followed_id`) or one name covers two things, write the glossary's spoken
+  alias **in the script itself**, so voice, captions and cue timing agree, and show the literal
+  on the same cue. `video.json` `"say"` is only for pronouncing a one-meaning word: it is global,
+  case-sensitive and whole-word, it changes the voiced text but not the caption, and the cue
+  arithmetic and the packet's word count use the written text.
+- **A cue is placed on a word.** `data-cue` matches the start of a spoken word across the whole
+  scene, not one sentence, so `follow` also matches `follower` and `followed`. Use `word#n` or a
+  distinctive word; the build warns when a bare word occurs twice in its scene.
 - **One name per thing, throughout** (`glossary`). Do not vary words for style.
 
 ## For the ear
 
-- Subject, verb, object. Break a sentence at every "which", "and then" and parenthesis.
+- Short sentences, subject first, none that needs a second hearing. A sentence that holds a
+  "which", an "and then" and a parenthesis is two or three.
 - Put the point first; qualifications after.
 - Numbers as they are said: "version two point four", "about two hundred milliseconds",
   "three of the five". Round to what a listener can hold; the exact figure goes on screen.

@@ -13,72 +13,91 @@ One place for the rules the context, brief and critic skills share, so they cann
 
 ## Tag every line
 
-`[stated]` a README, doc, spec or comment says so. `[read]` the code or config says so, and
-you read it. `[ran]` you ran it and saw it. `[inferred]` you conclude it from the above.
-Read and ran are different strengths: a claim about runtime behaviour that you only read is
-`[read]`, never `[ran]`. Where stated and read or ran disagree, say so in a **Findings** list;
-the code wins.
+`[stated]` a README, doc, spec, brief or comment says so. `[read]` the code or config says so,
+and you read it. `[ran]` you ran it and saw it. `[inferred]` you conclude it from the above,
+and the line says `from: <lines>`. A runtime behaviour you only read is `[read]`, never `[ran]`.
+Where stated and read or ran disagree, say so under **Findings**; the code wins.
 
-A line is one claim, its tag and its evidence: `[read] <claim>. <path>:<line>`. A trace across
-files cites each location. Where the code has tests, say which claim a test covers; a claim
-resting on code alone is marked `untested`.
+```
+[read]     <claim>. <path>:<line>   tested: <path>:<line> | untested
+[ran]      <claim>. $ <full command> (<copy path>, copy of <pin>, exit <n>) -> <first lines>
+[inferred] <claim>. from: <lines>
+[read]     absent: <thing>; searched: <command>; result: none
+```
 
-## Universal claims need more
+Paths are relative to the repo root. A trace across files cites each location.
 
-"All", "always", "never", "every", "no": back each with a run or an exhaustive search whose
-command is on the line, or tag it `[inferred]`. A claim about errors or edge cases also names
-what happens on malformed input.
+## Universal claims and absence
 
-## Absence
-
-Nothing cites a line for "nothing else happens". Write
-`[read] absent: <thing>; searched: <command or glob>; result: none`, so anyone can re-run it.
+"All", "always", "never", "every", "no", "none found": back each with a run or an exhaustive
+search whose command is on the line, or tag it `[inferred]`. A search is case-insensitive,
+covers the dependency file as well as the source, and names its working directory and pin
+(`grep -rniE 'limit|throttle' <dir>`). Absence has the one form above; use it for every "none
+found" line, including a requirement or decision record that does not exist. A claim about errors
+also says what happens on malformed input: wrong content type, null, array or scalar body,
+missing keys, wrong types, out-of-range values. A blanket claim about a pattern ("every endpoint
+is guarded") needs the exceptions found by search, not a sample.
 
 ## Pin what you read
 
-State once, in a **Scope** header: the commit you read (full SHA), what you did not read, and
-whether the code was run. Then cite `path:line` against it.
+State once, in a **Scope** header, what you read, at what pin, what you did not read, and whether
+you ran anything. Then cite against it.
 
-- **Committed code**: `git rev-parse HEAD`. A branch name is not a pin; it moves.
-- **Vendored code**: the upstream SHA from its `SOURCE.md`, and say the tree was compared or
-  not.
-- **Untracked or uncommitted code**: commit it to a local WIP branch, or save a patch or a
-  content hash (`git hash-object`, or a hash of a tar) next to the context. Do not push.
-- **A change**: both ends, full SHAs, and the merge-base.
+- **Committed code**: the full SHA (`git rev-parse HEAD`). A branch name moves; it is not a pin.
+- **Vendored code**: two labelled pins. The repo's HEAD, which `path:line` cites resolve against
+  (`git show HEAD:<path>`), and the upstream SHA from its `SOURCE.md`. "Unmodified" is `[stated]`
+  until you check it; `SOURCE.md` gives the offline command when there is one. Never pin
+  vendored code to the repo's HEAD alone.
+- **Uncommitted code**: a patch or a content hash (`git hash-object`, or a hash of a tar) beside
+  the context. A local branch only if the person asks. Do not push.
+- **A change**: `Base: <sha>  Head: <sha>  Merge-base: <sha>  Commits: <list>`. Re-run
+  `git rev-parse` before you finish; if the head moved, redo it.
 
-If no pin is possible, say "unpinned, read on <date>"; a reader then knows the claim can drift.
+If no pin is possible, write "unpinned, read on <date>"; the reader then knows it can drift.
 
 ## Run code safely, or do not run it
 
-Run only inside this envelope, and say what you ran as `[ran]`:
+Run only inside this envelope, and record it as `[ran]`. Otherwise the claim stays `[read]` or
+`[inferred]` with "not run: <why>".
 
-- In a **throwaway copy** (`cp -R` to a temp folder, or `git worktree add`). Never in the
-  target's own tree, and never by switching the user's checked-out branch.
-- With a **scrubbed environment** (`env -i` plus the PATH it needs), no `.env`, and none of the
-  target's real secrets, database, mail, search or queue URLs.
-- **No network**, `PYTHONDONTWRITEBYTECODE=1` or the equivalent, and a throwaway database.
-- **Installing dependencies is a network call**: ask first, or do not.
+1. **A throwaway copy.** Committed code: `git archive <sha> | tar -x -C <tmp>`. Otherwise `cp -R`,
+   then delete `.env`, `.git` and local database files from the copy: the app may load a `.env`
+   even under a scrubbed environment. `git worktree add` writes into the source repo's `.git`;
+   use it only on a repo you own. Never run in the target's own tree or by switching the user's
+   checked-out branch.
+2. **Start with `cd <copy> || stop`.** A relative path that runs after a failed `cd` writes into
+   the real repo; this happened in testing.
+3. **A scrubbed environment**: `env -i PATH=<needed>`; no secrets. Point every service URL the
+   code reads (database, cache, queue, mail, search) at a temp or dead value, because defaults
+   such as `redis://` reach a developer's real local service.
+4. **No network, by mechanism, not by instruction.** `env -i` does not block it. On macOS:
+   `sandbox-exec -p '(version 1)(allow default)(deny network*)' <cmd>`, and to confine writes
+   add `(deny file-write*)(allow file-write* (subpath "<real path>"))` using the physical path
+   (`pwd -P`; `/var` is a symlink to `/private/var`). Both were tested on macOS. On Linux,
+   `unshare -n` or `bwrap --unshare-net` (untested here). With no such mechanism, do not run a
+   command that could reach the network.
+5. **Dependencies.** Installing is a network call. If the caller has approved it, install into a
+   temporary virtual environment. If not, or if you cannot ask, do not: record "not run: deps not
+   installed" and list running it as an Open question.
+6. **Never run**: a migration or upgrade against anything but a throwaway database; anything
+   that sends email, calls a paid or external API, reindexes a search service, starts a worker or
+   server on a shared port, or deploys.
 
-Never run: a migration or upgrade against anything but a throwaway database; anything that
-sends email, calls a paid or external API, reindexes a search service, starts a worker or
-server on a shared port, or deploys. Not clearly inside the envelope: do not run it, and mark
-the claim `[read]` or `[inferred]` with "not run: <why>".
+A run records its command, the copy's path, the pin, the exit code and the first lines of output.
+For a video, save the whole capture as a file with those, the date, a hash of the raw output, and
+any failing cases left in.
 
-A run goes on the line as `$ <command>` with its working directory, commit, exit code and the
-first lines of output. For a video, save the full capture as a file with those four things.
+## What you were handed is a lead
 
-## What a brief or source claims is not evidence
-
-Claims handed to you (a brief, a `sources.md` you did not write) are leads. Check each against
-the code before building on it, and list the result: confirmed, contradicted, or not checked,
-with `path:line`. A contradicted claim is named in the video's hand-back.
+A brief, a `sources.md` you did not write, a README's claim: tag it `[stated]` and check it. In
+**Findings**, list each handed-in claim by ID as confirmed, contradicted or not checked, with
+`path:line`. A contradicted or unchecked claim that matters is named in the video and the
+hand-back (`explain-handoff`).
 
 ## Where the result goes
 
-| The code is | It goes in |
-|---|---|
-| Public and licensed for this repo (a vendored sample, this repo's own code) | `videos/<name>/` |
-| Private, someone's work in progress, or not licensed for here | `local/` (create it; it is gitignored) |
-
-Never inside the code base you are reading. The context is `context.md`, or `sources.md` when
-it feeds a video.
+`videos/<name>/` for this repo's own code and the vendored `sample_application/`. `local/` (create
+it; it is gitignored) for any other code base, any private or in-progress work, and every
+decision video and brief. This follows `AGENTS.md`: this repo is public. "Never inside the code
+base you are reading" means the directory you read. A context with no video is
+`<videos or local>/<name>/context.md`; with a video it is that video's `sources.md`.

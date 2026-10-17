@@ -1,71 +1,73 @@
 ---
 name: decision-brief
 description: >
-  Write the brief that hands a decision to a fresh explainer agent: the decision in one
-  sentence, every option with what it gains and costs, what happens if nobody decides, the
-  working agent's recommendation and reason, and the code to read at an exact commit. Load
-  when you are mid-work, need a person's call, and want a decision video made; or when you
-  receive such a brief and must check it.
+  Write the brief that hands a decision to a fresh explainer agent: the decision in one sentence,
+  every option with what it gains and costs, doing nothing, the working agent's pick and reason,
+  an assumption it has not verified, and the code to read at an exact pin. Load when you are
+  mid-work, need a person's call, and want a decision video made; or when you receive such a
+  brief and must check it.
 ---
 
 # Decision brief
 
-A decision video is made by an agent that has *not* absorbed your reasoning, so it can see
-the options as the person will. The brief is how you hand over the question. It states what
-you know. It does not script the video, and it is not the ground truth: the code is. The
-explainer reads the code at the commit you name, and `critic-decision` checks the finished
-video against this brief.
+A decision video is made by an agent that has *not* absorbed your reasoning, so it can see the
+options as the person will. The brief is how you hand over the question. It states what you know.
+It does not script the video, and it is not ground truth: the code is. `critic-decision` checks
+the finished video against it. Follow `evidence-standard` for tags, pins and where things go.
 
 Write it to `brief.md` in a new `local/videos/<name>/` (create `local/`; it is gitignored). A
-decision is about work in progress, so it goes there even when the code is this repo's;
-where things go is in `evidence-standard`. The video is not committed unless the person asks.
+decision is about work in progress, so it goes there even when the code is this repo's or the
+vendored sample. The video is not committed unless the person asks.
 
 ## What it contains
 
 ```
 Decision: <one sentence the person could answer yes/no or A/B/C>
 Why now: <what is blocked until it is made>
-Options:
-  A. <name>: <what it is>
-     Gains: ...   Costs / breaks: <never empty, never "none">   Evidence: <path:line or test or run>
-  B. ...
-Doing nothing: <an option row, with its gains and costs>. If nobody decides: <what happens by default, and by when>
-My pick: <option> because <the reason, including what it trades away>
-What I may have wrong: <at least one assumption, or the claims I checked and where>
-Read: <full SHA, or the patch or hash if uncommitted (`evidence-standard`); the paths that matter>
+Read: <full SHA; for vendored code the repo HEAD and the upstream SHA; for uncommitted code a
+       patch or hash (never a branch); and the paths that matter>
 Person: <who decides, what they already know>
+Options:
+  A. <name>: <what it is>. Doing nothing is an option row too, or "= A" if the status quo is A.
+     Gains: ...
+     Costs / breaks: <never empty or "none"; each with path:line, or marked "my guess">
+     Evidence: <[tag] path:line | test | run>
+  B. ...
+If nobody decides: <what happens by default; by when, or "unknown">
+My pick: <option> because <the reason, including what it trades away>
+Not verified: <at least one assumption I did not check, and how the person can check it>
 ```
 
 ## The bar
 
 - **The decision is a question, not a topic.** "Which store for X, A or B?", not "storage".
-- **Every option has both sides**, including the one you favour. If you cannot name a cost,
-  you have not understood it yet.
-- **Doing nothing is an option** and is listed, with its consequence.
-- **Your recommendation is labelled as yours**, with its reason, so the person can see where
-  they would differ. Naming "what I may have wrong" is part of the recommendation.
-- **Facts carry evidence and a tag** (`evidence-standard`). A claim with no path, test or run
-  is marked as a guess.
-- **Exact pin.** A full SHA, never "the latest" or a branch. Uncommitted code is committed to a
-  local WIP branch or handed over as a patch or a content hash; do not push it.
-- **No script.** Do not write scenes, narration or what to show; that is the explainer's job.
+- **Every option has both sides**, including the one you favour and doing nothing. If you cannot
+  name a cost, you have not understood it yet.
+- **The pick is the working agent's**, labelled as yours, with its reason, so the person can see
+  where they would differ. The video attributes it ("the agent working on this picks B").
+- **Facts carry a tag and evidence** (`evidence-standard`). A "no X" claim has an `absent:` line.
+  A claim with neither is marked as a guess.
+- **A real unverified assumption is stated.** "None" is not an answer.
+- **No script.** Do not write scenes, narration or what to show.
 
 ## Receiving one
 
-If you are the explainer agent: read the code first, then the brief.
+If you are the explainer agent: open **Decision** and **Read** first, read the code at that pin,
+then read the rest.
 
-1. **Check every brief claim against the code** and write the result into `sources.md` before
-   scripting: confirmed, contradicted or not checked, each with `path:line`. A claim is a lead,
-   not evidence (`evidence-standard`).
-2. **Derive each option's costs from the code yourself.** The brief's list is a floor. A blank
-   or "none" cost is a defect: report it and fill it from the code.
-3. Options the brief omits but the code reveals are added; options the code does not support
-   are dropped.
-4. Every contradiction, and every cost you added, goes into the video and the hand-back.
+1. **Check every brief claim against the code** and put the result in `sources.md`, by claim: confirmed,
+   contradicted or not checked, each with `path:line` (`evidence-standard`, *What you were handed
+   is a lead*).
+2. **Derive each option's costs from the code yourself**, with `path:line` for each. The brief's
+   list is a floor: a cost you find that it omits is a defect in the brief, whatever it said.
+3. Options the brief omits but the code reveals are added. An option the code does not support is
+   dropped, and `sources.md` records it as dropped with `path:line`.
+4. **Everything the code overruled, every cost you added and every assumption you could not
+   check** goes into the video and the hand-back.
 
 Then `explain-concept` and `explainer-video`; `critic-decision` joins the critics.
 
 ## Hand-back
 
-The explainer returns the MP4's path and a few lines: the call as framed, the
-recommendation, and anything where the code overruled the brief. See `explain-handoff`.
+The MP4's path and the call as framed, the pick, the brief-versus-code result and what is
+unchecked: `explain-handoff`.

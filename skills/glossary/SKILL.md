@@ -4,7 +4,7 @@ description: >
   Fix one name for each concept a video uses, and keep it the same in the script, captions,
   scenes, commands and any source it quotes: define each term once, ban the synonyms, and
   settle spellings before they reach the screen. Load when writing `sources.md` or a script
-  for a video with more than a few named things, or when `critic-consistency` or
+  for a video that names things a viewer must tell apart, or when `critic-consistency` or
   `critic-clarity` finds a term used two ways.
 ---
 

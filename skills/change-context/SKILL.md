@@ -19,25 +19,32 @@ evidence, and stated, observed and inferred stay apart.
 
 Follow `evidence-standard` (tags, pins, safe running, where it goes). For a change:
 
-1. **Both ends are pinned**: full SHAs for base, head and the merge-base. A branch name is not
-   a reference; it moves, so record what it pointed to.
+1. **Both ends are pinned**: `Base`, `Head`, `Merge-base` and the commit list, as full SHAs
+   (`evidence-standard`). A branch name moves; record what it pointed to, and re-check before you
+   finish.
 2. **Intent comes from people; behaviour comes from code.** The PR description, linked issues,
    commit messages and review comments say *why*; the diff, tests and runs say *what*. If none
-   of them states a reason, write `Why: not stated (looked at: <where>)`. Do not infer a motive.
-   A commit message that misdescribes its diff is a finding.
+   of them states a reason, write `Why: not stated (looked at: commit messages, branch
+   description, PR body, linked issues, review comments)`, naming each you could not reach. Do
+   not infer a motive. A commit message that misdescribes its diff is a finding: `Finding: commit
+   <sha> says "<msg>"; the diff changes <behaviour>`.
 3. **A commit's label is a claim, not evidence.** Read every hunk of every commit in the range.
    Set aside only hunks that are provably behaviour-neutral, and list each with its reason.
-   Changed defaults, limits, ordering and status codes are never neutral; list them on their own.
+   Changed defaults, limits, ordering, comparison and boolean flips, exception types and status
+   codes are never neutral; list them on their own.
 4. **Every behavioural claim is a before and an after**, each with evidence; a new thing is
-   "did not exist at base", a removed one "absent at head".
-5. **Run the tests at base and at head**, in a worktree or scratch clone (`evidence-standard`),
-   or say "not run" under Open questions.
+   absent at base, a removed one absent at head, and each says how that was searched.
+5. **Run the tests at base and at head** in a scratch clone or `git archive` copy
+   (`evidence-standard`; a worktree writes into the source repo's `.git`), or say "not run:
+   <why>" under Open questions. A check that needs a tool you may not install (the migration heads
+   check) falls back to a static one: heads are the revision ids not named as any
+   `down_revision`. Tag it `[read]` and say the tool check was not run.
 6. **Unknowns are listed, never filled.**
 
 ## What it covers
 
 - **Scope.** Files and modules touched, grouped by purpose, not by file order; what is
-  incidental (formatting, renames, generated files) and set aside.
+  incidental and set aside, but only hunks proven neutral under rule 3, each with its reason.
 - **Why.** The problem, who hit it, what was tried or rejected. Quote the source; do not
   reconstruct a motive.
 - **Behaviour before and after.** For each user- or caller-visible effect: inputs, outputs,
@@ -72,17 +79,18 @@ pull requests it lists (`explainer-video`). Read the tests with the code.
 
 ## Form
 
-`context.md` (or `sources.md` when it feeds a video): the change in two sentences, the pinned
-ends, then tagged lines, then Findings and Open questions:
+`context.md`, or the video's `sources.md` when it feeds a video (where it goes:
+`evidence-standard`). The change in two sentences, the pinned ends, then tagged lines, then
+Findings and Open questions. Added and removed things are absence claims, so they carry the
+search:
 
 ```
-[read] added: <thing>; did not exist at <base>. <path>:<line> (head)
-[read] removed: <thing>. <path>:<line> (base)
-[read] <before>, now <after>. <path>:<line> (base), <path>:<line> (head); test "<name>"
-[ran]  $ <command> (<cwd>, <sha>, exit <n>) -> <output>
+[read] added: <thing>. absent at <base>: git grep -n <term> <base> -- <path> -> none; present <path>:<line> (head)
+[read] removed: <thing>. present <path>:<line> (base); absent at <head>: git grep -n <term> <head> -> none
+[read] <before>, now <after>. <path>:<line> (base), <path>:<line> (head); tested: <test> | untested
+[read] test "<name>": <old assertion> (base) -> <new assertion> (head); widens | narrows | moves
+[ran]  <claim>. $ <command> (<copy>, <sha>, exit <n>) -> <output>
 ```
-
-Where it goes: `evidence-standard`. Never write it inside the repo you are reading.
 
 ## Handing it on
 

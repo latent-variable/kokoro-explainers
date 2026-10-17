@@ -37,12 +37,16 @@ omission from an oversight.
 - One idea per scene. A scene that needs "and also" is two.
 - The first scene says what the video is about and why the viewer cares. A decision video
   states the call in a sentence they could answer.
+- **A worked example with concrete values comes before any general statement**, including in
+  scene 1 when the framing is wrong.
 - **If the code contradicts the framing** (the brief asks how a post is delivered; nothing
-  delivers it), scene 1 states the real mechanism, the plan records the correction, and the
-  person is told.
-- **A worked example with concrete values comes before any general statement.**
-- The last scene says what to do next.
-- A newcomer's order usually runs: the problem, the idea, one worked example, how it goes
+  delivers it), scene 1 corrects it as a concrete example ("Ben posts; nothing is sent to Ana"),
+  each negative claim cites an `absent:` line in `sources.md`, and the person is told in the
+  plan's first line and in the hand-back.
+- The last scene says what to do next, and makes the outcome reachable: for a feature or
+  change video it names the file and function the viewer would open, and the video shows at
+  least one real excerpt. A spoken alias (`glossary`) always has its literal on screen.
+- A newcomer's order often runs: the problem, the idea, one worked example, how it goes
   wrong or what it costs, then what to do.
 
 ## 3. Idea to picture

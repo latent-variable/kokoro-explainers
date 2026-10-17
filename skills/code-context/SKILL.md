@@ -27,7 +27,9 @@ result goes. In short:
    code wins.
 3. **Unknowns are listed, never filled**, under "Open questions" with where you looked.
 4. **Scope is said.** Answer the question asked first. Name the pin and what you did not read.
-   Sections with no evidence are omitted, not padded; aim for 40 to 80 lines.
+   Sections with no evidence are omitted, not padded. The prose is short (a purpose paragraph and
+   a few summary lines); tagged evidence lines are not capped, so cut breadth before you cut a
+   malformed-input check or the backing of a universal claim.
 
 ## What a good context covers
 
@@ -53,17 +55,20 @@ read for the traces they leave:
 | Portability and operations | Supported platforms and versions, install and deploy files, CI, config and environment variables |
 | Maintainability | Test coverage and style, module boundaries, dependency choices and pins, documented traps |
 
-Write these as "the code enforces X" (`[read]`), never "the requirement is X" unless a
-source states it. Say which qualities the code enforces, which a source only claims, and which
+Write these as "enforced at <layer>" (`[read]`), with the path that bypasses it if one exists
+(a rule in a form but not in the model), never "the requirement is X" unless a source states it. Say which qualities the code enforces, which a source only claims, and which
 are absent. "No stated non-functional requirements found" is a valid line.
 
 **Behaviour of code and APIs.** For each entry point that matters: inputs and their
 validation, outputs, errors and status codes, side effects (files, network, database,
 other processes), ordering and concurrency assumptions, and what happens on failure.
 Trace the real path from entry point to effect. Prefer to *run* it over reading and assuming, but only inside the safe envelope in
-`evidence-standard`; otherwise mark the claim `[read]` and say it was not run. Check what
-happens on malformed input for each entry point, and back every "all" and "never" with a run
-or a search.
+`evidence-standard`; otherwise mark the claim `[read]` and say it was not run. For each entry point, list the
+malformed inputs to check (`evidence-standard`) and mark each outcome `[ran]` or `[read]` with
+"not run". Trace which layer an error handler or a check lives in before you claim it applies
+everywhere: a blueprint handler does not see routing errors; a form check does not guard an API.
+Also list what does **not** happen (a push, a notification, a cache, a fan-out), each as an
+`absent:` line, and say which test covers each traced path or that none does.
 
 **Data and multimodal inputs** (omit if none). What kinds of data it accepts and produces (text, images,
 audio, video, tables, documents), their formats, size limits, where they are stored, and
@@ -79,17 +84,10 @@ records found; looked at <where>".
 
 ## Form
 
-`context.md` by default, or `sources.md` when the context feeds a video. A Scope header
-(pin, not read, run or not), a purpose paragraph, then the requirements and behaviours as tagged
-lines, then Findings and Open questions:
-
-```
-[read] <one testable claim>. <path>:<line>   untested
-[read] absent: <thing>; searched: <command>; result: none
-[ran]  $ <command> (<cwd>, <commit>, exit <n>) -> <first lines of output>
-```
-
-Where it goes: `evidence-standard`.
+`context.md`, or the video's `sources.md` when it feeds a video (where it goes: `evidence-standard`).
+A Scope header (pin, what was not read, whether anything was run), a purpose paragraph, then
+tagged lines in the formats `evidence-standard` defines, then Findings and Open questions. A
+brief or other handed-in claims go in Findings with their result.
 
 ## Handing it on
 
