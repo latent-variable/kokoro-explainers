@@ -1,1 +1,1 @@
-A file called AGENTS.md tells coding agents where to start. So what is written there is in front of the next agent from the start. It lists the traps this project hit, pitfalls to avoid, such as adding speech recognition.
+A file called AGENTS.md tells coding agents where to start. It lists the traps this project hit, such as adding speech recognition. So they are in front of the next agent from the start.

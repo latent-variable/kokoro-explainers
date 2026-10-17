@@ -1,1 +1,1 @@
-Write traps in a file agents read first. Never let the builder judge its own work. Every change goes through a pull request. This video is finished only when its critics pass.
+Write traps in a file agents read first. Never let the builder judge its own work. Turn each mistake into a warning or a written trap. This video is finished only when its critics pass.
