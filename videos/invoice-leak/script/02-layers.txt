@@ -1,1 +1,1 @@
-Every request crosses four layers: the firewall, the load balancer, the API, and the database. The firewall sees addresses and paths, never who owns an invoice. The bug lives in the API.
+A request crosses four layers. The firewall is the front gate: it sees addresses, never who owns an invoice. The load balancer spreads traffic. The API is the code that decides who sees what. The database holds the invoices. The bug lives in the API.

@@ -17,90 +17,102 @@
   .mono { font-family: var(--font-mono); }
 
   /* 01-leak */
-  .l-tag { position: absolute; left: var(--pad); top: 130px; }
-  .l-head { position: absolute; left: var(--pad); top: 210px; font-size: 140px; }
+  .l-tag { position: absolute; left: var(--pad); top: 110px; }
+  .l-head { position: absolute; left: var(--pad); top: 180px; font-size: 140px; }
   .l-head div { white-space: nowrap; }
-  .inv-row { position: absolute; left: var(--pad); right: var(--pad); top: 520px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px; }
+  .inv-row { position: absolute; left: var(--pad); right: var(--pad); top: 470px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px; }
   .inv { padding: 22px 12px; text-align: center; border-color: rgba(255, 122, 61, 0.6); }
   .inv .n { font-family: var(--font-mono); font-size: 36px; font-weight: 700; color: var(--ink); }
   .inv .o { font-family: var(--font-mono); font-size: 29px; letter-spacing: 0.06em; color: var(--accent); margin-top: 8px; white-space: nowrap; }
   .inv.own { border-color: rgba(74, 222, 128, 0.7); }
   .inv.own .o { color: var(--good); }
-  .l-ask { position: absolute; left: var(--pad); right: var(--pad); top: 710px; font-size: 76px; }
+  .pills { position: absolute; left: var(--pad); right: var(--pad); top: 620px; display: flex; gap: 22px; }
+  .pill { padding: 12px 24px; border: 2px solid var(--accent); border-radius: 999px; background: #1b0d05; color: #ffd9c4; font-family: var(--font-mono); font-size: 30px; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; }
+  .l-ask { position: absolute; left: var(--pad); right: var(--pad); top: 735px; font-size: 76px; white-space: nowrap; }
 
   /* 02-layers */
-  .y-tag { position: absolute; left: var(--pad); top: 130px; }
-  .y-head { position: absolute; left: var(--pad); top: 200px; font-size: 104px; white-space: nowrap; }
+  .y-tag { position: absolute; left: var(--pad); top: 120px; }
+  .y-head { position: absolute; left: var(--pad); top: 190px; font-size: 104px; white-space: nowrap; }
   .y-line { position: absolute; left: var(--pad); right: var(--pad); top: 400px; height: 4px; border-radius: 2px; background: rgba(142, 200, 255, 0.25); }
   .y-dot { position: absolute; top: 386px; left: var(--pad); width: 32px; height: 32px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 28px rgba(255, 122, 61, 0.95); }
   .y-req { position: absolute; right: var(--pad); top: 346px; }
-  .layers { position: absolute; left: var(--pad); right: var(--pad); top: 450px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; }
-  .layer { height: 340px; padding: 28px 28px; display: flex; flex-direction: column; position: relative; }
+  .layers { position: absolute; left: var(--pad); right: var(--pad); top: 450px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; align-items: stretch; }
+  .layer { min-height: 330px; padding: 28px 28px; display: flex; flex-direction: column; position: relative; }
   .layer .no { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; color: var(--accent-2); }
   .layer .nm { font-family: var(--font-display); font-weight: 700; font-size: 54px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 14px; line-height: 1; }
-  .layer .sub { font-family: var(--font-mono); font-size: 29px; color: var(--muted); margin-top: auto; line-height: 1.25; }
-  .layer.bug { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255, 122, 61, 0.6), 0 0 60px rgba(255, 122, 61, 0.35); }
-  .layer.bug .sub { color: var(--ink); }
+  .layer .sub { font-family: var(--font-display); font-weight: 500; font-size: 36px; color: var(--ink); margin-top: auto; line-height: 1.15; }
+  .layer .sub em { font-style: normal; color: var(--accent); }
   .stamp { position: absolute; right: -14px; top: -34px; padding: 10px 22px; border: 3px solid var(--accent); border-radius: 10px; background: #1b0d05; color: var(--accent); font-family: var(--font-mono); font-weight: 700; font-size: 30px; letter-spacing: 0.1em; transform: rotate(4deg); white-space: nowrap; }
 
   /* 03-gap */
-  .g-tag { position: absolute; left: var(--pad); top: 110px; }
-  .gcols { position: absolute; left: var(--pad); right: var(--pad); top: 175px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-  .gcol { height: 370px; padding: 36px 42px; display: flex; flex-direction: column; position: relative; }
+  .g-tag { position: absolute; left: var(--pad); top: 100px; }
+  .gcols { position: absolute; left: var(--pad); right: var(--pad); top: 160px; display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 40px; align-items: stretch; }
+  .gcol { padding: 30px 38px; display: flex; flex-direction: column; }
   .gcol .who { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-2); }
-  .gcol .big { font-size: 66px; margin-top: 20px; white-space: nowrap; }
-  .gcol .q { font-family: var(--font-display); font-size: 54px; font-weight: 500; margin-top: 18px; line-height: 1.1; }
-  .gcol .res { margin-top: auto; font-family: var(--font-mono); font-size: 34px; font-weight: 700; letter-spacing: 0.06em; }
+  .gcol .big { font-size: 58px; margin-top: 14px; }
+  .gcol .res { margin-top: auto; padding-top: 16px; font-family: var(--font-mono); font-size: 34px; font-weight: 700; letter-spacing: 0.06em; }
   .gcol.ok { border-color: rgba(74, 222, 128, 0.6); } .gcol.ok .res { color: var(--good); }
   .gcol.no { border-color: var(--accent); box-shadow: 0 0 60px rgba(255, 122, 61, 0.3); } .gcol.no .res { color: var(--accent); }
-  .stride { position: absolute; left: var(--pad); right: var(--pad); top: 610px; display: flex; align-items: center; gap: 22px; }
-  .stride .tag { margin-right: 14px; }
-  .st { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 60px; font-weight: 700; color: var(--muted); opacity: 0.55; }
-  .st.hot { opacity: 1; color: #1b0d05; background: var(--accent); border-color: var(--accent); box-shadow: 0 0 40px rgba(255, 122, 61, 0.6); }
-  .st-note { position: absolute; left: var(--pad); right: var(--pad); top: 740px; display: flex; gap: 34px; font-family: var(--font-mono); font-size: 32px; color: var(--ink); white-space: nowrap; }
-  .st-note b { color: var(--accent); }
+  .routes { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .route { padding: 8px 18px; border-radius: 10px; border: 2px solid rgba(255, 122, 61, 0.6); background: #1b0d05; font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: #ffd9c4; white-space: nowrap; align-self: flex-start; }
+  .route small { font-size: 28px; font-weight: 500; color: var(--muted); margin-left: 12px; }
+  .stakes { position: absolute; left: var(--pad); right: var(--pad); top: 590px; font-family: var(--font-display); font-size: 42px; font-weight: 700; white-space: nowrap; }
+  .stakes b { color: var(--accent); }
+  .stride { position: absolute; left: var(--pad); right: var(--pad); top: 665px; display: flex; align-items: center; gap: 18px; }
+  .stride .tag { margin-right: 14px; font-size: 28px; }
+  .st { width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; position: relative; font-family: var(--font-display); font-size: 54px; font-weight: 700; color: var(--muted); }
+  .st .lit { position: absolute; inset: -2px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius); background: var(--accent); color: #1b0d05; box-shadow: 0 0 40px rgba(255, 122, 61, 0.6); }
+  .st-note { position: absolute; left: var(--pad); right: var(--pad); top: 775px; display: flex; gap: 22px; align-items: center; font-family: var(--font-mono); font-size: 30px; color: var(--ink); white-space: nowrap; }
+  .st-note b { color: var(--accent); margin-right: 8px; }
+  .st-note .pill { font-size: 30px; }
 
   /* 04-options */
-  .o-tag { position: absolute; left: var(--pad); top: 100px; }
-  .ocols { position: absolute; left: var(--pad); right: var(--pad); top: 160px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-  .ocol { height: 535px; padding: 30px 32px; display: flex; flex-direction: column; }
-  .ocol .lay { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); white-space: nowrap; }
-  .ocol .nm { font-family: var(--font-display); font-weight: 700; font-size: 50px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 12px; line-height: 1; }
+  .o-tag { position: absolute; left: var(--pad); top: 95px; }
+  .ocols { position: absolute; left: var(--pad); right: var(--pad); top: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; align-items: stretch; }
+  .ocol { padding: 26px 30px; display: flex; flex-direction: column; }
+  .ocol .lay { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-2); white-space: nowrap; }
+  .ocol .nm { font-family: var(--font-display); font-weight: 700; font-size: 48px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 10px; line-height: 1; }
   .ocol .nm span { color: var(--accent); margin-right: 12px; }
-  .ocol .time { font-family: var(--font-display); font-weight: 700; font-size: 84px; text-transform: uppercase; letter-spacing: -0.04em; margin-top: 18px; line-height: 1; }
-  .ocol .row { margin-top: 22px; padding: 14px 18px; border-radius: 12px; font-family: var(--font-display); font-size: 33px; font-weight: 500; line-height: 1.15; border: 2px solid; }
-  .ocol .row small { display: block; font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.14em; font-weight: 700; margin-bottom: 4px; }
+  .ocol .time { font-family: var(--font-display); font-weight: 700; font-size: 72px; text-transform: uppercase; letter-spacing: -0.04em; margin-top: 14px; line-height: 1; white-space: nowrap; }
+  .ocol .time small { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.06em; color: var(--muted); -webkit-text-fill-color: var(--muted); margin-left: 10px; text-transform: lowercase; }
+  .ocol .row { margin-top: 18px; padding: 12px 18px; border-radius: 12px; font-family: var(--font-display); font-size: 36px; font-weight: 500; line-height: 1.12; border: 2px solid; }
+  .ocol .row small { display: block; font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.14em; font-weight: 700; margin-bottom: 2px; }
   .ocol .gain { border-color: rgba(74, 222, 128, 0.55); } .ocol .gain small { color: var(--good); }
   .ocol .cost { border-color: rgba(255, 122, 61, 0.6); } .ocol .cost small { color: var(--accent); }
-  .nothing { position: absolute; left: var(--pad); right: var(--pad); top: 765px; padding: 16px 30px; display: flex; gap: 26px; align-items: center; font-family: var(--font-display); font-size: 40px; font-weight: 700; border-color: var(--accent); white-space: nowrap; }
+  .nothing { position: absolute; left: var(--pad); right: var(--pad); top: 770px; padding: 14px 30px; display: flex; gap: 26px; align-items: center; font-family: var(--font-display); font-size: 38px; font-weight: 700; border-color: var(--accent); white-space: nowrap; }
   .nothing .tag { color: var(--accent); }
 
   /* 05-pick */
-  .r-tag { position: absolute; left: var(--pad); top: 100px; }
-  .rcols { position: absolute; left: var(--pad); right: var(--pad); top: 180px; display: flex; gap: 40px; align-items: stretch; }
-  .rc { width: 440px; height: 380px; padding: 28px 30px; display: flex; flex-direction: column; position: relative; margin-top: 50px; }
-  .rc.pick { width: 640px; height: 480px; margin-top: 0; border-color: var(--good); box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.6), 0 0 70px rgba(74, 222, 128, 0.3); }
+  .r-tag { position: absolute; left: var(--pad); top: 95px; }
+  .rcols { position: absolute; left: var(--pad); right: var(--pad); top: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; align-items: stretch; }
+  .rc { padding: 26px 30px; display: flex; flex-direction: column; position: relative; }
+  .rc.pick { border-color: var(--good); box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.6), 0 0 70px rgba(74, 222, 128, 0.3); }
   .rc .when { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-2); }
-  .rc .nm { font-family: var(--font-display); font-weight: 700; font-size: 56px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 12px; line-height: 1; }
+  .rc.pick .when { color: var(--good); }
+  .rc .nm { font-family: var(--font-display); font-weight: 700; font-size: 50px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 10px; line-height: 1; }
   .rc .nm span { color: var(--accent); margin-right: 12px; }
-  .rc.pick .nm { font-size: 76px; } .rc.pick .nm span { color: var(--good); }
-  .rc .what { font-family: var(--font-display); font-size: 36px; font-weight: 500; margin-top: auto; line-height: 1.15; color: var(--ink); }
-  .rc .eta { font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: var(--muted); margin-top: 14px; }
+  .rc.pick .nm span { color: var(--good); }
+  .rc .what { font-family: var(--font-display); font-size: 36px; font-weight: 500; margin-top: 16px; line-height: 1.12; color: var(--ink); }
+  .rc .eta { margin-top: auto; padding-top: 12px; font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: var(--muted); }
   .rc.pick .eta { color: var(--good); }
-  .rec { position: absolute; right: -16px; top: -36px; padding: 12px 26px; border: 3px solid var(--good); border-radius: 12px; background: #06140b; color: var(--good); font-family: var(--font-mono); font-size: 34px; font-weight: 700; letter-spacing: 0.08em; transform: rotate(3deg); white-space: nowrap; }
-  .why { position: absolute; left: var(--pad); right: var(--pad); top: 710px; padding: 20px 32px; display: flex; gap: 40px; align-items: center; border-color: rgba(74, 222, 128, 0.5); }
-  .why .tag { color: var(--good); }
-  .why .t { font-family: var(--font-display); font-size: 42px; font-weight: 700; white-space: nowrap; }
-  .est { position: absolute; left: var(--pad); top: 830px; font-family: var(--font-mono); font-size: 28px; color: var(--muted); letter-spacing: 0.04em; }
+  .rec-wrap { position: absolute; right: -16px; top: -38px; transform: rotate(3deg); }
+  .rec { padding: 10px 24px; border: 3px solid var(--good); border-radius: 12px; background: #06140b; color: var(--good); font-family: var(--font-mono); font-size: 32px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; }
+  .why { position: absolute; left: var(--pad); right: var(--pad); top: 560px; padding: 16px 32px; display: flex; flex-direction: column; gap: 10px; border-color: rgba(74, 222, 128, 0.5); }
+  .why .ln { display: flex; gap: 22px; align-items: baseline; font-family: var(--font-display); font-size: 38px; font-weight: 700; white-space: nowrap; }
+  .why .ln .tag { font-size: 28px; width: 190px; color: var(--good); }
+  .why .ln .tag.c { color: var(--accent); }
+  .why .ln em { font-style: normal; color: var(--accent); }
+  .still { position: absolute; left: var(--pad); top: 800px; font-family: var(--font-mono); font-size: 30px; color: var(--ink); white-space: nowrap; }
+  .still b { color: var(--accent); margin-right: 10px; }
 </style>
 
 <section data-scene="01-leak">
-  <div class="tag l-tag" data-cue="+0.1" data-anim="fade"><span class="ping"></span><b>//</b>02:14 AM &middot; ledgerly access log</div>
+  <div class="tag l-tag" data-cue="+0.1" data-anim="fade"><span class="ping"></span><b>//</b>02:14 UTC &middot; ledgerly access log</div>
   <div class="big l-head">
     <div class="silver" data-cue="Overnight" data-anim="up">User 88 opened</div>
     <div class="ember" data-cue="seven" data-anim="slam">seven invoices.</div>
   </div>
-  <div class="inv-row" data-cue="forty" data-anim="stagger">
+  <div class="inv-row" data-cue="seven" data-anim="stagger">
     <div class="inv card own"><div class="n">#1041</div><div class="o">THEIR OWN</div></div>
     <div class="inv card"><div class="n">#1042</div><div class="o">ORG 7</div></div>
     <div class="inv card"><div class="n">#1043</div><div class="o">ORG 31</div></div>
@@ -109,104 +121,123 @@
     <div class="inv card"><div class="n">#1046</div><div class="o">ORG 4</div></div>
     <div class="inv card"><div class="n">#1047</div><div class="o">ORG 31</div></div>
   </div>
+  <div class="pills">
+    <div class="pill" data-cue="Six" data-anim="pop">6 INVOICES &middot; 4 OTHER COMPANIES</div>
+    <div class="pill" data-cue="through" data-anim="pop">200 OK &times; 7</div>
+    <div class="pill" data-cue="emails" data-anim="pop">EMAILS + AMOUNTS SEEN</div>
+  </div>
   <div class="big l-ask ember" data-cue="Which" data-anim="slam">Which fix do we ship?</div>
 </section>
 
 <section data-scene="02-layers" data-transition="wipe">
   <div class="tag y-tag" data-cue="+0.1" data-anim="fade"><b>//</b>one request, four layers</div>
-  <div class="big y-head silver" data-cue="Every" data-anim="up">Where does it break?</div>
+  <div class="big y-head silver" data-cue="crosses" data-anim="up">Where does it break?</div>
   <div class="y-line" data-cue="+0.2" data-anim="fade"></div>
   <div class="y-dot" id="y-dot"></div>
   <div class="tag y-req" data-cue="+0.2" data-anim="fade">request &rarr;</div>
   <div class="layers">
-    <div class="layer card" data-cue="firewall#1" data-anim="up"><div class="no">LAYER 1</div><div class="nm">Firewall</div><div class="sub">sees path and address, never the owner</div></div>
-    <div class="layer card" data-cue="load" data-anim="up"><div class="no">LAYER 2</div><div class="nm">Load balancer</div><div class="sub">passes requests along</div></div>
-    <div class="layer card bug" data-cue="API#1" data-anim="up"><div class="stamp" data-cue="lives" data-anim="slam">BUG LIVES HERE</div><div class="no">LAYER 3</div><div class="nm">API</div><div class="sub">the code decides who gets what</div></div>
-    <div class="layer card" data-cue="database" data-anim="up"><div class="no">LAYER 4</div><div class="nm">Database</div><div class="sub">holds every company's rows</div></div>
+    <div class="layer card" data-cue="firewall" data-anim="up"><div class="no">LAYER 1</div><div class="nm">Firewall</div><div class="sub">sees addresses, <em data-cue="owns" data-anim="highlight">never the owner</em></div></div>
+    <div class="layer card" data-cue="load" data-anim="up"><div class="no">LAYER 2</div><div class="nm">Load balancer</div><div class="sub">spreads traffic</div></div>
+    <div class="layer card" id="y-api" data-cue="API#1" data-anim="up"><div class="stamp" id="y-stamp" data-cue="lives" data-anim="slam">BUG LIVES HERE</div><div class="no">LAYER 3</div><div class="nm">API</div><div class="sub">decides who sees what</div></div>
+    <div class="layer card" data-cue="database" data-anim="up"><div class="no">LAYER 4</div><div class="nm">Database</div><div class="sub">holds the invoices</div></div>
   </div>
 </section>
 
 <section data-scene="03-gap" data-transition="fade">
   <div class="tag g-tag" data-cue="+0.1" data-anim="fade"><b>//</b>inside the API layer</div>
   <div class="gcols">
-    <div class="gcol card ok" data-cue="Authentication" data-anim="left">
-      <div class="who">authentication</div><div class="big silver">Who are you?</div>
+    <div class="gcol card ok" data-cue="+0.1" data-anim="fade">
+      <div class="who" data-cue="Authentication" data-anim="up">authentication</div><div class="big silver" data-cue="Authentication" data-anim="up">Who are you?</div>
       <div class="res" data-cue="works" data-anim="pop">&#10003; WORKS</div>
     </div>
-    <div class="gcol card no" data-cue="Authorization" data-anim="right">
-      <div class="who">authorization</div><div class="big silver">May you touch this record?</div>
-      <div class="res" data-cue="Two" data-anim="slam">&#10005; MISSING ON 2 ROUTES</div>
+    <div class="gcol card no" data-cue="+0.1" data-anim="fade">
+      <div class="who" data-cue="Authorization" data-anim="up">authorization</div><div class="big silver" data-cue="Authorization" data-anim="up">May you touch this record?</div>
+      <div class="routes">
+        <div class="route" data-cue="opening" data-anim="right">GET /invoices/:id<small>open one</small></div>
+        <div class="route" data-cue="changing" data-anim="right">PATCH /invoices/:id/status<small>change it</small></div>
+      </div>
+      <div class="res" data-cue="Two" data-anim="slam">&#10005; NEITHER ROUTE ASKS</div>
     </div>
   </div>
+  <div class="stakes" data-cue="signed" data-anim="up"><b>Any signed-in user</b> reads other companies' invoices, <b>could change one</b></div>
   <div class="stride" data-cue="STRIDE" data-anim="stagger">
-    <div class="tag"><b>//</b>STRIDE</div>
-    <div class="st card">S</div><div class="st card hot" id="st-t">T</div><div class="st card">R</div><div class="st card hot" id="st-i">I</div><div class="st card">D</div><div class="st card">E</div>
+    <div class="tag"><b>//</b>STRIDE &middot; threat checklist</div>
+    <div class="st card">S</div>
+    <div class="st card">T<div class="lit" data-cue="tampering" data-anim="pop">T</div></div>
+    <div class="st card">R</div>
+    <div class="st card">I<div class="lit" data-cue="information" data-anim="pop">I</div></div>
+    <div class="st card">D</div>
+    <div class="st card">E<div class="lit" data-cue="elevation" data-anim="pop">E</div></div>
   </div>
   <div class="st-note">
-    <span data-cue="information" data-anim="up"><b>I</b> information disclosure</span>
-    <span data-cue="tampering" data-anim="up"><b>T</b> tampering</span>
-    <span data-cue="reads" data-anim="fade">log: reads only</span>
+    <span data-cue="information" data-anim="up"><b>I</b>information disclosure</span>
+    <span data-cue="tampering" data-anim="up"><b>T</b>tampering</span>
+    <span data-cue="elevation" data-anim="up"><b>E</b>elevation of privilege</span>
+    <span class="pill" data-cue="reads" data-anim="pop">LOG: READS ONLY</span>
   </div>
 </section>
 
 <section data-scene="04-options" data-transition="slide">
-  <div class="tag o-tag" data-cue="+0.1" data-anim="fade"><b>//</b>three fixes, side by side</div>
+  <div class="tag o-tag" data-cue="Three" data-anim="fade"><b>//</b>three fixes &middot; times are the agent's estimates</div>
   <div class="ocols">
-    <div class="ocol card" data-cue="firewall" data-anim="up">
-      <div class="lay">layer 1 &middot; firewall</div>
-      <div class="nm"><span>A</span>Firewall rule</div>
-      <div class="time ember">Minutes</div>
-      <div class="row gain" data-cue="Live" data-anim="fade"><small>GAINS</small>live fast, no code change</div>
-      <div class="row cost" data-cue="cannot" data-anim="fade"><small>COSTS</small>can't see owners; hole stays open</div>
+    <div class="ocol card" data-cue="Three" data-anim="fade">
+      <div class="lay" data-cue="firewall" data-anim="up">layer 1 &middot; firewall</div>
+      <div class="nm" data-cue="firewall" data-anim="up"><span>A</span>Firewall rule</div>
+      <div class="time ember" data-cue="minutes" data-anim="up">Minutes<small>est.</small></div>
+      <div class="row gain" data-cue="blocks" data-anim="fade"><small>GAINS</small>blocks fast readers</div>
+      <div class="row cost" data-cue="slow" data-anim="fade"><small>COSTS</small>a slow reader gets through</div>
     </div>
-    <div class="ocol card" data-cue="ownership" data-anim="up">
-      <div class="lay">layer 3 &middot; API</div>
-      <div class="nm"><span>B</span>Ownership check</div>
-      <div class="time ember">~1 hour</div>
-      <div class="row gain" data-cue="hour" data-anim="fade"><small>GAINS</small>closes this hole</div>
+    <div class="ocol card" data-cue="Three" data-anim="fade">
+      <div class="lay" data-cue="ownership" data-anim="up">layer 3 &middot; API</div>
+      <div class="nm" data-cue="ownership" data-anim="up"><span>B</span>Ownership check</div>
+      <div class="time ember" data-cue="hour" data-anim="up">~1 hour<small>est.</small></div>
+      <div class="row gain" data-cue="closes" data-anim="fade"><small>GAINS</small>closes the hole</div>
       <div class="row cost" data-cue="remember" data-anim="fade"><small>COSTS</small>every new route must remember</div>
     </div>
-    <div class="ocol card" data-cue="database" data-anim="up">
-      <div class="lay">layer 4 &middot; database</div>
-      <div class="nm"><span>C</span>Row-level security</div>
-      <div class="time ember">Days</div>
-      <div class="row gain" data-cue="catches" data-anim="fade"><small>GAINS</small>catches forgetful code</div>
+    <div class="ocol card" data-cue="Three" data-anim="fade">
+      <div class="lay" data-cue="security" data-anim="up">layer 4 &middot; database</div>
+      <div class="nm" data-cue="security" data-anim="up"><span>C</span>Row-level security</div>
+      <div class="time ember" data-cue="days" data-anim="up">Days<small>est.</small></div>
+      <div class="row gain" data-cue="hands" data-anim="fade"><small>GAINS</small>database returns only your rows</div>
       <div class="row cost" data-cue="lock" data-anim="fade"><small>COSTS</small>a mistake can lock customers out</div>
     </div>
   </div>
-  <div class="nothing card" data-cue="nothing" data-anim="slam"><span class="tag"><b>//</b>do nothing</span>every invoice stays open to every customer</div>
+  <div class="nothing card" data-cue="nothing" data-anim="slam"><span class="tag"><b>//</b>do nothing</span>readable by other customers, already used once</div>
 </section>
 
 <section data-scene="05-pick" data-transition="fade">
   <div class="tag r-tag" data-cue="+0.1" data-anim="fade"><b>//</b>the recommendation</div>
   <div class="rcols">
-    <div class="rc card" data-cue="stopgap" data-anim="left">
-      <div class="when">stopgap</div><div class="nm"><span>A</span>Firewall rule</div>
-      <div class="what">buys time until B ships</div><div class="eta">MINUTES</div>
+    <div class="rc card" data-cue="+0.1" data-anim="fade">
+      <div class="when" data-cue="Run" data-anim="up">stopgap</div><div class="nm" data-cue="Run" data-anim="up"><span>A</span>Firewall rule</div>
+      <div class="what" data-cue="Run" data-anim="up">blocks fast readers until B ships</div><div class="eta" data-cue="Run" data-anim="fade">MINUTES &middot; est.</div>
     </div>
-    <div class="rc card pick" data-cue="Pick" data-anim="zoom">
-      <div class="rec" data-cue="now" data-anim="slam">&#10003; RECOMMENDED</div>
-      <div class="when">ship now</div><div class="nm"><span>B</span>Ownership check</div>
-      <div class="what">closes this hole, and it is small</div><div class="eta">~1 HOUR</div>
+    <div class="rc card pick" data-cue="+0.1" data-anim="fade">
+      <div class="rec-wrap" data-cue="now" data-anim="fade"><div class="rec">&#10003; RECOMMENDED</div></div>
+      <div class="when" data-cue="Pick" data-anim="up">ship now</div><div class="nm" data-cue="Pick" data-anim="up"><span>B</span>Ownership check</div>
+      <div class="what" data-cue="Pick" data-anim="up">closes this hole</div><div class="eta" data-cue="Pick" data-anim="fade">~1 HOUR &middot; est.</div>
     </div>
-    <div class="rc card" data-cue="plan" data-anim="right">
-      <div class="when">plan next</div><div class="nm"><span>C</span>Row-level security</div>
-      <div class="what">stops the next forgotten check</div><div class="eta">DAYS</div>
+    <div class="rc card" data-cue="+0.1" data-anim="fade">
+      <div class="when" data-cue="plan" data-anim="up">plan next</div><div class="nm" data-cue="plan" data-anim="up"><span>C</span>Row-level security</div>
+      <div class="what" data-cue="plan" data-anim="up">a forgotten check stops being a leak</div><div class="eta" data-cue="plan" data-anim="fade">DAYS &middot; est.</div>
     </div>
   </div>
-  <div class="why card" data-cue="closes" data-anim="up">
-    <span class="tag"><b>//</b>why B</span><span class="t">closes this hole</span><span class="t" style="color: var(--muted);">&middot;</span><span class="t" data-cue="risky" data-anim="highlight">C is too risky to rush tonight</span>
+  <div class="why card">
+    <div class="ln" data-cue="closes" data-anim="up"><span class="tag">// why B</span><span>closes this hole in about an hour</span></div>
+    <div class="ln" data-cue="cost" data-anim="up"><span class="tag c">// its cost</span><span>the next forgotten route <em>leaks again</em>, so C is next</span></div>
+    <div class="ln" data-cue="takes" data-anim="up"><span class="tag c">// not C yet</span><span data-cue="risky" data-anim="highlight">days, and it can lock customers out</span></div>
   </div>
-  <div class="est" data-cue="estimates" data-anim="fade">times are the working agent's estimates</div>
+  <div class="still" data-cue="tonight" data-anim="fade"><b>//</b>doing nothing: invoices stay readable by other customers</div>
 </section>
 
 <script>
-  // A request travels the four layers; the ember dot stops at the API.
+  // A request travels the four layers and stops at the API, which lights up when the stamp lands.
   const at = (sel) => +document.querySelector(sel).dataset.at;
   const s2 = +document.querySelector('[data-scene="02-layers"]').dataset.start;
   const d2 = +document.querySelector('[data-scene="02-layers"]').dataset.duration;
   gsap.set("#y-dot", { x: 0 });
   tl.fromTo("#y-dot", { x: 0 }, { x: 1560, duration: Math.max(4, d2 - 2), ease: "power1.inOut" }, s2 + 0.4);
+  tl.to("#y-api", { borderColor: "#ff7a3d", boxShadow: "0 0 0 1px rgba(255,122,61,0.6), 0 0 60px rgba(255,122,61,0.35)", duration: 0.4 }, at("#y-stamp"));
   document.querySelectorAll(".ping").forEach((p) => {
     tl.fromTo(p, { boxShadow: "0 0 0 0 rgba(255,122,61,0.7), 0 0 18px rgba(255,122,61,0.8)" },
       { boxShadow: "0 0 0 14px rgba(255,122,61,0), 0 0 18px rgba(255,122,61,0.8)", duration: 1.2, repeat: 30, ease: "power1.out" }, 0);
