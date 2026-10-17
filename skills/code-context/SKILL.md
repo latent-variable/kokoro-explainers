@@ -18,7 +18,8 @@ fail it.
 
 ## The bar
 
-Follow `evidence-standard`: it sets the tags, the pin, the safe way to run code and where the
+How you get there is yours: this is what the result must show, and any command here is one way that has
+worked. Follow `evidence-standard`: it sets the tags, the pin, the safe way to run code and where the
 result goes. In short:
 
 1. **Every statement names its evidence and its kind**: `[stated]`, `[read]`, `[ran]` or
