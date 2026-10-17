@@ -61,13 +61,15 @@ test("a caption never ends on a function word, even when carrying it leaves a sh
   cpSync(join(REPO, "template"), dir, { recursive: true });
   // The comma ends the line at five words; "to," "a" and "the" all carry, leaving "First fish".
   writeFileSync(join(dir, "timing.json"), JSON.stringify({
-    total: 9,
+    total: 11,
     scenes: [
       { id: "01-intro", start: 0, duration: 4, sentences: [{ text: "First fish the a to, then they swim away.", start: 0.5, duration: 3 }] },
-      { id: "02-idea", start: 4, duration: 5, sentences: [
+      { id: "02-idea", start: 4, duration: 7, sentences: [
         { text: "A box appears when the voice says box.", start: 4.5, duration: 3 },
         // A whole run of function words before a comma has nothing to stay behind: it joins the next line.
         { text: "A to in of and, first they swim away.", start: 7.8, duration: 1 },
+        // Twelve function words reach the line limit: the limit wins, and the line is kept whole.
+        { text: "and or but of to in on at for with by as, then dogs bark loudly today.", start: 9, duration: 2 },
       ] },
     ],
   }));
@@ -77,7 +79,10 @@ test("a caption never ends on a function word, even when carrying it leaves a sh
   const caps = [...html.matchAll(/class="clip cap"[^>]*><span>([^<]*)<\/span>/g)].map((m) => m[1]);
   assert.deepEqual(caps.slice(0, 2), ["First fish", "the a to, then they swim away."]);
   assert.ok(caps.includes("A to in of and, first they swim away."), `a stranded line in ${JSON.stringify(caps)}`);
-  for (const c of caps) assert.doesNotMatch(c, /\b(a|an|the|to|of|and|or|but|in|on|at|for|with|by|as|its|their|that)[.,]?$/i, `"${c}" ends on a function word`);
+  assert.ok(caps.includes("and or but of to in on at for with by as,") && caps.includes("then dogs bark loudly today."), `the 12-word limit was not kept in ${JSON.stringify(caps)}`);
+  for (const c of caps) assert.ok(c.split(" ").length <= 12, `"${c}" is over 12 words`);
+  // Only a line already at the 12-word limit may end on one (the limit wins, as above).
+  for (const c of caps.filter((c) => c.split(" ").length < 12)) assert.doesNotMatch(c, /\b(a|an|the|to|of|and|or|but|in|on|at|for|with|by|as|its|their|that)[.,]?$/i, `"${c}" ends on a function word`);
 });
 
 test("build stops on a cue word the scene never says", () => {

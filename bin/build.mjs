@@ -62,8 +62,12 @@ function lines(text) {
     cur.push(w);
     if ((w.endsWith(",") && cur.length >= 5) || cur.length >= LINE_WORDS) {
       const carry = [];
-      while (cur.length && WEAK.has(norm(cur[cur.length - 1]))) carry.unshift(cur.pop());
-      if (cur.length) out.push(cur); // a line of nothing but function words has no line to stay on: it all carries
+      // A line of nothing but function words has no line to stay on, so it all carries, unless it is
+      // already at the limit: then the limit wins and it is kept whole.
+      if (cur.length < LINE_WORDS || !cur.every((x) => WEAK.has(norm(x)))) {
+        while (cur.length && WEAK.has(norm(cur[cur.length - 1]))) carry.unshift(cur.pop());
+      }
+      if (cur.length) out.push(cur);
       cur = carry;
     }
   }
