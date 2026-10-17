@@ -19,7 +19,7 @@ restating them, because a copy goes stale and the code does not.
 
 1. `AGENTS.md`: what the project is, where things are, what is expected, the traps. The
    traps are the point; each one cost someone time.
-2. `README.md`: the human story and the `data-cue` / `video.json` reference.
+2. `README.md`: the short human story. The `data-cue` and `video.json` reference, the commands and the layout are in `AGENTS.md`.
 3. `.agents/memory/MEMORY.md` when it exists (gitignored project memory).
 4. `git log --oneline -15`: what changed lately and why. Commit subjects here are
    `type: summary (#PR)`.
@@ -63,7 +63,7 @@ implying it passed.
 - Generated files are gitignored. Never commit audio, frames, renders, `index.html`,
   `meta.json` or `timing.json`.
 - The scripts never delete files. Do not add deletion.
-- The project name is a placeholder: do not spread `kokoro-explainers` into new files.
+- The name is ShipShow (`AGENTS.md`, traps). Use it in new files; the old name `kokoro-explainers` only survives in history.
 - A video about another code base goes in `local/videos/`: this repo is public.
 - Do not add speech recognition to fix a cue's timing (`AGENTS.md`, traps).
 - If a trap you hit is not in `AGENTS.md`, add it there in the same change, with the date

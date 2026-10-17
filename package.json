@@ -1,14 +1,15 @@
 {
-  "name": "kokoro-explainers",
+  "name": "shipshow",
   "version": "0.1.0",
   "private": true,
-  "description": "Narrated explainer videos from plain text: a Kokoro-82M voice and HyperFrames scenes, rendered on your own machine.",
+  "description": "Turn a shit show into a ship show: narrated explainer videos that help you understand a code base fast enough to ship it. Kokoro voice, HyperFrames scenes, rendered on your own machine.",
   "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
+    "setup": "python3 -m venv .venv && .venv/bin/pip install -r requirements.txt",
     "doctor": "node bin/doctor.mjs",
     "new": "node bin/new.mjs",
     "voice": "node bin/voice.mjs",
