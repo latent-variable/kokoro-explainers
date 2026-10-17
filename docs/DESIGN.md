@@ -75,7 +75,8 @@ alias rule and the 0.8 starting speed each stated in several places (D15, D16). 
 
 ### D5. This repo is public (2026-10-17)
 **Decision.** A video about another code base goes in `local/videos/`; a decision video always
-does. Only this repo's own videos and the sample app's live in `videos/`. **Why.** A private
+does, unless it is an example about code in this repo that we mean to publish (D34: `videos/invoice-leak`,
+about `examples/ledgerly`). Only this repo's own videos, the sample app's and such examples live in `videos/`. **Why.** A private
 code base's details must not reach a public repo. **Superseded in part.** An earlier draft of
 `evidence-standard` routed any public, licensed code to `videos/`; the red team showed it clashed
 with `AGENTS.md` (round 2), so the rule is the narrower one above.
@@ -314,7 +315,8 @@ while taking about ten seconds to read; a new *Stillness* table gives each scene
 ### D24. Main's speed, themes and review plans are adopted (2026-10-17; supersedes D15)
 **Decision.** After main moved (#7 to #10) this branch was merged and its own pace guidance withdrawn.
 `speed` is the person's multiplier on a base of about 160 words a minute (1.25 by default;
-`--speed`, `video.json` or `local/config.json`), `critic-pacing` judges each scene against 160 times it,
+`--speed`, `video.json` or `local/config.json`), `critic-pacing` judges each scene against about 210 syllables a
+minute times it (main measures syllables, since words a minute runs high on short words; `BASE_SPM`),
 and an off-target scene is fixed with fewer or plainer words. How much review a video gets is a plan with
 presets, dials and a floor (`npm run critics`; the builder sets `importance`), so `video.json` no longer
 takes a `critics` list and the template does not carry one. A video's look is a theme with motion tokens.
@@ -349,8 +351,8 @@ Python 3.10 to 3.13, and `python3` is 3.14 on a current Homebrew machine, where 
 ### D27. OmniVoice is an optional second voice engine (main, #11; adopted 2026-10-17)
 **Decision.** `engine` in `video.json` or `local/config.json` picks `kokoro` (the default, anywhere) or
 `omnivoice` (higher quality, clones a voice from a 3 to 10 second clip, Apple Silicon only through MLX). It installs
-into the same `.venv` through `npm run setup:omnivoice`, which calls `npm run setup`, so this branch's
-supported-Python pick (D26) applies to both. `doctor` lists the engine as optional until asked with `--omnivoice`.
+into the same `.venv` through `npm run setup:omnivoice`, which runs `npm run setup` only when no `.venv` exists, so this
+branch's supported-Python pick (D26) applies to a fresh install; an existing `.venv` needs `npm run setup` first (D35). `doctor` lists the engine as optional until asked with `--omnivoice`.
 **Consequences recorded by main.** A clone is somebody's voice (clone yourself or someone who agreed; `local/` never
 leaves the machine); OmniVoice can drop or repeat a word and nothing here hears it back (no speech recognition, D1);
 a take's identity includes the voice file's bytes (the dropped words were fixed later, D31). This branch did not change any of it; the merge only combined
@@ -425,6 +427,23 @@ upgraded too. `doctor` now tells a person whose Kokoro install is missing to run
 requirements install). A test locks the order in, so the upgrade cannot slip behind the install.
 **Costs.** One more pip call, and a network fetch, on every setup. `npm run setup:omnivoice` still installs with the venv's
 current pip, so an old venv needs `npm run setup` first.
+
+### D36. The last scene holds; `hold` adds still time (2026-10-17)
+**Decision.** Every scene but the last fades out at its end; the last stays up, so the video's final frame is the finished
+picture (`kit/kit.js`). `video.json` `"hold"` adds plain seconds (not scaled by speed) after the last word, laid onto the
+last scene (`bin/voice.mjs`); the default is 0.
+**Why.** The team presents a decision video live and talks over its recommendation after it ends. The last scene used to
+fade over its final 0.3 s and then go blank, so an ended player showed an empty screen.
+**Costs.** None known; the music bed already fades out on its own over the last 2.5 s.
+
+### D37. `make` passes its flags to `build`; the docs were reconciled with the code (2026-10-17)
+**Decision.** `npm run make -- <folder> --theme paper` now previews a theme, as the README and the `theme` skill
+always said; `make` had passed its flags to `voice` and `render` but not to `build`, so the theme was silently ignored.
+A consistency pass, an independent audit against the code, also aligned the pacing target everywhere (about 210
+syllables a minute times the speed), where a published example decision video lives (D5, D34), the entrance list (to
+`slam`), what `setup:omnivoice` does to an existing `.venv` (D27, D35), the floor (grounding for a video that shows
+code), the caption tokens a theme can set, the layout (`examples/`, all four videos) and the voice credit for `eve`.
+**Costs.** None known.
 
 ### D38. A plan, not a change: Claude best practices (2026-10-17)
 **Decision.** Wrote `docs/PLAN.md` from Anthropic's docs and engineering posts (read by a research agent on 2026-10-17) and
@@ -610,7 +629,7 @@ What an agent or person observes. Each line is checkable against the cited file.
   2 unsupported (no sidecar). `verify-vendored.sh <dir> <hash>` prints MATCH only for the upstream tree with
   no edits and no untracked files.
 - Scripts never delete files. Generated files are gitignored. The kit renders entrances on a
-  cue (the list, `up` to `pulse` including `type`, `draw`, `count` and `highlight`, is in `AGENTS.md`); an
+  cue (the list, `up` to `slam` including `type`, `draw`, `count`, `highlight`, `scramble` and `glitch`, is in `AGENTS.md`); an
   exit, a swap and a connector between boxes need a custom `<script>`.
 
 **The skills**
