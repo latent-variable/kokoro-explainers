@@ -34,6 +34,8 @@ const plan = scenes(dir).map((s) => ({
   }),
 }));
 
+if (!plan.some((s) => s.sentences.length)) die("the script has no sentences to voice");
+
 async function voiceOne({ say, wav, key, keyFile }) {
   await run(HF, ["tts", say, "-v", cfg.voice, "-s", String(cfg.speed), "-o", wav, "--json"], { env: ttsEnv() });
   writeFileSync(keyFile, key);
