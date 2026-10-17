@@ -241,8 +241,24 @@
 
       document.querySelectorAll(".cap span").forEach((c) => {
         const t = +c.parentElement.dataset.start, e = t + +c.parentElement.dataset.duration;
+        const words = [...c.querySelectorAll(".w")];
         gsap.set(c, { opacity: 0 });
-        tl.to(c, { opacity: 1, duration: 0.15 }, t);
+        if (!words.length) {
+          tl.to(c, { opacity: 1, duration: 0.15 }, t);
+        } else {
+          // Karaoke: the line pops in, each word lights in the accent as the voice reaches it,
+          // then settles to the ink colour; words not yet spoken wait dimmed.
+          gsap.set(c, { scale: 0.92, y: 14 });
+          tl.to(c, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "back.out(2)" }, t);
+          gsap.set(words, { opacity: 0.38 });
+          words.forEach((w, i) => {
+            const at = Math.max(t, +w.dataset.wordAt), next = words[i + 1] ? +words[i + 1].dataset.wordAt : e;
+            // A lift and a glow, never a scale: a scaled word grows into the spaces beside it.
+            const hot = colour("--cap-hot", colour("--accent", "#ff7a3d"));
+            tl.to(w, { opacity: 1, color: hot, y: -3, textShadow: `0 0 18px ${hot}`, duration: 0.08 }, at);
+            tl.to(w, { color: colour("--cap-ink", "#ffffff"), y: 0, textShadow: "0 0 0px rgba(0,0,0,0)", duration: 0.18 }, Math.max(at + 0.1, next));
+          });
+        }
         tl.set(c, { opacity: 0 }, e);
       });
 

@@ -36,8 +36,14 @@
 
   --cap-bg: rgba(5, 8, 18, 0.86);
   --cap-ink: #f4f7fb;
-  --cap-size: 40px;
+  --cap-size: 48px;
   --cap-radius: 10px;
+  --cap-style: karaoke;       /* each word lights as it is spoken */
+  --cap-words: 6;
+  --cap-font: "Space Grotesk", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --cap-weight: 700;
+  --cap-tracking: -0.01em;
+  --cap-hot: #ffc49e;
 
   --transition: fade;
   --entrance: up;

@@ -36,6 +36,8 @@
   --cap-ink: #ffffff;
   --cap-size: 44px;
   --cap-radius: 12px;
+  --cap-style: plain;         /* plain, or karaoke: each word lights as it is spoken */
+  --cap-words: 12;            /* the longest caption line, in words */
 
   /* motion: the defaults a video's flair can override (video.json "flair") */
   --transition: rise;         /* none | fade | rise | slide | zoom | wipe | flash */

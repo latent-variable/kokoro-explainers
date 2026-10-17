@@ -78,7 +78,7 @@ export function themeCss(name, videoFolder) {
 }
 
 /** video.json "flair": a video's own motion, over its theme's. */
-export const FLAIR = { transition: ["none", "fade", "rise", "slide", "zoom", "wipe", "flash"], entrance: null, camera: ["none", "push"], ambient: ["none", "glow", "grid", "dots", "stars"], "ambient-strength": null, progress: ["on", "off"] };
+export const FLAIR = { transition: ["none", "fade", "rise", "slide", "zoom", "wipe", "flash"], entrance: null, camera: ["none", "push"], ambient: ["none", "glow", "grid", "dots", "stars", "horizon"], "ambient-strength": null, progress: ["on", "off"] };
 export function flairCss(flair = {}) {
   const lines = Object.entries(flair).map(([k, v]) => {
     if (!(k in FLAIR)) die(`video.json flair has "${k}"; it takes ${Object.keys(FLAIR).join(", ")}`);
