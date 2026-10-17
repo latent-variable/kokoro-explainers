@@ -10,6 +10,7 @@ commit the video is built from, plus the two tools it runs.
 
 | Claim | Source |
 |---|---|
+| The tagline on screen: turn a shit show into a ship show | The project's own line: `README.md` and `AGENTS.md`, *What this is* |
 | The video is made from five short text files and one HTML page | `script/` holds five `.txt` files; `scenes.html` is the page. `video.json` is a sixth, configuration file, not counted as "text files" in the narration |
 | Kokoro is a small, open text-to-speech model (82 million parameters, Apache 2.0 weights) | Kokoro-82M model card |
 | It is small enough to run on a laptop's processor | `hyperframes tts` runs kokoro-onnx on onnxruntime's CPU provider; the model is about 340 MB (`~/.cache/hyperframes/tts`). Measured: 16 sentences in 8.6 s on an M-series MacBook |
@@ -19,11 +20,11 @@ commit the video is built from, plus the two tools it runs.
 | Tag a picture with a word and it appears as the voice reaches that word | `data-cue` in `bin/build.mjs` (`cueTime`) and `kit/kit.js`. The time inside a sentence is estimated from the share of letters before the word |
 | One command voices, builds, and records frame by frame into an MP4 | `npm run make` runs `bin/make.mjs`: voice, build, lint, render (`hyperframes render`, frame by frame in headless Chrome) |
 | Change a sentence and only that sentence is voiced again (an edit; an insertion renumbers later takes) | `bin/voice.mjs` keeps a take whose text, voice and speed are unchanged (`.key` files). Inserting a sentence renumbers the takes after it, which re-voices those too |
-| Everything runs on your own machine | No network call in the pipeline once the model is downloaded; the first `doctor` run downloads it |
-| The project is open source, on GitHub | `LICENSE` (MIT); public at github.com/latent-variable/kokoro-explainers |
-| To make your own, clone it and follow the setup in its README | `README.md`, *Set it up*: `npm install`, the Python venv with `requirements.txt`, `npm run doctor` |
+| After a one-time download, everything runs on your own machine | No network call in the pipeline once two things are downloaded: the Kokoro model (the first `doctor` run, about 340 MB) and, when HyperFrames finds no Chrome, a headless Chrome on the first render (`hyperframes browser ensure`, about 190 MB) |
+| The project is open source, on GitHub | `LICENSE` (MIT); public at github.com/latent-variable/shipshow |
+| To make your own, clone it and follow the setup in its README | `README.md`, *Set it up*: `npm install`, `npm run setup` (the Python venv with `requirements.txt`), `npm run doctor` |
 | Then run npm run new with a folder name | `npm run new -- videos/<name>` copies `template/` (`bin/new.mjs`) |
-| Write one text file per scene and a section for each in scenes.html, then run npm run make on it | `npm run make -- videos/<name>` (`bin/make.mjs`); `README.md`, *Make your own*: `script/01-intro.txt`, one per scene |
+| Write one text file per scene and a section for each in scenes.html, then run npm run make on it | `npm run make -- videos/<name>` (`bin/make.mjs`); `AGENTS.md`, *A video's files*: `script/01-intro.txt`, one per scene |
 
 ## Left out
 

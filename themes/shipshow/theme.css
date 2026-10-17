@@ -1,0 +1,46 @@
+/* ShipShow's own theme: dark navy, warm orange, cool blue. Every token here is one a theme
+   may set; a new theme copies this file and changes what it needs (skills/theme). */
+:root {
+  /* colour */
+  --bg: #0f1420;
+  --ink: #eef2f8;
+  --muted: #b4bdcd;
+  --accent: #ffb454;          /* the thing to look at */
+  --accent-2: #7cc4ff;        /* a second voice: links, files, the sea */
+  --card: #182033;
+  --line: #2c3854;
+  --code-bg: #0a0e17;
+  --code-ink: #b4bdcd;
+  --good: #7ee0a1;
+  --bad: #ff8f8f;
+
+  /* type */
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font);
+  --font-mono: "SF Mono", Menlo, Consolas, monospace;
+  --display-weight: 800;
+  --display-tracking: -0.02em;
+
+  /* layout and shape */
+  --pad: 140px;               /* left and right margin */
+  --heading-top: 110px;
+  --heading-size: 76px;
+  --heading-align: left;
+  --radius: 22px;
+  --border: 2px;
+  --shadow: none;
+
+  /* captions */
+  --cap-bg: rgba(0, 0, 0, 0.78);
+  --cap-ink: #ffffff;
+  --cap-size: 44px;
+  --cap-radius: 12px;
+
+  /* motion: the defaults a video's flair can override (video.json "flair") */
+  --transition: rise;         /* none | fade | rise | slide | zoom | wipe */
+  --entrance: up;             /* the data-anim an element gets when it names none */
+  --camera: push;             /* none | push: a slow push-in over each scene */
+  --ambient: glow;            /* none | glow | grid | dots */
+  --ambient-strength: 0.18;
+  --progress: on;             /* on | off: a thin bar across the top */
+}

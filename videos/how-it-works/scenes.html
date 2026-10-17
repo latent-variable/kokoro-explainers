@@ -1,65 +1,72 @@
 <style>
-  :root { --bg: #0f1420; --ink: #eef2f8; --muted: #b4bdcd; --accent: #ffb454; --cool: #7cc4ff; --card: #182033; --line: #2c3854; --code: #0a0e17; }
+  /* Colours, type, spacing and shapes come from the theme (video.json "theme"); this is layout. */
+  .wide { position: absolute; left: var(--pad); width: calc(1920px - 2 * var(--pad)); }
   .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px; }
   .kicker { font-size: 34px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
-  h1 { font-size: 120px; font-weight: 800; letter-spacing: -0.02em; }
-  h2 { position: absolute; top: 110px; left: 140px; font-size: 76px; font-weight: 750; }
+  h1 { font-family: var(--font-display); font-size: 120px; font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
+  h2 { position: absolute; top: var(--heading-top); left: var(--pad); right: var(--pad); text-align: var(--heading-align); font-family: var(--font-display); font-size: var(--heading-size); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
   .flow { display: flex; align-items: center; gap: 28px; }
-  .chip { padding: 22px 36px; border-radius: 18px; background: var(--card); border: 2px solid var(--line); font-size: 40px; font-weight: 600; }
+  .chip { padding: 22px 36px; border-radius: calc(var(--radius) * 0.8); background: var(--card); border: var(--border) solid var(--line); box-shadow: var(--shadow); font-size: 40px; font-weight: 600; }
   .chip.hot { border-color: var(--accent); color: var(--accent); }
   .arrow { font-size: 44px; color: var(--muted); }
-  .mono { font-family: "SF Mono", Menlo, Consolas, monospace; }
-  .cmd { padding: 26px 36px; border-radius: 16px; background: var(--code); border: 2px solid var(--line); font-size: 40px; color: var(--ink); }
+  .arrow-svg { width: 64px; height: 40px; }
+  .arrow-svg path { fill: none; stroke: var(--muted); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .mono { font-family: var(--font-mono); }
+  .cmd { padding: 26px 36px; border-radius: calc(var(--radius) * 0.75); background: var(--code-bg); border: var(--border) solid var(--line); font-size: 40px; color: var(--ink); }
 
-  .takeaway { position: absolute; left: 140px; width: 1640px; text-align: center; font-size: 42px; color: var(--ink); }
+  .takeaway { text-align: center; font-size: 42px; color: var(--ink); }
   .takeaway em { font-style: normal; color: var(--accent); font-weight: 700; }
 
   /* 02-voice */
-  .stats { position: absolute; top: 270px; left: 140px; width: 1640px; display: flex; gap: 40px; }
-  .stat { flex: 1; padding: 34px 40px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); }
-  .stat b { display: block; font-size: 84px; color: var(--accent); font-weight: 800; }
+  .stats { top: 270px; display: flex; gap: 40px; }
+  .stat { flex: 1; padding: 34px 40px; border-radius: var(--radius); background: var(--card); border: var(--border) solid var(--line); box-shadow: var(--shadow); }
+  .stat b { display: block; font-family: var(--font-display); font-size: 84px; color: var(--accent); font-weight: var(--display-weight); }
   .stat span { font-size: 36px; color: var(--muted); }
-  .track { position: absolute; top: 560px; left: 140px; width: 1640px; height: 120px; }
+  .track { top: 560px; height: 120px; }
   .track .axis { position: absolute; left: 0; right: 0; top: 58px; height: 4px; background: var(--line); }
-  .take { position: absolute; top: 16px; height: 88px; border-radius: 14px; background: var(--card); border: 2px solid var(--cool); color: var(--cool); font-size: 32px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .take { position: absolute; top: 16px; height: 88px; border-radius: calc(var(--radius) * 0.6); background: var(--card); border: var(--border) solid var(--accent-2); color: var(--accent-2); font-size: 32px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
   /* 03-scenes */
-  .code { position: absolute; top: 260px; left: 140px; width: 900px; height: 180px; padding: 30px 44px; border-radius: 22px; background: var(--code); border: 2px solid var(--line); white-space: nowrap; font-size: 32px; line-height: 1.7; color: var(--muted); }
-  .file { position: absolute; top: 480px; left: 140px; width: 900px; height: 260px; padding: 30px 44px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); }
+  .code { position: absolute; top: 260px; left: var(--pad); width: 900px; height: 180px; padding: 30px 44px; border-radius: var(--radius); background: var(--code-bg); border: var(--border) solid var(--line); white-space: nowrap; font-size: 32px; line-height: 1.7; color: var(--code-ink); }
+  .file { position: absolute; top: 480px; left: var(--pad); width: 900px; height: 260px; padding: 30px 44px; border-radius: var(--radius); background: var(--card); border: var(--border) solid var(--line); box-shadow: var(--shadow); }
   .fname { font-size: 28px; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 14px; }
-  .file .line { font-size: 40px; line-height: 1.4; }
+  .file .line { font-size: 40px; line-height: 1.4; text-wrap: balance; }
   .file mark { background: none; color: var(--accent); font-weight: 800; }
-  .code .k { color: var(--cool); }
+  .code .k { color: var(--accent-2); }
   .code .s { color: var(--accent); }
   .code .t { color: var(--ink); }
-  .stage { position: absolute; top: 260px; left: 1100px; width: 680px; height: 480px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); }
+  .stage { position: absolute; top: 260px; right: var(--pad); width: 680px; height: 480px; border-radius: var(--radius); background: var(--card); border: var(--border) solid var(--line); box-shadow: var(--shadow); }
   .stage .label { position: absolute; top: 28px; left: 36px; font-size: 30px; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
-  .stage .shown { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 88px; font-weight: 800; color: var(--accent); }
+  .stage .shown { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 88px; font-weight: var(--display-weight); color: var(--accent); }
 
   /* 04-render */
-  .steps { position: absolute; top: 290px; left: 140px; width: 1640px; display: flex; gap: 40px; }
-  .step { flex: 1; padding: 36px 40px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); }
+  .steps { top: 290px; display: flex; gap: 40px; }
+  .step { flex: 1; padding: 36px 40px; border-radius: var(--radius); background: var(--card); border: var(--border) solid var(--line); box-shadow: var(--shadow); }
   .step b { display: block; font-size: 32px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
-  .step span { font-size: 40px; line-height: 1.35; }
-  .render-cmd { position: absolute; top: 650px; left: 140px; width: 1640px; text-align: center; }
+  .step span { font-size: 40px; line-height: 1.35; text-wrap: balance; }
+  .render-cmd { top: 650px; text-align: center; }
 
   /* 05-close */
-  .big { font-size: 96px; font-weight: 800; }
+  .big { font-family: var(--font-display); font-size: 96px; font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
   .sub { font-size: 40px; color: var(--muted); margin-top: -28px; }
-  .url { font-size: 56px; color: var(--cool); }
+  .url { font-size: 56px; color: var(--accent-2); }
   .cmds { display: flex; flex-direction: column; align-items: center; gap: 18px; }
   .cmds .cmd { white-space: nowrap; }
+  section[data-scene="05-close"] .center { gap: 28px; }
+  section[data-scene="05-close"] .big { font-size: 84px; }
+  section[data-scene="05-close"] .cmds { gap: 14px; }
+  section[data-scene="05-close"] .cmds .cmd { font-size: 34px; padding: 18px 30px; }
 </style>
 
-<section data-scene="01-title">
+<section data-scene="01-title" data-transition="fade">
   <div class="center">
-    <div class="kicker" data-cue="+0.2" data-anim="fade">Narrated explainers, made locally</div>
-    <h1 data-cue="+0.4">kokoro-explainers</h1>
+    <div class="kicker" data-cue="+0.2" data-anim="fade">Turn a shit show into a ship show</div>
+    <h1 data-cue="+0.6" data-anim="zoom">ShipShow</h1>
     <div class="flow">
       <div class="chip mono" data-cue="text">script/*.txt</div>
       <div class="arrow" data-cue="HTML" data-anim="fade">+</div>
       <div class="chip mono" data-cue="HTML">scenes.html</div>
-      <div class="arrow" data-cue="Here" data-anim="fade">&rarr;</div>
+      <svg class="arrow-svg" viewBox="0 0 64 40" data-cue="Here" data-anim="draw"><path d="M4 20 H58 M44 8 L58 20 L44 32"/></svg>
       <div class="chip hot" data-cue="Here">video</div>
     </div>
   </div>
@@ -67,20 +74,20 @@
 
 <section data-scene="02-voice">
   <h2 data-cue="+0.1" data-anim="left">1. The voice</h2>
-  <div class="stats">
+  <div class="stats wide">
     <div class="stat" data-cue="Kokoro"><b>Kokoro</b><span>open text-to-speech model</span></div>
     <div class="stat" data-cue="laptop"><b>Local</b><span>runs on a laptop's processor</span></div>
   </div>
-  <div class="track">
+  <div class="track wide">
     <div class="axis" data-cue="sentence#1" data-anim="grow"></div>
     <div class="take" style="left: 0; width: 470px" data-cue="sentence#1" data-anim="pop">sentence 1</div>
     <div class="take" style="left: 510px; width: 330px" data-cue="voiced" data-anim="pop">sentence 2</div>
     <div class="take" style="left: 880px; width: 560px" data-cue="own" data-anim="pop">sentence 3</div>
   </div>
-  <div class="takeaway" style="top: 740px" data-cue="know" data-anim="fade">Each sentence starts at a <em>known time</em>, so the pictures can follow it.</div>
+  <div class="takeaway wide" style="top: 740px" data-cue="know" data-anim="fade">Each sentence starts at a <em>known time</em>, so the pictures can follow it.</div>
 </section>
 
-<section data-scene="03-scenes">
+<section data-scene="03-scenes" data-transition="wipe">
   <h2 data-cue="+0.1" data-anim="left">2. The pictures</h2>
   <div class="file" data-cue="Tag">
     <div class="fname mono">script/03-scenes.txt</div>
@@ -92,26 +99,26 @@
   </div>
   <div class="stage" data-cue="Tag" data-anim="fade">
     <div class="label">The video</div>
-    <div class="shown" data-cue="appears" data-anim="pop">appears</div>
+    <div class="shown" data-cue="appears" data-anim="pulse">appears</div>
   </div>
 </section>
 
-<section data-scene="04-render">
+<section data-scene="04-render" data-transition="slide">
   <h2 data-cue="+0.1" data-anim="left">3. The render</h2>
-  <div class="steps">
+  <div class="steps wide">
     <div class="step" data-cue="voices"><b>voice</b><span>Kokoro reads each sentence</span></div>
     <div class="step" data-cue="builds"><b>build</b><span>scenes, cues and captions become one page</span></div>
     <div class="step" data-cue="records"><b>record</b><span>HyperFrames records it to an MP4</span></div>
   </div>
-  <div class="render-cmd" data-cue="One" data-anim="fade"><span class="cmd mono">npm run make -- videos/how-it-works</span></div>
-  <div class="takeaway" style="top: 790px" data-cue="Change">Change one sentence: <em>only that sentence</em> is voiced again.</div>
+  <div class="render-cmd wide" data-cue="One" data-anim="fade"><span class="cmd mono">npm run make -- videos/how-it-works</span></div>
+  <div class="takeaway wide" style="top: 790px" data-cue="Change">Change one sentence: <em data-cue="only" data-anim="highlight">only that sentence</em> is voiced again.</div>
 </section>
 
-<section data-scene="05-close">
+<section data-scene="05-close" data-transition="zoom" data-camera="none">
   <div class="center">
     <div class="big" id="close-head" data-cue="+0.2" data-anim="fade">Make your own</div>
-    <div class="sub" data-cue="download" data-anim="fade">Runs on your machine, after a one-time model download</div>
-    <div class="url mono" data-cue="clone">github.com/latent-variable/kokoro-explainers</div>
+    <div class="sub" data-cue="download" data-anim="fade">Runs on your machine, after a one-time download</div>
+    <div class="url mono" data-cue="clone" data-anim="type">github.com/latent-variable/shipshow</div>
     <div class="cmds">
       <div class="cmd" data-cue="README">README: Set it up</div>
       <div class="cmd mono" data-cue="new">npm run new -- videos/my-video</div>

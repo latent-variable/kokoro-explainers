@@ -5,10 +5,16 @@ and what is expected of you. `README.md` is the same story for humans.
 
 ## What this is
 
+ShipShow: turn a shit show into a ship show. When agents change a code base faster than a person can follow, a short narrated video of what changed and what needs deciding lets them ship code they understand.
+
 A pipeline that turns plain text into narrated explainer videos on one machine (a Kokoro
-voice, HyperFrames scenes), and a set of skills for agents to make them well. The first use
-is release explainers: a short video that keeps developers current on what changed in a
-project's release and what they need to do.
+voice, HyperFrames scenes), and a set of skills for agents to make them well. The everyday
+use is a decision video: an agent working on a feature hands off to a fresh explainer agent,
+which explains what the person needs to make a call. Feature and release explainers use the
+same skills.
+
+The skills in `skills/` are the team's baseline. Each person tailors on top of them in
+`local/`, which is never committed (`tailor` skill).
 
 ## Where things are
 
@@ -17,8 +23,10 @@ project's release and what they need to do.
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
 | `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor` |
-| `kit/` | The page and timeline every video shares |
+| `kit/` | The page, base styles and timeline every video shares |
+| `themes/` | Shared themes (`shipshow`, `paper`); a client's goes in `local/themes/` |
 | `template/` | What `npm run new` copies |
+| `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
 
 ## Skills
 
@@ -26,7 +34,9 @@ project's release and what they need to do.
 |---|---|
 | `explainer-video` | Make or update a video. You are the builder |
 | `critic-loop` | Judge a video with fresh critics, fix, repeat until they pass; add a new critic |
-| `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement` | Be one critic, when the loop assigns you |
+| `tailor` | Record how one person wants their explainers, in `local/` |
+| `theme` | Make a theme, usually from a client's brand |
+| `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision` | Be one critic, when the loop assigns you |
 
 ## What is expected
 
@@ -37,12 +47,121 @@ project's release and what they need to do.
 - **Every claim traces to `sources.md`.** A fact the sources lack is a gap to report, never
   one to fill in.
 - **A bar you keep wishing a video met becomes a critic** (`critic-loop`, *A new critic*).
+- **A video about another code base goes in `local/videos/`.** This repo is public.
+- **Skills set the bar, not the method** (team, 2026-10-17). They say what a good video is and
+  how it is judged. How an agent manages its context or plans its steps is its own business,
+  and a rule about it is friction the next model has to work around. The bars are not method:
+  who builds, who judges (a fresh agent), and where facts come from (the code, `sources.md`)
+  hold for every agent.
+
+## Set up
+
+Node.js 22+, Python 3.10+ and ffmpeg; tested on macOS.
+
+```
+npm install                                                       # HyperFrames, GSAP; links skills into .claude/skills
+npm run setup                                                     # .venv with Kokoro, which hyperframes tts runs
+npm run doctor                                                    # what is missing, with the fix; voices one word
+```
+
+The first `doctor` downloads Kokoro into `~/.cache/hyperframes/tts` (about 340 MB). The first
+render downloads a headless Chrome if HyperFrames finds none (about 190 MB).
 
 ## Commands
 
-- `npm run doctor`: what the machine is missing. Run it first on a fresh clone.
-- `npm test`: no Kokoro needed; CI runs only this.
-- `npm run make -- videos/<name>`: the end-to-end path (voice, build, lint, render). `npm run review -- videos/<name>` then writes the critics' evidence. A change to `bin/`, `kit/` or `template/` is validated by running it on `videos/how-it-works` and looking at frames: `npx hyperframes snapshot videos/how-it-works --at <seconds>`.
+| Command | What it does |
+|---|---|
+| `npm run new -- <folder>` | A new video from `template/` (`videos/x` for this repo, `local/videos/x` for any other code base) |
+| `npm run voice -- <folder>` | One Kokoro take per sentence, then `assets/narration.wav` and `timing.json` |
+| `npm run build -- <folder>` | The HyperFrames composition, `index.html`, from `scenes.html` and the timing |
+| `npm run check -- <folder>` | HyperFrames' own check: lint, layout, motion, caption contrast |
+| `npm run preview -- <folder>` | The HyperFrames studio, to scrub through it |
+| `npm run render -- <folder>` | `out/<name>.mp4`, the name taken from the folder's path (`--draft` for a fast pass) |
+| `npm run make -- <folder>` | Voice, build, lint and render (`--speed 1.5` to try a pace without editing `video.json`) |
+| `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` (`--frames scenes` for fewer stills) |
+| `npm run critics -- <folder>` | The video's critic plan: critics, models, rounds, severity, and a rough time and token estimate (`--preset`, `--rounds`, `--until`, `--model`, `--final`, `--frames`, `--rerun`, `--critics`, `--json`) |
+| `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
+| `npm test` | No Kokoro needed; CI runs only this |
+
+A change to `bin/`, `kit/` or `template/` is validated by running `make` and `review` on
+`videos/how-it-works` and looking at the contact sheets.
+
+## A video's files
+
+| File | What it is |
+|---|---|
+| `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. A sentence ends at `.`, `!` or `?` and a space |
+| `scenes.html` | One `<section data-scene="01-intro">` per script file, a `<style>` for the look, optionally a `<script>` |
+| `video.json` | `title`, `kind` (`decision`, `feature`, `release`), `voice`, `speed`, `theme`, `flair`, `review`, `say`, `audience`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
+| `sources.md` | Every claim the video makes, with its source |
+| `critics.md` | This video's own bar, applied by every critic |
+| `brief.md` | A decision video's handoff from the agent that asked for it |
+| `REVIEW.md` | The critic rounds |
+
+**Cues.** An element with `data-cue` arrives when the voice reaches that word:
+`data-cue="Kokoro"` (the first word starting "Kokoro" in that scene), `data-cue="model#2"`
+(the second), `data-cue="+0.3"` (0.3 s into the scene). The build stops on a word the scene
+never says, and warns when a bare word occurs more than once. `data-anim` picks the entrance
+(the theme's `--entrance` when absent): `up`, `fade`, `pop`, `left`, `right`, `grow`, `zoom`,
+`blur`, and `type` (letter by letter), `draw` (an SVG's strokes draw themselves), `count` (the
+number in the text counts up), `highlight` (a marker sweeps under text already shown),
+`stagger` (children in turn), `pulse` (pops, then beats). A `<script>` in `scenes.html` runs after the shared
+timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-at`.
+
+**Voice.** `af_heart` is the default; `npx hyperframes tts --list` shows the rest. Non-English
+voices need `espeak-ng` system-wide. `say` maps a written word to what Kokoro is told to say
+(`"HyperFrames": "Hyper Frames"`); captions keep the written form.
+
+**Look.** A theme is `themes/<name>/theme.css` (or `local/themes/<name>/`, which wins): a
+`:root` of tokens for colour, type, spacing, shape, captions and motion; `themes/shipshow`
+lists them all. Fonts and images sit beside it and are copied to `assets/theme/`, relative
+`url()`s rewritten (`bin/lib.mjs`, `themeCss`). Most specific wins: `--theme`, then
+`video.json`, then `local/config.json`, then `shipshow`. `kit/base.css` draws the canvas,
+captions and the `ss-` pieces from the tokens; a scene's own styles should use the tokens
+too, or a theme cannot restyle it.
+
+**Motion.** Theme tokens `--transition` (`none`, `fade`, `rise`, `slide`, `zoom`, `wipe`),
+`--camera` (`none`, `push`: a slow push-in per scene), `--ambient` (`none`, `glow`, `grid`,
+`dots`), `--ambient-strength`, `--progress` (`on`, `off`) and `--entrance`. `video.json`
+`"flair"` overrides them for one video; a section's `data-transition` or `data-camera` for
+one scene. Ambient motion is seeded from the video's name (`"seed"` to change it), so a
+render is repeatable and each video moves its own way.
+
+**Review.** How much critic review a video gets is a plan with dials (`critics`, `rounds`,
+`until`, `model`, `final`, `frames`, `rerun`) and presets (`quick`, `standard`, `thorough`),
+resolved by `reviewPlan` in `bin/lib.mjs`: flags, then `video.json` `"review"`, then
+`local/config.json` `"review"`, then the preset (`quick` for a decision video, else
+`standard`). `skills/critic-loop` has what each dial trades and the floor no dial lowers.
+The estimate's constants are measurements from 2026-10-17; replace them when you measure.
+
+**Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, about 160 words a minute), not
+Kokoro's own: 1.25 by default. Pauses shrink with it. The most specific wins: `--speed` on
+`make` or `voice`, then `video.json`, then the person's `local/config.json`, then 1.25
+(`bin/lib.mjs`, `config`). A take is re-voiced when its speed changes.
+
+## How the timing works
+
+Kokoro does not report word times, and a speech-recognition model to find them would be a
+second, larger download. So `bin/voice.mjs` voices each sentence on its own and places it on
+the track: a sentence's start is exact because we put it there. A word inside a sentence is
+placed by its share of the sentence's letters, close enough for a card to land on the word
+that names it. `bin/build.mjs` turns those times into `data-start` and `data-duration` on each
+scene and caption and `data-at` on each cued element; `kit/kit.js` is the shared GSAP timeline;
+HyperFrames renders the page frame by frame in headless Chrome and muxes in the narration.
+
+## Layout
+
+```
+bin/        voice, build, render, make, review, new, doctor, link-skills; lib.mjs is shared
+kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.js (timeline, effects)
+themes/     shipshow and paper; each a theme.css of tokens, plus fonts and images
+skills/     explainer-video, critic-loop, tailor, theme and the eight critics
+template/   what npm run new copies
+videos/     videos about this repo; how-it-works is the example
+docs/assets/  the README's images; the GIF is cut from out/how-it-works.mp4
+test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links
+local/      gitignored, per person (tailor skill)
+```
 
 ## Traps
 
@@ -52,9 +171,20 @@ project's release and what they need to do.
 - **No speech recognition, on purpose.** `hyperframes transcribe` built whisper.cpp and then timed out downloading its model after six minutes. Timing comes from voicing each sentence separately (`bin/voice.mjs`), so a word inside a sentence is placed by its share of the letters. Do not add an ASR step to fix a cue a few hundred milliseconds off; split the sentence or use `data-cue="+seconds"`.
 - **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts every later take's number, so they re-voice; that costs about a second each.
 - **Generated files are gitignored** (`videos/*/assets/`, `review/`, `index.html`, `meta.json`, `timing.json`). Never commit audio, frames or renders.
-- **The project name is a placeholder** (2026-10-17). Do not spread `kokoro-explainers` into new files beyond what already names it; a rename is coming. A rename also changes the PR reviewer's allowlist (latent-git-agents `config/repos.json` and `tests/repo-allowlist.test.mjs`), or PRs stop being reviewed.
+- **The name is ShipShow**, one word, two capitals; the repo is `latent-variable/shipshow` (renamed from kokoro-explainers 2026-10-17, and GitHub redirects the old address). A rename also changes the PR reviewer's allowlist (latent-git-agents `config/repos.json` and `tests/repo-allowlist.test.mjs`), or PRs stop being reviewed.
 - **`hyperframes lint` warns `nested_structure_needs_subcomposition` and `timeline_track_too_dense`** on every video. Advisory: each scene is one section on one track by design. Errors still block.
 - The scripts never delete files: a stale take is overwritten, never removed.
+- **Never write a literal style or script tag in a comment** inside `kit/` or `themes/`: the
+  build inlines them into the page, and `hyperframes lint` reads it as an unclosed tag (twice,
+  2026-10-17).
+- **A theme cannot restyle a hard-coded colour or font.** A scene that writes `#182033`
+  instead of `var(--card)` keeps it in every theme.
+
+## For the PR reviewer
+
+- **Don't flag code-level reference in this file as belonging elsewhere.** The owner put
+  all of it here on purpose (2026-10-17): the README stays short for people, and this file
+  is where agents find the code. Raised and declined on #6 and #8.
 
 ## Agent context (scope + memory)
 <!-- BEGIN agent-context (managed by ~/.agents/bin/project-sync.sh) -->

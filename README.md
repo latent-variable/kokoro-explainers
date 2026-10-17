@@ -1,146 +1,66 @@
-# kokoro-explainers
+<p align="center">
+  <img src="docs/assets/hero.svg" width="100%" alt="ShipShow. Turn a shit show into a ship show: short narrated videos of what your agents changed, so you understand it and ship it.">
+</p>
 
-Narrated explainer videos made from plain text, on your own machine. You write a script and one HTML page; [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) reads the script and [HyperFrames](https://hyperframes.heygen.com) draws the scenes and records them to an MP4, with captions.
+Your agents change code faster than you can read it. ShipShow hands you a short narrated video of what changed and what you need to decide, so you merge code you understand. It runs on your own machine.
 
-Nothing is sent to a cloud service. The voice model is about 340 MB and runs on the CPU.
+<p align="center">
+  <img src="docs/assets/demo.gif" width="720" alt="A scene from ShipShow's own explainer: a line of the script, the HTML tag on the word 'appears', and the word popping onto the video as the voice says it.">
+  <br>
+  <sub>A word in the script, tagged in the scene, appears as the voice says it. From <a href="videos/how-it-works">our own explainer</a>.</sub>
+</p>
 
-Built for the amperium.ai hackathon. The first use is release explainers: a short video that keeps developers current on what changed in a project's release and what they need to do.
-
-<!-- The rendered how-it-works video goes here once it has cleared its critics. -->
-
-## Set it up
-
-With Node.js 22+, Python 3.10+ and ffmpeg (tested on macOS; Linux should work but has not been tried):
-
-```
-npm install
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-npm run doctor
-```
-
-`npm run doctor` checks each piece, prints the fix for anything missing, and ends by voicing one word with Kokoro. The first run downloads the model into `~/.cache/hyperframes/tts`.
-
-## Make the example
-
-```
-npm run make -- videos/how-it-works
-```
-
-That writes `out/how-it-works.mp4`: a one-minute video that explains this repo. On an M-series Mac the voice takes about 10 seconds and the render about 20.
-
-## Make your own
-
-```
-npm run new -- videos/my-video
-```
-
-Then edit these in `videos/my-video/`:
-
-| File | What it is |
-|---|---|
-| `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. Short spoken sentences. |
-| `scenes.html` | One `<section data-scene="01-intro">` per script file, plus a `<style>` for the look. |
-| `video.json` | The voice, its speed, pronunciation fixes, who it is for, and its critics. |
-| `sources.md` | The facts the video may state, each with its source. |
-
-Run `npm run make -- videos/my-video` again after any change. Only sentences whose text changed are voiced again.
-
-### Making things appear on a word
-
-Inside a scene, give an element `data-cue` and it arrives when the voice reaches that word:
-
-```
-<section data-scene="02-voice">
-  <div class="card" data-cue="Kokoro">Kokoro</div>          <!-- on the first word starting "Kokoro" -->
-  <div class="card" data-cue="model#2" data-anim="pop">…</div>  <!-- on the second "model", popping in -->
-  <h2 data-cue="+0.3">The voice</h2>                         <!-- 0.3 s into the scene -->
-</section>
-```
-
-`data-anim` is one of `up` (the default), `fade`, `pop`, `left`, `right`, `grow`. The build stops if a cue names a word its scene never says, so a typo cannot silently mistime a scene.
-
-For anything more, add a `<script>` to `scenes.html`. It runs after the shared timeline is set up and can add GSAP tweens to `tl`; each cued element's time is in its `data-at` attribute.
-
-### video.json
-
-```
-{
-  "title": "How kokoro-explainers works",
-  "voice": "af_heart",
-  "speed": 1.0,
-  "say": { "HyperFrames": "Hyper Frames", "MP4": "M P 4" }
-}
-```
-
-- `voice`: `af_heart`, `af_nova`, `af_sky`, `am_adam`, `am_michael`, `bf_emma`, `bf_isabella`, `bm_george`, and more (`npx hyperframes tts --list`). Non-English voices also need `espeak-ng` installed system-wide.
-- `say`: what Kokoro is told to say for a word it gets wrong. Captions still show the word as written.
-- `lead`, `gap`, `tail` (seconds, optional): the pause before a scene's first sentence, between sentences, and after its last.
-
-## Skills and critics
-
-Agents make these videos through skills in `skills/` (`npm install` links them into `.claude/skills/` for Claude Code; `AGENTS.md` points every other agent at them).
-
-- **`explainer-video`** builds a video: facts into `sources.md` first, then the script, the scenes, the voice and the render.
-- **`critic-loop`** judges it. Each critic is a fresh agent that never saw the build, because the agent that made something is the worst judge of it. Critics return findings with a severity; the builder fixes them and runs fresh critics until none is blocking or major. `REVIEW.md` records the rounds.
-
-| Critic | Judges |
-|---|---|
-| `critic-accuracy` | Every claim, spoken or shown, against the video's `sources.md` |
-| `critic-clarity` | Whether the intended viewer follows it and knows what to do |
-| `critic-pacing` | Speaking rate, pauses, scene length, time to read on-screen text |
-| `critic-sync` | Whether what is shown matches what is being said, when it is said |
-| `critic-visuals` | Legibility, contrast, layout, every frame finished |
-| `critic-consistency` | Same names, terms and look from start to end |
-| `critic-engagement` | Whether the intended viewer would keep watching, and the design is made for them |
-
-A video picks its critics in `video.json` (`"critics"`) and can add its own bar in `critics.md`, such as "every breaking change shows before and after code". When the same bar keeps coming back, it becomes a new critic skill.
-
-`npm run review -- videos/x` writes the evidence the critics judge: the script with timings, words a minute per scene, every pause, every cue with what is being said when it lands, reading time for on-screen text, and a still after each cue and at each scene end.
-
-## The steps, one at a time
-
-| Command | What it does |
-|---|---|
-| `npm run voice -- videos/x` | Voices each sentence with Kokoro and writes `assets/narration.wav` and `timing.json` |
-| `npm run build -- videos/x` | Writes the HyperFrames composition, `index.html`, from `scenes.html` and the timing |
-| `npm run check -- videos/x` | HyperFrames' own check: lint, layout, motion and caption contrast |
-| `npm run preview -- videos/x` | Opens the composition in the HyperFrames studio to scrub through it |
-| `npm run render -- videos/x` | Records it to `out/x.mp4` (`--draft` for a fast, lower-quality pass) |
-| `npm run make -- videos/x` | Voice, build, lint and render in one go |
-| `npm run review -- videos/x` | The critics' evidence: `review/packet.md` and `review/frames/` |
+<!-- The full how-it-works video goes here. -->
 
 ## How it works
 
-Kokoro does not report when each word is spoken, and speech recognition to find out would add a second, larger model. So every sentence is voiced on its own and placed on the track by `bin/voice.mjs`. Where a sentence starts is known exactly because we put it there. A word's time inside its sentence is estimated from its share of the sentence's letters, which is close enough for a card to land on the word that names it.
+<p align="center">
+  <img src="docs/assets/how-it-works.svg" width="100%" alt="Five steps: a script, one text file per scene; Kokoro voices each sentence locally; HyperFrames shows each thing on its word; fresh critic agents judge it until it passes; you get an MP4 to watch before you decide.">
+  <br>
+  <sub>Script &rarr; Voice &rarr; Scenes &rarr; Critics &rarr; Video</sub>
+</p>
 
-`bin/build.mjs` then turns those times into `data-start` and `data-duration` on each scene and caption, and `data-at` on each cued element. `kit/kit.js` is the shared GSAP timeline that shows each scene in its own window and animates each element in at its time. HyperFrames renders the page frame by frame in headless Chrome and muxes in the narration.
+[Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) does the voice and [HyperFrames](https://hyperframes.heygen.com) draws and records the scenes. Your agent writes the script and the scenes, and a panel of critic agents decides when the video is done.
 
-## Layout
+<p align="center">
+  <img src="docs/assets/critics.svg" width="100%" alt="The critics: fresh agents, one question each. Accuracy, clarity, pacing, sync, visuals, consistency, engagement and decision.">
+  <br>
+  <sub>Accuracy &middot; Clarity &middot; Pacing &middot; Sync &middot; Visuals &middot; Consistency &middot; Engagement &middot; Decision</sub>
+</p>
+
+## Set it up
+
+Node.js 22+, Python 3.10+ and ffmpeg (tested on macOS):
 
 ```
-bin/voice.mjs      script -> one Kokoro take per sentence -> narration.wav + timing.json
-bin/build.mjs      scenes.html + timing.json -> index.html (the HyperFrames composition)
-bin/render.mjs     index.html -> out/<name>.mp4
-bin/make.mjs       all of the above, plus lint
-bin/new.mjs        a new video folder from template/
-bin/review.mjs     the evidence critics judge: packet.md and frames
-bin/doctor.mjs     what this machine is missing
-skills/            explainer-video, critic-loop and the seven critics
-kit/shell.html     the page every video shares: canvas, captions, audio
-kit/kit.js         the timeline every video shares
-template/          the starting point for a new video
-videos/            one folder per video
-test/              npm test: sentence splitting, pronunciation swaps, cue and caption timing
+npm install
+npm run setup
+npm run doctor
+npm run make -- videos/how-it-works
 ```
 
-Generated files (voice takes, `narration.wav`, `timing.json`, `index.html`, renders) are not committed.
+The first run downloads the voice model (about 340 MB) and, if needed, a headless Chrome (about 190 MB). Then ask your agent for one:
+
+> Make me a ShipShow video on the retry logic you just wrote. I need to decide whether to ship it today.
+
+## Make it yours
+
+Tell your agent how you like your videos ("faster", "open with the decision", "always show the code") and it keeps that in `local/`, which never leaves your machine, along with videos about private code. Videos play at 1.25 times a relaxed pace by default; `npm run make -- <folder> --speed 1.5` tries another. Review effort is yours too: a `quick` review takes about a minute of critics, `thorough` up to six (`npm run critics -- <folder>` shows the plan).
+
+Every video takes a theme: colours, fonts, layout and motion in one folder. Ship with `shipshow` or `paper`, or have your agent build one from a client's brand; `--theme paper` previews any theme on any video.
+
+<p align="center">
+  <img src="docs/assets/themes.jpg" width="100%" alt="The same moment of the same video in two themes: dark navy with orange in shipshow, warm paper with serif headlines and deep red in paper.">
+  <br>
+  <sub>Same video, same frame: <code>shipshow</code> and <code>paper</code>.</sub>
+</p>
 
 ## How we work
 
-- **Use it on your own work.** Each of us makes explainers for something we actually need explained: a repo, a pull request, a feature, a release (HyperFrames itself is a good first subject). Real use is what finds the gaps.
-- **Friction becomes a pull request.** Anything that slowed you down or that you did not like, tell your agent to fix it here and open a PR. A bar you keep wishing a video met becomes a critic.
-- **Every change goes through a pull request.** `main` takes no direct pushes: a PR needs CI green and its review conversations resolved, and every PR gets an automated review.
+- **Use it on your own work**, then turn whatever got in the way into a pull request.
+- **A bar you keep wishing a video met becomes a critic.**
+- **Every change is a pull request**, with CI and an automated review before it merges.
 
-## Licenses
+Everything about the code, the skills and the commands is in [AGENTS.md](AGENTS.md).
 
-This repo is MIT. Kokoro-82M's weights are Apache 2.0, HyperFrames is Apache 2.0, and GSAP is under its free [standard license](https://gsap.com/standard-license).
+<sub>Made for the amperium.ai hackathon. MIT licensed. Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its free <a href="https://gsap.com/standard-license">standard license</a>.</sub>

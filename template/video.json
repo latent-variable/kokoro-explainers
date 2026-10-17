@@ -1,6 +1,6 @@
 {
   "title": "My explainer",
+  "kind": "feature",
   "voice": "af_heart",
-  "speed": 1.0,
   "say": {}
 }

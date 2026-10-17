@@ -1,5 +1,5 @@
 // Voice a video's script with Kokoro, one sentence at a time, and time every sentence.
-//   node bin/voice.mjs videos/<name>
+//   node bin/voice.mjs videos/<name> [--speed 1.25]
 // Writes, in the video folder (all generated, none committed):
 //   assets/voice/<scene>-<n>.wav   one take per sentence; a take whose text, voice and speed
 //                                  are unchanged is kept, so editing one sentence re-voices one
@@ -26,7 +26,7 @@ const plan = scenes(dir).map((s) => ({
   sentences: sentences(s.text).map((text, i) => {
     const say = spoken(text, cfg.say);
     const wav = join(vdir, `${s.id}-${String(i + 1).padStart(2, "0")}.wav`);
-    const key = JSON.stringify({ say, voice: cfg.voice, speed: cfg.speed });
+    const key = JSON.stringify({ say, voice: cfg.voice, speed: cfg.kokoroSpeed });
     const keyFile = wav.replace(/\.wav$/, ".key");
     const fresh = existsSync(wav) && existsSync(keyFile) && readFileSync(keyFile, "utf8") === key;
     if (!fresh) jobs.push({ say, wav, key, keyFile });
@@ -37,7 +37,7 @@ const plan = scenes(dir).map((s) => ({
 if (!plan.some((s) => s.sentences.length)) die("the script has no sentences to voice");
 
 async function voiceOne({ say, wav, key, keyFile }) {
-  await run(HF, ["tts", say, "-v", cfg.voice, "-s", String(cfg.speed), "-o", wav, "--json"], { env: ttsEnv() });
+  await run(HF, ["tts", say, "-v", cfg.voice, "-s", String(cfg.kokoroSpeed), "-o", wav, "--json"], { env: ttsEnv() });
   writeFileSync(keyFile, key);
 }
 
@@ -62,11 +62,11 @@ else console.log("every sentence already voiced");
 
 // Lay the takes out on one track and record where each landed.
 let rate = 0, channels = 0, t = 0;
-const timing = { voice: cfg.voice, scenes: [] };
+const timing = { voice: cfg.voice, speed: cfg.speed, scenes: [] };
 const placed = [];
 for (const s of plan) {
   const scene = { id: s.id, start: round(t), sentences: [] };
-  t += cfg.lead;
+  t += cfg.lead / cfg.speed;
   s.sentences.forEach((sen, i) => {
     const wav = readWav(sen.wav);
     if (!rate) ({ rate, channels } = wav);
@@ -74,9 +74,9 @@ for (const s of plan) {
     const dur = wav.samples.length / channels / rate;
     placed.push({ at: t, samples: wav.samples });
     scene.sentences.push({ text: sen.text, start: round(t), duration: round(dur) });
-    t += dur + (i < s.sentences.length - 1 ? cfg.gap : 0);
+    t += dur + (i < s.sentences.length - 1 ? cfg.gap / cfg.speed : 0);
   });
-  t += cfg.tail;
+  t += cfg.tail / cfg.speed;
   scene.duration = round(t - scene.start);
   timing.scenes.push(scene);
 }
