@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="t d">
+  <title id="t">ShipShow</title>
+  <desc id="d">Turn a shit show into a ship show. Pull request noise falls toward the sea while a small ship sails calmly away.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141b2b"/>
+      <stop offset="1" stop-color="#0f1420"/>
+    </linearGradient>
+    <clipPath id="card"><rect width="1280" height="420" rx="28"/></clipPath>
+    <linearGradient id="fadein" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.25" stop-color="#fff" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="seamask"><rect x="620" y="250" width="660" height="170" fill="url(#fadein)"/></mask>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16324a"/>
+      <stop offset="1" stop-color="#0f1f30"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="420" rx="28" fill="url(#sky)"/>
+
+  <!-- words -->
+  <text x="72" y="118" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="4" fill="#ffb454">TURN A SHIT SHOW INTO A SHIP SHOW</text>
+  <text x="66" y="232" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="124" font-weight="800" letter-spacing="-3" fill="#eef2f8">Ship<tspan fill="#ffb454">Show</tspan></text>
+  <text x="72" y="292" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27" fill="#b4bdcd">Short narrated videos of what your agents changed,</text>
+  <text x="72" y="330" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27" fill="#b4bdcd">so you understand it and ship it.</text>
+
+  <!-- the noise, falling -->
+  <g font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="17" font-weight="600">
+    <g transform="translate(760 54) rotate(-9)">
+      <rect width="168" height="40" rx="10" fill="#2a1d24" stroke="#ff6b6b" stroke-width="2"/>
+      <text x="16" y="26" fill="#ff8f8f">merge conflict</text>
+    </g>
+    <g transform="translate(944 34) rotate(7)">
+      <rect width="118" height="40" rx="10" fill="#1d2433" stroke="#5c6b88" stroke-width="2"/>
+      <text x="16" y="26" fill="#c9d2e3">PR #812</text>
+    </g>
+    <g transform="translate(1092 70) rotate(-5)">
+      <rect width="122" height="40" rx="10" fill="#1d2433" stroke="#5c6b88" stroke-width="2"/>
+      <text x="14" y="26" fill="#c9d2e3"><tspan fill="#7ee0a1">+2184</tspan> <tspan fill="#ff8f8f">-967</tspan></text>
+    </g>
+    <g transform="translate(848 122) rotate(11)">
+      <rect width="120" height="40" rx="10" fill="#1d2433" stroke="#5c6b88" stroke-width="2"/>
+      <text x="16" y="26" fill="#c9d2e3">47 unread</text>
+    </g>
+    <g transform="translate(1010 134) rotate(-13)">
+      <rect width="132" height="40" rx="10" fill="#2a2618" stroke="#ffb454" stroke-width="2"/>
+      <text x="16" y="26" fill="#ffd28f">CI: failing</text>
+    </g>
+  </g>
+  <!-- motion streaks -->
+  <g stroke="#3a4762" stroke-width="3" stroke-linecap="round" opacity="0.8">
+    <path d="M820 112 l-6 26"/><path d="M1000 90 l4 22"/><path d="M1150 120 l-3 24"/><path d="M905 176 l5 20"/><path d="M1078 186 l-4 20"/>
+  </g>
+
+  <!-- sea -->
+  <g clip-path="url(#card)" mask="url(#seamask)">
+    <path d="M620 300 C700 286 780 314 860 300 S1020 286 1100 300 S1220 314 1280 300 L1280 420 L620 420 Z" fill="url(#sea)"/>
+    <path d="M620 300 C700 286 780 314 860 300 S1020 286 1100 300 S1220 314 1280 300" fill="none" stroke="#7cc4ff" stroke-width="3" opacity="0.7"/>
+    <path d="M700 344 C760 334 820 354 880 344 S1000 334 1060 344 S1180 354 1280 344" fill="none" stroke="#7cc4ff" stroke-width="2" opacity="0.35"/>
+    <path d="M760 380 C820 370 880 390 940 380 S1060 370 1120 380 S1220 390 1280 380" fill="none" stroke="#7cc4ff" stroke-width="2" opacity="0.25"/>
+  </g>
+
+  <!-- the ship -->
+  <g transform="translate(948 196)">
+    <path d="M60 4 L60 98" stroke="#eef2f8" stroke-width="5" stroke-linecap="round"/>
+    <path d="M66 12 L120 88 L66 88 Z" fill="#eef2f8"/>
+    <path d="M54 22 L14 88 L54 88 Z" fill="#ffb454"/>
+    <path d="M60 4 L86 12 L60 20 Z" fill="#ff6b6b"/>
+    <path d="M-6 98 L136 98 L116 128 Q60 136 8 128 Z" fill="#ffb454"/>
+    <text x="36" y="120" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700" fill="#0f1420">v1.0</text>
+  </g>
+  <!-- wake -->
+  <path d="M928 312 q-30 6 -64 2 M932 322 q-40 10 -86 6" fill="none" stroke="#eef2f8" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+</svg>

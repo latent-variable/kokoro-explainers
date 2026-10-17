@@ -81,7 +81,7 @@ file-name order.
 
 `scenes.html`: one `<section data-scene="<script file name>">` per scene and a `<style>`
 that gives this video its look. Each element arrives on the word that introduces it with
-`data-cue="word"` (`README.md`, *Making things appear on a word*).
+`data-cue="word"` (`AGENTS.md`, *A video's files*).
 
 - What is on screen is what is being said. Show real code from the release, not a
   paraphrase of it.

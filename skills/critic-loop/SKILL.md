@@ -124,5 +124,6 @@ critic skills to `skills/critic-<what>/SKILL.md` and keep its shape:
 - **Criteria:** each with the severity a failure carries, measurable wherever possible.
 - **Done:** when it stops.
 
-Add it to the table above and to `README.md`. A bar that matters to one video only belongs
+Add it to the table above, to the skills table in `AGENTS.md`, and to the README's
+critics image (`docs/assets/critics.svg`). A bar that matters to one video only belongs
 in that video's `critics.md` instead.

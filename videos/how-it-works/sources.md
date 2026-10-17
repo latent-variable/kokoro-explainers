@@ -23,7 +23,7 @@ commit the video is built from, plus the two tools it runs.
 | The project is open source, on GitHub | `LICENSE` (MIT); public at github.com/latent-variable/shipshow |
 | To make your own, clone it and follow the setup in its README | `README.md`, *Set it up*: `npm install`, the Python venv with `requirements.txt`, `npm run doctor` |
 | Then run npm run new with a folder name | `npm run new -- videos/<name>` copies `template/` (`bin/new.mjs`) |
-| Write one text file per scene and a section for each in scenes.html, then run npm run make on it | `npm run make -- videos/<name>` (`bin/make.mjs`); `README.md`, *Make your own*: `script/01-intro.txt`, one per scene |
+| Write one text file per scene and a section for each in scenes.html, then run npm run make on it | `npm run make -- videos/<name>` (`bin/make.mjs`); `AGENTS.md`, *A video's files*: `script/01-intro.txt`, one per scene |
 
 ## Left out
 

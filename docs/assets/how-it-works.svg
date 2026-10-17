@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" role="img" aria-labelledby="t d">
+<title id="t">How ShipShow works</title>
+<desc id="d">Five steps: a script, one text file per scene; Kokoro voices each sentence locally; HyperFrames shows each thing on its word; fresh critic agents judge it until it passes; you get an MP4 to watch before you decide.</desc>
+<rect width="1280" height="340" rx="28" fill="#0f1420"/>
+<g transform="translate(50 40)">
+<rect width="212" height="220" rx="20" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<text x="20" y="38" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6b7896">1</text>
+<g transform="translate(106 74)"><rect x="-22" y="-28" width="44" height="56" rx="6" fill="none" stroke="#7cc4ff" stroke-width="3"/><path d="M-12 -14 h24 M-12 -4 h24 M-12 6 h16 M-12 16 h20" stroke="#7cc4ff" stroke-width="3" stroke-linecap="round"/></g>
+<text x="106" y="138" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#eef2f8">Script</text>
+<text x="106" y="172" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">one text file</text>
+<text x="106" y="196" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">per scene</text>
+</g>
+<path d="M266 150 h20 m-8 -7 l8 7 l-8 7" fill="none" stroke="#5c6b88" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(292 40)">
+<rect width="212" height="220" rx="20" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<text x="20" y="38" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6b7896">2</text>
+<g transform="translate(106 74)"><path d="M-26 0 v0 M-17 -10 v20 M-8 -22 v44 M1 -14 v28 M10 -26 v52 M19 -8 v16 M28 -2 v4" stroke="#ffb454" stroke-width="5" stroke-linecap="round"/></g>
+<text x="106" y="138" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#eef2f8">Voice</text>
+<text x="106" y="172" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">Kokoro reads each</text>
+<text x="106" y="196" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">sentence, locally</text>
+</g>
+<path d="M508 150 h20 m-8 -7 l8 7 l-8 7" fill="none" stroke="#5c6b88" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(534 40)">
+<rect width="212" height="220" rx="20" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<text x="20" y="38" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6b7896">3</text>
+<g transform="translate(106 74)"><rect x="-28" y="-22" width="56" height="44" rx="6" fill="none" stroke="#7cc4ff" stroke-width="3"/><rect x="-18" y="-12" width="22" height="14" rx="3" fill="#ffb454"/><path d="M-18 10 h36" stroke="#7cc4ff" stroke-width="3" stroke-linecap="round"/></g>
+<text x="106" y="138" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#eef2f8">Scenes</text>
+<text x="106" y="172" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">HyperFrames shows</text>
+<text x="106" y="196" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">each thing on its word</text>
+</g>
+<path d="M750 150 h20 m-8 -7 l8 7 l-8 7" fill="none" stroke="#5c6b88" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(776 40)">
+<rect width="212" height="220" rx="20" fill="#182033" stroke="#2c3854" stroke-width="2"/>
+<text x="20" y="38" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6b7896">4</text>
+<g transform="translate(106 74)"><circle cx="-4" cy="-4" r="17" fill="none" stroke="#ffb454" stroke-width="4"/><path d="M9 9 L24 24" stroke="#ffb454" stroke-width="5" stroke-linecap="round"/><path d="M-11 -4 l5 5 l9 -10" fill="none" stroke="#7ee0a1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="106" y="138" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#eef2f8">Critics</text>
+<text x="106" y="172" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">fresh agents judge it</text>
+<text x="106" y="196" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">until it passes</text>
+</g>
+<path d="M992 150 h20 m-8 -7 l8 7 l-8 7" fill="none" stroke="#5c6b88" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(1018 40)">
+<rect width="212" height="220" rx="20" fill="#182033" stroke="#ffb454" stroke-width="2"/>
+<text x="20" y="38" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6b7896">5</text>
+<g transform="translate(106 74)"><rect x="-28" y="-22" width="56" height="44" rx="10" fill="#ffb454"/><path d="M-7 -11 L12 0 L-7 11 Z" fill="#0f1420"/></g>
+<text x="106" y="138" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#eef2f8">Video</text>
+<text x="106" y="172" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">an MP4 you watch</text>
+<text x="106" y="196" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b4bdcd">before you decide</text>
+</g>
+<path d="M882 264 C882 300 640 300 640 268" fill="none" stroke="#ffb454" stroke-width="2.5" stroke-dasharray="6 6"/>
+<path d="M633 275 l7 -9 l7 9" fill="none" stroke="#ffb454" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="761" y="318" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#ffb454">fix and judge again</text>
+</svg>
