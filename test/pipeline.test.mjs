@@ -104,3 +104,25 @@ test("renders of two folders that share a name do not overwrite each other", () 
   assert.equal(outName(join(REPO, "videos", "how-it-works")), "how-it-works");
   assert.notEqual(outName(join(REPO, "local", "videos", "a", "demo")), outName(join(REPO, "local", "videos", "b", "demo")));
 });
+
+test("speed: --speed beats video.json beats local/config.json beats 1.25, and scales Kokoro's base pace", async () => {
+  const { config, BASE_PACE, DEFAULT_SPEED } = await import("../bin/lib.mjs");
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  const dir = join(root, "v"), local = join(root, "local");
+  mkdirSync(dir); mkdirSync(local);
+  process.env.SHIPSHOW_LOCAL = local;
+  try {
+    writeFileSync(join(dir, "video.json"), "{}");
+    assert.equal(config(dir, []).speed, DEFAULT_SPEED);
+    writeFileSync(join(local, "config.json"), JSON.stringify({ speed: 1.4 }));
+    assert.equal(config(dir, []).speed, 1.4);
+    writeFileSync(join(dir, "video.json"), JSON.stringify({ speed: 1.1 }));
+    assert.equal(config(dir, []).speed, 1.1);
+    const cli = config(dir, ["node", "voice.mjs", dir, "--speed", "1.5"]);
+    assert.equal(cli.speed, 1.5);
+    assert.equal(cli.kokoroSpeed, Math.round(BASE_PACE * 1.5 * 1000) / 1000);
+    assert.equal(config(dir, ["--speed=0.9"]).speed, 0.9);
+  } finally {
+    delete process.env.SHIPSHOW_LOCAL;
+  }
+});

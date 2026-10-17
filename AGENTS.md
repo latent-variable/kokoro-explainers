@@ -75,7 +75,7 @@ render downloads a headless Chrome if HyperFrames finds none (about 190 MB).
 | `npm run check -- <folder>` | HyperFrames' own check: lint, layout, motion, caption contrast |
 | `npm run preview -- <folder>` | The HyperFrames studio, to scrub through it |
 | `npm run render -- <folder>` | `out/<name>.mp4`, the name taken from the folder's path (`--draft` for a fast pass) |
-| `npm run make -- <folder>` | Voice, build, lint and render |
+| `npm run make -- <folder>` | Voice, build, lint and render (`--speed 1.5` to try a pace without editing `video.json`) |
 | `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` |
 | `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
 | `npm test` | No Kokoro needed; CI runs only this |
@@ -104,8 +104,12 @@ timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-
 
 **Voice.** `af_heart` is the default; `npx hyperframes tts --list` shows the rest. Non-English
 voices need `espeak-ng` system-wide. `say` maps a written word to what Kokoro is told to say
-(`"HyperFrames": "Hyper Frames"`); captions keep the written form. At speed 1.0 Kokoro reads
-near 190 words a minute, so most videos want about 0.85.
+(`"HyperFrames": "Hyper Frames"`); captions keep the written form.
+
+**Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, about 160 words a minute), not
+Kokoro's own: 1.25 by default. Pauses shrink with it. The most specific wins: `--speed` on
+`make` or `voice`, then `video.json`, then the person's `local/config.json`, then 1.25
+(`bin/lib.mjs`, `config`). A take is re-voiced when its speed changes.
 
 ## How the timing works
 

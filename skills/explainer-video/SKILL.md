@@ -70,8 +70,9 @@ file-name order.
 
 - Spoken sentences, short. One idea per scene. The order a newcomer needs, not the order
   of the changelog.
-- About 150 to 165 words a minute is comfortable. Kokoro at speed 1.0 reads near 190, so
-  most videos want `"speed"` around 0.9 in `video.json`. The pacing critic measures it.
+- Speed is a multiplier on a comfortable base of about 160 words a minute: 1.25 by default,
+  set per video in `video.json`, per person in `local/config.json`, or per run with
+  `--speed`. Write for it: at 1.25, a 30 second scene holds about 100 words.
 - Numbers and versions as they are said: "version two point four". Names Kokoro gets
   wrong go in `video.json` `"say"`; captions keep the written form.
 - A release explainer: what this release is, then breaking changes with before and after,

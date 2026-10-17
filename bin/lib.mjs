@@ -21,19 +21,44 @@ export function videoDir(arg) {
   return dir;
 }
 
-/** video.json with its defaults filled in. */
-export function config(dir) {
-  const cfg = JSON.parse(readFileSync(join(dir, "video.json"), "utf8"));
-  return {
+// Speed is a multiplier on ShipShow's base pace, not Kokoro's own: at speed 1 Kokoro runs at
+// BASE_PACE, about BASE_WPM words a minute (measured on the how-it-works video, 2026-10-17).
+export const BASE_PACE = 0.85;
+export const BASE_WPM = 160;
+export const DEFAULT_SPEED = 1.25;
+
+/** A --name value from the command line: `--speed 1.4` or `--speed=1.4`; undefined if absent. */
+export function flag(name, argv = process.argv) {
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === `--${name}`) return argv[i + 1];
+    if (argv[i].startsWith(`--${name}=`)) return argv[i].slice(name.length + 3);
+  }
+}
+
+/** This person's settings, local/config.json (tailor skill): {speed, voice, theme}. */
+export function localConfig() {
+  const p = join(process.env.SHIPSHOW_LOCAL || join(REPO, "local"), "config.json");
+  return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : {};
+}
+
+/** video.json with its defaults filled in. The most specific setting wins: --speed on the
+ *  command line, then video.json, then local/config.json, then the defaults. */
+export function config(dir, argv = process.argv) {
+  const local = localConfig();
+  const cfg = {
     title: basename(dir),
-    voice: "af_heart",
-    speed: 1.0,
+    voice: local.voice || "af_heart",
+    speed: local.speed ?? DEFAULT_SPEED,
     say: {},           // written form -> what Kokoro is told to say ("HyperFrames": "hyper frames")
-    lead: 0.5,         // silence before a scene's first sentence, seconds
+    lead: 0.5,         // silence before a scene's first sentence, seconds at speed 1
     gap: 0.35,         // between sentences
     tail: 0.9,         // after a scene's last sentence
-    ...cfg,
+    ...JSON.parse(readFileSync(join(dir, "video.json"), "utf8")),
   };
+  if (flag("speed", argv) !== undefined) cfg.speed = Number(flag("speed", argv));
+  if (!(cfg.speed >= 0.5 && cfg.speed <= 2)) die(`speed ${cfg.speed} is outside 0.5 to 2`);
+  cfg.kokoroSpeed = Math.round(BASE_PACE * cfg.speed * 1000) / 1000;
+  return cfg;
 }
 
 /** The scenes, in file-name order: [{id, text}]. */
