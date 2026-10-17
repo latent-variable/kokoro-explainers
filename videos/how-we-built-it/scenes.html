@@ -6,7 +6,7 @@
   h2 { position: absolute; top: 110px; left: 140px; font-size: 76px; font-weight: 750; }
   .mono { font-family: "SF Mono", Menlo, Consolas, monospace; }
   .flow { margin-top: 30px; display: flex; align-items: center; gap: 28px; }
-  .chip { padding: 22px 36px; border-radius: 18px; background: var(--card); border: 2px solid var(--line); font-size: 40px; font-weight: 600; }
+  .chip { padding: 24px 38px; border-radius: 18px; background: var(--card); border: 2px solid var(--line); font-size: 46px; font-weight: 600; }
   .chip.hot { border-color: var(--accent); color: var(--accent); }
   .arrow { font-size: 44px; color: var(--muted); }
   .takeaway { position: absolute; left: 140px; width: 1640px; text-align: center; font-size: 42px; color: var(--ink); }
@@ -20,12 +20,12 @@
 
   /* 02-pipeline */
   .flowrow { position: absolute; top: 270px; left: 140px; width: 1640px; justify-content: flex-start; }
-  .need { position: absolute; top: 432px; left: 140px; font-size: 38px; color: var(--muted); }
+  .need { position: absolute; top: 440px; left: 140px; font-size: 42px; color: var(--muted); }
   .need em { font-style: normal; color: var(--cool); font-weight: 700; }
   .tag { display: block; margin-top: 22px; font-size: 36px; color: var(--accent); font-weight: 700; }
-  .tried { top: 520px; left: 140px; width: 780px; height: 300px; }
+  .tried { top: 520px; left: 140px; width: 780px; height: 350px; }
   .tried .strike { color: var(--muted); text-decoration: line-through; }
-  .chose { top: 520px; left: 1000px; width: 780px; height: 300px; border-color: var(--accent); }
+  .chose { top: 520px; left: 1000px; width: 780px; height: 350px; border-color: var(--accent); }
 
   /* 03-traps */
   .agents { top: 380px; left: 140px; width: 1640px; padding: 30px 44px 36px; }
@@ -37,7 +37,7 @@
   .builder { top: 270px; left: 140px; width: 1640px; height: 150px; padding: 26px 44px; display: flex; align-items: center; gap: 36px; }
   .builder b { margin: 0; }
   .grid { position: absolute; top: 470px; left: 140px; width: 1640px; display: flex; flex-wrap: wrap; gap: 16px; }
-  .grid .chip { font-size: 36px; padding: 18px 26px; position: relative; }
+  .grid .chip { font-size: 38px; padding: 18px 22px; position: relative; }
   .ring { position: absolute; inset: -6px; border: 3px solid var(--accent); border-radius: 22px; }
   .fresh { top: 620px; left: 140px; width: 1640px; height: 130px; padding: 26px 44px; border-color: var(--accent); display: flex; align-items: center; gap: 36px; }
   .fresh b { margin: 0; }
@@ -45,8 +45,8 @@
   /* 05-loop */
   .rounds { position: absolute; top: 270px; left: 140px; width: 1640px; display: flex; gap: 24px; }
   .rounds .chip { flex: 1; text-align: center; padding: 22px 0; }
-  .loopcards { position: absolute; top: 490px; left: 140px; width: 1640px; display: flex; gap: 32px; }
-  .loopcards .card { position: static; flex: 1; height: 300px; }
+  .loopcards { position: absolute; top: 540px; left: 140px; width: 1640px; display: flex; gap: 32px; }
+  .loopcards .card { position: static; flex: 1; height: 330px; }
   .loopcards .card span { font-size: 38px; }
 
   /* 06-close */
@@ -78,7 +78,7 @@
     <div class="chip hot">narrated video</div>
   </div>
   <div class="need" data-cue="start#1" data-anim="fade">The pictures need each sentence's <em>start time</em></div>
-  <div class="card tried" data-cue="timed"><b>Tried</b><span class="strike">Speech recognition</span><span class="sm" style="margin-top:18px">Timed out after 6 minutes</span></div>
+  <div class="card tried" data-cue="recognition"><b>Tried</b><span class="strike">Speech recognition</span><span class="sm" style="margin-top:18px" data-cue="timed" data-anim="fade">Timed out after 6 minutes</span></div>
   <div class="card chose" data-cue="voices" data-anim="pop"><b>Chose</b><span>One take per sentence</span><span class="sm" style="margin-top:18px">Places each sentence on the track</span><span class="tag" data-cue="exactly" data-anim="fade">Start times known exactly</span></div>
 </section>
 
@@ -86,8 +86,8 @@
   <h2 data-cue="+0.1" data-anim="left">Traps, written down</h2>
   <div class="card agents" data-cue="+0.3" data-anim="fade">
     <div class="fname mono">AGENTS.md &middot; the file agents read first</div>
-    <div class="row" data-cue="traps">No speech recognition, <mark>on purpose</mark></div>
-    <div class="row" data-cue="Another">Voice engine (<span class="mono">espeak-ng</span>) fails at <mark>160+</mark> characters of path; the error reports a missing file</div>
+    <div class="row">No speech recognition, <mark>on purpose</mark></div>
+    <div class="row" data-cue="path">Voice engine (<span class="mono">espeak-ng</span>) fails at <mark>160+</mark> characters of path; the error reports a missing file</div>
   </div>
 </section>
 
@@ -114,7 +114,7 @@
     <div class="card" data-cue="found" data-anim="pop"><b>Round 1</b><span class="big">209</span><span class="sm">words a minute at most; speed 1.0 became 0.85</span></div>
     <div class="card cool" data-cue="Between" data-anim="pop"><b>Between rounds</b><span>The pipeline warns when a picture's word appears more than once in a scene</span></div>
   </div>
-  <div class="takeaway" style="top: 390px; color: var(--muted)" data-cue="six" data-anim="fade">The first video: <em>six rounds</em>, then its critics passed</div>
+  <div class="takeaway" style="top: 450px; color: var(--muted)" data-cue="six" data-anim="fade">How it works, the first video: <em>six rounds</em>, then its critics passed</div>
 </section>
 
 <section data-scene="06-close">
