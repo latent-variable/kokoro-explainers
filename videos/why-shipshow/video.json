@@ -2,15 +2,15 @@
   "title": "Why ShipShow",
   "kind": "feature",
   "importance": "high",
-  "importance_reason": "public: the project's own pitch, for anyone who finds the repo",
-  "audience": "A developer who works with coding agents, ships faster than they can read, and has never heard of ShipShow.",
-  "theme": "launch",
-  "voice": "af_heart",
-  "music": { "file": "local/music/launch-bed.wav", "volume": 0.24, "duck": 0.32 },
+  "importance_reason": "public: the project's own pitch, shown to the LA AI Hackathon panel and to anyone who finds the repo",
+  "audience": "A hackathon panelist or team lead who runs AI agents, developer or not, and makes calls on their work without time to read all of it; has never heard of ShipShow.",
+  "theme": "buildday",
+  "engine": "omnivoice",
+  "voice": "caro_davy",
+  "speed": 1.3,
+  "music": { "file": "local/music/launch-bed.wav", "volume": 0.22, "duck": 0.3 },
   "say": {
-    "HyperFrames": "Hyper Frames",
     "ShipShow": "Ship Show",
-    "GitHub": "Git Hub",
-    "API": "A P I"
+    "GitHub": "Git Hub"
   }
 }

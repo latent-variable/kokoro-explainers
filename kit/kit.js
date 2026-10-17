@@ -54,8 +54,14 @@
         layer.className = ambient;
         ambientEl.appendChild(layer);
         tl.fromTo(layer, { x: 0, y: 0 }, { x: -Math.round(60 + rand() * 120), y: -Math.round(30 + rand() * 80), duration: TOTAL, ease: "none" }, 0);
+      } else if (ambient === "horizon") {
+        // A planet's rim low in the frame: a gridded arc lit along its edge, rising slowly.
+        const planet = document.createElement("div");
+        planet.className = "horizon";
+        ambientEl.appendChild(planet);
+        tl.fromTo(planet, { y: 60 }, { y: -40, duration: TOTAL, ease: "sine.inOut" }, 0);
       } else if (ambient !== "none") {
-        throw new Error(`unknown --ambient ${ambient}: none, glow, grid, dots or stars`);
+        throw new Error(`unknown --ambient ${ambient}: none, glow, grid, dots, stars or horizon`);
       }
       });
 

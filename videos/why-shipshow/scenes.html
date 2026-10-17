@@ -1,225 +1,269 @@
 <style>
-  /* Layout only: colour, type and motion come from the launch theme. Title emphasis is
-     always cyan; pink means cost or warning, lime means gain or a pass. */
-  h2 { position: absolute; top: var(--heading-top); left: var(--pad); font-family: var(--font-display); font-size: var(--heading-size); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
-  h2 em { font-style: normal; color: var(--accent-2); }
+  /* Layout only: colour, type and motion come from the buildday theme. Ember is pressure or
+     the call to act, ice is information, green is done or checked. */
+  .why { --peach: #ffc49e; }
   .mono { font-family: var(--font-mono); }
   .card { background: var(--card); border: var(--border) solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-  .who { font-family: var(--font-mono); font-size: 30px; color: var(--accent-2); letter-spacing: 0.03em; }
+  .tag { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-2); white-space: nowrap; }
+  .tag b { color: var(--accent); font-weight: 700; margin-right: 14px; }
+  .big { font-family: var(--font-display); font-weight: 700; letter-spacing: var(--display-tracking); text-transform: uppercase; line-height: 0.9; }
+  .silver { background: linear-gradient(180deg, #ffffff 0%, var(--ink) 55%, #c9d2e3 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .grad { background: linear-gradient(100deg, var(--accent) 0%, #ffc49e 22%, var(--accent-2) 42%, #ffffff 50%, var(--accent-2) 58%, var(--accent-3) 78%, var(--accent) 100%);
+    background-size: 260% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ember { background: linear-gradient(95deg, var(--accent) 0%, #ffc49e 70%, #ffe2cf 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hud { position: absolute; pointer-events: none; }
+  .hud i { position: absolute; width: 34px; height: 34px; border-color: rgba(142, 200, 255, 0.55); border-style: solid; border-width: 0; }
+  .hud i:nth-child(1) { left: 0; top: 0; border-left-width: 2px; border-top-width: 2px; }
+  .hud i:nth-child(2) { right: 0; top: 0; border-right-width: 2px; border-top-width: 2px; }
+  .hud i:nth-child(3) { left: 0; bottom: 0; border-left-width: 2px; border-bottom-width: 2px; }
+  .hud i:nth-child(4) { right: 0; bottom: 0; border-right-width: 2px; border-bottom-width: 2px; }
+  .ping { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7), 0 0 18px rgba(74, 222, 128, 0.8); margin-right: 16px; vertical-align: 2px; }
+  .btn { display: inline-flex; align-items: center; gap: 22px; padding: 26px 44px; border-radius: 14px; font-family: var(--font-display); font-weight: 700; font-size: 46px; color: #1b0d05;
+    background: linear-gradient(135deg, #ff925f, var(--accent) 45%, #e5561d); box-shadow: 0 0 0 1px rgba(255, 170, 120, 0.5), 0 18px 70px rgba(255, 122, 61, 0.55); white-space: nowrap; }
 
-  /* 01-hook */
-  .hook { position: absolute; left: var(--pad); top: 190px; width: 1080px; }
-  .hook .l1 { font-family: var(--font-display); font-size: 86px; white-space: nowrap; font-weight: 700; letter-spacing: -0.04em; line-height: 1.02; }
-  .hook .l2 { font-family: var(--font-display); font-size: 64px; font-weight: 500; color: var(--muted); margin-top: 18px; }
-  .mess { position: absolute; right: 120px; top: 60px; width: 600px; height: 560px; }
-  .mess .chip { position: absolute; padding: 18px 26px; font-family: var(--font-mono); font-size: 32px; font-weight: 700; white-space: nowrap; color: var(--ink); }
-  .chip.pr { border-color: var(--accent-2); color: var(--accent-2); }
-  .chip.bad { border-color: var(--bad); color: var(--bad); }
-  .shit { position: absolute; left: var(--pad); top: 560px; font-family: var(--font-display); font-size: 150px; font-weight: 700; letter-spacing: -0.04em; color: var(--accent); }
-  .turn { position: absolute; left: 900px; top: 610px; display: flex; align-items: center; gap: 28px; }
-  .turn .arrow-svg { width: 120px; height: 50px; }
-  .turn .arrow-svg path { fill: none; stroke: var(--accent-2); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
-  .turn b { font-family: var(--font-display); font-size: 92px; font-weight: 700; letter-spacing: -0.04em; color: var(--accent-2); }
+  /* 01-night */
+  .n-tag { position: absolute; left: var(--pad); top: 110px; }
+  .n-head { position: absolute; left: var(--pad); top: 200px; font-size: 150px; }
+  .n-head div { white-space: nowrap; }
+  .agents { position: absolute; right: var(--pad); top: 160px; width: 640px; display: flex; flex-direction: column; gap: 26px; }
+  .agent { padding: 26px 32px; }
+  .agent .who { font-family: var(--font-mono); font-size: 26px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-2); }
+  .agent .what { font-family: var(--font-mono); font-size: 36px; color: var(--ink); margin-top: 10px; white-space: nowrap; }
+  .agent .what em { font-style: normal; color: var(--accent); font-weight: 700; }
+  .agents-hud { right: calc(var(--pad) - 26px); top: 134px; width: 692px; height: 640px; }
 
-  /* 02-karpathy */
-  .quote { position: absolute; left: var(--pad); top: 150px; width: 1020px; padding: 46px 52px; }
-  .quote p { font-family: var(--font-display); font-size: 46px; line-height: 1.28; font-weight: 500; margin-top: 24px; }
-  .quote .mark { color: var(--accent-3); font-weight: 700; }
-  .ladder { position: absolute; right: var(--pad); top: 150px; width: 560px; display: flex; flex-direction: column; gap: 22px; }
-  .rung { padding: 24px 30px; font-size: 38px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-  .rung small { font-family: var(--font-mono); font-size: 30px; color: var(--muted); font-weight: 400; }
-  .rung.top { border-color: var(--accent-3); color: var(--accent-3); box-shadow: 0 0 60px rgba(198, 255, 61, 0.22); }
-  .rungs { display: flex; flex-direction: column; gap: 22px; }
-  .ladder-note { position: absolute; right: var(--pad); top: 700px; width: 560px; font-family: var(--font-mono); font-size: 30px; color: var(--ink); white-space: nowrap; }
+  /* 02-pile */
+  .p-count { position: absolute; left: var(--pad); top: 150px; }
+  .p-count .num { font-size: 300px; }
+  .p-count .lbl { margin-top: 18px; }
+  .stack { position: absolute; right: 120px; top: 70px; width: 980px; height: 640px; }
+  .ask { position: absolute; width: 470px; padding: 20px 26px; font-family: var(--font-mono); font-size: 27px; color: var(--ink); white-space: nowrap; border-color: rgba(255, 122, 61, 0.55); }
+  .ask b { display: block; font-size: 22px; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 6px; }
+  .meter { position: absolute; left: var(--pad); top: 640px; width: 640px; }
+  .meter .bar { height: 18px; border-radius: 9px; background: rgba(142, 200, 255, 0.12); border: 1.5px solid var(--line); margin-top: 18px; overflow: hidden; }
+  .meter .fill { width: 8%; height: 100%; background: var(--accent); box-shadow: 0 0 22px rgba(255, 122, 61, 0.9); }
+  .meter .pct { font-family: var(--font-display); font-size: 64px; font-weight: 700; color: var(--accent); margin-top: 10px; }
 
-  /* 03-how */
-  .pipe { position: absolute; left: var(--pad); right: var(--pad); top: 220px; display: flex; align-items: center; justify-content: space-between; }
-  .node { width: 330px; height: 190px; padding: 26px 30px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
-  .node b { font-family: var(--font-display); font-size: 38px; font-weight: 700; white-space: nowrap; }
-  .node span { font-size: 30px; color: var(--muted); }
-  .node.out { border-color: var(--accent-2); }
-  .node.out b { color: var(--accent-2); }
-  .link { width: 64px; height: 40px; }
-  .link path { fill: none; stroke: var(--accent-2); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
-  .real { position: absolute; right: var(--pad); top: 450px; width: 640px; padding: 14px; margin: 0; border-color: var(--accent-2); }
-  .real img { width: 100%; display: block; border-radius: 10px; }
-  .real figcaption { font-size: 30px; color: var(--ink); margin-top: 10px; }
-  .stamp { position: absolute; left: var(--pad); top: 560px; padding: 20px 36px; border: 5px solid var(--accent-3); border-radius: 14px; color: var(--accent-3); font-family: var(--font-mono); font-size: 48px; font-weight: 700; transform: rotate(-4deg); text-align: center; line-height: 1.15; }
-  .stamp small { display: block; font-size: 30px; font-weight: 400; }
+  /* 03-knot */
+  .k-guess { position: absolute; left: var(--pad); top: 110px; font-size: 210px; color: var(--ink); }
+  .k-chips { position: absolute; left: var(--pad); top: 340px; display: flex; gap: 22px; align-items: center; }
+  .k-chips span { padding: 18px 30px; font-family: var(--font-mono); font-size: 34px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); }
+  .k-chips .arrow { color: var(--accent); border: 0; background: none; box-shadow: none; padding: 0; }
+  .ecg { position: absolute; left: 0; right: 0; top: 440px; height: 200px; }
+  .ecg path { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 10px rgba(255, 122, 61, 0.9)); }
+  .k-cost { position: absolute; left: var(--pad); top: 640px; }
+  .k-cost .big { font-size: 112px; white-space: nowrap; }
+  .k-cost .tag { margin-bottom: 18px; }
+  .heat { position: absolute; inset: -10%; background: radial-gradient(ellipse at 50% 60%, rgba(255, 122, 61, 0.22), transparent 60%); }
 
-  /* 04-decide */
-  .ask { position: absolute; left: var(--pad); top: 230px; font-family: var(--font-display); font-size: 52px; font-weight: 700; }
-  .hand { position: absolute; left: var(--pad); top: 320px; display: flex; align-items: center; gap: 22px; }
-  .hand .who-chip { padding: 16px 26px; font-family: var(--font-mono); font-size: 32px; font-weight: 700; }
-  .hand .arrow-svg { width: 100px; height: 40px; }
-  .hand .arrow-svg path { fill: none; stroke: var(--accent-2); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
-  .hand .note { font-size: 32px; color: var(--ink); }
-  .screen { position: absolute; left: var(--pad); top: 420px; width: 1640px; height: 370px; padding: 26px 34px 40px; border-color: var(--accent-2); }
-  .screen-label { font-size: 32px; color: var(--accent-2); }
-  .screen .opts { display: flex; gap: 34px; align-items: center; margin-top: 16px; }
-  .opt { width: 520px; padding: 22px 34px; }
-  .opt h3 { font-family: var(--font-display); font-size: 46px; margin-bottom: 8px; }
-  .opt .row { display: flex; align-items: center; gap: 18px; margin-top: 10px; }
-  .opt .k { font-family: var(--font-mono); font-size: 32px; color: var(--muted); width: 120px; }
-  .bar { height: 30px; border-radius: 15px; }
-  .bar.gain { background: var(--accent-3); } .bar.cost { background: var(--accent); }
-  .rec { margin-left: 30px; padding: 22px 34px; border: 6px solid var(--accent-3); border-radius: 18px; color: var(--accent-3); font-family: var(--font-display); font-size: 58px; font-weight: 700; transform: rotate(-5deg); text-align: center; line-height: 1.05; }
-  .rec small { display: block; font-family: var(--font-mono); font-size: 30px; font-weight: 400; margin-top: 8px; }
-  .screen-bar { position: absolute; left: 34px; right: 34px; bottom: 16px; height: 6px; border-radius: 3px; background: var(--progress-fill, var(--accent)); opacity: 0.8; }
-  .you { position: absolute; right: var(--pad); top: 118px; font-family: var(--font-display); font-size: 56px; font-weight: 700; color: var(--accent-3); }
+  /* 04-turn */
+  .t-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px; padding-bottom: 40px; }
+  .t-name { font-size: 260px; letter-spacing: -0.055em; }
+  .t-sub { font-family: var(--font-mono); font-size: 40px; color: var(--ink); letter-spacing: 0.04em; }
+  .t-sub b { color: var(--accent); }
 
-  /* 05-critics */
-  .roster { position: absolute; left: var(--pad); top: 222px; font-size: 30px; color: var(--ink); }
-  .panel { position: absolute; left: var(--pad); top: 280px; width: 1640px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
-  .panel .c { padding: 22px 18px; font-size: 34px; font-weight: 700; text-align: center; }
-  .panel .c.dim { border-style: dashed; color: var(--muted); }
-  .panel .c small { display: block; font-family: var(--font-mono); font-size: 30px; font-weight: 400; margin-top: 4px; }
-  .trust { position: absolute; left: var(--pad); top: 790px; font-family: var(--font-display); font-size: 46px; font-weight: 500; color: var(--accent-2); }
-  .catch { position: absolute; left: var(--pad); top: 560px; width: 1640px; padding: 26px 36px; }
-  .catch .was { font-size: 38px; margin-top: 10px; }
-  .catch .was s { color: var(--bad); text-decoration-thickness: 4px; }
-  .catch .now { font-size: 38px; margin-top: 10px; color: var(--accent-3); }
+  /* 05-inside */
+  .player { position: absolute; left: 200px; right: 200px; top: 80px; height: 690px; padding: 40px 54px; border-color: rgba(142, 200, 255, 0.4); background: linear-gradient(160deg, rgba(14, 22, 44, 0.94), rgba(6, 9, 20, 0.94)); }
+  .player-hud { left: 176px; right: 176px; top: 56px; height: 738px; }
+  .pl-top { display: flex; justify-content: space-between; align-items: center; }
+  .chap-list { position: absolute; left: 54px; top: 130px; display: flex; flex-direction: column; gap: 30px; }
+  .chap { display: flex; align-items: baseline; gap: 26px; }
+  .chap .n { font-family: var(--font-mono); font-size: 30px; color: var(--accent); }
+  .chap .t { font-family: var(--font-display); font-size: 62px; font-weight: 700; letter-spacing: -0.03em; text-transform: uppercase; }
+  .opts { position: absolute; right: 54px; top: 130px; width: 560px; display: flex; flex-direction: column; gap: 22px; }
+  .opt { padding: 22px 28px; }
+  .opt h4 { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.12em; color: var(--accent-2); margin-bottom: 12px; }
+  .opt .row { display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 26px; color: var(--muted); margin-top: 8px; }
+  .opt .row span { width: 110px; }
+  .opt .gain, .opt .cost { height: 16px; border-radius: 8px; }
+  .opt .gain { background: var(--good); }
+  .opt .cost { background: var(--accent); }
+  .rec { position: absolute; right: 54px; top: 540px; padding: 16px 30px; border: 3px solid var(--good); border-radius: 12px; color: var(--good); font-family: var(--font-mono); font-size: 34px; font-weight: 700; letter-spacing: 0.08em; transform: rotate(-3deg); }
+  .scrub { position: absolute; left: 54px; right: 54px; bottom: 36px; height: 8px; border-radius: 4px; background: rgba(142, 200, 255, 0.15); }
+  .scrub .fill { width: 100%; height: 100%; border-radius: 4px; background: var(--progress-fill); transform-origin: left center; }
 
-  /* 06-yours */
-  .speed { position: absolute; right: var(--pad); top: 110px; text-align: right; font-family: var(--font-display); font-size: 72px; font-weight: 700; color: var(--accent-2); letter-spacing: -0.04em; line-height: 1; }
-  .speed small { display: block; font-family: var(--font-mono); font-size: 30px; color: var(--ink); letter-spacing: 0.04em; margin-bottom: 8px; }
-  .swatches { position: absolute; left: var(--pad); right: var(--pad); top: 330px; display: flex; gap: 30px; }
-  .sw { flex: 1; height: 380px; border-radius: var(--radius); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; border: 3px solid transparent; position: relative; }
-  .sw b { font-family: var(--font-mono); font-size: 34px; font-weight: 700; }
-  .sw .dots { display: flex; gap: 12px; }
-  .sw .dots i { width: 44px; height: 44px; border-radius: 50%; display: block; }
-  .sw.ship { background: #0f1420; color: #eef2f8; }
-  .sw.paper { background: #f6f1e7; color: #1d1b18; }
-  .sw.launch { background: var(--card); color: var(--ink); border-color: var(--accent-2); }
-  .sw.client { background: transparent; color: var(--ink); border: 3px dashed var(--muted); }
-  .sw .tag { align-self: flex-start; margin-top: -150px; padding: 6px 16px; border-radius: 999px; background: var(--accent-2); color: #08121a; font-family: var(--font-mono); font-size: 28px; font-weight: 700; }
+  /* 06-anyone */
+  .a-tag { position: absolute; left: var(--pad); top: 70px; }
+  .cols { position: absolute; left: var(--pad); right: var(--pad); top: 140px; display: flex; gap: 40px; }
+  .col { flex: 1; height: 520px; padding: 36px 38px; display: flex; flex-direction: column; }
+  .col .who { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-2); }
+  .col .big { font-size: 96px; margin-top: 26px; white-space: nowrap; }
+  .col .q { font-family: var(--font-display); font-size: 40px; font-weight: 500; color: var(--ink); margin-top: 18px; line-height: 1.2; }
+  .col .watch { margin-top: auto; align-self: flex-start; padding: 16px 26px; border-radius: 12px; font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: #1b0d05; background: linear-gradient(135deg, #ff925f, var(--accent)); box-shadow: 0 10px 40px rgba(255, 122, 61, 0.45); }
+  .a-line { position: absolute; left: var(--pad); right: var(--pad); top: 710px; text-align: center; font-family: var(--font-display); font-size: 64px; font-weight: 700; letter-spacing: -0.03em; }
+  .a-line s { color: var(--muted); text-decoration-color: var(--accent); text-decoration-thickness: 6px; }
 
-  /* 07-close */
-  .end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; text-align: center; }
-  .from { position: relative; font-family: var(--font-display); font-size: 104px; font-weight: 700; color: var(--muted); letter-spacing: -0.04em; }
-  .strike { position: absolute; left: -12px; right: -12px; top: 52%; height: 12px; border-radius: 6px; background: var(--accent); }
-  .to { font-family: var(--font-display); font-size: 160px; font-weight: 700; letter-spacing: -0.05em; background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .url { font-family: var(--font-mono); font-size: 48px; color: var(--accent-2); }
-  .steps { display: flex; gap: 16px; font-size: 40px; color: var(--ink); }
-  .steps span { padding: 12px 24px; border: 2px solid var(--line); border-radius: 999px; }
+  /* 07-trust */
+  .c-panel { position: absolute; left: var(--pad); top: 110px; width: 740px; }
+  .c-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 26px; }
+  .c-grid div { padding: 18px 24px; font-family: var(--font-mono); font-size: 30px; color: var(--ink); display: flex; justify-content: space-between; }
+  .c-grid div b { color: var(--good); }
+  .c-src { margin-top: 28px; font-family: var(--font-mono); font-size: 32px; color: var(--ink); }
+  .c-src em { font-style: normal; color: var(--good); }
+  .quote { position: absolute; right: var(--pad); top: 130px; width: 820px; padding: 46px 52px; border-color: rgba(142, 200, 255, 0.4); }
+  .quote-hud { right: calc(var(--pad) - 24px); top: 106px; width: 868px; height: 560px; }
+  .quote .tag { font-size: 24px; letter-spacing: 0.12em; }
+  .quote p { font-family: var(--font-display); font-size: 54px; font-weight: 500; line-height: 1.22; margin-top: 26px; }
+  .quote p em { font-style: normal; }
+
+  /* 08-close */
+  .end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; padding-bottom: 30px; text-align: center; }
+  .end .big { font-size: 150px; white-space: nowrap; }
+  .end .row { display: flex; gap: 26px; align-items: center; margin-top: 24px; }
+  .made { font-family: var(--font-mono); font-size: 34px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); padding: 14px 26px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--card); }
 </style>
 
-<section data-scene="01-hook">
-  <div class="hook">
-    <div class="l1" data-cue="+0.3" data-anim="up">Agents write code faster</div>
-    <div class="l2" data-cue="read" data-anim="up">than you can read it.</div>
+<section data-scene="01-night" class="why">
+  <div class="tag n-tag" data-cue="+0.1" data-anim="fade"><span class="ping"></span><b>//</b>03:12 AM &middot; 3 agents online</div>
+  <div class="big n-head">
+    <div class="silver" data-cue="+0.3" data-anim="up">Your agents</div>
+    <div class="ember" data-cue="never" data-anim="slam">never sleep.</div>
   </div>
-  <div class="mess" data-cue="pull" data-anim="stagger">
-    <div class="chip card pr" style="left: 40px; top: 0px; transform: rotate(-6deg)">PR #812</div>
-    <div class="chip card" style="left: 250px; top: 90px; transform: rotate(5deg)">+2,184 −967</div>
-    <div class="chip card bad" style="left: 10px; top: 190px; transform: rotate(-3deg)">merge conflict</div>
-    <div class="chip card pr" style="left: 320px; top: 290px; transform: rotate(8deg)">PR #813</div>
-    <div class="chip card bad" style="left: 60px; top: 380px; transform: rotate(-9deg)">CI: failing</div>
-    <div class="chip card" style="left: 300px; top: 490px; transform: rotate(4deg)">47 unread</div>
-  </div>
-  <div class="shit" data-cue="shit" data-anim="glitch">shit show.</div>
-  <div class="turn">
-    <svg class="arrow-svg" viewBox="0 0 120 50" data-cue="ShipShow" data-anim="draw"><path d="M6 25 H112 M96 10 L112 25 L96 40"/></svg>
-    <b data-cue="ShipShow" data-anim="scramble">ShipShow</b>
+  <div class="hud agents-hud" data-cue="+0.6" data-anim="fade"><i></i><i></i><i></i><i></i></div>
+  <div class="agents">
+    <div class="agent card" data-cue="code" data-anim="right"><div class="who">agent / code</div><div class="what">&#9656; <em>14</em> files changed</div></div>
+    <div class="agent card" data-cue="contract" data-anim="right"><div class="who">agent / legal</div><div class="what">&#9656; contract draft <em>v3</em></div></div>
+    <div class="agent card" data-cue="screened" data-anim="right"><div class="who">agent / hiring</div><div class="what" data-cue="four" data-anim="count">&#9656; 400 applicants screened</div></div>
   </div>
 </section>
 
-<section data-scene="02-karpathy" data-transition="wipe">
-  <div class="quote card" data-cue="+0.1" data-anim="left">
-    <div class="who">Andrej Karpathy &middot; on X &middot; Oct 2, 2026</div>
-    <p data-cue="+0.4" data-anim="fade">&ldquo;&hellip;our work will rise up the abstractions into oversight and understanding.&rdquo;</p>
-    <p data-cue="format" data-anim="fade">&ldquo;&hellip;most bullish on is fully custom / bespoke <span class="mark" data-cue="explainer" data-anim="highlight">explainer videos</span>&hellip;&rdquo;</p>
+<section data-scene="02-pile" class="why" data-transition="fade">
+  <div class="p-count">
+    <div class="big num ember" data-cue="twelve" data-anim="count">12</div>
+    <div class="tag lbl" data-cue="twelve" data-anim="fade"><b>//</b>decisions waiting on you</div>
   </div>
-  <div class="ladder">
-    <div class="rung card top" data-cue="explainer" data-anim="pulse">Explainer videos <small class="mono">most bullish</small></div>
-    <div class="rungs" data-cue="bullish" data-anim="stagger">
-      <div class="rung card">Web pages <small>even better</small></div>
-      <div class="rung card">Diagrams <small>even better</small></div>
-      <div class="rung card">Writing</div>
+  <div class="stack" data-cue="twelve" data-anim="stagger">
+    <div class="ask card" style="left: 0; top: 0;"><b>NEEDS YOUR CALL</b>merge auth refactor?</div>
+    <div class="ask card" style="left: 500px; top: 20px;"><b>NEEDS YOUR CALL</b>send contract v3?</div>
+    <div class="ask card" style="left: 60px; top: 120px;"><b>NEEDS YOUR CALL</b>shortlist 12 of 400?</div>
+    <div class="ask card" style="left: 470px; top: 150px;"><b>NEEDS YOUR CALL</b>refund order #4471?</div>
+    <div class="ask card" style="left: 20px; top: 250px;"><b>NEEDS YOUR CALL</b>rewrite retry logic?</div>
+    <div class="ask card" style="left: 510px; top: 280px;"><b>NEEDS YOUR CALL</b>raise ad budget 20%?</div>
+    <div class="ask card" style="left: 80px; top: 380px;"><b>NEEDS YOUR CALL</b>drop the old API?</div>
+    <div class="ask card" style="left: 480px; top: 410px;"><b>NEEDS YOUR CALL</b>reply to the client?</div>
+    <div class="ask card" style="left: 30px; top: 510px;"><b>NEEDS YOUR CALL</b>ship to production?</div>
+  </div>
+  <div class="meter" data-cue="barely" data-anim="up">
+    <div class="tag"><b>//</b>what you actually read</div>
+    <div class="bar"><div class="fill"></div></div>
+    <div class="pct">8%</div>
+  </div>
+</section>
+
+<section data-scene="03-knot" class="why" data-transition="flash">
+  <div class="heat" data-cue="knot" data-anim="fade"></div>
+  <div class="big k-guess" data-cue="guess" data-anim="glitch">You guess.</div>
+  <div class="k-chips">
+    <span class="card" data-cue="approve" data-anim="pop">&#10003; approve</span>
+    <span class="arrow" data-cue="hope" data-anim="fade">&#9656;&#9656;</span>
+    <span class="card" data-cue="hope" data-anim="pop">hope</span>
+  </div>
+  <svg class="ecg" viewBox="0 0 1920 200" preserveAspectRatio="none" data-cue="knot" data-anim="draw">
+    <path d="M0 110 L300 110 L340 110 L360 60 L380 160 L400 110 L560 110 L590 20 L620 190 L650 110 L820 110 L840 70 L860 150 L880 110 L1000 110 L1030 6 L1060 196 L1090 110 L1240 110 L1260 50 L1280 170 L1300 110 L1420 110 L1450 14 L1480 190 L1510 110 L1920 110" />
+  </svg>
+  <div class="k-cost">
+    <div class="tag" data-cue="knot" data-anim="fade"><b>//</b>the hidden cost of agents</div>
+    <div class="big ember" data-cue="deciding" data-anim="up">Deciding without knowing.</div>
+  </div>
+</section>
+
+<section data-scene="04-turn" class="why" data-transition="flash" data-camera="none">
+  <div class="t-wrap">
+    <div class="tag" data-cue="+0.1" data-anim="fade"><b>//</b>introducing</div>
+    <div class="big grad t-name" id="t-name" data-cue="ShipShow" data-anim="slam">ShipShow</div>
+    <div class="t-sub" data-cue="call" data-anim="up">every call your agents need <b>&rarr;</b> <span class="ember" style="font-weight: 700;" data-cue="video" data-anim="pulse">a short video</span></div>
+  </div>
+</section>
+
+<section data-scene="05-inside" class="why" data-transition="zoom">
+  <div class="hud player-hud" data-cue="+0.1" data-anim="fade"><i></i><i></i><i></i><i></i></div>
+  <div class="player card" data-cue="+0.1" data-anim="zoom">
+    <div class="pl-top">
+      <div class="tag"><span class="ping"></span><b>//</b>decision video &middot; 0:52</div>
+      <div class="tag" style="color: var(--muted);">from agent / code</div>
     </div>
-  </div>
-  <div class="ladder-note" data-cue="bullish" data-anim="fade">formats he ranks</div>
-</section>
-
-<section data-scene="03-how" data-transition="flash">
-  <h2 data-cue="+0.1" data-anim="type">On <em>your</em> machine</h2>
-  <div class="pipe">
-    <div class="node card" data-cue="script" data-anim="pop"><b class="mono">script/</b><span>+ scenes, by your agent</span></div>
-    <svg class="link" viewBox="0 0 80 40" data-cue="Kokoro" data-anim="draw"><path d="M4 20 H72 M60 9 L72 20 L60 31"/></svg>
-    <div class="node card" data-cue="Kokoro" data-anim="pop"><b>Kokoro</b><span>a small local voice</span></div>
-    <svg class="link" viewBox="0 0 80 40" data-cue="HyperFrames" data-anim="draw"><path d="M4 20 H72 M60 9 L72 20 L60 31"/></svg>
-    <div class="node card" data-cue="HyperFrames" data-anim="pop"><b>HyperFrames</b><span>an open source renderer</span></div>
-    <svg class="link" viewBox="0 0 80 40" data-cue="MP4" data-anim="draw"><path d="M4 20 H72 M60 9 L72 20 L60 31"/></svg>
-    <div class="node card out" data-cue="MP4" data-anim="pop"><b>your MP4</b><span>below: a real frame</span></div>
-  </div>
-  <figure class="real card" data-cue="MP4" data-anim="zoom">
-    <img src="img/real-frame.jpg" alt="A frame from ShipShow's own explainer: a script line, its tag, and the word appearing">
-    <figcaption class="mono">a frame from our own explainer</figcaption>
-  </figure>
-  <div class="stamp" data-cue="API" data-anim="slam">NO API KEY<small>for voice or render</small></div>
-</section>
-
-<section data-scene="04-decide" data-transition="slide">
-  <h2 data-cue="+0.1" data-anim="scramble">Your <em>call</em></h2>
-  <div class="ask" data-cue="rewrite" data-anim="type">Rewrite the retry logic, or patch it?</div>
-  <div class="hand">
-    <div class="who-chip card" data-cue="hands" data-anim="pop">your agent</div>
-    <svg class="arrow-svg" viewBox="0 0 110 40" data-cue="fresh" data-anim="draw"><path d="M4 20 H102 M90 9 L102 20 L90 31"/></svg>
-    <div class="who-chip card" data-cue="fresh" data-anim="pop" style="border-color: var(--accent-2); color: var(--accent-2)">fresh explainer agent</div>
-    <div class="note mono" data-cue="write" data-anim="fade">did not write the code</div>
-  </div>
-  <div class="screen card" data-cue="watch" data-anim="zoom">
-    <div class="screen-label mono">the video you watch</div>
+    <div class="chap-list">
+      <div class="chap" data-cue="happened" data-anim="left"><span class="n">01</span><span class="t silver">What happened</span></div>
+      <div class="chap" data-cue="options" data-anim="left"><span class="n">02</span><span class="t silver">Your options</span></div>
+      <div class="chap" data-cue="costs" data-anim="left"><span class="n">03</span><span class="t silver">What each costs</span></div>
+      <div class="chap" data-cue="recommends" data-anim="left"><span class="n">04</span><span class="t ember">The recommendation</span></div>
+    </div>
     <div class="opts">
-      <div class="opt card">
-        <h3>Rewrite</h3>
-        <div class="row"><div class="k">gains</div><div class="bar gain" style="width: 300px" data-cue="options" data-anim="grow"></div></div>
-        <div class="row"><div class="k">costs</div><div class="bar cost" style="width: 330px" data-cue="costs" data-anim="grow"></div></div>
-      </div>
-      <div class="opt card">
-        <h3>Patch</h3>
-        <div class="row"><div class="k">gains</div><div class="bar gain" style="width: 220px" data-cue="options" data-anim="grow"></div></div>
-        <div class="row"><div class="k">costs</div><div class="bar cost" style="width: 90px" data-cue="costs" data-anim="grow"></div></div>
-      </div>
-      <div class="rec" data-cue="recommendation" data-anim="pop">Patch it<small>and here is why</small></div>
+      <div class="opt card" data-cue="options" data-anim="right"><h4>OPTION A &middot; REWRITE</h4>
+        <div class="row"><span>gains</span><div class="gain" style="width: 300px;"></div></div>
+        <div class="row" data-cue="costs" data-anim="fade"><span>costs</span><div class="cost" style="width: 320px;"></div></div></div>
+      <div class="opt card" data-cue="options" data-anim="right"><h4>OPTION B &middot; PATCH</h4>
+        <div class="row"><span>gains</span><div class="gain" style="width: 230px;"></div></div>
+        <div class="row" data-cue="costs" data-anim="fade"><span>costs</span><div class="cost" style="width: 90px;"></div></div></div>
     </div>
-    <div class="screen-bar"></div>
-  </div>
-  <div class="you" data-cue="Then" data-anim="pulse">You make the call.</div>
-</section>
-
-<section data-scene="05-critics" data-transition="zoom">
-  <h2 data-cue="+0.1" data-anim="glitch">The <em>critics</em></h2>
-  <div class="roster mono" data-cue="critics" data-anim="fade">the critics a video can get; how many run depends on the video</div>
-  <div class="panel" data-cue="critics" data-anim="stagger">
-    <div class="c card">Accuracy</div><div class="c card">Sync</div><div class="c card">Clarity</div><div class="c card">Pacing</div>
-    <div class="c card">Visuals</div><div class="c card">Consistency</div><div class="c card">Engagement</div><div class="c card dim">Decision<small>decision videos</small></div>
-  </div>
-  <div class="trust" data-cue="So" data-anim="up">so you can trust a video you did not check yourself</div>
-  <div class="catch card" data-cue="explainer" data-anim="up">
-    <div class="who">critic-accuracy, on our own video</div>
-    <div class="was"><s>&ldquo;run npm install&rdquo;</s> missed the Python setup</div>
-    <div class="now">&check; fixed before it shipped</div>
+    <div class="rec" data-cue="recommends" data-anim="slam">&#10003; RECOMMENDED: B</div>
+    <div class="scrub"><div class="fill" id="scrub-fill"></div></div>
   </div>
 </section>
 
-<section data-scene="06-yours" data-transition="flash">
-  <h2 data-cue="+0.1" data-anim="left">Make it <em>yours</em></h2>
-  <div class="speed" data-cue="Speed" data-anim="fade"><small>WATCH FASTER &middot; --speed 1.5, for example</small><span data-cue="Speed" data-anim="count">1.5&times;</span></div>
-  <div class="swatches">
-    <div class="sw ship" data-cue="theme" data-anim="up"><b>shipshow</b><div class="dots"><i style="background:#ffb454"></i><i style="background:#7cc4ff"></i><i style="background:#182033"></i></div></div>
-    <div class="sw paper" data-cue="theme" data-anim="up"><b>paper</b><div class="dots"><i style="background:#b3261e"></i><i style="background:#1f5f8b"></i><i style="background:#d9cfbd"></i></div></div>
-    <div class="sw launch" data-cue="theme" data-anim="up"><b>launch</b><span class="tag">this video</span><div class="dots"><i style="background:#ff3d8b"></i><i style="background:#2de2e6"></i><i style="background:#c6ff3d"></i></div></div>
-    <div class="sw client" data-cue="client" data-anim="pop"><b>your client&rsquo;s brand</b><div class="dots"><i style="border: 3px dashed var(--muted)"></i><i style="border: 3px dashed var(--muted)"></i></div></div>
+<section data-scene="06-anyone" class="why" data-transition="fade">
+  <div class="tag a-tag" data-cue="+0.1" data-anim="fade"><b>//</b>examples &middot; any agent that needs your call</div>
+  <div class="cols">
+    <div class="col card" data-cue="hiring" data-anim="up">
+      <div class="who">hiring agent</div>
+      <div class="big ember">400 &rarr; 12</div>
+      <div class="q">Cut the applicants to a shortlist?</div>
+      <div class="watch" data-cue="Each" data-anim="pop">&#9654; watch &middot; 0:48</div>
+    </div>
+    <div class="col card" data-cue="finance" data-anim="up">
+      <div class="who">finance agent</div>
+      <div class="big ember">Refund?</div>
+      <div class="q">Refund a customer's order?</div>
+      <div class="watch" data-cue="Each" data-anim="pop">&#9654; watch &middot; 0:41</div>
+    </div>
+    <div class="col card" data-cue="coding" data-anim="up">
+      <div class="who">coding agent</div>
+      <div class="big ember">Rewrite?</div>
+      <div class="q">Rewrite the retry logic?</div>
+      <div class="watch" data-cue="Each" data-anim="pop">&#9654; watch &middot; 0:52</div>
+    </div>
+  </div>
+  <div class="a-line" data-cue="Each" data-anim="up"><span class="silver">A video,</span> <s>not a wall of logs.</s></div>
+</section>
+
+<section data-scene="07-trust" class="why" data-transition="fade">
+  <div class="c-panel">
+    <div class="tag" data-cue="critic" data-anim="fade"><b>//</b>critic agents, before you see it</div>
+    <div class="c-grid" data-cue="check" data-anim="stagger">
+      <div class="card">accuracy <b>&#10003;</b></div><div class="card">clarity <b>&#10003;</b></div>
+      <div class="card">pacing <b>&#10003;</b></div><div class="card">sync <b>&#10003;</b></div>
+      <div class="card">visuals <b>&#10003;</b></div><div class="card">consistency <b>&#10003;</b></div>
+    </div>
+    <div class="c-src" data-cue="sources" data-anim="up"><em>&#10003;</em> every claim checked against its sources</div>
+  </div>
+  <div class="hud quote-hud" data-cue="sources" data-anim="fade"><i></i><i></i><i></i><i></i></div>
+  <div class="quote card" data-cue="sources" data-anim="right">
+    <div class="tag">Andrej Karpathy &middot; on X &middot; Oct 2, 2026</div>
+    <p>&ldquo;&hellip;most <em style="color: var(--accent);" data-cue="bullish" data-anim="highlight">bullish</em> on is fully custom / bespoke <em class="grad">explainer videos</em>&hellip;&rdquo;</p>
   </div>
 </section>
 
-<section data-scene="07-close" data-transition="zoom" data-camera="none">
+<section data-scene="08-close" class="why" data-transition="flash" data-camera="none">
   <div class="end">
-    <div class="from" data-cue="shit" data-anim="glitch">shit show<div class="strike" data-cue="into" data-anim="grow"></div></div>
-    <div class="to" data-cue="ship#1" data-anim="slam">ship show</div>
-    <div class="url" data-cue="open" data-anim="up">github.com/latent-variable/shipshow</div>
-    <div class="steps mono"><span data-cue="Clone" data-anim="pop">clone</span><span data-cue="README" data-anim="pop">&rarr; README setup</span><span data-cue="point" data-anim="pop">&rarr; point your agent at it</span></div>
+    <div class="big silver" data-cue="Less" data-anim="up">Less anxiety.</div>
+    <div class="big ember" data-cue="Better" data-anim="slam">Better calls.</div>
+    <div class="row">
+      <div class="btn" data-cue="open" data-anim="pop">github.com/latent-variable/shipshow &rarr;</div>
+    </div>
+    <div class="made" data-cue="video" data-anim="pop"><span class="ping"></span>this video was made with ShipShow</div>
   </div>
 </section>
 
+<script>
+  // The ShipShow name catches a sheen of light after it lands; the player's scrub bar plays
+  // through its four chapters; the green pings beat like the page's status dots.
+  const at = (sel) => +document.querySelector(sel).dataset.at;
+  tl.to("#t-name", { backgroundPosition: "0% 0", duration: 1.4, ease: "power2.inOut" }, at("#t-name") + 0.45);
+  const scrubFrom = +document.querySelector('[data-scene="05-inside"]').dataset.start;
+  gsap.set("#scrub-fill", { scaleX: 0 });
+  tl.to("#scrub-fill", { scaleX: 1, duration: 7.4, ease: "none" }, scrubFrom + 0.3);
+  document.querySelectorAll(".ping").forEach((p) => {
+    tl.fromTo(p, { boxShadow: "0 0 0 0 rgba(74,222,128,0.7), 0 0 18px rgba(74,222,128,0.8)" },
+      { boxShadow: "0 0 0 14px rgba(74,222,128,0), 0 0 18px rgba(74,222,128,0.8)", duration: 1.2, repeat: 60, ease: "power1.out" }, 0);
+  });
+</script>

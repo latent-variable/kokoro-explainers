@@ -41,7 +41,7 @@
   --transition: rise;         /* none | fade | rise | slide | zoom | wipe | flash */
   --entrance: up;             /* the data-anim an element gets when it names none */
   --camera: push;             /* none | push: a slow push-in over each scene */
-  --ambient: glow;            /* none | glow | grid | dots | stars, or several: "stars glow" */
+  --ambient: glow;            /* none | glow | grid | dots | stars | horizon, or several: "stars glow" */
   --ambient-strength: 0.18;
   --progress: on;             /* on | off: a thin bar across the top */
   --progress-fill: var(--accent);

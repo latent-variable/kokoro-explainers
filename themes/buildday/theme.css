@@ -1,0 +1,49 @@
+/* Build Day: the look of the LA AI Hackathon's page (Oct 17, 2026). Deep space navy, ember
+   orange, ice blue and iris violet, a planet horizon below; Space Grotesk headlines and
+   JetBrains Mono labels (both SIL Open Font License, in fonts/). */
+@font-face { font-family: "Space Grotesk"; font-weight: 500; src: url("fonts/space-grotesk-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Space Grotesk"; font-weight: 700; src: url("fonts/space-grotesk-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 700; src: url("fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); }
+
+:root {
+  --bg: #050812;
+  --ink: #f4f7fb;
+  --muted: #b9c7dc;
+  --accent: #ff7a3d;          /* ember */
+  --accent-2: #8ec8ff;        /* ice */
+  --accent-3: #8f86ff;        /* iris */
+  --card: rgba(14, 20, 40, 0.9);
+  --line: #2a3146;
+  --code-bg: #080c1a;
+  --code-ink: #d6e4f5;
+  --good: #4ade80;
+  --bad: #ff7a3d;
+
+  --font: "Space Grotesk", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-display: "Space Grotesk", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  --display-weight: 700;
+  --display-tracking: -0.045em;
+
+  --pad: 150px;
+  --heading-top: 110px;
+  --heading-size: 84px;
+  --heading-align: left;
+  --radius: 14px;
+  --border: 1.5px;
+  --shadow: 0 24px 80px rgba(255, 122, 61, 0.14);
+
+  --cap-bg: rgba(5, 8, 18, 0.86);
+  --cap-ink: #f4f7fb;
+  --cap-size: 40px;
+  --cap-radius: 10px;
+
+  --transition: fade;
+  --entrance: up;
+  --camera: push;
+  --ambient: stars horizon;
+  --ambient-strength: 0.22;
+  --progress: on;
+  --progress-fill: linear-gradient(90deg, #ff7a3d, #ffc49e, #8ec8ff, #8f86ff);
+}

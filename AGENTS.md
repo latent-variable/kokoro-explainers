@@ -24,7 +24,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
 | `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor` |
 | `kit/` | The page, base styles and timeline every video shares |
-| `themes/` | Shared themes (`shipshow`, `paper`, `launch`); a client's goes in `local/themes/` |
+| `themes/` | Shared themes (`shipshow`, `paper`, `launch`, `buildday`); a client's goes in `local/themes/` |
 | `template/` | What `npm run new` copies |
 | `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
 
@@ -134,7 +134,7 @@ too, or a theme cannot restyle it.
 
 **Motion.** Theme tokens `--transition` (`none`, `fade`, `rise`, `slide`, `zoom`, `wipe`,
 `flash`), `--camera` (`none`, `push`: a slow push-in per scene), `--ambient` (`none`, `glow`,
-`grid`, `dots`, `stars`, or several: `stars glow`), `--ambient-strength`, `--progress` (`on`, `off`) and `--entrance`. `video.json`
+`grid`, `dots`, `stars`, `horizon` (a lit planet rim low in the frame), or several: `stars glow`), `--ambient-strength`, `--progress` (`on`, `off`) and `--entrance`. `video.json`
 `"flair"` overrides them for one video; a section's `data-transition` or `data-camera` for
 one scene. Ambient motion is seeded from the video's name (`"seed"` to change it), so a
 render is repeatable and each video moves its own way.
@@ -179,7 +179,7 @@ HyperFrames renders the page frame by frame in headless Chrome and muxes in the 
 ```
 bin/        voice, build, render, make, review, new, doctor, link-skills; lib.mjs is shared
 kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.js (timeline, effects)
-themes/     shipshow, paper and launch; each a theme.css of tokens, plus fonts (launch: Space Grotesk and Space Mono, SIL OFL)
+themes/     shipshow, paper, launch and buildday; each a theme.css of tokens, plus fonts (Space Grotesk, Space Mono, JetBrains Mono: SIL OFL)
 skills/     explainer-video, critic-loop, tailor, theme and the eight critics
 template/   what npm run new copies
 videos/     videos about this repo: how-it-works (the example) and why-shipshow (the pitch)
