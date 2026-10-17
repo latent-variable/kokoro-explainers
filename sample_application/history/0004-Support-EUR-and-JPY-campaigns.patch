@@ -1,0 +1,114 @@
+From de06c43843286378de32ddaadf7fbb0008da9119 Mon Sep 17 00:00:00 2001
+From: agent-currency <agent-currency@example.invalid>
+Date: Thu, 15 Oct 2026 14:00:00 -0700
+Subject: [PATCH 4/5] Support EUR and JPY campaigns
+
+---
+ src/campaign.mjs     |  7 ++++---
+ src/fx.mjs           | 19 +++++++++++++++++++
+ src/report.mjs       | 12 ++++++++++++
+ test/fx.test.mjs     | 14 ++++++++++++++
+ test/report.test.mjs | 12 ++++++++++++
+ 5 files changed, 61 insertions(+), 3 deletions(-)
+ create mode 100644 src/fx.mjs
+ create mode 100644 src/report.mjs
+ create mode 100644 test/fx.test.mjs
+ create mode 100644 test/report.test.mjs
+
+diff --git a/src/campaign.mjs b/src/campaign.mjs
+index a9af2de..04e2bc0 100644
+--- a/src/campaign.mjs
++++ b/src/campaign.mjs
+@@ -1,4 +1,5 @@
+-// A campaign has a daily budget in cents.
+-export function campaign({ id, name, dailyBudget }) {
+-  return { id, name, dailyBudget };
++// A campaign has a daily budget in the minor units of its own currency:
++// cents for USD and EUR, whole yen for JPY (yen has no minor unit).
++export function campaign({ id, name, currency = "USD", dailyBudget }) {
++  return { id, name, currency, dailyBudget };
+ }
+diff --git a/src/fx.mjs b/src/fx.mjs
+new file mode 100644
+index 0000000..c98066b
+--- /dev/null
++++ b/src/fx.mjs
+@@ -0,0 +1,19 @@
++// Fixed demo rates. `perUsd` is how many units of the currency one US dollar buys;
++// `digits` is how many decimal places its minor unit has (USD cents: 2, JPY: 0).
++export const CURRENCIES = {
++  USD: { perUsd: 1, digits: 2 },
++  EUR: { perUsd: 0.92, digits: 2 },
++  JPY: { perUsd: 150, digits: 0 },
++};
++
++// Convert USD cents into the minor units of another currency.
++export function usdCentsToMinor(usdCents, currency) {
++  const { perUsd, digits } = CURRENCIES[currency];
++  return Math.round((usdCents / 100) * perUsd * 10 ** digits);
++}
++
++// Convert a budget in a currency's minor units into USD cents.
++export function minorToUsdCents(minor, currency) {
++  const { perUsd, digits } = CURRENCIES[currency];
++  return Math.round((minor / 10 ** digits / perUsd) * 100);
++}
+diff --git a/src/report.mjs b/src/report.mjs
+new file mode 100644
+index 0000000..cb0578b
+--- /dev/null
++++ b/src/report.mjs
+@@ -0,0 +1,12 @@
++import { usdCentsToMinor } from "./fx.mjs";
++
++// What the dashboard shows: spend in the campaign's own currency, and how much of the budget it is.
++export function report(campaign, ledger) {
++  const spent = usdCentsToMinor(ledger.spent(campaign.id), campaign.currency);
++  return {
++    currency: campaign.currency,
++    budget: campaign.dailyBudget,
++    spent,
++    percent: Math.round((spent / campaign.dailyBudget) * 100),
++  };
++}
+diff --git a/test/fx.test.mjs b/test/fx.test.mjs
+new file mode 100644
+index 0000000..5d7ecbe
+--- /dev/null
++++ b/test/fx.test.mjs
+@@ -0,0 +1,14 @@
++import assert from "node:assert/strict";
++import { test } from "node:test";
++import { minorToUsdCents, usdCentsToMinor } from "../src/fx.mjs";
++
++test("USD cents convert to the minor units of EUR and JPY", () => {
++  assert.equal(usdCentsToMinor(10000, "USD"), 10000);
++  assert.equal(usdCentsToMinor(10000, "EUR"), 9200);
++  assert.equal(usdCentsToMinor(10000, "JPY"), 15000); // $100 is 15,000 yen, and yen have no minor unit
++});
++
++test("a budget converts back to USD cents", () => {
++  assert.equal(minorToUsdCents(9200, "EUR"), 10000);
++  assert.equal(minorToUsdCents(15000, "JPY"), 10000);
++});
+diff --git a/test/report.test.mjs b/test/report.test.mjs
+new file mode 100644
+index 0000000..ab9d339
+--- /dev/null
++++ b/test/report.test.mjs
+@@ -0,0 +1,12 @@
++import assert from "node:assert/strict";
++import { test } from "node:test";
++import { campaign } from "../src/campaign.mjs";
++import { createLedger } from "../src/ledger.mjs";
++import { report } from "../src/report.mjs";
++
++test("the dashboard shows spend in the campaign's own currency", () => {
++  const ledger = createLedger({ flushEvery: 1 });
++  const jp = campaign({ id: "jp", name: "Tokyo launch", currency: "JPY", dailyBudget: 15000 });
++  ledger.record("jp", 5000); // $50
++  assert.deepEqual(report(jp, ledger), { currency: "JPY", budget: 15000, spent: 7500, percent: 50 });
++});
+-- 
+2.53.0
+
