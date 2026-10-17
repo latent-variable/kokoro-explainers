@@ -1,0 +1,49 @@
+/* Launch: ShipShow's loud one. Deep violet night, hot pink, electric cyan, acid lime,
+   Space Grotesk and Space Mono (SIL Open Font License, in fonts/). Stars and glow behind,
+   a flash between scenes. */
+@font-face { font-family: "Space Grotesk"; font-weight: 500; src: url("fonts/space-grotesk-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Space Grotesk"; font-weight: 700; src: url("fonts/space-grotesk-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Space Mono"; font-weight: 400; src: url("fonts/space-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Space Mono"; font-weight: 700; src: url("fonts/space-mono-latin-700-normal.woff2") format("woff2"); }
+
+:root {
+  --bg: #0b0721;
+  --ink: #f4f1ff;
+  --muted: #cfc8ee;
+  --accent: #ff3d8b;          /* hot pink */
+  --accent-2: #2de2e6;        /* electric cyan */
+  --accent-3: #c6ff3d;        /* acid lime */
+  --card: #171036;
+  --line: #3d2d72;
+  --code-bg: #0e0a26;
+  --code-ink: #d9d3ff;
+  --good: #c6ff3d;
+  --bad: #ff5c7a;
+
+  --font: "Space Grotesk", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-display: "Space Grotesk", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "Space Mono", "SF Mono", Menlo, Consolas, monospace;
+  --display-weight: 700;
+  --display-tracking: -0.035em;
+
+  --pad: 140px;
+  --heading-top: 110px;
+  --heading-size: 80px;
+  --heading-align: left;
+  --radius: 20px;
+  --border: 2px;
+  --shadow: 0 24px 70px rgba(255, 61, 139, 0.16);
+
+  --cap-bg: rgba(11, 7, 33, 0.86);
+  --cap-ink: #ffffff;
+  --cap-size: 42px;
+  --cap-radius: 999px;
+
+  --transition: flash;
+  --entrance: up;
+  --camera: push;
+  --ambient: stars glow;
+  --ambient-strength: 0.2;
+  --progress: on;
+  --progress-fill: linear-gradient(90deg, #ff3d8b, #2de2e6, #c6ff3d);
+}

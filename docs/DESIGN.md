@@ -344,6 +344,13 @@ cannot lower the floor (`bin/lib.mjs`, `config`). `bin/setup.mjs` tells a person
 deleting it, in line with "the scripts never delete files".
 **Costs.** A video cannot opt out of the grounding critic once it shows code; a verifier run leaves a small temp folder.
 
+### D29. Main's launch theme, music bed and why-shipshow pitch video adopted (main, #13; 2026-10-17)
+**Decision.** Merged main's third theme (`launch`), the optional music bed under the narration (needs `ffmpeg`, so `npm test`
+needs it too, as CI already installs it) and the `videos/why-shipshow` pitch. In `bin/review.mjs` the packet keeps main's
+syllables-a-minute pace target next to this branch's measured reading queue and stillness table; both import from
+`bin/lib.mjs` and `bin/measure.mjs`. The skill count and description size did not change.
+**Costs.** A machine without `ffmpeg` cannot load the test file (the music helper exits the process); install it first.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.

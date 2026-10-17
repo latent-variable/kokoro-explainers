@@ -26,7 +26,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
 | `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor`, `critics`; and `usage` (token and context tracking) |
 | `kit/` | The page, base styles and timeline every video shares |
-| `themes/` | Shared themes (`shipshow`, `paper`); a client's goes in `local/themes/` |
+| `themes/` | Shared themes (`shipshow`, `paper`, `launch`); a client's goes in `local/themes/` |
 | `template/` | What `npm run new` copies |
 | `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
 
@@ -53,8 +53,10 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 - **The agent that builds a video never judges it.** Every critic is a fresh agent that has
   never seen the build: never a fork, never yourself. Its whole job is to find what is wrong.
-- **A video is done when its critics pass**, not when it renders: `REVIEW.md` records each
-  round. Which critics a video gets is in its `video.json`; its own bar is in `critics.md`.
+- **A video is done when its critics pass or its review plan's cap is reached**, never when it
+  merely renders: `REVIEW.md` records each round, and at the cap every open finding as
+  accepted or declined with its reason. The floor (accuracy, and decision for a decision
+  video) can never ship open. Which critics a video gets is in its `video.json`; its own bar is in `critics.md`.
 - **Every claim traces to `sources.md`.** A fact the sources lack is a gap to report, never
   one to fill in.
 - **A bar you keep wishing a video met becomes a critic** (`critic-loop`, *A new critic*).
@@ -156,7 +158,8 @@ never says, and warns when a bare word occurs more than once. `data-anim` picks 
 (the theme's `--entrance` when absent): `up`, `fade`, `pop`, `left`, `right`, `grow`, `zoom`,
 `blur`, and `type` (letter by letter), `draw` (an SVG's strokes draw themselves), `count` (the
 number in the text counts up), `highlight` (a marker sweeps under text already shown),
-`stagger` (children in turn), `pulse` (pops, then beats). A `<script>` in `scenes.html` runs after the shared
+`stagger` (children in turn), `pulse` (pops, then beats), `scramble` (decodes from glyphs),
+`glitch` (arrives split into colour channels, jitters, settles), `slam` (lands big and hard). A `<script>` in `scenes.html` runs after the shared
 timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-at`.
 
 **Voice.** Two engines, set by `engine` in `video.json` or `local/config.json` (`--engine` on `make` or
@@ -177,9 +180,9 @@ lists them all. Fonts and images sit beside it and are copied to `assets/theme/`
 captions and the `ss-` pieces from the tokens; a scene's own styles should use the tokens
 too, or a theme cannot restyle it.
 
-**Motion.** Theme tokens `--transition` (`none`, `fade`, `rise`, `slide`, `zoom`, `wipe`),
-`--camera` (`none`, `push`: a slow push-in per scene), `--ambient` (`none`, `glow`, `grid`,
-`dots`), `--ambient-strength`, `--progress` (`on`, `off`) and `--entrance`. `video.json`
+**Motion.** Theme tokens `--transition` (`none`, `fade`, `rise`, `slide`, `zoom`, `wipe`,
+`flash`), `--camera` (`none`, `push`: a slow push-in per scene), `--ambient` (`none`, `glow`,
+`grid`, `dots`, `stars`, or several: `stars glow`), `--ambient-strength`, `--progress` (`on`, `off`) and `--entrance`. `video.json`
 `"flair"` overrides them for one video; a section's `data-transition` or `data-camera` for
 one scene. Ambient motion is seeded from the video's name (`"seed"` to change it), so a
 render is repeatable and each video moves its own way.
@@ -193,8 +196,19 @@ explicit preset there beats importance), then importance, then `local/config.jso
 `"review"`, then the kind's default (`quick` for a decision video, else `standard`). `skills/critic-loop` has what each dial trades and the floor no dial lowers.
 The estimate's constants are measurements from 2026-10-17; replace them when you measure.
 
+**Music.** `video.json` `"music": {"file", "volume", "duck"}` puts a bed under the narration:
+the build decodes it with ffmpeg, loops it to length, lowers it while the voice speaks (from the
+sentence timings, with short ramps), fades it in and out, and writes `assets/music.wav`
+(`bin/lib.mjs`, `musicBed`). A missing file warns and builds without music, since music is
+often local (`local/music/`): a generated track's licence is its maker's, so it is never
+committed. Check a generated track for vocals before using it under narration (Whisper hearing
+words is the sign); MiniMax Music 3 sang on its first take for why-shipshow despite
+`--instrumental`.
+
 **Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, OmniVoice at its own 1.0: both about 160 words
-a minute), not either engine's own: 1.25 by default. OmniVoice takes 1.0 to 1.3, the range it was tested at. Pauses shrink with it. The most specific wins: `--speed` on
+a minute), not either engine's own: 1.25 by default. OmniVoice takes 1.0 to 1.3, the range it was tested at. The packet
+measures pace in syllables a minute (base about 210, `BASE_SPM`), since words a minute runs high on short words.
+Pauses shrink with it. The most specific wins: `--speed` on
 `make` or `voice`, then `video.json`, then the person's `local/config.json`, then 1.25
 (`bin/lib.mjs`, `config`). A take is re-voiced when its speed changes.
 
@@ -213,10 +227,10 @@ HyperFrames renders the page frame by frame in headless Chrome and muxes in the 
 ```
 bin/        voice, build, render, make, review, critics, new, doctor, setup, link-skills, usage; lib.mjs is shared, measure.mjs holds the packet's measurements, python.mjs the supported Python range
 kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.js (timeline, effects)
-themes/     shipshow and paper; each a theme.css of tokens, plus fonts and images
+themes/     shipshow, paper and launch; each a theme.css of tokens, plus fonts (launch: Space Grotesk and Space Mono, SIL OFL)
 skills/     the explainer and development skills, critic-loop, tailor, theme and the nine critics
 template/   what npm run new copies
-videos/     videos about this repo; how-it-works is the example
+videos/     videos about this repo: how-it-works (the example) and why-shipshow (the pitch)
 skills/critic-grounding/scripts/  excerpt.mjs and check-excerpt.mjs, the excerpt check (run through the skill)
 skills/evidence-standard/scripts/  sandbox-run.sh, capture.mjs, verify-vendored.sh (run through the skill)
 sample_application/  pacer-demo, a toy ad-spend pacer built by three agents in a day: the Aperiam demo (README, history/, agents/; ANSWER.md is a spoiler)

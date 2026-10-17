@@ -17,7 +17,8 @@ description: >
 
 You are the builder. You make the video; you never judge it. Judging is the critics' job
 (`skills/critic-loop`), run by agents that did not build it. A video is done when its
-critics pass and `REVIEW.md` says so, not when it renders.
+critics pass, or when the plan's cap is reached with what is still open recorded in
+`REVIEW.md` (never a floor finding), not when it renders.
 
 **Read `local/` first** when it exists: the person's own preferences and bar (`tailor`
 skill). They tailor taste, never the truth bar.

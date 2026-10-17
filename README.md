@@ -57,7 +57,7 @@ Tell your agent how you like your videos ("faster", "open with the decision", "a
 
 **A better voice, or your own.** On a Mac with Apple Silicon, `npm run setup:omnivoice` adds [OmniVoice](https://github.com/k2-fsa/OmniVoice): speech we find clearer and more natural, and it can clone a voice from a few seconds of recording. Put a clip at `local/voices/<name>.wav` (yours, or someone who agreed), and `npm run make -- <folder> --engine omnivoice --voice <name>` tries it. Kokoro stays the default and runs anywhere. Review effort is yours too: a `quick` review takes about a minute of critics, `thorough` up to six (`npm run critics -- <folder>` shows the plan).
 
-Every video takes a theme: colours, fonts, layout and motion in one folder. Ship with `shipshow` or `paper`, or have your agent build one from a client's brand; `--theme paper` previews any theme on any video.
+Every video takes a theme: colours, fonts, layout and motion in one folder. Ship with `shipshow`, `paper` or `launch` (the neon one [our pitch video](videos/why-shipshow) wears), or have your agent build one from a client's brand; `--theme paper` previews any theme on any video. A video can also carry a music bed, which drops under the voice while it speaks.
 
 <p align="center">
   <img src="docs/assets/themes.jpg" width="100%" alt="The same moment of the same video in two themes: dark navy with orange in shipshow, warm paper with serif headlines and deep red in paper.">

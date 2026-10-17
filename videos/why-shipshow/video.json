@@ -1,0 +1,16 @@
+{
+  "title": "Why ShipShow",
+  "kind": "feature",
+  "importance": "high",
+  "importance_reason": "public: the project's own pitch, for anyone who finds the repo",
+  "audience": "A developer who works with coding agents, ships faster than they can read, and has never heard of ShipShow.",
+  "theme": "launch",
+  "voice": "af_heart",
+  "music": { "file": "local/music/launch-bed.wav", "volume": 0.24, "duck": 0.32 },
+  "say": {
+    "HyperFrames": "Hyper Frames",
+    "ShipShow": "Ship Show",
+    "GitHub": "Git Hub",
+    "API": "A P I"
+  }
+}
