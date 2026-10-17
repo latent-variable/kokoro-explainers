@@ -43,10 +43,31 @@ and are usually most of it. Each dial, and what it trades:
 | `frames` | `cues`, `scenes` | packet time and images to read | sync and cue timing judged on fewer stills |
 | `rerun` | `failed`, `touched`, `all` | critics re-run after a fix | a fix breaking something an unrerun critic owned |
 
-Set them in `video.json` `"review"` (`{"preset": "thorough"}`, `{"rounds": 1}`), per person in
-`local/config.json` `"review"`, or per run as flags; the most specific wins (`bin/lib.mjs`,
-`reviewPlan`). A decision video (`"kind": "decision"`) defaults to `quick` and always adds
-`critic-decision`.
+### How much review: the builder decides
+
+The builder sets the dial, from how much the video matters, before the first round. It
+writes `"importance"` (`low`, `normal`, `high`) and a one-line `"importance_reason"` into
+`video.json`; `low` runs `quick`, `normal` runs `standard`, `high` runs `thorough`.
+
+| Importance | When | Signals |
+|---|---|---|
+| `high` | A mistake would mislead many people or be costly to undo | Public or client-facing (a README, a release, a client); drives a decision that is expensive or hard to reverse; others will act on it without asking |
+| `normal` | A mistake costs some confusion, caught soon | Shared with the team; explains how something works; drives a decision that can be revisited |
+| `low` | One person, now, and the stakes are small | A decision video for the person waiting mid-work on a reversible call; a draft; a private video nobody else sees |
+
+Judge it from the brief, `video.json` `"audience"`, `kind` and where the video is going, not
+from how long it will take. Between two levels: the higher one if anyone outside the team
+will see it, the lower one if it is one person waiting mid-work. **Raise it mid-loop** when a
+round shows the stakes are higher than you thought (a blocking accuracy finding in a video
+others will act on); **never lower it mid-loop** to get past a finding.
+
+A person's word still wins over the builder's judgment: a preset they set on the video
+(`"review": {"preset": ...}`) or a flag they ask for in the moment. Their general default in
+`local/config.json` `"review"` gives way to the builder's call on a particular video. Dials
+(`rounds`, `model` and the rest) still adjust whichever preset is chosen (`bin/lib.mjs`,
+`reviewPlan`; `npm run critics` says where the preset came from). With no importance set, a
+decision video defaults to `quick` and every other to `standard`; a decision video always
+adds `critic-decision`.
 
 **The floor no dial lowers.** Whatever the caps, a video never ships with an open blocking
 finding from `critic-accuracy` (or, for a decision video, `critic-decision`): fix it and run
