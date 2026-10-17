@@ -34,7 +34,7 @@ it says so below.
 | Soon after, you watch both options, what each costs, and a recommendation | Same section; `critic-decision`. Build time not measured, so "soon after", not a number |
 | Other agents act as critics and check it, so you can trust a video you did not check yourself | `skills/critic-loop`: each critic is a fresh agent; the builder never judges its own video |
 | The critic chips: seven, plus Decision marked "decision videos" | `bin/lib.mjs` `BASE_CRITICS` (seven) and `skills/critic-loop`: a decision video adds `critic-decision` |
-| On our own explainer video, one caught a setup step we had left out; fixed before it shipped | `videos/how-it-works/REVIEW.md`, round 3: critic-accuracy found "clone the project ... and run npm install" left out the Python environment; fixed in that round, before the video merged |
+| On our own explainer video, one caught a setup step we had left out; fixed before it shipped | `videos/how-it-works/REVIEW.md`, round 3: critic-accuracy found that "clone it and run npm install" implied that was the whole setup, which also needs the Python environment; fixed in that round, before the video merged |
 | Speed it up to watch faster (shown: 1.5x, `--speed`), or pick a theme, even one built from a client's brand | `--speed` and `speed` (1.25 by default, 0.5 to 2), `themes/`, `skills/theme` |
 | The "this video" tag on launch | `video.json` `"theme": "launch"` (`themes/launch`) |
 | ShipShow is open source, on GitHub; clone it, follow the setup in its README, then ask your agent for a video of your last change | `LICENSE` (MIT); github.com/latent-variable/shipshow; `README.md` *Set it up*; `skills/explainer-video` |
