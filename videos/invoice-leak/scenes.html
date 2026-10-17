@@ -28,7 +28,7 @@
   .inv.own .o { color: var(--good); }
   .pills { position: absolute; left: var(--pad); right: var(--pad); top: 620px; display: flex; gap: 22px; }
   .pill { padding: 12px 24px; border: 2px solid var(--accent); border-radius: 999px; background: #1b0d05; color: #ffd9c4; font-family: var(--font-mono); font-size: 30px; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; }
-  .l-ask { position: absolute; left: var(--pad); right: var(--pad); top: 735px; font-size: 76px; white-space: nowrap; }
+  .l-ask { position: absolute; left: var(--pad); right: var(--pad); top: 730px; font-size: 100px; white-space: nowrap; }
 
   /* 02-layers */
   .y-tag { position: absolute; left: var(--pad); top: 120px; }
@@ -37,7 +37,7 @@
   .y-dot { position: absolute; top: 386px; left: var(--pad); width: 32px; height: 32px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 28px rgba(255, 122, 61, 0.95); }
   .y-req { position: absolute; right: var(--pad); top: 346px; }
   .layers { position: absolute; left: var(--pad); right: var(--pad); top: 450px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; align-items: stretch; }
-  .layer { min-height: 330px; padding: 28px 28px; display: flex; flex-direction: column; position: relative; }
+  .layer { min-height: 400px; padding: 28px 28px; display: flex; flex-direction: column; position: relative; }
   .layer .no { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; color: var(--accent-2); }
   .layer .nm { font-family: var(--font-display); font-weight: 700; font-size: 54px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 14px; line-height: 1; }
   .layer .sub { font-family: var(--font-display); font-weight: 500; font-size: 36px; color: var(--ink); margin-top: auto; line-height: 1.15; }
@@ -58,11 +58,11 @@
   .route small { font-size: 28px; font-weight: 500; color: var(--muted); margin-left: 12px; }
   .stakes { position: absolute; left: var(--pad); right: var(--pad); top: 590px; font-family: var(--font-display); font-size: 40px; font-weight: 700; white-space: nowrap; }
   .stakes b { color: var(--accent); }
-  .stride { position: absolute; left: var(--pad); right: var(--pad); top: 665px; display: flex; align-items: center; gap: 18px; }
+  .stride { position: absolute; left: var(--pad); right: var(--pad); top: 560px; display: flex; align-items: center; gap: 18px; }
   .stride .tag { margin-right: 14px; font-size: 28px; }
-  .st { width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; position: relative; font-family: var(--font-display); font-size: 54px; font-weight: 700; color: var(--muted); }
+  .st { width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; position: relative; font-family: var(--font-display); font-size: 54px; font-weight: 700; color: #56627a; }
   .st .lit { position: absolute; inset: -2px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius); background: var(--accent); color: #1b0d05; box-shadow: 0 0 40px rgba(255, 122, 61, 0.6); }
-  .st-note { position: absolute; left: var(--pad); right: var(--pad); top: 775px; display: flex; gap: 22px; align-items: center; font-family: var(--font-mono); font-size: 30px; color: var(--ink); white-space: nowrap; }
+  .st-note { position: absolute; left: var(--pad); right: var(--pad); top: 660px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; font-family: var(--font-mono); font-size: 30px; color: var(--ink); white-space: nowrap; }
   .st-note b { color: var(--accent); margin-right: 8px; }
   .st-note .pill { font-size: 30px; }
 
@@ -71,23 +71,26 @@
   .ocols { position: absolute; left: var(--pad); right: var(--pad); top: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; align-items: stretch; }
   .ocol { padding: 26px 30px; display: flex; flex-direction: column; }
   .ocol .lay { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-2); white-space: nowrap; }
-  .ocol .nm { font-family: var(--font-display); font-weight: 700; font-size: 48px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 10px; line-height: 1; }
+  .ocol .desc { font-family: var(--font-display); font-size: 32px; font-weight: 500; color: var(--ink); margin-top: 10px; line-height: 1.12; }
+  .ocol .nm { font-family: var(--font-display); font-weight: 700; font-size: 40px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 10px; line-height: 1; }
   .ocol .nm span { color: var(--accent); margin-right: 12px; }
-  .ocol .time { font-family: var(--font-display); font-weight: 700; font-size: 72px; text-transform: uppercase; letter-spacing: -0.04em; margin-top: 14px; line-height: 1; white-space: nowrap; }
+  .ocol .time { font-family: var(--font-display); font-weight: 700; font-size: 62px; text-transform: uppercase; letter-spacing: -0.04em; margin-top: 14px; line-height: 1; white-space: nowrap; }
   .ocol .time small { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.06em; color: var(--muted); -webkit-text-fill-color: var(--muted); margin-left: 10px; text-transform: lowercase; }
-  .ocol .row { margin-top: 18px; padding: 12px 18px; border-radius: 12px; font-family: var(--font-display); font-size: 36px; font-weight: 500; line-height: 1.12; border: 2px solid; }
+  .ocol .row { margin-top: 14px; padding: 12px 18px; border-radius: 12px; font-family: var(--font-display); font-size: 34px; font-weight: 500; line-height: 1.1; border: 2px solid; }
   .ocol .row small { display: block; font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.14em; font-weight: 700; margin-bottom: 2px; }
   .ocol .gain { border-color: rgba(74, 222, 128, 0.55); } .ocol .gain small { color: var(--good); }
   .ocol .cost { border-color: rgba(255, 122, 61, 0.6); } .ocol .cost small { color: var(--accent); }
-  .nothing { position: absolute; left: var(--pad); right: var(--pad); top: 770px; padding: 14px 30px; display: flex; gap: 26px; align-items: center; font-family: var(--font-display); font-size: 38px; font-weight: 700; border-color: var(--accent); white-space: nowrap; }
+  .nothing { position: absolute; left: var(--pad); right: var(--pad); top: 805px; padding: 12px 30px; display: flex; gap: 26px; align-items: center; font-family: var(--font-display); font-size: 38px; font-weight: 700; border-color: var(--accent); white-space: nowrap; }
   .nothing .tag { color: var(--accent); }
 
   /* 05-pick */
   .r-tag { position: absolute; left: var(--pad); top: 95px; }
   .rcols { position: absolute; left: var(--pad); right: var(--pad); top: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; align-items: stretch; }
   .rc { padding: 26px 30px; display: flex; flex-direction: column; position: relative; }
+  .rc.dim { opacity: 0.45; }
+  .rc .tagc { margin-top: 12px; padding: 8px 14px; border: 2px solid var(--accent); border-radius: 10px; font-family: var(--font-display); font-size: 32px; font-weight: 700; color: #ffd9c4; line-height: 1.1; }
   .rc.pick { border-color: var(--good); box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.6), 0 0 70px rgba(74, 222, 128, 0.3); }
-  .rc .when { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-2); }
+  .rc .when { font-family: var(--font-mono); font-size: 28px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-2); }
   .rc.pick .when { color: var(--good); }
   .rc .nm { font-family: var(--font-display); font-weight: 700; font-size: 50px; text-transform: uppercase; letter-spacing: -0.03em; margin-top: 10px; line-height: 1; }
   .rc .nm span { color: var(--accent); margin-right: 12px; }
@@ -97,10 +100,11 @@
   .rc.pick .eta { color: var(--good); }
   .rec-wrap { position: absolute; right: -16px; top: -38px; transform: rotate(3deg); }
   .rec { padding: 10px 24px; border: 3px solid var(--good); border-radius: 12px; background: #06140b; color: var(--good); font-family: var(--font-mono); font-size: 32px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; }
-  .why { position: absolute; left: var(--pad); right: var(--pad); top: 560px; padding: 16px 32px; display: flex; flex-direction: column; gap: 10px; border-color: rgba(74, 222, 128, 0.5); }
-  .why .ln { display: flex; gap: 22px; align-items: baseline; font-family: var(--font-display); font-size: 38px; font-weight: 700; white-space: nowrap; }
+  .why { position: absolute; left: var(--pad); right: var(--pad); top: 575px; padding: 16px 32px; display: flex; flex-direction: column; gap: 10px; border-color: rgba(74, 222, 128, 0.5); }
+  .why .ln { opacity: 0.3; display: flex; gap: 22px; align-items: baseline; font-family: var(--font-display); font-size: 38px; font-weight: 700; white-space: nowrap; }
   .why .ln .tag { font-size: 28px; width: 240px; flex: none; color: var(--good); }
   .why .ln .tag.c { color: var(--accent); }
+  .mk { display: inline-block; width: 1px; height: 1px; }
   .why .ln em { font-style: normal; color: var(--accent); }
   .still { position: absolute; left: var(--pad); top: 800px; font-family: var(--font-mono); font-size: 30px; color: var(--ink); white-space: nowrap; }
   .still b { color: var(--accent); margin-right: 10px; }
@@ -122,6 +126,7 @@
     <div class="inv card"><div class="n">#1047</div><div class="o">ORG 31</div></div>
   </div>
   <div class="pills">
+    <div class="pill" data-cue="forty" data-anim="pop">40 SECONDS</div>
     <div class="pill" data-cue="Six" data-anim="pop">6 INVOICES &middot; 4 OTHER COMPANIES</div>
     <div class="pill" data-cue="through" data-anim="pop">200 OK &times; 7</div>
   </div>
@@ -129,13 +134,13 @@
 </section>
 
 <section data-scene="02-layers" data-transition="wipe">
-  <div class="tag y-tag" data-cue="+0.1" data-anim="fade"><b>//</b>one request, four trust boundaries</div>
+  <div class="tag y-tag" data-cue="+0.1" data-anim="fade"><b>//</b>one request, four layers</div>
   <div class="big y-head silver" data-cue="crosses" data-anim="up">Where does it break?</div>
   <div class="y-line" data-cue="+0.2" data-anim="fade"></div>
   <div class="y-dot" id="y-dot"></div>
   <div class="tag y-req" data-cue="+0.2" data-anim="fade">request &rarr;</div>
   <div class="layers">
-    <div class="layer card" data-cue="firewall" data-anim="up"><div class="no">LAYER 1</div><div class="nm">Firewall</div><div class="sub">sees addresses, <em data-cue="owns" data-anim="highlight">never the owner</em></div></div>
+    <div class="layer card" data-cue="firewall" data-anim="up"><div class="no">LAYER 1</div><div class="nm">Firewall</div><div class="sub"><span data-cue="addresses" data-anim="fade">sees requests + addresses,</span> <em data-cue="owns" data-anim="highlight">never the owner</em></div></div>
     <div class="layer card" data-cue="load" data-anim="up"><div class="no">LAYER 2</div><div class="nm">Load balancer</div><div class="sub">spreads traffic</div></div>
     <div class="layer card" id="y-api" data-cue="API#1" data-anim="up"><div class="stamp" id="y-stamp" data-cue="bug" data-anim="slam">BUG LIVES HERE</div><div class="no">LAYER 3</div><div class="nm">API</div><div class="sub">decides who sees what</div></div>
     <div class="layer card" data-cue="database" data-anim="up"><div class="no">LAYER 4</div><div class="nm">Database</div><div class="sub">holds the invoices</div></div>
@@ -158,20 +163,19 @@
       <div class="res" data-cue="missing" data-anim="slam">&#10005; NEITHER ROUTE ASKS</div>
     </div>
   </div>
-  <div class="stakes" data-cue="signed" data-anim="up"><b>Any signed-in user:</b> reads others' emails + amounts, <b>can change a status</b></div>
   <div class="stride" data-cue="STRIDE" data-anim="stagger">
     <div class="tag"><b>//</b>STRIDE &middot; threat checklist</div>
     <div class="st card">S</div>
-    <div class="st card">T<div class="lit" data-cue="tampering" data-anim="pop">T</div></div>
+    <div class="st card">T<div class="lit" data-cue="changing#2" data-anim="pop">T</div></div>
     <div class="st card">R</div>
-    <div class="st card">I<div class="lit" data-cue="information" data-anim="pop">I</div></div>
+    <div class="st card">I<div class="lit" data-cue="reading" data-anim="pop">I</div></div>
     <div class="st card">D</div>
-    <div class="st card">E<div class="lit" data-cue="elevation" data-anim="pop">E</div></div>
+    <div class="st card">E<div class="lit" data-cue="doing" data-anim="pop">E</div></div>
   </div>
   <div class="st-note">
-    <span data-cue="information" data-anim="up"><b>I</b>information disclosure</span>
-    <span data-cue="tampering" data-anim="up"><b>T</b>tampering</span>
-    <span data-cue="elevation" data-anim="up"><b>E</b>elevation of privilege</span>
+    <span class="pill" data-cue="reading" data-anim="right">I &middot; reading what you should not: others' emails + amounts</span>
+    <span class="pill" data-cue="changing#2" data-anim="right">T &middot; changing it: an invoice's status</span>
+    <span class="pill" data-cue="doing" data-anim="right">E &middot; doing more than your role allows</span>
   </div>
 </section>
 
@@ -180,23 +184,26 @@
   <div class="ocols">
     <div class="ocol card" data-cue="Three" data-anim="fade">
       <div class="lay" data-cue="switch" data-anim="up">the two routes</div>
-      <div class="nm" data-cue="switch" data-anim="up"><span>A</span>Switch routes off</div>
+      <div class="nm" data-cue="switch" data-anim="up"><span>A</span>Routes off</div>
+      <div class="desc" data-cue="switch" data-anim="up">both answer "unavailable"</div>
       <div class="time ember" data-cue="minutes" data-anim="up">Minutes<small>est.</small></div>
       <div class="row gain" data-cue="stops" data-anim="fade"><small>GAINS</small>the leak stops</div>
-      <div class="row cost" data-cue="customer#1" data-anim="fade"><small>COSTS</small>no one can open or change an invoice</div>
+      <div class="row cost" data-cue="nobody" data-anim="fade"><small>COSTS</small>no one can open or change an invoice</div>
     </div>
     <div class="ocol card" data-cue="Three" data-anim="fade">
-      <div class="lay" data-cue="ownership" data-anim="up">the two routes</div>
-      <div class="nm" data-cue="ownership" data-anim="up"><span>B</span>Ownership check</div>
+      <div class="lay" data-cue="missing" data-anim="up">the two routes</div>
+      <div class="nm" data-cue="missing" data-anim="up"><span>B</span>Ownership check</div>
+      <div class="desc" data-cue="missing" data-anim="up">returns an invoice only to its own company</div>
       <div class="time ember" data-cue="hour" data-anim="up">~1 hour<small>est.</small></div>
       <div class="row gain" data-cue="lose" data-anim="fade"><small>GAINS</small>customers lose nothing</div>
-      <div class="row cost" data-cue="meanwhile" data-anim="fade"><small>COSTS</small>open meanwhile; every new route must remember</div>
+      <div class="row cost" data-cue="meanwhile" data-anim="fade"><small>COSTS</small>open meanwhile; routes must add it</div>
     </div>
     <div class="ocol card" data-cue="Three" data-anim="fade">
       <div class="lay" data-cue="security" data-anim="up">the database</div>
       <div class="nm" data-cue="security" data-anim="up"><span>C</span>Row-level security</div>
+      <div class="desc" data-cue="security" data-anim="up">database hands out only your company's rows</div>
       <div class="time ember" data-cue="days" data-anim="up">Days<small>est.</small></div>
-      <div class="row gain" data-cue="returns" data-anim="fade"><small>GAINS</small>database returns only your rows</div>
+      <div class="row gain" data-cue="itself" data-anim="fade"><small>GAINS</small>catches the next forgotten check</div>
       <div class="row cost" data-cue="lock" data-anim="fade"><small>COSTS</small>a mistake can lock customers out</div>
     </div>
   </div>
@@ -206,26 +213,28 @@
 <section data-scene="05-pick" data-transition="fade">
   <div class="tag r-tag" data-cue="+0.1" data-anim="fade"><b>//</b>the recommendation</div>
   <div class="rcols">
-    <div class="rc card" data-cue="+0.1" data-anim="fade">
-      <div class="when" data-cue="switch" data-anim="up">only if an hour is too long</div><div class="nm" data-cue="switch" data-anim="up"><span>A</span>Switch routes off</div>
-      <div class="what" data-cue="switch" data-anim="up">first, while B is built</div><div class="eta" data-cue="switch" data-anim="fade">MINUTES &middot; est.</div>
+    <div class="rc card dim" id="a-card">
+      <div class="when">if an hour is too long</div><div class="nm"><span>A</span>Routes off</div>
+      <div class="what">first, while B is built</div>
+      <div class="tagc" id="a-mark" data-cue="switch" data-anim="up">customers locked out of both routes meanwhile</div>
+      <div class="eta">MINUTES &middot; est.</div>
     </div>
-    <div class="rc card pick" data-cue="+0.1" data-anim="fade">
+    <div class="rc card pick">
       <div class="rec-wrap" data-cue="tonight" data-anim="fade"><div class="rec">&#10003; RECOMMENDED</div></div>
       <div class="when" data-cue="Pick" data-anim="up">ship tonight</div><div class="nm" data-cue="Pick" data-anim="up"><span>B</span>Ownership check</div>
-      <div class="what" data-cue="Pick" data-anim="up">closes this hole</div><div class="eta" data-cue="Pick" data-anim="fade">~1 HOUR &middot; est.</div>
+      <div class="what" data-cue="closes" data-anim="up">closes this hole</div><div class="eta" data-cue="hour" data-anim="up">~1 HOUR &middot; est.</div>
     </div>
-    <div class="rc card" data-cue="+0.1" data-anim="fade">
-      <div class="when" data-cue="plan" data-anim="up">plan next</div><div class="nm" data-cue="plan" data-anim="up"><span>C</span>Row-level security</div>
-      <div class="what" data-cue="plan" data-anim="up">a forgotten check can't leak</div><div class="eta" data-cue="plan" data-anim="fade">DAYS &middot; est.</div>
+    <div class="rc card dim" id="c-card">
+      <div class="when">plan next</div><div class="nm"><span>C</span>Row-level security</div>
+      <div class="what" id="c-lit" data-cue="plan" data-anim="up">a forgotten check can't leak</div><div class="eta">DAYS &middot; est.</div>
     </div>
   </div>
-  <div class="why card">
-    <div class="ln" data-cue="closes" data-anim="up"><span class="tag">// why B</span><span>closes this hole, takes nothing from customers</span></div>
-    <div class="ln" data-cue="forgotten" data-anim="up"><span class="tag c">// then C</span><span>the next forgotten check <em>can't leak</em></span></div>
-    <div class="ln" data-cue="assumes" data-anim="up"><span class="tag c">// assumes</span><span data-cue="acceptable" data-anim="highlight">an hour more exposure is acceptable</span></div>
+  <div class="why card" data-cue="+0.1" data-anim="fade">
+    <div class="ln" id="ln1"><i class="mk" id="mk1" data-cue="takes" data-anim="fade"></i><span class="tag">// why B</span><span>closes this hole, takes nothing from customers</span></div>
+    <div class="ln" id="ln2"><i class="mk" id="mk2" data-cue="big" data-anim="fade"></i><span class="tag c">// then C</span><span>too big to rush tonight; <em>stops the next leak</em></span></div>
+    <div class="ln" id="ln3"><i class="mk" id="mk3" data-cue="assumes" data-anim="fade"></i><span class="tag c">// assumes</span><span data-cue="acceptable" data-anim="highlight">an hour more exposure is acceptable</span></div>
+    <div class="ln" id="ln4"><i class="mk" id="mk4" data-cue="excerpt" data-anim="fade"></i><span class="tag c">// evidence</span><span>log excerpt: reads only so far</span></div>
   </div>
-  <div class="still" data-cue="reads" data-anim="fade"><b>//</b>log: reads only so far &middot; doing nothing leaves invoices readable and changeable</div>
 </section>
 
 <script>
@@ -235,6 +244,9 @@
   const d2 = +document.querySelector('[data-scene="02-layers"]').dataset.duration;
   gsap.set("#y-dot", { x: 0 });
   tl.fromTo("#y-dot", { x: 0 }, { x: 1560, duration: Math.max(4, d2 - 2), ease: "power1.inOut" }, s2 + 0.4);
+  for (let i = 1; i <= 4; i++) tl.to("#ln" + i, { opacity: 1, duration: 0.35 }, at("#mk" + i));
+  tl.to("#c-card", { opacity: 1, duration: 0.4 }, at("#c-lit"));
+  tl.to("#a-card", { opacity: 1, duration: 0.4 }, at("#a-mark"));
   tl.to("#y-api", { borderColor: "#ff7a3d", boxShadow: "0 0 0 1px rgba(255,122,61,0.6), 0 0 60px rgba(255,122,61,0.35)", duration: 0.4 }, at("#y-stamp"));
   document.querySelectorAll(".ping").forEach((p) => {
     tl.fromTo(p, { boxShadow: "0 0 0 0 rgba(255,122,61,0.7), 0 0 18px rgba(255,122,61,0.8)" },

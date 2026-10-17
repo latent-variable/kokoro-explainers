@@ -62,3 +62,49 @@ not patched. Speed is now 1.1; the new cut runs 97.9 s.
 - Length 97.9 s is a few seconds over the 80 to 95 aim. Cutting "each a trust boundary" and the last sentence of scene 4 would get under.
 - Nobody has heard the voice back; listen for "Option B" and "eighty-eight".
 - The firewall's own rules (600 requests a minute, managed rules) were dropped from sources as unused.
+
+## Round 2
+
+Critics ran on the 97.9 s cut. Accuracy and decision passed (minors only); clarity, engagement, sync and visuals failed on the items below. The sync critic's blank caption at 63.83 s was a pipeline bug (since fixed in the kit) and is ignored. The cut after these fixes runs about 101.5 s.
+
+### accuracy: pass
+- accuracy-1 (narration "the log" reads as the whole log): **fixed.** Narration now says "this log excerpt shows only reads" (opening) and "the log excerpt shows only reads" (pick); on screen "log excerpt: reads only so far".
+- accuracy-2 ("addresses" understates the firewall): **fixed.** "sees requests and addresses".
+
+### decision: pass
+- decision-r2-1 (excerpt): **fixed**, as accuracy-1.
+- decision-r2-2 (A's price at the choice): **fixed.** A's card in the pick scene carries "customers locked out of both routes meanwhile", lit on "switch".
+- decision-r2-3 (why C waits): **fixed.** "too big to rush tonight" is spoken and on the why box.
+
+### clarity: fail
+- clarity-1 (STRIDE, major): **fixed.** "Security teams check threats against a list called STRIDE. This hole hits three: reading what you should not, changing it, and doing more than your role allows." Each tile lights, with its plain-stake line (others' emails + amounts; an invoice's status; more than your role allows), on its words.
+- clarity-2 (B in plain words, major): **fixed.** "Add the missing check, so each route returns an invoice only to its own company"; B's card says the same, and the cost is now "every future route must add the check".
+- clarity-3 ("trust boundary", API gloss): **fixed in part.** "Each a trust boundary" is cut from the narration and the tag. **Declined:** the spoken API gloss ("the layer that decides who may see what"), to hold the length; the API card says it.
+- clarity-4 (hinge by ear): **fixed in part.** "This assumes an hour more exposure is acceptable, since the log excerpt shows only reads. If not, switch the routes off first." with A's card lit and its price shown. **Declined:** "then ship B" and "Approve B", for length; B stays marked RECOMMENDED.
+- clarity-5 (who is speaking): **declined.** The tag says "ledgerly access log" and the opening is the decision; naming the product in the narration costs words and the viewer is not confused about the topic.
+
+### engagement: fail
+- engagement-1 (STRIDE, major): **fixed**, as clarity-1.
+- engagement-2 (reads only, major): **fixed.** The opening says "This log excerpt shows only reads."; the pick keeps the assumption line.
+- engagement-3 (hinge small and late): **fixed.** A's card is on screen, dimmed, from the scene's start and lights with its cost when the fallback is spoken; the evidence line is display type in the why box.
+
+### sync: fail
+- sync-r2-1 (blank caption at 63.83 s): **ignored**, kit bug, since fixed.
+- sync-r2-2 (glosses ahead of voice): **fixed in part.** The firewall gloss lands on "addresses". **Declined:** the other three glosses stay with their cards: they are labels, not claims the voice makes.
+- sync-r2-3 (B card all at once): **fixed.** B lands on "Pick", "closes this hole" on "closes", the hour on "hour", the why line on "takes".
+- sync-r2-4 (stakes line early): **fixed.** The line is gone; the three plain-stake lines each land on their word.
+- sync-r2-5 (40 seconds unshown): **fixed.** A "40 SECONDS" pill lands on "forty".
+
+### visuals: fail
+- visuals-1 (empty slots in the recommendation, major): **fixed.** A and C sit dimmed with their content from the first frame and light on their words; the why box shows its four lines dimmed and lights each as it is spoken.
+- visuals-2 (A's eyebrow wraps): **fixed.** "if an hour is too long" fits on one line.
+- visuals-3 (rows do not align across option cards): **fixed in part.** A's title is "Routes off" and titles fit one line, so times line up better; the gain and cost rows still start where their content does.
+- visuals-4 (layers diagram small): **fixed in part.** Cards are taller. **Declined:** shrinking the title.
+- visuals-5 (decision question small): **fixed in part.** Enlarged to 100 px. **Declined:** receding the chips.
+- visuals-6 (STRIDE legend): **fixed.** Unlit tiles are dimmer; the legend is replaced by the plain-stake lines.
+- visuals-7 (reads-only line on the planet): **fixed.** It is the fourth line of the why box.
+
+### Left for the person
+- Length is about 101.5 s, at the edge of "about 100".
+- The pick scene no longer carries a do-nothing line; the options scene does.
+- Nobody has heard the voice back.

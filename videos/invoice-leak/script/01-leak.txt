@@ -1,1 +1,1 @@
-Overnight, user eighty-eight opened seven invoices in forty seconds. Six belonged to four other companies, and the system let every one through. Which fix do we ship tonight?
+Overnight, user eighty-eight opened seven invoices in forty seconds. Six belonged to four other companies, and the system let every one through. This log excerpt shows only reads. Which fix do we ship tonight?
