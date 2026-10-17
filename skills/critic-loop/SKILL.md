@@ -182,7 +182,9 @@ Save each one as `<video dir>/review/round-<n>/<critic>.json`.
    severity, except the floor above.
 5. **Look before you spend.** Before each new round, open the contact sheets yourself: a
    builder's glance catches overflow and mistimed cues for free (and `build` warns when a
-   bare cue word occurs twice in its scene).
+   bare cue word occurs twice in its scene). `npm run lint-packet -- <folder>` reads the packet's measured limits
+   (pace, scene length, pauses, reading time, stillness) and reports each one broken, with no model call: its findings
+   are objective, so fixing them first saves a round that would only have found them.
 6. **Stop** when every critic passes or the cap is reached. **Escalate to a human** when the floor fails, the same finding survives
    three rounds, two critics contradict each other, or a round only finds problems in the
    previous round's fixes.

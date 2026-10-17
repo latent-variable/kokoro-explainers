@@ -551,6 +551,33 @@ are the way to test it if one shows up. A rule that matters here is also a hook 
 **Would reverse if** an eval or a transcript shows a rule in the later sections being missed, or a session's context is measurably squeezed by it.
 **Costs.** About 6,200 tokens in every session, which is the price of one file every agent reads.
 
+### D44. The packet's own limits are linted before a critic is spent (2026-10-17; plan 6.1)
+**Decision.** `bin/lint-packet.mjs` (`npm run lint-packet -- <video>`) reads `review/packet.md` and reports each limit
+`critic-pacing`'s skill states that the packet measures: a scene more than 15% off the syllable target or over 40 s, a pause over 2 s
+that is not the last, sentences under 0.25 s apart or a scene change under 0.8 s, text flagged short or late, a stretch with nothing new
+over 12 s (major) or about 8 s (minor), a speed outside 0.8 to 1.6. Output is a critic's JSON (`critic: "lint-packet"`, every finding
+objective); exit 1 on a major one. `skills/critic-loop` says to run it before spending critics.
+**What it replaces: nothing.** `critic-pacing` still runs (whether the length fits what is taught is judgement, and sync is not measured
+here). In `videos/pacer-dev-journey` the pacing critic cost 44.8k and 46.2k tokens of 947k across two rounds (about 10%) and returned
+one minor and no findings; the expensive critics are grounding (72k, 88k) and visuals. So the saving from linting is a round's worth of
+objective findings, not a critic's tokens: plan step 6.1's idea of replacing mechanical critics with code would save little here.
+**Checked** against a real packet (`test/fixtures/packet-pacer.md`, copied from that video): it parses 7 scenes, 64 cues and 45 pauses;
+each limit is caught when one number is broken; a long final pause is allowed. On that video it reports one minor finding (a still
+stretch of 8.73 s in the fix scene) that both critics let pass.
+**Costs.** It parses the packet's markdown, so a change to `bin/review.mjs`'s tables breaks it (a test on a fixture says so, and an
+unreadable packet is an error, never a pass). The limits are copied from the skill's prose: change one, change both.
+
+### D45. Plan steps declined or left for a person (2026-10-17)
+**1.5 `disable-model-invocation` on `explainer-video`, `critic-loop` and `tailor`: declined.** It would drop about 1,460 characters
+(about 365 tokens a turn) of descriptions, but also the automatic loading: the evals (D41) show `critic-loop` firing 3 of 3 on natural
+words, and a skill that stops firing is the larger cost.
+**5.5 The evals in CI: left out** while runs cost money and a cell moved from 2 of 5 to 7 of 8 between runs of the same text; gate on them after the
+scores settle, with `--threshold`, pinned models and a budget.
+**5.4 A person labels critic findings right or wrong: not done, it needs a person.** Twenty findings from `videos/pacer-dev-journey/review/round-*/`
+are enough; this is the only check on whether Sonnet judging Sonnet is trustworthy.
+**6.2 to 6.4** (a token ceiling per round, scaled critic briefs, stopping when findings repeat): not started; round 2 of the pacer video
+found one blocking and two major findings, so a repeat rule has no data yet.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
