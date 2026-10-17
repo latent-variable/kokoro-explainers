@@ -85,3 +85,17 @@ test("build warns when a bare cue word occurs more than once in its scene", () =
   assert.equal(r.status, 0);
   assert.match(r.stderr, /data-cue="box" matches 2 words/);
 });
+
+test("skills link from skills/ and local/skills/, and a local one cannot shadow a shared one", async () => {
+  const { readlinkSync } = await import("node:fs");
+  const root = mkdtempSync(join(tmpdir(), "kx-test-"));
+  for (const d of ["skills/explainer-video", "local/skills/critic-mine", "local/skills/explainer-video"]) {
+    mkdirSync(join(root, d), { recursive: true });
+    writeFileSync(join(root, d, "SKILL.md"), "---\nname: x\n---\n");
+  }
+  const r = spawnSync(process.execPath, [join(REPO, "bin", "link-skills.mjs"), root], { encoding: "utf8" });
+  assert.equal(r.status, 0);
+  assert.equal(readlinkSync(join(root, ".claude/skills/explainer-video")), join("..", "..", "skills", "explainer-video"));
+  assert.equal(readlinkSync(join(root, ".claude/skills/critic-mine")), join("..", "..", "local", "skills", "critic-mine"));
+  assert.match(r.stderr, /local\/skills\/explainer-video has the same name as a shared skill/);
+});

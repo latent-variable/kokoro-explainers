@@ -18,7 +18,8 @@ critics that have never seen the video before.
 ## Who runs it
 
 The builder runs the loop and fixes the findings. It does not judge them away. For each
-critic in `video.json` `"critics"` (default: all seven below), it starts a **new** agent:
+critic in `video.json` `"critics"` (default: the first seven below; a decision video adds
+`critic-decision`), plus any the person added in `local/skills/`, it starts a **new** agent:
 
 - **Claude Code:** the Agent tool with a fresh general-purpose agent, never a fork (a fork
   inherits the builder's context, and with it the builder's bias). Sonnet is enough for most
@@ -42,6 +43,7 @@ finding first, then fix.
 | `critic-visuals` | Legibility, contrast, layout, composition, every frame finished |
 | `critic-consistency` | Same terms, names, look and conventions from start to end |
 | `critic-engagement` | Whether the intended viewer would keep watching; design made for that persona |
+| `critic-decision` | For a decision video: the call is stated, options priced, one recommended with why |
 
 ## The brief
 
@@ -56,6 +58,8 @@ Evidence, in videos/<name>/:
   sources.md            the ground truth; a claim not supported here is a finding
   critics.md            this video's own bar, if present: it applies to you too
   video.json            who the video is for, its voice and speed
+  brief.md              for a decision video: the decision as the working agent framed it
+  local/preferences.md, local/critics.md (repo root)   the person's own taste and bar, if present
 scenes.html and script/ are the source; read them only to point a fix at a line.
 Return only the JSON below. Stop when your skill's criteria are covered.
 ```

@@ -4,7 +4,7 @@ Narrated explainer videos made from plain text, on your own machine. You write a
 
 Nothing is sent to a cloud service. The voice model is about 340 MB and runs on the CPU.
 
-Built for the amperium.ai hackathon. The first use is release explainers: a short video that keeps developers current on what changed in a project's release and what they need to do.
+Built for the amperium.ai hackathon. The everyday use is a decision video: an agent working on a feature hands off to a fresh explainer agent, which makes a short video of what you need to know to make a call, and recommends one. The same skills make feature explainers (how something in a code base works) and release explainers.
 
 <!-- The rendered how-it-works video goes here once it has cleared its critics. -->
 
@@ -92,10 +92,26 @@ Agents make these videos through skills in `skills/` (`npm install` links them i
 | `critic-visuals` | Legibility, contrast, layout, every frame finished |
 | `critic-consistency` | Same names, terms and look from start to end |
 | `critic-engagement` | Whether the intended viewer would keep watching, and the design is made for them |
+| `critic-decision` | For a decision video: whether a person who watches once can make the call |
+
+A decision video adds `critic-decision`: the call is stated, every option has its gain and its cost, one is recommended with the reason, and doing nothing is accounted for.
 
 A video picks its critics in `video.json` (`"critics"`) and can add its own bar in `critics.md`, such as "every breaking change shows before and after code". When the same bar keeps coming back, it becomes a new critic skill.
 
 `npm run review -- videos/x` writes the evidence the critics judge: the script with timings, words a minute per scene, every pause, every cue with what is being said when it lands, reading time for on-screen text, and a still after each cue and at each scene end.
+
+## Make it yours
+
+The skills are the team's baseline. Your own taste goes in `local/`, which git ignores, so it never reaches the repo:
+
+| Path | What |
+|---|---|
+| `local/preferences.md` | How you like explainers: depth, order, tone, voice, speed, look |
+| `local/critics.md` | Your bar: every critic applies it to every video you make |
+| `local/skills/` | Your own skills and critics (`npm run skills` links them for Claude Code) |
+| `local/videos/` | Videos about any code base other than this one: this repo is public |
+
+You don't edit these by hand. Tell your agent how you want your explainers ("open with the decision", "always show the code") and the `tailor` skill records it, with the reason. When a preference would help everyone, it becomes a pull request to the baseline instead.
 
 ## The steps, one at a time
 
@@ -125,7 +141,7 @@ bin/make.mjs       all of the above, plus lint
 bin/new.mjs        a new video folder from template/
 bin/review.mjs     the evidence critics judge: packet.md and frames
 bin/doctor.mjs     what this machine is missing
-skills/            explainer-video, critic-loop and the seven critics
+skills/            explainer-video, critic-loop, tailor and the eight critics
 kit/shell.html     the page every video shares: canvas, captions, audio
 kit/kit.js         the timeline every video shares
 template/          the starting point for a new video
