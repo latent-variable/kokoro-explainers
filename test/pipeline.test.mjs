@@ -911,6 +911,18 @@ test("python: 3.10 to 3.13 are supported, 3.14 and 3.9 are not, and setup picks 
   assert.equal(pickPython(["python3"], () => "3.14"), null, "a machine with only 3.14 gets no interpreter, not a failing install");
 });
 
+test("setup upgrades pip before it installs requirements, and makes the venv only when there is none", async () => {
+  const { setupSteps } = await import("../bin/python.mjs");
+  // A new venv's own pip can be too old to find a current wheel (pip 22.3.1 on Python 3.10 cannot find onnxruntime 1.20),
+  // so the upgrade has to come before the install, in a new venv and in an old one.
+  const fresh = setupSteps("/r", "python3.12", false);
+  assert.deepEqual(fresh.map(([, args]) => args), [["-m", "venv", ".venv"], ["install", "--upgrade", "pip"], ["install", "-r", "requirements.txt"]]);
+  assert.equal(fresh[0][0], "python3.12");
+  assert.ok(fresh[1][0].endsWith(".venv/bin/pip") && fresh[2][0].endsWith(".venv/bin/pip"), "both pip steps use the venv's pip");
+  const existing = setupSteps("/r", "python3.12", true);
+  assert.deepEqual(existing.map(([, args]) => args), [["install", "--upgrade", "pip"], ["install", "-r", "requirements.txt"]], "an existing .venv is not recreated, but its pip is upgraded");
+});
+
 test("capture: a sandboxed command cannot redirect the host-side write with a symlink, and a command that never ran is not recorded", { skip: process.platform !== "darwin" && "record needs the macOS sandbox" }, () => {
   const cap = join(REPO, "skills", "evidence-standard", "scripts", "capture.mjs");
   const node = (...a) => spawnSync(process.execPath, [cap, ...a], { encoding: "utf8" });
