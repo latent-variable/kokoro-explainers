@@ -1,0 +1,1 @@
+Each trap it hit was written into AGENTS.md, so the next agent does not repeat it. One library version has to be pinned. And the speech engine fails when its data path is one hundred sixty characters or longer.

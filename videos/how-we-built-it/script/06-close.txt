@@ -1,0 +1,1 @@
+The rule now: every change goes through a pull request. Friction becomes a fix, and real use is what finds the gaps. This video is the next test, and it is done only when its own critics pass.

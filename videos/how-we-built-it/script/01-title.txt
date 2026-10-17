@@ -1,0 +1,1 @@
+This project was built in two pull requests, with Claude assisting. First came the pipeline, then the critics. This video is the story of how.

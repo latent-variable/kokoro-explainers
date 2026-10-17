@@ -1,0 +1,115 @@
+<style>
+  :root { --bg: #0f1420; --ink: #eef2f8; --muted: #b4bdcd; --accent: #ffb454; --cool: #7cc4ff; --card: #182033; --line: #2c3854; --code: #0a0e17; }
+  .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px; }
+  .kicker { font-size: 34px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  h1 { font-size: 112px; font-weight: 800; letter-spacing: -0.02em; text-align: center; }
+  h2 { position: absolute; top: 110px; left: 140px; font-size: 76px; font-weight: 750; }
+  .mono { font-family: "SF Mono", Menlo, Consolas, monospace; }
+  .flow { display: flex; align-items: center; gap: 28px; }
+  .chip { padding: 22px 36px; border-radius: 18px; background: var(--card); border: 2px solid var(--line); font-size: 40px; font-weight: 600; }
+  .chip.hot { border-color: var(--accent); color: var(--accent); }
+  .arrow { font-size: 44px; color: var(--muted); }
+  .takeaway { position: absolute; left: 140px; width: 1640px; text-align: center; font-size: 42px; color: var(--ink); }
+  .takeaway em { font-style: normal; color: var(--accent); font-weight: 700; }
+  .card { position: absolute; padding: 34px 44px; border-radius: 22px; background: var(--card); border: 2px solid var(--line); }
+  .card b { display: block; font-size: 32px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .card span { font-size: 44px; line-height: 1.3; }
+  .card.cool b { color: var(--cool); }
+  .card .big { display: block; font-size: 84px; font-weight: 800; color: var(--accent); line-height: 1.1; }
+  .card .sm { display: block; font-size: 36px; color: var(--muted); }
+
+  /* 02-pipeline */
+  .tried { top: 290px; left: 140px; width: 780px; height: 300px; }
+  .tried span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+  .chose { top: 290px; left: 1000px; width: 780px; height: 300px; border-color: var(--accent); }
+
+  /* 03-traps */
+  .agents { top: 270px; left: 140px; width: 1640px; height: 420px; padding: 30px 44px; }
+  .agents .fname { font-size: 28px; color: var(--accent); letter-spacing: 0.04em; margin-bottom: 18px; }
+  .row { font-size: 42px; line-height: 1.35; padding: 12px 0; border-top: 2px solid var(--line); }
+  .row mark { background: none; color: var(--accent); font-weight: 800; }
+
+  /* 04-critics */
+  .builder { top: 270px; left: 140px; width: 1640px; height: 150px; padding: 26px 44px; display: flex; align-items: center; gap: 36px; }
+  .builder b { margin: 0; }
+  .grid { position: absolute; top: 470px; left: 140px; width: 1640px; display: flex; flex-wrap: wrap; gap: 24px; }
+  .grid .chip { font-size: 38px; }
+  .fresh { top: 730px; left: 140px; width: 1640px; height: 130px; padding: 26px 44px; border-color: var(--accent); display: flex; align-items: center; gap: 36px; }
+  .fresh b { margin: 0; }
+
+  /* 05-loop */
+  .rounds { position: absolute; top: 270px; left: 140px; width: 1640px; display: flex; gap: 24px; }
+  .rounds .chip { flex: 1; text-align: center; padding: 22px 0; }
+  .loopcards { position: absolute; top: 440px; left: 140px; width: 1640px; display: flex; gap: 32px; }
+  .loopcards .card { position: static; flex: 1; height: 330px; }
+  .loopcards .card span { font-size: 38px; }
+
+  /* 06-close */
+  .rules { display: flex; flex-direction: column; gap: 28px; width: 1500px; }
+  .rule { padding: 30px 48px; border-radius: 20px; background: var(--card); border: 2px solid var(--line); font-size: 50px; font-weight: 600; }
+  .rule em { font-style: normal; color: var(--accent); }
+</style>
+
+<section data-scene="01-title">
+  <div class="center">
+    <div class="kicker" data-cue="+0.2" data-anim="fade">A very meta explainer</div>
+    <h1 data-cue="+0.4">How we built<br>this project</h1>
+    <div class="flow">
+      <div class="chip" data-cue="pull">Pull request 1</div>
+      <div class="chip hot" data-cue="pipeline" data-anim="pop">the pipeline</div>
+      <div class="arrow" data-cue="critics" data-anim="fade">&rarr;</div>
+      <div class="chip" data-cue="critics">Pull request 2</div>
+      <div class="chip hot" data-cue="critics" data-anim="pop">the critics</div>
+    </div>
+  </div>
+</section>
+
+<section data-scene="02-pipeline">
+  <h2 data-cue="+0.1" data-anim="left">1. The pipeline</h2>
+  <div class="card tried" data-cue="recognition"><b>Tried</b><span>Speech recognition to time each word</span><span class="sm" style="margin-top:18px; text-decoration:none">Timed out downloading its model after 6 minutes</span></div>
+  <div class="card chose" data-cue="skips" data-anim="pop"><b>Chose</b><span>One Kokoro take per sentence</span><span class="sm" style="margin-top:18px">Each sentence placed on the track by the pipeline</span></div>
+  <div class="takeaway" style="top: 690px" data-cue="exactly" data-anim="fade">Every start time is <em>known exactly</em>, with no second model.</div>
+</section>
+
+<section data-scene="03-traps">
+  <h2 data-cue="+0.1" data-anim="left">2. Traps, written down</h2>
+  <div class="card agents" data-cue="trap">
+    <div class="fname mono">AGENTS.md &middot; Traps</div>
+    <div class="row">No speech recognition, <mark>on purpose</mark></div>
+    <div class="row" data-cue="pinned"><span class="mono">requirements.txt</span> pins <mark>phonemizer</mark></div>
+    <div class="row" data-cue="hundred"><span class="mono">espeak-ng</span> fails at <mark>160+</mark> characters of data path</div>
+  </div>
+  <div class="takeaway" style="top: 740px" data-cue="characters" data-anim="fade">A mistake is made once, then <em>written down</em>.</div>
+</section>
+
+<section data-scene="04-critics">
+  <h2 data-cue="+0.1" data-anim="left">3. The critics</h2>
+  <div class="card builder" data-cue="builds"><b>Builder</b><span>Makes the video. Never judges it.</span></div>
+  <div class="grid" data-cue="seven" data-anim="pop">
+    <div class="chip">accuracy</div><div class="chip">clarity</div><div class="chip">pacing</div><div class="chip">sync</div>
+    <div class="chip">visuals</div><div class="chip">consistency</div><div class="chip">engagement</div>
+  </div>
+  <div class="card fresh" data-cue="fresh"><b>Every critic</b><span>A fresh agent that never saw the build</span></div>
+</section>
+
+<section data-scene="05-loop">
+  <h2 data-cue="+0.1" data-anim="left">4. The loop</h2>
+  <div class="rounds" data-cue="six">
+    <div class="chip">R1</div><div class="chip">R2</div><div class="chip">R3</div><div class="chip">R4</div><div class="chip">R5</div><div class="chip hot">R6</div>
+  </div>
+  <div class="loopcards">
+    <div class="card" data-cue="speech" data-anim="pop"><b>Round 1</b><span class="big">209</span><span class="sm">words a minute at most; speed 1.0 became 0.85</span></div>
+    <div class="card cool" data-cue="engagement" data-anim="pop"><b>After round 2</b><span>A new critic: <span style="color:var(--cool)">engagement</span></span></div>
+    <div class="card" data-cue="tool" data-anim="pop"><b>The tool itself</b><span>build warns when a cue word appears twice in a scene</span></div>
+  </div>
+</section>
+
+<section data-scene="06-close">
+  <div class="center">
+    <div class="rules">
+      <div class="rule" data-cue="pull">Every change goes through a <em>pull request</em></div>
+      <div class="rule" data-cue="Friction">Friction becomes a <em>fix</em></div>
+      <div class="rule" data-cue="critics">Done when the <em>critics pass</em></div>
+    </div>
+  </div>
+</section>

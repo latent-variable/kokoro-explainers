@@ -1,0 +1,16 @@
+{
+  "title": "How we built this project",
+  "voice": "af_heart",
+  "speed": 0.85,
+  "say": {
+    "AGENTS.md": "agents dot M D",
+    "HTML": "H T M L"
+  },
+  "audience": "The team at a stealth AI startup (its CEO included): technical, short on time, and interested in how an agent-assisted project like this came together and what they could take from it for their own work.",
+  "critics": [
+    "critic-accuracy",
+    "critic-clarity",
+    "critic-sync",
+    "critic-visuals"
+  ]
+}

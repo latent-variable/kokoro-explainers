@@ -1,0 +1,1 @@
+First, the pipeline. Script files and one HTML page become a narrated video. The hard choice was timing. Speech recognition timed out downloading its model after six minutes. So the pipeline skips it, and voices each sentence on its own. Every start time is then known exactly.
