@@ -36,7 +36,7 @@ function elementText(i) {
 const sceneAt = (t) => timing.scenes.find((s) => t >= s.start && t < s.start + s.duration) || timing.scenes.at(-1);
 const sentenceAt = (t) => {
   const s = sceneAt(t);
-  return s.sentences.find((x) => t < x.start + x.duration) || null;
+  return s.sentences.find((x) => t >= x.start && t < x.start + x.duration) || null;
 };
 
 // Every cued element, in time order.
