@@ -447,6 +447,20 @@ built from a variable, gets through; it is a seatbelt, not a sandbox (`sandbox-r
 (`doctor` says), and a machine without it hears about it at every first stop. Hooks run in the person's session and are
 loaded when it starts.
 
+### D37. The critic cannot Write or Edit, and stops after 40 turns (2026-10-17; supersedes the critic agent paragraph of D13)
+**Decision.** `agents/critic.md` adds `disallowedTools: ["Write", "Edit", "NotebookEdit"]`, `maxTurns: 40` and `model: sonnet`
+(was `inherit`). The loop's `model` dial still overrides the agent's model, so a person who asks for another judge gets it.
+D13 said the critic was "told, not enforced"; the writing tools are now enforced, Bash is not (it can still redirect or
+`mv`), and the agent is still told to work in a temporary directory. `maxTurns` is above the most a critic used in two rounds
+of `videos/pacer-dev-journey` (20 tool calls, a grounding critic) so it stops a runaway, not a careful run.
+**Checked.** `claude plugin validate .` and `validate agents --strict` pass; a test asserts the three fields and that no writing
+tool is in `tools`; and a headless run (`claude --plugin-dir . -p`, asked to write a file through the `shipshow:critic` agent)
+reported it had no Write or Edit tool and created nothing. That agent also listed only Read, Bash and Skill: Grep and Glob were not
+among the tools it saw, which this change did not cause (`tools` is unchanged) and was not investigated.
+**Not done.** A frontmatter hook to deny Bash writes outside a scratch directory (plan step 3.1's second half): whether a
+plugin-shipped agent's own hooks run is unconfirmed, so the Bash limit stays a stated one. **Costs.** A critic that needs more than 40 turns
+stops early and returns what it has; raise `maxTurns` if a longer video needs it.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
