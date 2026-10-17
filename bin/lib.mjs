@@ -119,9 +119,6 @@ export function config(dir, argv = process.argv) {
     tail: 0.9,         // after a scene's last sentence
     ...JSON.parse(readFileSync(join(dir, "video.json"), "utf8")),
   };
-  // Whether the voice was asked for in this very run, or only inherited: `--engine omnivoice` on a
-  // video that names a Kokoro voice is a person trying the engine, not a mistake.
-  const own = flag("voice", argv) !== undefined || ("voice" in JSON.parse(readFileSync(join(dir, "video.json"), "utf8")) && flag("engine", argv) === undefined);
   if (flag("engine", argv) !== undefined) cfg.engine = flag("engine", argv);
   if (flag("voice", argv) !== undefined) cfg.voice = flag("voice", argv);
   if (!["kokoro", "omnivoice"].includes(cfg.engine)) die(`engine is "${cfg.engine}"; it takes kokoro or omnivoice`);
@@ -129,8 +126,9 @@ export function config(dir, argv = process.argv) {
   if (flag("theme", argv) !== undefined) cfg.theme = flag("theme", argv);
   if (!(cfg.speed >= 0.5 && cfg.speed <= 2)) die(`speed ${cfg.speed} is outside 0.5 to 2`);
   if (cfg.engine === "omnivoice") {
-    // A person's default voice may be a Kokoro one; it is only an error when the video asked for it.
-    cfg.omni = (cfg.voice && omniVoice(cfg.voice)) || (own ? undefined : omniVoice(OMNI.default));
+    // A Kokoro voice id (af_heart) under this engine is the template's or a person's default, not a
+    // choice: it gives way to omnivoice's own. A name that is neither is a typo, and says so.
+    cfg.omni = (cfg.voice && omniVoice(cfg.voice)) || (!cfg.voice || /^[a-z]{2}_[a-z]+$/.test(cfg.voice) ? omniVoice(OMNI.default) : undefined);
     if (!cfg.omni) {
       const clones = existsSync(join(localDir(), "voices")) ? readdirSync(join(localDir(), "voices")).filter((f) => f.endsWith(".wav")).map((f) => f.slice(0, -4)) : [];
       die(`no omnivoice voice "${cfg.voice}": the built-in ones are ${Object.keys(OMNI.builtIn).join(", ")}${clones.length ? `; yours (local/voices/) are ${clones.join(", ")}` : ""}. A clone is a 3 to 10 second recording at local/voices/<name>.wav`);

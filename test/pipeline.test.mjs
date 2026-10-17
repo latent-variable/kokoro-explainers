@@ -314,6 +314,17 @@ test("omnivoice says what to do about a voice it does not have and a speed outsi
   let r = voiceRun(dir, local, py, "--engine", "omnivoice", "--voice", "nobody");
   assert.notEqual(r.status, 0);
   assert.match(r.stderr, /no omnivoice voice "nobody".*caro_davy.*yours \(local\/voices\/\) are mine/s);
+  // The documented route: engine set in video.json, on a template that names a Kokoro voice.
+  const own = newVideo();
+  const cfg = JSON.parse(readFileSync(join(own, "video.json"), "utf8"));
+  writeFileSync(join(own, "video.json"), JSON.stringify({ ...cfg, engine: "omnivoice" }));
+  r = voiceRun(own, local, py);
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(JSON.parse(readFileSync(join(own, "assets", "omnivoice-jobs.json.log"), "utf8").trim()).voice.name, "caro_davy");
+  writeFileSync(join(own, "video.json"), JSON.stringify({ ...cfg, engine: "omnivoice", voice: "carro_davy" }));
+  r = voiceRun(own, local, py);
+  assert.notEqual(r.status, 0, "a typo in an omnivoice voice name is not swapped for the default");
+  assert.match(r.stderr, /no omnivoice voice "carro_davy"/);
   r = voiceRun(dir, local, py, "--engine", "omnivoice", "--speed", "1.5");
   assert.notEqual(r.status, 0);
   assert.match(r.stderr, /speed 1\.5 is outside 1 to 1\.3/);
