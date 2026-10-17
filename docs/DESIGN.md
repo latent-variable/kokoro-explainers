@@ -416,7 +416,17 @@ to end: a brief about `examples/ledgerly` (a fictional invoicing API with one au
 agent that built it, and four critic rounds with a floor re-check.
 **Costs.** None known.
 
-### D35. A plan, not a change: Claude best practices (2026-10-17)
+### D35. Setup upgrades pip before it installs (2026-10-17)
+**Decision.** `npm run setup` runs `bin/setup.mjs`, whose steps come from `setupSteps` in `bin/python.mjs`: make `.venv`
+unless one exists, upgrade the venv's pip, install `requirements.txt`. An existing `.venv` is not recreated, but its pip is
+upgraded too. `doctor` now tells a person whose Kokoro install is missing to run `npm run setup`, not a bare `pip install`.
+**Why.** A new venv's pip can be too old to find a current wheel. Python 3.10.9 ships pip 22.3.1, which cannot find
+`onnxruntime>=1.20.1` and stops with "No matching distribution found" (reproduced from scratch; with pip 26.2.1 the same
+requirements install). A test locks the order in, so the upgrade cannot slip behind the install.
+**Costs.** One more pip call, and a network fetch, on every setup. `npm run setup:omnivoice` still installs with the venv's
+current pip, so an old venv needs `npm run setup` first.
+
+### D36. A plan, not a change: Claude best practices (2026-10-17)
 **Decision.** Wrote `docs/PLAN.md` from Anthropic's docs and engineering posts (read by a research agent on 2026-10-17) and
 measured facts about this repo: `AGENTS.md` is 263 lines against a 200-line yardstick, no skill description puts its trigger
 first, `agents/critic.md` is read-only only by instruction, there are no hooks, and `.claude/` is gitignored whole, so
