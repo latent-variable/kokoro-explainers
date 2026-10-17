@@ -5,71 +5,86 @@
   .mono { font-family: var(--font-mono); }
   .bad { color: var(--bad); }
   .good { color: var(--good); }
+  .pill { padding: 14px 28px; font-family: var(--font-mono); font-size: 32px; border: var(--border) solid var(--accent-2); border-radius: 999px; color: var(--accent-2); white-space: nowrap; }
+  .pill.pass { border-color: var(--good); color: var(--good); }
 
   /* 01-morning */
-  .dollars { position: absolute; right: var(--pad); top: 118px; padding: 14px 28px; font-family: var(--font-mono); font-size: 34px; color: var(--accent-2); border: var(--border) solid var(--accent-2); border-radius: 999px; }
-  .rows { position: absolute; left: var(--pad); right: var(--pad); top: 250px; display: flex; flex-direction: column; gap: 26px; }
-  .row { display: flex; align-items: center; justify-content: space-between; padding: 26px 44px; }
+  .agents { position: absolute; left: var(--pad); right: var(--pad); top: 215px; display: flex; gap: 22px; align-items: center; }
+  .agents .pill { font-size: 34px; }
+  .rows { position: absolute; left: var(--pad); right: var(--pad); top: 340px; display: flex; flex-direction: column; gap: 24px; }
+  .row { display: flex; align-items: center; justify-content: space-between; padding: 24px 44px; }
   .row .n { font-family: var(--font-display); font-size: 50px; font-weight: 700; width: 560px; }
-  .row .amt { font-family: var(--font-mono); font-size: 36px; color: var(--muted); width: 520px; }
+  .row .amt { font-family: var(--font-mono); font-size: 34px; color: var(--muted); width: 520px; }
   .row b { font-family: var(--font-display); font-size: 92px; font-weight: 800; letter-spacing: -0.03em; width: 360px; text-align: right; }
   .row.hot { border-color: var(--bad); }
-  .you { position: absolute; left: var(--pad); top: 810px; font-family: var(--font-display); font-size: 50px; font-weight: 700; color: var(--accent); }
+  .you { position: absolute; left: var(--pad); top: 800px; font-family: var(--font-display); font-size: 54px; font-weight: 700; color: var(--accent); }
 
   /* 02-notes */
-  .notes { position: absolute; left: var(--pad); right: var(--pad); top: 230px; display: flex; gap: 30px; }
-  .note { flex: 1; padding: 30px 32px; min-height: 250px; }
-  .note .who { font-family: var(--font-mono); font-size: 30px; color: var(--accent-2); }
-  .note .claim { font-family: var(--font-display); font-size: 44px; font-weight: 600; line-height: 1.22; margin-top: 18px; }
-  .note .src { font-family: var(--font-mono); font-size: 26px; color: var(--muted); margin-top: 20px; }
-  .lead { position: absolute; left: var(--pad); top: 700px; font-family: var(--font-display); font-size: 54px; font-weight: 700; color: var(--accent); }
-  .lead s { color: var(--muted); text-decoration-thickness: 4px; }
-  .next { position: absolute; right: var(--pad); top: 710px; padding: 16px 30px; font-family: var(--font-mono); font-size: 36px; color: var(--accent-2); border: var(--border) solid var(--accent-2); border-radius: 999px; }
+  .notes { position: absolute; left: var(--pad); right: var(--pad); top: 220px; display: flex; gap: 30px; }
+  .note { flex: 1; padding: 30px 32px; min-height: 400px; }
+  .note .who { font-family: var(--font-mono); font-size: 34px; color: var(--accent-2); }
+  .note .did { font-size: 36px; color: var(--muted); margin-top: 12px; }
+  .note .claim { font-family: var(--font-display); font-size: 46px; font-weight: 600; line-height: 1.2; margin-top: 22px; }
+  .leadrow { position: absolute; left: var(--pad); top: 700px; display: flex; gap: 40px; align-items: center; }
+  .lead { font-family: var(--font-display); font-size: 58px; font-weight: 700; color: var(--accent); }
 
-  /* 03-units, 04-stale, 05-tests, 06-fix: code on the left, what it means on the right */
+  /* code scenes */
   .code { position: absolute; left: var(--pad); padding: 28px 34px; font-size: 32px; line-height: 1.5; }
-  .code::before { content: attr(data-source) ":" attr(data-ranges); display: block; font-size: 24px; color: var(--muted); margin-bottom: 14px; }
+  .code::before { content: attr(data-source) ":" attr(data-ranges); display: block; font-size: 28px; color: var(--muted); margin-bottom: 14px; }
   .code .hl { border-radius: 6px; }
-  .side { position: absolute; right: var(--pad); width: 660px; display: flex; flex-direction: column; gap: 24px; }
-  .side.row3 { left: var(--pad); right: auto; width: 1200px; flex-direction: row; }
+  .side { position: absolute; right: var(--pad); width: 640px; display: flex; flex-direction: column; gap: 22px; }
+  .side.row3 { left: var(--pad); right: auto; width: 1300px; flex-direction: row; }
   .side.row3 .fact { flex: 1; }
-  .fact { padding: 22px 30px; font-size: 38px; line-height: 1.25; }
-  .fact small { display: block; font-family: var(--font-mono); font-size: 26px; color: var(--muted); margin-top: 8px; }
+  .fact { padding: 20px 28px; font-size: 38px; line-height: 1.25; }
   .fact.warn { border-color: var(--bad); }
+  .fact b { font-family: var(--font-display); font-size: 46px; }
   .fact.warn b { color: var(--bad); }
-  .fact b { font-family: var(--font-display); font-size: 52px; }
-  .vs { position: absolute; left: var(--pad); top: 650px; width: 1000px; display: flex; align-items: center; gap: 24px; font-family: var(--font-mono); font-size: 36px; }
-  .vs .a, .vs .b { padding: 16px 26px; }
+  .tag { position: absolute; right: var(--pad); top: 118px; }
+
+  /* 03-units */
+  .vs { position: absolute; left: var(--pad); width: 1200px; display: flex; align-items: center; gap: 24px; font-family: var(--font-mono); font-size: 34px; }
+  .vs .a, .vs .b { padding: 14px 26px; }
   .vs .arrow { color: var(--accent); }
-  .big { position: absolute; left: var(--pad); top: 770px; font-family: var(--font-display); font-size: 76px; font-weight: 800; color: var(--bad); letter-spacing: -0.03em; }
-  .big small { font-family: var(--font-mono); font-size: 32px; font-weight: 400; color: var(--muted); letter-spacing: 0; margin-left: 20px; }
-  .stack { position: absolute; left: var(--pad); top: 730px; display: flex; gap: 22px; }
-  .stack .chip { font-family: var(--font-mono); font-size: 34px; }
-  .climb { position: absolute; left: var(--pad); top: 830px; display: flex; gap: 22px; align-items: center; font-family: var(--font-display); font-size: 56px; font-weight: 800; }
-  .climb span.arrow { color: var(--muted); font-size: 44px; }
+  .big { position: absolute; left: var(--pad); top: 806px; font-family: var(--font-display); font-size: 76px; font-weight: 800; color: var(--bad); letter-spacing: -0.03em; display: flex; align-items: baseline; gap: 24px; }
+  .big small { font-family: var(--font-mono); font-size: 32px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+  .first { position: absolute; right: var(--pad); top: 800px; font-size: 44px; }
+
+  /* 04-stale */
+  .results { position: absolute; left: var(--pad); right: var(--pad); top: 730px; display: flex; gap: 26px; }
+  .results .r { padding: 20px 34px; font-family: var(--font-display); font-size: 46px; font-weight: 800; }
+  .results .r small { font-family: var(--font-mono); font-size: 30px; font-weight: 400; color: var(--muted); display: block; }
+  .results .r.final { border-color: var(--bad); }
+
+  /* 05-tests */
   .tests { position: absolute; left: var(--pad); top: 440px; width: 1000px; display: flex; flex-direction: column; gap: 20px; }
   .t { display: flex; justify-content: space-between; align-items: center; padding: 20px 32px; font-size: 40px; }
   .t .k { font-family: var(--font-mono); font-weight: 700; }
-  .t .v { font-family: var(--font-mono); font-size: 32px; }
+  .t .v { font-family: var(--font-mono); font-size: 36px; }
   .suite { position: absolute; right: var(--pad); top: 440px; width: 600px; padding: 26px 34px; border-color: var(--good); }
   .suite b { font-family: var(--font-display); font-size: 84px; color: var(--good); display: block; }
-  .suite span { font-size: 34px; color: var(--muted); }
-  .result { position: absolute; left: var(--pad); top: 560px; width: 1400px; padding: 22px 34px; }
-  .result .r { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 32px; padding: 8px 0; }
-  .result .r b { color: var(--good); }
+  .none { position: absolute; right: var(--pad); top: 240px; width: 640px; font-size: 38px; }
 
-  .badge { position: absolute; right: var(--pad); top: 480px; padding: 20px 34px; border-color: var(--good); font-family: var(--font-mono); font-size: 34px; color: var(--good); font-weight: 700; }
+  /* 06-fix */
+  .result { position: absolute; left: var(--pad); top: 520px; width: 1000px; padding: 20px 36px; }
+  .result .r { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--font-display); font-size: 46px; padding: 8px 0; }
+  .result .r b { font-size: 60px; font-weight: 800; color: var(--good); }
+  .badge { position: absolute; right: var(--pad); top: 520px; width: 560px; padding: 26px 34px; border-color: var(--good); font-family: var(--font-mono); font-size: 38px; color: var(--good); font-weight: 700; line-height: 1.3; }
 
   /* 07-close */
-  .close { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 36px; padding-left: var(--pad); }
+  .close { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 30px; padding-left: var(--pad); }
   .close .l1 { font-family: var(--font-display); font-size: 120px; font-weight: 800; letter-spacing: -0.04em; color: var(--accent); }
-  .close .l2 { font-family: var(--font-display); font-size: 64px; font-weight: 600; color: var(--ink); }
+  .close .l2 { font-family: var(--font-display); font-size: 62px; font-weight: 600; color: var(--ink); }
   .close .l2 em { font-style: normal; color: var(--accent-2); }
 </style>
 
 <section data-scene="01-morning">
-  <h2 class="ss-heading" data-cue="+0.2" data-anim="fade">The next morning</h2>
-  <div class="dollars" data-cue="dollars" data-anim="pop">budget: $100 a day, each</div>
+  <h2 class="ss-heading" data-cue="+0.2" data-anim="fade">Thursday, then the next morning</h2>
+  <div class="agents">
+    <span class="pill" data-cue="agents" data-anim="stagger">pacing agent</span>
+    <span class="pill" data-cue="agents" data-anim="stagger">throughput agent</span>
+    <span class="pill" data-cue="agents" data-anim="stagger">currency agent</span>
+    <span class="pill pass" data-cue="passed" data-anim="pop">every test passed</span>
+  </div>
   <div class="rows">
     <div class="row ss-card hot" data-cue="Tokyo" data-anim="left"><span class="n">Tokyo launch</span><span class="amt">15,000 JPY budget</span><b class="bad" data-cue="eighty" data-anim="count">181%</b></div>
     <div class="row ss-card" data-cue="US" data-anim="left"><span class="n">US retargeting</span><span class="amt">10,000 USD budget</span><b class="bad" data-cue="eleven" data-anim="count">111%</b></div>
@@ -83,32 +98,40 @@
   <div class="notes">
     <div class="note ss-card" data-cue="pacing#1" data-anim="up">
       <div class="who">pacing agent</div>
+      <div class="did">stopped campaigns at their budget</div>
       <div class="claim">&ldquo;a campaign never serves past its budget&rdquo;</div>
     </div>
     <div class="note ss-card" data-cue="throughput" data-anim="up">
       <div class="who">throughput agent</div>
-      <div class="claim">&ldquo;No change to what pacing &hellip; sees&rdquo;</div>
+      <div class="did">batched the ledger writes</div>
+      <div class="claim">&ldquo;No change to what pacing or the dashboard sees&rdquo;</div>
     </div>
     <div class="note ss-card" data-cue="currency" data-anim="up">
       <div class="who">currency agent</div>
+      <div class="did">added euro and yen campaigns</div>
       <div class="claim">&ldquo;pacing needs no change&rdquo;</div>
     </div>
   </div>
-  <div class="lead" data-cue="leads" data-anim="up">leads, not facts</div>
-  <div class="next" data-cue="units" data-anim="pop">the units</div>
+  <div class="leadrow">
+    <div class="pill" data-cue="confident" data-anim="pop">all say: safe</div>
+    <div class="lead" data-cue="leads" data-anim="up">leads, not facts</div>
+    <div class="pill" data-cue="units" data-anim="pop">start with the units</div>
+  </div>
 </section>
 
 <section data-scene="03-units" data-transition="slide">
   <h2 class="ss-heading" data-cue="+0.2" data-anim="fade">Pacing, in one line</h2>
   <pre class="code ss-code" style="top: 240px" data-source="sample_application/src/pacing.mjs" data-ranges="2-4" data-cue="line" data-anim="up">export function withinBudget(campaign, ledger) {
-  return <span class="hl" data-cue="spent#1" data-anim="highlight">ledger.spent(campaign.id)</span> &lt; <span class="hl" data-cue="budget" data-anim="highlight">campaign.dailyBudget</span>;
+  return <span class="hl" data-cue="spent#1" data-anim="highlight">ledger.spent(campaign.id)</span> &lt; <span class="hl" data-cue="budget#1" data-anim="highlight">campaign.dailyBudget</span>;
 }</pre>
-  <div class="side row3" style="top: 520px">
-    <div class="fact ss-card" data-cue="US#1" data-anim="left">spent: <b>USD cents</b></div>
+  <div class="side row3" style="top: 510px">
+    <div class="fact ss-card" data-cue="USD" data-anim="left">spent: <b>USD cents</b></div>
     <div class="fact ss-card" data-cue="minor#1" data-anim="left">budget: <b>own minor units</b></div>
   </div>
-  <div class="vs" data-cue="Yen#1" data-anim="up"><span class="a ss-card">15,000 yen = $100</span><span class="arrow">&rarr;</span><span class="b ss-card" data-cue="Fifteen#1" data-anim="pop">read as $150</span></div>
-  <div class="big" data-cue="Tokyo" data-anim="fade"><span data-cue="Tokyo" data-anim="count">150%</span><small>Tokyo alone</small></div>
+  <div class="vs" style="top: 628px"><span class="a ss-card" data-cue="euro#1" data-anim="up">9,200 EUR budget</span><span class="arrow" data-cue="read#1" data-anim="fade">&rarr;</span><span class="b ss-card bad" data-cue="read#1" data-anim="pop">read as $92</span></div>
+  <div class="vs" style="top: 712px"><span class="a ss-card" data-cue="Fifteen#1" data-anim="up">15,000 yen = $100</span><span class="arrow" data-cue="reads" data-anim="fade">&rarr;</span><span class="b ss-card bad" data-cue="reads" data-anim="pop">read as $150</span></div>
+  <div class="big" data-cue="Tokyo" data-anim="fade"><span data-cue="Tokyo" data-anim="count">150%</span><small>Tokyo alone, no batching</small></div>
+  <div class="first pill" data-cue="first" data-anim="pop">first cause</div>
 </section>
 
 <section data-scene="04-stale" data-transition="slide">
@@ -119,17 +142,22 @@
     },
     spent(campaignId) {
       <span class="hl" data-cue="saved" data-anim="highlight">return flushed.get(campaignId) ?? 0;</span></pre>
-  <div class="side row3" style="top: 610px">
+  <div class="side" style="top: 240px">
     <div class="fact ss-card" data-cue="share" data-anim="left">one batch, <b>shared</b></div>
-    <div class="fact ss-card warn" data-cue="serving" data-anim="left"><b>stale</b> spend</div>
+    <div class="fact ss-card" data-cue="buffer" data-anim="left">records wait in a <b>buffer</b></div>
+    <div class="fact ss-card warn" data-cue="serving" data-anim="left">spent <b>misses</b> the buffer</div>
   </div>
-  <div class="stack" data-cue="dollar" data-anim="stagger"><span class="chip">US alone: <b class="bad">105%</b></span></div>
-  <div class="climb" data-cue="climbs" data-anim="up"><span class="bad">150%</span><span class="arrow">&rarr;</span><span class="bad">175%</span></div>
+  <div class="results">
+    <div class="r ss-card" data-cue="US" data-anim="up">US alone <span class="bad">105%</span></div>
+    <div class="r ss-card" data-cue="Tokyo" data-anim="up">Tokyo alone <span class="bad">150% &rarr; 175%</span></div>
+    <div class="r ss-card final" data-cue="Together" data-anim="pop">together <span class="bad">181%</span></div>
+  </div>
 </section>
 
 <section data-scene="05-tests" data-transition="wipe">
   <h2 class="ss-heading" data-cue="+0.2" data-anim="fade">Why every test passed</h2>
   <pre class="code ss-code" style="top: 240px; width: 1000px" data-source="sample_application/test/pacing.test.mjs" data-ranges="8-8" data-cue="rebuilt" data-anim="up">  const ledger = createLedger({ <span class="hl" data-cue="every#2" data-anim="highlight">flushEvery: 1</span> });</pre>
+  <div class="none ss-card bad" data-cue="together" data-anim="pop" style="padding: 20px 28px">no agent test runs all three campaigns</div>
   <div class="tests">
     <div class="t ss-card" data-cue="reviewer" data-anim="left"><span class="k">USD</span><span class="v good">pass</span></div>
     <div class="t ss-card" data-cue="Euro" data-anim="left"><span class="k">EUR</span><span class="v bad">fails, marked todo</span></div>
@@ -140,9 +168,10 @@
 
 <section data-scene="06-fix" data-transition="slide">
   <h2 class="ss-heading" data-cue="+0.2" data-anim="fade">The fix</h2>
+  <div class="tag pill" data-cue="scratch" data-anim="pop">proposed, tried in a scratch copy</div>
   <pre class="code ss-code" style="top: 230px; font-size: 25px" data-source="videos/pacer-dev-journey/review/fix-diff.txt" data-ranges="39-39" data-cue="Pacing" data-anim="up">+  return ledger.spent(campaign.id) &lt; minorToUsdCents(campaign.dailyBudget, campaign.currency);</pre>
-  <div class="fact ss-card" style="position: absolute; left: var(--pad); top: 480px; width: 1000px" data-cue="spent" data-anim="up">spent = flushed <b>+ still in the buffer</b></div>
-  <div class="result ss-card" style="top: 640px" data-cue="Rerun" data-anim="up">
+  <div class="fact ss-card" style="position: absolute; left: var(--pad); top: 400px; width: 1000px" data-cue="spent" data-anim="up">spent = flushed <b>+ still in the buffer</b></div>
+  <div class="result ss-card" data-cue="Rerun" data-anim="up">
     <div class="r"><span>US retargeting</span><b data-cue="hundred" data-anim="count">100%</b></div>
     <div class="r"><span>EU prospecting</span><b>100%</b></div>
     <div class="r"><span>Tokyo launch</span><b>100%</b></div>
@@ -153,8 +182,9 @@
 <section data-scene="07-close" data-transition="fade">
   <div class="close">
     <div class="l1" data-cue="Nobody" data-anim="up">Nobody was careless.</div>
+    <div class="l2" data-cue="true" data-anim="up">Each note was true for its own task.</div>
     <div class="l2" data-cue="lived" data-anim="up">The failures lived <em>between</em> the changes.</div>
-    <div class="l2" data-cue="test#1" data-anim="up">Test the whole, together.</div>
+    <div class="l2" data-cue="apply" data-anim="up">Apply both. Keep the contract test.</div>
     <div class="l2" data-cue="lead" data-anim="up">Every note is a <em>lead</em>.</div>
   </div>
 </section>

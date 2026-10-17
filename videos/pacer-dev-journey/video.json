@@ -8,6 +8,7 @@
   "say": {
     "US": "U S",
     "EUR": "euro",
-    "JPY": "yen"
+    "JPY": "yen",
+    "USD": "U S D"
   }
 }
