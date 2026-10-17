@@ -1,0 +1,1 @@
+A file called AGENTS.md tells coding agents where to start. It lists the traps this project hit, such as adding speech recognition. So they are in front of the next agent from the start.
