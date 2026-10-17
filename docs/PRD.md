@@ -31,8 +31,9 @@ ventures arm that backs adtech and martech startups, an advisory arm, an Ads arm
 orchestration for supply chain, commerce, and identity", and a marketing arm. The person who asked for
 the demo says it is now at `amperiu.vc`, which also does not resolve from here (unverified). The site says
 nothing about AI, agents or **multimodal data**; that assumption, made earlier, is not supported and is
-dropped (F19 stays open). The demo therefore speaks to an adtech company's pain: see
-`sample_application/` (F18).
+dropped (F19 stays open). The sample therefore speaks to an adtech company's pain: see
+`sample_application/` (F18). The live hackathon demo is a decision video on a separate fictional code base,
+`videos/invoice-leak` about `examples/ledgerly` (F29).
 
 ## Goals
 
@@ -90,12 +91,12 @@ dropped (F19 stays open). The demo therefore speaks to an adtech company's pain:
 | F19 | Take multimodal inputs (images, audio, video, documents) as evidence for a video | **open**: nothing we can read says the company has multimodal data |
 | F23 | A video's look is a theme (`themes/shipshow`, `paper`, `launch`, `buildday`, a client's in `local/themes/`) with motion and effects, made from a brand by the `theme` skill (main, #8) | done |
 | F24 | How much critic review a video gets is a plan with presets and dials, set by the builder from the video's importance; a floor no dial lowers; `npm run critics` prints it (main, #9 and #10; this branch adds `critic-grounding` to the floor for a video that shows code) | done |
-| F25 | The pace is the person's choice: `speed` is a multiplier on a base of about 160 words a minute, 1.25 by default; `critic-pacing` judges against 160 times it (main, #7) | done |
+| F25 | The pace is the person's choice: `speed` is a multiplier on a base of about 160 words a minute, 1.25 by default; `critic-pacing` judges against about 210 syllables a minute times it (`BASE_SPM`) (main, #7) | done |
 | F26 | A second voice engine, optional and Apple Silicon only: OmniVoice (MLX) for higher-quality and cloned voices, installed into the same `.venv` by `npm run setup:omnivoice`; Kokoro stays the default and runs anywhere (main, #11) | done |
 | F27 | Captions a viewer follows word by word: a theme can light each word as it is spoken (`--cap-style: karaoke`), in short lines; `buildday` does (DESIGN D32) | done |
 | F28 | Voices that read every word: OmniVoice takes are generated at their natural length and stretched to the speed, trimmed of dead air, and re-voiced if silent; `eve` is a built-in voice (DESIGN D31) | done; measured with Whisper, no dropped words in about 150 sentences |
 | F29 | A decision video made through the real handoff, as the demo: a brief about a fictional code base, a fresh explainer agent, critics (`videos/invoice-leak`, `examples/ledgerly`; DESIGN D34) | done |
-| F30 | A video ends on its finished frame, so a paused or ended player shows the answer while people discuss it; `hold` adds still seconds after the last word (DESIGN D35) | done |
+| F30 | A video ends on its finished frame, so a paused or ended player shows the answer while people discuss it; `hold` adds still seconds after the last word (DESIGN D36) | done |
 | F20 | Per-person preferences and private videos stay local (`tailor`, `local/`) | done in this repo; elsewhere a skill checks `local/` is ignored and uses `.git/info/exclude` |
 | F21 | Run code to verify a claim without harm: a sandbox script, a faithful scratch copy, no network, writes confined (`evidence-standard`) | done on macOS; Linux untested |
 | F22 | Scaffold and diagnose: `npm run new` from `template/`, `npm run setup` (picks a Python in 3.10 to 3.13, the range the pinned Kokoro supports, and upgrades the new venv's pip before installing), `npm run doctor` for what the machine lacks, a draft render mode | done |
@@ -130,6 +131,8 @@ dropped (F19 stays open). The demo therefore speaks to an adtech company's pain:
 - A video about the sample app (`sample_application/`) passes all of its critics, and `REVIEW.md` shows the
   rounds. The video answers the question a developer asks the morning after: which of three correct-looking
   changes made the Tokyo campaign spend 181% of its budget, and is anything else wrong.
+- A decision video made through the handoff, on a code base it has never seen, passes its floor critics (accuracy and
+  decision) within the review plan: met by `videos/invoice-leak` (`REVIEW.md`).
 - Planted defects (a hidden behaviour change, a wrong brief claim, a fabricated output) are
   caught by the skills' own method rather than by luck. The red-team record is in
   [`skills/REVIEW.md`](../skills/REVIEW.md).
