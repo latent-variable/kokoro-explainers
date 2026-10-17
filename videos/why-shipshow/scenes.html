@@ -81,7 +81,7 @@
   .catch .now { font-size: 38px; margin-top: 10px; color: var(--accent-3); }
 
   /* 06-yours */
-  .speed { position: absolute; right: var(--pad); top: 110px; text-align: right; font-family: var(--font-display); font-size: 110px; font-weight: 700; color: var(--accent-2); letter-spacing: -0.04em; line-height: 1; }
+  .speed { position: absolute; right: var(--pad); top: 110px; text-align: right; font-family: var(--font-display); font-size: 72px; font-weight: 700; color: var(--accent-2); letter-spacing: -0.04em; line-height: 1; }
   .speed small { display: block; font-family: var(--font-mono); font-size: 30px; color: var(--ink); letter-spacing: 0.04em; margin-bottom: 8px; }
   .swatches { position: absolute; left: var(--pad); right: var(--pad); top: 330px; display: flex; gap: 30px; }
   .sw { flex: 1; height: 380px; border-radius: var(--radius); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; border: 3px solid transparent; position: relative; }
@@ -100,7 +100,7 @@
   .strike { position: absolute; left: -12px; right: -12px; top: 52%; height: 12px; border-radius: 6px; background: var(--accent); }
   .to { font-family: var(--font-display); font-size: 160px; font-weight: 700; letter-spacing: -0.05em; background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .url { font-family: var(--font-mono); font-size: 48px; color: var(--accent-2); }
-  .steps { display: flex; gap: 14px; font-size: 34px; color: var(--ink); }
+  .steps { display: flex; gap: 16px; font-size: 40px; color: var(--ink); }
   .steps span { padding: 12px 24px; border: 2px solid var(--line); border-radius: 999px; }
 </style>
 
@@ -128,7 +128,7 @@
   <div class="quote card" data-cue="+0.1" data-anim="left">
     <div class="who">Andrej Karpathy &middot; on X &middot; Oct 2, 2026</div>
     <p data-cue="+0.4" data-anim="fade">&ldquo;&hellip;our work will rise up the abstractions into oversight and understanding.&rdquo;</p>
-    <p data-cue="format" data-anim="fade">&ldquo;&hellip;most bullish on is fully custom / bespoke <span class="mark">explainer videos</span>&hellip;&rdquo;</p>
+    <p data-cue="format" data-anim="fade">&ldquo;&hellip;most bullish on is fully custom / bespoke <span class="mark" data-cue="explainer" data-anim="highlight">explainer videos</span>&hellip;&rdquo;</p>
   </div>
   <div class="ladder">
     <div class="rung card top" data-cue="explainer" data-anim="pulse">Explainer videos <small class="mono">most bullish</small></div>
@@ -144,7 +144,7 @@
 <section data-scene="03-how" data-transition="flash">
   <h2 data-cue="+0.1" data-anim="type">On <em>your</em> machine</h2>
   <div class="pipe">
-    <div class="node card" data-cue="script" data-anim="pop"><b class="mono">script/</b><span>your agent writes it</span></div>
+    <div class="node card" data-cue="script" data-anim="pop"><b class="mono">script/</b><span>+ scenes, by your agent</span></div>
     <svg class="link" viewBox="0 0 80 40" data-cue="Kokoro" data-anim="draw"><path d="M4 20 H72 M60 9 L72 20 L60 31"/></svg>
     <div class="node card" data-cue="Kokoro" data-anim="pop"><b>Kokoro</b><span>a small local voice</span></div>
     <svg class="link" viewBox="0 0 80 40" data-cue="HyperFrames" data-anim="draw"><path d="M4 20 H72 M60 9 L72 20 L60 31"/></svg>
