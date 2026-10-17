@@ -97,7 +97,7 @@ be in `sources.md`, copied from the pin it names, never retyped (`explainer-vide
 checks it with a script).
 
 **What the kit renders natively:** entrances on a cue (`up`, `fade`, `pop`, `left`, `right`, `grow`, `zoom`,
-`blur`, `type`, `draw`, `count`, `highlight`, `stagger`, `pulse`; `AGENTS.md`). An exit, a swap and a connector
+`blur`, `type`, `draw`, `count`, `highlight`, `stagger`, `pulse`, `scramble`, `glitch`, `slam`; `AGENTS.md`). An exit, a swap and a connector
 between two boxes need a custom `<script>` in `scenes.html`; choose a picture the kit can make or plan the script.
 
 ## 4. Fit it to the format

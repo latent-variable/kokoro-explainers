@@ -139,7 +139,7 @@ read. Never inside that code base ("the directory you read"), and never in its `
 person's consent. In this repo: `videos/<name>/` for its own code and a video about `sample_application/` (the directory
 read is the sample, and `videos/` is outside it); `local/`
 (gitignored here, and only here) for any other code base, any private or in-progress work, and every
-decision video and brief. In another repo, a path under that repo is only for something the person
+decision video and brief except a published example about this repo's `examples/` (`videos/invoice-leak`). In another repo, a path under that repo is only for something the person
 asked to keep there; otherwise use the scratch directory. Anything that may reach a public repo has
 absolute paths and usernames scrubbed from its `[ran]` lines. A context with no video is
 `<videos or local>/<name>/context.md`; with a video it is that video's `sources.md`.

@@ -32,16 +32,16 @@ skill). They tailor taste, never the truth bar.
 | **Release** | A project ships and its developers need to know what changed | The release, changelog and pull requests | |
 
 **Where it lives** (`evidence-standard`). A video about this repo or the sample app (`sample_application/`, original code written for it),
-or one we mean to publish, goes in `videos/`. A decision video, a private code base or
-someone's work in progress goes in `local/videos/<name>`, which is never committed: this repo
-is public.
+or one we mean to publish (an example decision video about `examples/`, like `videos/invoice-leak`), goes in
+`videos/`. Any other decision video, a private code base or someone's work in progress goes in
+`local/videos/<name>`, which is never committed: this repo is public.
 
 ### A decision video, handed off mid-work
 
 The everyday case. The agent doing the work does not build the video itself: it hands off
 to a fresh explainer agent, so the video is made by one that has not absorbed its reasoning.
 
-1. **The working agent writes `brief.md`** in a new `local/videos/<name>/` (`decision-brief`): the
+1. **The working agent writes `brief.md`** in a new `local/videos/<name>/` (`videos/<name>/` for a published example) (`decision-brief`): the
    decision in one sentence, numbered claims, each option with its gains and costs, what it would
    pick and why, one assumption it has not verified, and the pin to read the code at. It states what
    it knows; it does not script the video.
@@ -144,8 +144,8 @@ block (it keeps indentation and draws `>=` and `===` as typed) on a `<pre>`:
 Information is not enough; the viewer has to want to keep watching. Each video should feel
 made for its subject, not stamped from a template.
 
-- **Theme** for the client or audience (`skills/theme`); the shipped ones are `shipshow` and
-  `paper`.
+- **Theme** for the client or audience (`skills/theme`); the shipped ones are `shipshow`, `paper`,
+  `launch` and `buildday` (karaoke captions).
 - **Flair** in `video.json` for this video's own motion: `"flair": {"transition": "wipe",
   "camera": "push", "ambient": "grid"}`. A section's `data-transition` changes one scene;
   varying them keeps the cuts alive.

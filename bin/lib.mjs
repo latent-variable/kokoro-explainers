@@ -129,6 +129,7 @@ export function config(dir, argv = process.argv) {
     lead: 0.5,         // silence before a scene's first sentence, seconds at speed 1
     gap: 0.35,         // between sentences
     tail: 0.9,         // after a scene's last sentence
+    hold: 0,           // still frame after the video's last word, in plain seconds (not scaled by speed)
     ...JSON.parse(readFileSync(join(dir, "video.json"), "utf8")),
   };
   if (flag("engine", argv) !== undefined) cfg.engine = flag("engine", argv);
