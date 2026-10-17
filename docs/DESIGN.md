@@ -445,6 +445,15 @@ syllables a minute times the speed), where a published example decision video li
 code), the caption tokens a theme can set, the layout (`examples/`, all four videos) and the voice credit for `eve`.
 **Costs.** None known.
 
+### D38. A plan, not a change: Claude best practices (2026-10-17)
+**Decision.** Wrote `docs/PLAN.md` from Anthropic's docs and engineering posts (read by a research agent on 2026-10-17) and
+measured facts about this repo: `AGENTS.md` is 263 lines against a 200-line yardstick, no skill description puts its trigger
+first, `agents/critic.md` is read-only only by instruction, there are no hooks, and `.claude/` is gitignored whole, so
+project settings and rules cannot be committed. Nothing in the plan is done.
+**Why.** Hard rules here ("never delete", "docs stay current", "the sample stays buggy") are prose plus CI, and no run's
+cost or critic agreement is recorded. **Costs.** None yet; each step names how to tell it worked and the unconfirmed items
+to check first (plugin-shipped agent hooks, how a missing `version` resolves).
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.

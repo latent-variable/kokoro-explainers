@@ -1,0 +1,40 @@
+# command: ["diff","-ru","base/sample_application/src","fixed/sample_application/src"]
+# dir: "/tmp/pacer-scratch"
+# pin: "dbb7e0070f66dabd670b98ff9bb4d415ed2a3c69"
+# date: 2026-10-17T21:23:30.994Z
+# exit: 1
+---
+diff -ru base/sample_application/src/ledger.mjs fixed/sample_application/src/ledger.mjs
+--- base/sample_application/src/ledger.mjs	2026-10-17 14:20:19
++++ fixed/sample_application/src/ledger.mjs	2026-10-17 14:23:17
+@@ -1,6 +1,6 @@
+ // Spend so far today, per campaign, in USD cents: what the exchange bills us in.
+ // Writes are batched: the database is hit once per `flushEvery` records, not once per impression.
+-// spent() reads what has been flushed.
++// spent() reads what has been flushed plus what is still in the buffer, so batching never hides spend.
+ export const FLUSH_EVERY = 500;
+ 
+ export function createLedger({ flushEvery = FLUSH_EVERY } = {}) {
+@@ -21,7 +21,9 @@
+       if (buffer.length >= flushEvery) flush();
+     },
+     spent(campaignId) {
+-      return flushed.get(campaignId) ?? 0;
++      let cents = flushed.get(campaignId) ?? 0;
++      for (const [id, c] of buffer) if (id === campaignId) cents += c;
++      return cents;
+     },
+     flush,
+     get writes() {
+diff -ru base/sample_application/src/pacing.mjs fixed/sample_application/src/pacing.mjs
+--- base/sample_application/src/pacing.mjs	2026-10-17 14:20:19
++++ fixed/sample_application/src/pacing.mjs	2026-10-17 14:23:17
+@@ -1,4 +1,6 @@
+-// Stop serving once a campaign has spent its daily budget.
++import { minorToUsdCents } from "./fx.mjs";
++
++// Stop serving once a campaign has spent its daily budget. Both sides are USD cents.
+ export function withinBudget(campaign, ledger) {
+-  return ledger.spent(campaign.id) < campaign.dailyBudget;
++  return ledger.spent(campaign.id) < minorToUsdCents(campaign.dailyBudget, campaign.currency);
+ }

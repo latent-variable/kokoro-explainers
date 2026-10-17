@@ -1,0 +1,7 @@
+{
+  "started": "2026-10-17T21:23:38Z",
+  "branch": "video/pacer-demo",
+  "base": "origin/main dbb7e00",
+  "pin": "dbb7e0070f66dabd670b98ff9bb4d415ed2a3c69",
+  "note": "usage-at-start.json is the whole session up to this moment (it includes the earlier work on the skills and the PR split); subtract it from usage-at-end.json for this video's cost"
+}

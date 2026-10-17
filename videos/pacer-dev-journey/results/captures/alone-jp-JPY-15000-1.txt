@@ -1,0 +1,7 @@
+# command: ["node","alone.mjs","jp","JPY","15000","1"]
+# dir: "/tmp/pacer-scratch/base/sample_application"
+# pin: "dbb7e0070f66dabd670b98ff9bb4d415ed2a3c69"
+# date: 2026-10-17T21:24:37.386Z
+# exit: 0
+---
+JPY alone, flushEvery 1: spent 22502 of 15000 JPY = 150%

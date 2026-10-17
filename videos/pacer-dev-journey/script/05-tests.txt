@@ -1,0 +1,1 @@
+So why did every test pass? The throughput agent rebuilt the older tests to save after every record, so none of them ran pacing against real batching. None of the agents' tests ran the three campaigns together. Only a reviewer's contract test does. Euro and yen fail it, and both failures are marked todo, so the suite stays green.

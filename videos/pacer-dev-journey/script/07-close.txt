@@ -1,0 +1,1 @@
+Nobody was careless. Each agent tested its own task, and it passed. The failures lived between the changes, where nobody owned the whole. So apply both changes, and keep the contract test. And treat every note as a lead, until the code agrees.

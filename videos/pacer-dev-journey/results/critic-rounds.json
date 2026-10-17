@@ -1,0 +1,178 @@
+{
+  "plan": {
+    "preset": "standard (from importance normal)",
+    "critics_planned": 8,
+    "rounds_cap": 2,
+    "model": "sonnet",
+    "estimate_first_round": "about 1 min and 520k tokens",
+    "estimate_both": "at most 2.2 min and 1040k tokens"
+  },
+  "actual": {
+    "round1_tokens": 487434,
+    "both_tokens": 946965,
+    "round1_wall_s": 71,
+    "both_wall_s": 139
+  },
+  "rounds": {
+    "round-1": {
+      "critics": {
+        "critic-accuracy": {
+          "verdict": "fail",
+          "blocking": 0,
+          "major": 1,
+          "minor": 4,
+          "objective": 4,
+          "wall_ms": 52487,
+          "subagent_tokens": 68410
+        },
+        "critic-clarity": {
+          "verdict": "fail",
+          "blocking": 0,
+          "major": 5,
+          "minor": 3,
+          "objective": 0,
+          "wall_ms": 41399,
+          "subagent_tokens": 57234
+        },
+        "critic-consistency": {
+          "verdict": "fail",
+          "blocking": 0,
+          "major": 1,
+          "minor": 3,
+          "objective": 3,
+          "wall_ms": 32092,
+          "subagent_tokens": 66358
+        },
+        "critic-engagement": {
+          "verdict": "pass",
+          "blocking": 0,
+          "major": 0,
+          "minor": 3,
+          "objective": 2,
+          "wall_ms": 20623,
+          "subagent_tokens": 53802
+        },
+        "critic-grounding": {
+          "verdict": "fail",
+          "blocking": 0,
+          "major": 1,
+          "minor": 4,
+          "objective": 5,
+          "wall_ms": 70766,
+          "subagent_tokens": 71539
+        },
+        "critic-pacing": {
+          "verdict": "pass",
+          "blocking": 0,
+          "major": 0,
+          "minor": 1,
+          "objective": 1,
+          "wall_ms": 10361,
+          "subagent_tokens": 44789
+        },
+        "critic-sync": {
+          "verdict": "fail",
+          "blocking": 0,
+          "major": 2,
+          "minor": 2,
+          "objective": 4,
+          "wall_ms": 42763,
+          "subagent_tokens": 66099
+        },
+        "critic-visuals": {
+          "verdict": "fail",
+          "blocking": 1,
+          "major": 3,
+          "minor": 2,
+          "objective": 5,
+          "wall_ms": 29932,
+          "subagent_tokens": 59203
+        }
+      },
+      "totals": {
+        "blocking": 1,
+        "major": 13,
+        "minor": 22,
+        "findings": 36,
+        "subagent_tokens": 487434,
+        "wall_ms_parallel": 70766
+      }
+    },
+    "round-2": {
+      "critics": {
+        "critic-accuracy": {
+          "verdict": "fail",
+          "blocking": 0,
+          "major": 1,
+          "minor": 3,
+          "objective": 3,
+          "wall_ms": 40853,
+          "subagent_tokens": 65361
+        },
+        "critic-clarity": {
+          "verdict": "pass",
+          "blocking": 0,
+          "major": 0,
+          "minor": 3,
+          "objective": 0,
+          "wall_ms": 23465,
+          "subagent_tokens": 53300
+        },
+        "critic-consistency": {
+          "verdict": "pass",
+          "blocking": 0,
+          "major": 0,
+          "minor": 1,
+          "objective": 0,
+          "wall_ms": 18052,
+          "subagent_tokens": 61803
+        },
+        "critic-grounding": {
+          "verdict": "pass",
+          "blocking": 0,
+          "major": 0,
+          "minor": 2,
+          "objective": 1,
+          "wall_ms": 68558,
+          "subagent_tokens": 87966
+        },
+        "critic-pacing": {
+          "verdict": "pass",
+          "blocking": 0,
+          "major": 0,
+          "minor": 0,
+          "objective": 0,
+          "wall_ms": 7353,
+          "subagent_tokens": 46211
+        },
+        "critic-sync": {
+          "verdict": "fail",
+          "blocking": 0,
+          "major": 1,
+          "minor": 4,
+          "objective": 4,
+          "wall_ms": 50390,
+          "subagent_tokens": 72122
+        },
+        "critic-visuals": {
+          "verdict": "fail",
+          "blocking": 1,
+          "major": 0,
+          "minor": 3,
+          "objective": 2,
+          "wall_ms": 31412,
+          "subagent_tokens": 72768
+        }
+      },
+      "totals": {
+        "blocking": 1,
+        "major": 2,
+        "minor": 16,
+        "findings": 19,
+        "subagent_tokens": 459531,
+        "wall_ms_parallel": 68558
+      }
+    }
+  },
+  "note": "subagent_tokens and wall_ms are from the task notifications (tokens include cache reads); wall time is the slowest critic, since they run in parallel. Round 2 re-ran the six failed critics plus pacing (the plan says rerun failed; pacing was added because scene lengths changed). The cap was reached after round 2."
+}
