@@ -92,7 +92,7 @@ function captions() {
   }
   // One track: a line ends before the next one starts.
   caps.forEach((c, i) => {
-    if (caps[i + 1]) c.e = Math.min(c.e, caps[i + 1].t - 0.05);
+    if (caps[i + 1]) c.e = Math.min(c.e, caps[i + 1].t - 0.02);   // under one frame at 30 fps
   });
   return caps
     .map((c, i) => {

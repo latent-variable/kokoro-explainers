@@ -239,8 +239,11 @@
         tl.to(el, a[1], at);
       });
 
+      let lastEnd = -1;
       document.querySelectorAll(".cap span").forEach((c) => {
         const t = +c.parentElement.dataset.start, e = t + +c.parentElement.dataset.duration;
+        const follows = t - lastEnd < 0.1;   // the next line of a sentence: no blink between lines
+        lastEnd = e;
         const words = [...c.querySelectorAll(".w")];
         gsap.set(c, { opacity: 0 });
         if (!words.length) {
@@ -248,8 +251,13 @@
         } else {
           // Karaoke: the line pops in, each word lights in the accent as the voice reaches it,
           // then settles to the ink colour; words not yet spoken wait dimmed.
-          gsap.set(c, { scale: 0.92, y: 14 });
-          tl.to(c, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "back.out(2)" }, t);
+          if (follows) {
+            tl.set(c, { opacity: 1 }, t);
+            tl.fromTo(c, { y: 6 }, { y: 0, duration: 0.12, immediateRender: false }, t);
+          } else {
+            gsap.set(c, { scale: 0.92, y: 14 });
+            tl.to(c, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "back.out(2)" }, t);
+          }
           gsap.set(words, { opacity: 0.38 });
           words.forEach((w, i) => {
             const at = Math.max(t, +w.dataset.wordAt), next = words[i + 1] ? +words[i + 1].dataset.wordAt : e;
