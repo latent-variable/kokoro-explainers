@@ -541,6 +541,16 @@ that `${CLAUDE_PLUGIN_ROOT}` paths in `agents/critic.md` resolve in the cache co
 did not run a script); updating (`claude plugin update`) after a new commit.
 **Costs.** None: this is a record. The README's "works once this is on `main`" is replaced by the tried version.
 
+### D43. AGENTS.md stays whole: plan steps 1.1 and 1.2 declined (2026-10-17)
+**Decision.** `AGENTS.md` (269 lines, 22 KB, about 5,600 tokens a session) is not split into a shorter file plus `.claude/rules/` files.
+**Why.** (1) `AGENTS.md` itself records the owner's call (2026-10-17, *For the PR reviewer*): the code-level reference lives there on purpose, the
+README stays short for people, and this file is where agents find the code; a plan step cannot override that. (2) `AGENTS.md` is the file
+other agents (Codex and the like) read; `.claude/rules/` is Claude Code's, so a split would hide the reference from them. (3) The 200-line
+yardstick (Anthropic's memory docs) is about how well rules are followed; no failure from this file's length has been seen or measured, and the evals (D41)
+are the way to test it if one shows up. A rule that matters here is also a hook (D37), not a line in this file.
+**Would reverse if** an eval or a transcript shows a rule in the later sections being missed, or a session's context is measurably squeezed by it.
+**Costs.** About 5,600 tokens in every session, which is the price of one file every agent reads.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.

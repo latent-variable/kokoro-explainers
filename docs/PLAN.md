@@ -17,6 +17,7 @@ were measured on the same day.
 | 0.2 `bin/results.mjs` and `usage --since`; 2.6 dropped (usage.mjs reads the transcripts already) | done: DESIGN D40, `test/results.test.mjs` |
 | 5.1 evals, 5.2 with and without the plugin, 5.3 several runs | done: DESIGN D41, `evals/`, `test/evals.test.mjs`; 5.4 (a person labels critic findings) and 5.5 (CI) not done |
 | 4.1 clean-machine install, 4.2 `bin/` on the PATH, 4.3 version from the commit | done: DESIGN D42 (installs three ways; `bin/` not on the PATH; version is the SHA) |
+| 1.1 shorten `AGENTS.md`, 1.2 path-scoped rules | declined: DESIGN D43 (the owner put the reference there on purpose; other agents read only that file) |
 | everything else | not started |
 
 ## What the repo looks like today (measured)
