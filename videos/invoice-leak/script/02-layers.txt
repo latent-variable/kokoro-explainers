@@ -1,0 +1,1 @@
+A request crosses four layers: firewall, load balancer, API, database. The firewall sees requests and addresses, never who owns an invoice, so it cannot catch this. The bug is in the API.

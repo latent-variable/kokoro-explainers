@@ -353,7 +353,7 @@ into the same `.venv` through `npm run setup:omnivoice`, which calls `npm run se
 supported-Python pick (D26) applies to both. `doctor` lists the engine as optional until asked with `--omnivoice`.
 **Consequences recorded by main.** A clone is somebody's voice (clone yourself or someone who agreed; `local/` never
 leaves the machine); OmniVoice can drop or repeat a word and nothing here hears it back (no speech recognition, D1);
-a take's identity includes the voice file's bytes. This branch did not change any of it; the merge only combined
+a take's identity includes the voice file's bytes (the dropped words were fixed later, D31). This branch did not change any of it; the merge only combined
 `doctor` (its version check and main's engine lines), `package.json` (both setup scripts) and the tests.
 
 ### D28. Review of #12: code in the scenes always gets the grounding critic; the scripts say "move aside", not "delete" (2026-10-17)
@@ -374,6 +374,47 @@ syllables-a-minute pace target next to this branch's measured reading queue and 
 **Decision.** Merged main's caption fixes (a caption never ends on a function word, and carried function words never push one
 past the 12-word limit) and the `how-we-built-it` video. Nothing on this branch touches captions; the merge was clean.
 **Costs.** None known; the test count is now 47.
+
+### D31. OmniVoice speed is a stretch after generation, never a shorter window (2026-10-17; corrects D27's consequence)
+**Decision.** `bin/omnivoice.py` asks OmniVoice for each sentence at its natural length (mlx-audio's own sizing, padded
+15%), trims the padding's silence from the take's edges, then applies `speed` with ffmpeg `atempo`, which keeps the pitch.
+A take that comes out silent is voiced again with another seed (three tries). A reference clip over 10 s is trimmed at its
+silent edges first, which keeps a transcript true, and cut at a pause only if it is still too long. A take's key records
+the method, so old takes re-voice once.
+**Why.** OmniVoice fills the duration it is given. Squeezed to 1.3x, 7 of 24 sentences of `why-shipshow` lost or garbled
+words ("not a" vanished from "not a wall of logs"); generated at the natural length and stretched, none did, and none in
+about 150 sentences across six videos (measured 2026-10-17 with Whisper, a diagnostic outside the pipeline: D1 stands).
+The padding's silence was 13.8 s of a 67 s video. Eve's clip (built in, VCTK p361, CC BY 4.0) is one unbroken 9.3 s
+sentence; cut at exactly 10 s it ended mid-word and short lines came out silent.
+**Costs.** A changed speed re-voices every take, as before. `atempo` past about 1.5 starts to smear consonants; the
+tested range stays 1.0 to 1.3.
+
+### D32. Karaoke captions are a theme option (2026-10-17)
+**Decision.** A theme sets `--cap-style: karaoke` and `--cap-words` (the line length); `bin/build.mjs` reads them from the
+theme's CSS and wraps each caption word with its time as `data-word-at`; `kit/kit.js` lights the word being spoken (the
+`--cap-hot` colour, a lift and a glow), keeps spoken words in the ink colour and unspoken ones dimmed. `plain` stays the
+default, so `shipshow`, `paper` and `launch` are unchanged; `buildday` turns it on.
+**Traps found building it.** A word timed as `data-at` was picked up by the cue engine and given the theme's entrance, so
+unspoken words sat lower; hence `data-word-at`. A scaled word grows into the spaces beside it, so the lit word lifts and
+glows instead. A line that continues its sentence appears at once and the gap between lines is 20 ms, under one frame:
+fading each line in from nothing made the caption blink between lines (a sync critic caught it at 63.8 s).
+
+### D33. The buildday theme and the horizon ambient (2026-10-17)
+**Decision.** `themes/buildday` takes the LA AI Hackathon page's look (deep space navy, ember, ice and iris; Space Grotesk
+and JetBrains Mono, both SIL OFL, in the theme folder) without its logo or name. `--ambient: horizon` draws a lit planet
+rim low in the frame, rising slowly; it is marked as intentional overflow for HyperFrames' layout check. The README's
+diagrams are drawn in the same look by `docs/assets/make-assets.mjs`, which embeds the fonts cut to the letters each
+image uses, because an SVG shown as an image cannot load a font from anywhere else.
+**Costs.** A scene written for a dark theme can look muddy in `paper` where it uses a light-on-dark gradient on text
+(`invoice-leak`'s headings); the theme grid in the README shows it.
+
+### D34. A decision video's folder may start with only the brief (2026-10-17)
+**Decision.** `npm run new` scaffolds into a folder that holds nothing but the working agent's `brief.md` and keeps the
+brief; any other file still refuses, so a video is never overwritten. The skill told the working agent to write the brief
+first and `new` refused the folder, so the handoff could not run as written. `videos/invoice-leak` is the handoff run end
+to end: a brief about `examples/ledgerly` (a fictional invoicing API with one authorization bug), a fresh Sonnet explainer
+agent that built it, and four critic rounds with a floor re-check.
+**Costs.** None known.
 
 ## Behaviour
 

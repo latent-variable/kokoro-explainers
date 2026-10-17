@@ -387,6 +387,18 @@ test("omnivoice says what to do about a voice it does not have and a speed outsi
   assert.match(r.stderr, /engine is "mystery"; it takes kokoro or omnivoice/);
 });
 
+test("new scaffolds a folder that holds only the working agent's brief, and keeps the brief", () => {
+  const dir = join(mkdtempSync(join(tmpdir(), "kx-test-")), "decision");
+  mkdirSync(dir);
+  writeFileSync(join(dir, "brief.md"), "the call\n");
+  const r = spawnSync(process.execPath, [join(REPO, "bin", "new.mjs"), dir], { encoding: "utf8" });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(readFileSync(join(dir, "brief.md"), "utf8"), "the call\n");
+  assert.ok(existsSync(join(dir, "video.json")));
+  const again = spawnSync(process.execPath, [join(REPO, "bin", "new.mjs"), dir], { encoding: "utf8" });
+  assert.notEqual(again.status, 0, "a folder with a video in it is never overwritten");
+});
+
 test("usage counts each API call once, and sums the session with its subagents", async () => {
   const { readSession } = await import("../bin/usage.mjs");
   const root = mkdtempSync(join(tmpdir(), "kx-test-"));

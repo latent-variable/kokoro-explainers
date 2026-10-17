@@ -10,6 +10,10 @@
     "peter_yearsley": "voice-zero/peter_yearsley.wav",
     "stuart_bell": "voice-zero/stuart_bell.wav",
     "marius": "voice-donations/Selfie.wav",
-    "javert": "voice-donations/Butter.wav"
+    "javert": "voice-donations/Butter.wav",
+    "eve": {
+      "file": "vctk/p361_023_enhanced.wav",
+      "text": "If the red of the second bow falls upon the green of the first, the result is to give a bow with an abnormally wide yellow band, since red and green light when mixed form yellow."
+    }
   }
 }
