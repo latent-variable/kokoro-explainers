@@ -83,9 +83,10 @@
         flash: { opacity: 0, scale: 1.06, filter: "brightness(2.4)" },
       };
       const SETTLED = { opacity: 1, x: 0, y: 0, scale: 1, clipPath: "inset(0% 0% 0% 0%)", filter: "brightness(1)" };
-      document.querySelectorAll("section.scene").forEach((el) => {
+      const scenes = [...document.querySelectorAll("section.scene")];
+      scenes.forEach((el, i) => {
         const inner = el.querySelector(":scope > .inner"), cam = inner.querySelector(":scope > .cam");
-        const start = +el.dataset.start, dur = +el.dataset.duration, end = start + dur;
+        const start = +el.dataset.start, dur = +el.dataset.duration, end = start + dur, last = i === scenes.length - 1;
         const kind = el.dataset.transition || token("--transition", "fade");
         if (!(kind in TRANSITIONS)) throw new Error(`unknown transition ${kind}: ${Object.keys(TRANSITIONS).join(", ")}`);
         gsap.set(inner, { opacity: 0 });
@@ -95,10 +96,14 @@
           const settled = Object.fromEntries(Object.keys(from).map((k) => [k, SETTLED[k]]));
           tl.fromTo(inner, { ...from }, { ...settled, duration: Math.min(0.55, dur * 0.12), ease: "power3.out", immediateRender: false }, start);
           // fromTo, not to: parallel render workers seek to any time first, so the start is stated.
-          const out = Math.min(0.3, dur * 0.06);
-          tl.fromTo(inner, { opacity: 1 }, { opacity: 0, duration: out, ease: "power1.in", immediateRender: false }, end - out);
+          // The last scene never fades: the video ends on its finished frame, which is what a
+          // paused or ended player shows while people talk about it.
+          if (!last) {
+            const out = Math.min(0.3, dur * 0.06);
+            tl.fromTo(inner, { opacity: 1 }, { opacity: 0, duration: out, ease: "power1.in", immediateRender: false }, end - out);
+          }
         }
-        tl.set(inner, { opacity: 0 }, end);
+        if (!last) tl.set(inner, { opacity: 0 }, end);
         if ((el.dataset.camera || token("--camera", "none")) === "push") {
           tl.fromTo(cam, { scale: 1 }, { scale: 1.04, duration: dur, ease: "none", immediateRender: false }, start);
         }

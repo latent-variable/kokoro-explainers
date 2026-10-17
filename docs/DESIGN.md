@@ -426,6 +426,14 @@ requirements install). A test locks the order in, so the upgrade cannot slip beh
 **Costs.** One more pip call, and a network fetch, on every setup. `npm run setup:omnivoice` still installs with the venv's
 current pip, so an old venv needs `npm run setup` first.
 
+### D35. The last scene holds; `hold` adds still time (2026-10-17)
+**Decision.** Every scene but the last fades out at its end; the last stays up, so the video's final frame is the finished
+picture (`kit/kit.js`). `video.json` `"hold"` adds plain seconds (not scaled by speed) after the last word, laid onto the
+last scene (`bin/voice.mjs`); the default is 0.
+**Why.** The team presents a decision video live and talks over its recommendation after it ends. The last scene used to
+fade over its final 0.3 s and then go blank, so an ended player showed an empty screen.
+**Costs.** None known; the music bed already fades out on its own over the last 2.5 s.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
