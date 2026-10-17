@@ -10,6 +10,7 @@ commit the video is built from, plus the two tools it runs.
 
 | Claim | Source |
 |---|---|
+| The tagline on screen: turn a shit show into a ship show | The project's own line: `README.md` and `AGENTS.md`, *What this is* |
 | The video is made from five short text files and one HTML page | `script/` holds five `.txt` files; `scenes.html` is the page. `video.json` is a sixth, configuration file, not counted as "text files" in the narration |
 | Kokoro is a small, open text-to-speech model (82 million parameters, Apache 2.0 weights) | Kokoro-82M model card |
 | It is small enough to run on a laptop's processor | `hyperframes tts` runs kokoro-onnx on onnxruntime's CPU provider; the model is about 340 MB (`~/.cache/hyperframes/tts`). Measured: 16 sentences in 8.6 s on an M-series MacBook |

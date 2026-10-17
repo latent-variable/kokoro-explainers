@@ -19,6 +19,7 @@
     "render": "node bin/render.mjs",
     "make": "node bin/make.mjs",
     "review": "node bin/review.mjs",
+    "critics": "node bin/critics.mjs",
     "skills": "node bin/link-skills.mjs",
     "test": "node --test test/*.test.mjs",
     "postinstall": "node bin/link-skills.mjs"

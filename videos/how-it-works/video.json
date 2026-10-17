@@ -1,5 +1,6 @@
 {
   "title": "How ShipShow works",
+  "kind": "feature",
   "voice": "af_heart",
   "say": {
     "HyperFrames": "Hyper Frames",
@@ -9,13 +10,7 @@
     "ShipShow": "Ship Show"
   },
   "audience": "A developer who has not seen this repository and wants to know how a video gets made from text.",
-  "critics": [
-    "critic-accuracy",
-    "critic-clarity",
-    "critic-pacing",
-    "critic-sync",
-    "critic-visuals",
-    "critic-consistency",
-    "critic-engagement"
-  ]
+  "review": {
+    "preset": "thorough"
+  }
 }

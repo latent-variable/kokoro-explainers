@@ -42,7 +42,9 @@ to a fresh explainer agent, so the video is made by one that has not absorbed it
 2. **It starts a fresh agent** with this skill and the brief. Facts come from the code at that
    worktree, never from the brief alone: the brief can be wrong, the code is the ground truth.
 3. **The explainer agent builds the video**, quick size: one to two minutes, three to five
-   scenes, ending on the options and a recommendation. `critic-decision` joins the critics.
+   scenes, ending on the options and a recommendation. With `"kind": "decision"` the review
+   defaults to the `quick` preset, about a minute of critics, and `critic-decision` joins it:
+   the person is waiting mid-work.
 4. **It hands back the MP4's path.** The person watches, decides, and the working agent
    carries on.
 
@@ -122,8 +124,11 @@ you can see is broken.
 
 ## 5. The critic loop
 
-Run `skills/critic-loop` with the critics named in `video.json` `"critics"` and the video's
-own `critics.md`. Fix what they find, rebuild, regenerate the packet, run fresh critics.
+`npm run critics -- <folder>` prints how much review this video gets (critics, models,
+rounds, severity); set `video.json` `"kind"` (`decision`, `feature`, `release`) and, if the
+default is wrong for it, `"review"`. Then run `skills/critic-loop` to that plan, with the
+video's own `critics.md`. Fix what they find, rebuild, regenerate the packet, run fresh
+critics, and stop at the cap.
 
 **A video gets its own critics for its content.** When this video has a bar the shared
 critics do not cover ("every breaking change shows before and after code", "the version

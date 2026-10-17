@@ -57,6 +57,12 @@ for a persona and be engaging.
 - **Round 9**: a fresh visuals critic on the fixes passed, minors only (layout taste in the
   close and scene 3), accepted.
 
+- **A `quick` trial** (2026-10-17, after the critic dials landed): accuracy, sync and visuals
+  on Sonnet with mid-scene and scene-end stills only, 34 s from packet to last verdict. No
+  blocking finding. Visuals' one major (scene 3 sparse for its first four seconds) is
+  subjective and below `quick`'s `until: blocking`, so it was recorded, not chased; this
+  video's own plan stays `thorough`, which already accepted that layout.
+
 The builder's own look between rounds caught two more before any critic did: a code line
 overflowing its box, and two cues landing on an earlier word than intended ("picture"
 matching "pictures", "make" matching "make your own"). The second became a fix to the tool:
