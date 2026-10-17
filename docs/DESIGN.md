@@ -157,7 +157,7 @@ pins users to it until someone bumps it, so it is omitted and the commit SHA ver
 with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
 namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
 every turn (measured: 22 skills, 7,882 characters, about 1,971 tokens), so descriptions stay short
-and SKILL.md under 500 lines (longest 206). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
+and SKILL.md under 500 lines (longest 208). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
 the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
 and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
 a plugin root is not loaded as context. A plugin runs with the user's privileges.
