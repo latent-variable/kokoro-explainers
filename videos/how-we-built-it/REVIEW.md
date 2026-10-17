@@ -6,15 +6,15 @@ every round was a fresh agent that had not seen the build or an earlier round, a
 round 5 attempt to run clarity and visuals on Opus was rejected by the workspace rate limit
 (HTTP 429, one input token a minute), so both were rerun on Sonnet.
 
-**Status: not done.** Round 7 passed the four critics then run, but pacing was added afterwards and each later round found new problems. Round 9 fails on pacing, clarity, sync and visuals; accuracy passes. Consistency and engagement were not run.
+**Status: the five critics run all pass in round 10.** Consistency and engagement were not run.
 
-| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 |
-|---|---|---|---|---|---|---|---|---|---|
-| accuracy | fail | fail | pass | fail | pass | pass | pass | pass | pass |
-| clarity | fail | fail | fail | fail | fail | fail | pass | fail | fail |
-| sync | fail | pass | fail | pass | pass | pass | pass | pass | fail |
-| visuals | fail | fail | pass | fail | fail | pass | pass | fail | fail |
-| pacing | | | | | | | fail | pass | fail |
+| Critic | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| accuracy | fail | fail | pass | fail | pass | pass | pass | pass | pass | pass |
+| clarity | fail | fail | fail | fail | fail | fail | pass | fail | fail | pass |
+| sync | fail | pass | fail | pass | pass | pass | pass | pass | fail | pass |
+| visuals | fail | fail | pass | fail | fail | pass | pass | fail | fail | pass |
+| pacing | | | | | | | fail | pass | fail | pass |
 
 ## What the critics changed
 
@@ -66,21 +66,30 @@ video, called how it works" and states what the warning is for. Round 7 passes.
 - **Round 2, clarity:** cut the espeak and phonemizer detail to one example. Done (phonemizer cut,
   espeak kept as the one example); see the open item above.
 
-## Why the loop stopped at round 9
+## Why the loop paused at round 9
 
 Two escalation cases from `critic-loop`: a round finding mostly problems in the previous round's
 fixes (the pacing and visuals majors are the round 8 card and highlight), and critics pulling
 against each other. Round 8 sync asked for the Tried card to wait until "tried"; round 9 sync asks
 for it to land on "recognition". Clarity has raised a different major in each round since round 7.
+A human chose one more fix pass and a final round. The fix pass followed the narration order for
+the Tried card (it lands on "recognition", and a strike line draws on "tried"), added the missing
+mechanism to scene 2 (the pipeline generates the voice one sentence at a time and places each one),
+reordered the traps scene, shortened the "Also caught" card, and replaced the pull-request
+takeaway with "turn each mistake into a warning or a written trap". Round 10 passes all five.
 
 ## Accepted minors
 
-Left after round 7, not re-run. Clarity: the loop's last sentence puts its point at the end; scene 2
-does not say why voicing sentences separately gives exact start times (the README's "because we put
-it there"); "traps" is not defined and the example repeats scene 2. Sync: only accuracy and pacing
-are outlined in the critics scene while three more are named; the example-video line lands about 3 s
-after its sentence starts; the traps card shows lines the voice does not read and "on purpose" is
-not spoken. Visuals: the pipeline scene is a single small row for about 15 s before the cards; the
-Round 1 card sits alone on the left for a while; the caption chunk ends on "a". Accuracy: "sound and
-picture line up" paraphrases the sync critic's README line. Pacing was not run: scenes read at 163
-to 193 words a minute, above the 150 to 165 the `explainer-video` skill suggests, scene 6 highest.
+Left after round 10, not re-run. Accuracy: the AGENTS.md card shows paraphrases that read like
+quotes; "the usual way" to get start times is the narration's framing, not the repo's; "its critics
+passed" holds for the critics run in R6 (engagement was not re-run). Clarity: "the builder" and "the
+repo" are used as roles the viewer was not introduced to; the last takeaway is about this video, not
+an instruction; scene 2 spends more time on the speech-recognition timeout than on what a critic is.
+Sync: the Round 1 card shows 209 about 2 s before it is said; "six rounds" is highlighted before it
+is spoken; the seven chips appear before "seven critics"; the two pull-request chips land 0.6 s
+apart. Visuals: the title chip row sits off-centre while chips arrive; the loop scene is top-heavy
+before its cards arrive; some cards have empty space at the bottom. Pacing: none.
+
+Tool change made during this review: `bin/build.mjs` now carries a trailing function word ("a",
+"to", "the"...) to the next caption line. The repo's tests pass; it was not re-checked by rebuilding
+`videos/how-it-works`, whose generated files are stale.
