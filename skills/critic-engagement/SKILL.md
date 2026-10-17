@@ -29,6 +29,12 @@ reason for pressing play, and watch it as them.
   read, jargon a newcomer will not have, a tone that talks down to an expert.
 - **major:** no concrete example where one would land: an abstract claim the viewer has to
   take on trust while a real snippet, command or before and after would show it.
+- **major:** a stretch of over eight seconds where nothing on screen moves or changes while
+  the voice goes on (the cue table shows the gaps).
+- **major:** every scene enters and moves the same way, so the video feels stamped from a
+  template rather than made for its subject.
+- **minor:** motion that competes with the words: an effect on something the voice is not
+  talking about, or so much movement the viewer cannot read.
 - **minor:** an opening or ending that is generic (a title card, "thanks for watching")
   where the viewer's own outcome could have been.
 

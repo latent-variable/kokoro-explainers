@@ -11,17 +11,21 @@ description: >
 **Judges:** time. Whether the viewer can keep up and is never left waiting. Not what is
 said (`critic-clarity`) or whether a cue matches its word (`critic-sync`).
 
-**Evidence:** `review/packet.md` measures most of this: words a minute per scene, every
-pause, every cue's time and how long its text stays up against its reading time (code is
-counted in identifier tokens, at a slower reading speed than prose), and the *Stillness*
-table, the longest stretch of each scene in which nothing new appears.
+**Evidence:** `review/packet.md` measures most of this: the video's speed and the target it
+sets, words a minute per scene, every pause, every cue's time and how long its text stays up
+against its reading time (code is counted in identifier tokens, at a slower reading speed than
+prose), and the *Stillness* table, the longest stretch of each scene in which nothing new appears.
+
+The person chose the speed (`video.json`, their `local/config.json`, or `--speed`), so judge
+against the target it sets: about 160 words a minute times the speed. A faster video is what
+they asked for, not a defect.
 
 ## Criteria
 
-- **major:** a scene spoken faster than 175 words a minute, or slower than 130. 150 to 165
-  is the target for technical content. The fix is `"speed"` in `video.json`
-  first (the packet's rate is speech-only, so cutting words does not change it); reword only a
-  scene that is the outlier at the speed that suits the rest. Not more pauses.
+- **major:** a scene more than 15% off the target: dense sentences rushing it, or slack
+  dragging it. The fix is fewer or plainer words, not a different speed: the speed is the
+  person's choice.
+- **minor:** a speed outside 0.8 to 1.6, said once, so the person knows it is unusual.
 - **major:** on-screen text marked "short" in the cue table: it leaves before a viewer could
   read it while listening.
 - **major:** a pause over 2 seconds anywhere but the very end, or a screen with no change

@@ -1,0 +1,54 @@
+/* kit/base.css: what every video shares, drawn entirely from the theme's tokens
+   (themes/<name>/theme.css). A video's own look goes in the styles of its scenes.html. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); overflow: hidden; }
+#root {
+  width: 1920px; height: 1080px; position: relative; overflow: hidden;
+  background: var(--bg); color: var(--ink); font-family: var(--font);
+}
+
+/* Scenes: .inner is the scene's window (above the captions), .cam is what the camera moves. */
+.scene { position: absolute; inset: 0; z-index: 1; }
+.scene > .inner { position: absolute; inset: 0 0 180px 0; }
+.scene > .inner > .cam { position: absolute; inset: 0; transform-origin: 50% 45%; }
+
+/* Ambient background and progress bar (kit.js animates them; --ambient and --progress pick). */
+#ambient { position: absolute; inset: -12%; z-index: 0; pointer-events: none; }
+#ambient .blob { position: absolute; width: 900px; height: 900px; border-radius: 50%; filter: blur(140px); opacity: var(--ambient-strength); }
+#ambient .grid { position: absolute; inset: 0; opacity: var(--ambient-strength);
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 96px 96px; }
+#ambient .dots { position: absolute; inset: 0; opacity: var(--ambient-strength);
+  background-image: radial-gradient(var(--line) 2.5px, transparent 2.5px); background-size: 48px 48px; }
+#progress { position: absolute; left: 0; top: 0; width: 100%; height: 6px; z-index: 3;
+  background: var(--accent); transform: scaleX(0); transform-origin: left center; }
+
+/* Captions. */
+.caps { position: absolute; left: 0; right: 0; bottom: 56px; height: 120px; z-index: 2; }
+.cap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.cap span {
+  max-width: 1500px; padding: 14px 28px; border-radius: var(--cap-radius);
+  background: var(--cap-bg); color: var(--cap-ink); font-family: var(--cap-font, var(--font));
+  font-size: var(--cap-size); line-height: 1.25; font-weight: 500; text-align: center;
+}
+
+/* Pieces a scene can use, so a theme restyles them. */
+.ss-heading {
+  position: absolute; top: var(--heading-top); left: var(--pad); right: var(--pad);
+  text-align: var(--heading-align); font-family: var(--font-display);
+  font-size: var(--heading-size); font-weight: var(--display-weight); letter-spacing: var(--display-tracking);
+}
+.ss-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 44px; text-align: center; }
+.ss-display { font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
+.ss-label { font-size: 30px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 650; }
+.ss-card { background: var(--card); border: var(--border) solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.ss-chip { padding: 20px 34px; background: var(--card); border: var(--border) solid var(--line); border-radius: calc(var(--radius) * 0.8); font-size: 40px; font-weight: 600; }
+.ss-chip.hot { border-color: var(--accent); color: var(--accent); }
+.ss-code { font-family: var(--font-mono); background: var(--code-bg); color: var(--code-ink); border: var(--border) solid var(--line); border-radius: var(--radius); }
+.ss-code .k { color: var(--accent-2); }
+.ss-code .s { color: var(--accent); }
+.ss-mono { font-family: var(--font-mono); }
+.ss-muted { color: var(--muted); }
+.ss-accent { color: var(--accent); }
+.ss-takeaway { position: absolute; left: var(--pad); right: var(--pad); text-align: center; font-size: 42px; color: var(--ink); }
+.ss-takeaway em, .ss-em { font-style: normal; color: var(--accent); font-weight: 700; }

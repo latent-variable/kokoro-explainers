@@ -43,8 +43,9 @@ to a fresh explainer agent, so the video is made by one that has not absorbed it
 2. **It starts a fresh agent** with this skill and the brief. Facts come from the code at the pin in a
    throwaway copy (`evidence-standard`), never from the brief alone: the brief can be wrong, the code is the ground truth.
 3. **The explainer agent builds the video**, quick size: one to two minutes and three to five scenes
-   for a simple call, ending on the options and a recommendation. `critic-decision` joins the
-   critics. The video speaks the decision, each option's gains and costs, what the pick rests on, every
+   for a simple call, ending on the options and a recommendation. With `"kind": "decision"` the review
+   defaults to the `quick` preset, about a minute of critics, and `critic-decision` joins it: the person
+   is waiting mid-work. The video speaks the decision, each option's gains and costs, what the pick rests on, every
    contradiction and added cost, and the default if nobody decides; the rest of the brief-versus-code list
    may be rows of an on-screen table, with the full list in the hand-back. When even that will not fit,
    run to three minutes; `critic-pacing`'s scene-length limit still holds.
@@ -87,8 +88,9 @@ file-name order.
 
 - Spoken sentences, short. One idea per scene. The order a newcomer needs, not the order
   of the changelog.
-- Pace: choose `"speed"` in `video.json` from the packet (`narration-writing`); the numbers
-  live in `critic-pacing`.
+- Speed is a multiplier on a comfortable base of about 160 words a minute: 1.25 by default,
+  set per video in `video.json`, per person in `local/config.json`, or per run with
+  `--speed`. Write for it: at 1.25, a 30 second scene holds about 100 words.
 - Numbers and versions as they are said: "version two point four". Names Kokoro gets
   wrong go in `video.json` `"say"`; captions keep the written form.
 - A release explainer: what this release is, then breaking changes with before and after,
@@ -107,6 +109,24 @@ that gives this video its look. Each element arrives on the word that introduces
 - Text size and the caption area are `critic-visuals`' numbers; the packet and frames show
   whether you meet them.
 
+### Give it its own feel
+
+Information is not enough; the viewer has to want to keep watching. Each video should feel
+made for its subject, not stamped from a template.
+
+- **Theme** for the client or audience (`skills/theme`); the shipped ones are `shipshow` and
+  `paper`.
+- **Flair** in `video.json` for this video's own motion: `"flair": {"transition": "wipe",
+  "camera": "push", "ambient": "grid"}`. A section's `data-transition` changes one scene;
+  varying them keeps the cuts alive.
+- **Entrances that mean something**: `type` for a command or a name, `draw` for an arrow or a
+  line between two ideas, `count` for a number that matters, `highlight` on the phrase the
+  sentence turns on, `stagger` for a list, `pulse` for the one thing to remember. A screen
+  where nothing moves for more than about eight seconds while the voice goes on is losing
+  the viewer.
+- **One memorable moment**: a picture that is the idea (a ship leaving a storm of pull
+  requests), not a card that names it.
+
 ## 4. Make it, then the evidence
 
 ```
@@ -120,8 +140,12 @@ you can see is broken.
 
 ## 5. The critic loop
 
-Run `skills/critic-loop` with the critics named in `video.json` `"critics"` and the video's
-own `critics.md`. Fix what they find, rebuild, regenerate the packet, run fresh critics.
+Decide how much review it deserves: set `video.json` `"kind"` (`decision`, `feature`,
+`release`), `"importance"` (`low`, `normal`, `high`) and a one-line `"importance_reason"`,
+judged as `critic-loop` says (*How much review*). `npm run critics -- <folder>` prints the
+plan that follows from it. Then run `skills/critic-loop` to that plan, with the
+video's own `critics.md`. Fix what they find, rebuild, regenerate the packet, run fresh
+critics, and stop at the cap.
 
 **A video gets its own critics for its content.** When this video has a bar the shared
 critics do not cover ("every breaking change shows before and after code", "the version

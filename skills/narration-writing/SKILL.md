@@ -16,15 +16,12 @@ can be hard to hear. Write for the ear, then check it against the clock.
 
 - **One idea per scene**, in short sentences. The sentence is also the unit of timing: each
   one is voiced on its own, so a long sentence puts its cues at an estimate.
-- **Pace comes from measurement.** `critic-pacing` holds the target and the limits. Kokoro reads
-  roughly 190 words a minute at speed 1.0 and scenes vary by about plus or minus 10% at one speed, so
-  start `speed` at **0.8** (the template's and `AGENTS.md`'s starting point) and adjust it from the
-  packet's per-scene words a minute, not from a formula. The packet's rate is speech-only, so cutting
-  words does not change it: adjust `speed` first. `video.json` has one `speed` for the whole video, so
-  a scene that is still the outlier is fixed by merging or splitting its sentences (rate varies with
-  sentence length and what is in it: digits and identifiers read slowly), not by padding. The 0.8
-  start was derived from this repo's own packets (176 to 209 words a minute at 1.0), not measured on
-  new audio.
+- **Write for the person's speed.** `video.json`, `local/config.json` or `--speed` sets it (1.25 by
+  default, a multiplier on a base of about 160 words a minute), and `critic-pacing` judges each scene
+  against about 160 times the speed. At 1.25 a 30 second scene holds about 100 words. The packet's rate is
+  speech-only and the speed is not yours to change, so a scene that is off target is fixed with fewer or
+  plainer words: digits, identifiers and long clauses read slowly; short plain sentences read at the target.
+  Do not pad to slow a scene or cram to speed one up.
 - **Length is set by words.** A scene `critic-pacing` calls too long holds two ideas: cut words
   or split it.
 - **What is said matches what is shown**, when it is shown. Name a thing as it appears, and

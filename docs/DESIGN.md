@@ -128,8 +128,8 @@ pins users to it until someone bumps it, so it is omitted and the commit SHA ver
 **Facts from the docs that shaped it.** Only `name` is required, in kebab-case, and may not start
 with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
 namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
-every turn (measured: 21 skills, 7,408 characters, about 1,850 tokens), so descriptions stay short
-and SKILL.md under 500 lines (longest 142). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
+every turn (measured: 22 skills, 7,869 characters, about 1,970 tokens), so descriptions stay short
+and SKILL.md under 500 lines (longest 198). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
 the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
 and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
 a plugin root is not loaded as context. A plugin runs with the user's privileges.
@@ -173,13 +173,12 @@ omitted gap is listed and flagged if it contains a guard, branch, return or defa
 directory, pin, exit code, date, an output hash and the full output. A critic returns a
 per-asset table with its verdict.
 
-### D15. Pace comes from measurement, not a formula (2026-10-17)
-**Decision.** Start `speed` at 0.8 (the template and `AGENTS.md`) and adjust it from the review
-packet. **Why.** An earlier skill said words a minute is about 190 times `speed`; the repo's own
-`videos/how-it-works/REVIEW.md` shows scenes at 176 to 209 words a minute at speed 1.0, a spread of
-about 19%, and scenes 1 and 2 of the shipped 0.85 video at 168 and 171. Words a minute is
-speech-only (`bin/review.mjs`), so cutting words shortens a scene but does not change its rate.
-The template used to ship `speed: 1.0`, about 190 and a `critic-pacing` fail; it is now 0.8.
+### D15. Pace comes from measurement, not a formula (2026-10-17; superseded by D24)
+**Decision (withdrawn).** Start `speed` at 0.8 and adjust it from the review packet, because words a
+minute is not 190 times `speed`: the repo's own `videos/how-it-works/REVIEW.md` shows scenes at 176 to 209
+words a minute at speed 1.0 and the 0.85 video at 168 and 171, and the packet's rate is speech-only, so
+cutting words does not change it. **Superseded** when main (#7) made `speed` a multiplier on a base of about
+160 words a minute that the person chooses; the measurement that a scene's rate varies stands.
 
 ### D16. A spoken alias is written into the script (2026-10-17)
 **Decision.** Where two identifiers sound alike or one name covers two things, write the alias
@@ -255,8 +254,7 @@ microblog needed Flask and an install the skills' safe-running rules forbid, so 
 this runs with `node --test`. **Checked** by a root test: the tests pass with one `todo`, the scenario prints
 the documented percentages, and the README table matches.
 
-### D22. The docs rule is structural and count-driven (2026-10-17; supersedes the wording in D4 and the
-first form of the docs test)
+### D22. The docs rule is structural and count-driven (2026-10-17; replaces the first form of the docs test)
 **Decision.** `npm test` checks that both docs have content, that every skill is in the `AGENTS.md` table and
 the PRD, every critic is in `critics.svg`, the plugin names match, and that the numbers the docs quote (skills,
 characters of descriptions, longest `SKILL.md`, test count, the number of critics) are the tree's. In CI, a
@@ -273,6 +271,19 @@ Reading time for code counts identifier tokens (`Author.followers.of_type` is th
 of words at 3.3, because a five-line query counted as 9 words passed the "short" check while taking about ten
 seconds to read; a new *Stillness* table gives each scene's longest stretch with nothing new on screen.
 `critic-pacing` holds the limit, so the number lives in one place.
+
+### D24. Main's speed, themes and review plans are adopted (2026-10-17; supersedes D15)
+**Decision.** After main moved (#7 to #10) this branch was merged and its own pace guidance withdrawn.
+`speed` is the person's multiplier on a base of about 160 words a minute (1.25 by default;
+`--speed`, `video.json` or `local/config.json`), `critic-pacing` judges each scene against 160 times it,
+and an off-target scene is fixed with fewer or plainer words. How much review a video gets is a plan with
+presets, dials and a floor (`npm run critics`; the builder sets `importance`), so `video.json` no longer
+takes a `critics` list and the template does not carry one. A video's look is a theme with motion tokens.
+**What this branch added to that design.** `critic-grounding` is on the floor for a video that shows code or
+output (`shows_code` in `video.json`, or a `<pre>` or `<code>` in `scenes.html`), so no preset or critics
+list removes it, and `explain-handoff` takes the critic set from the plan instead of listing it. The
+template keeps `audience`, which two skills read. **Consequence.** The docs and `narration-writing` no longer
+say "start at 0.8"; the review packet prints the speed and the target.
 
 ## Behaviour
 

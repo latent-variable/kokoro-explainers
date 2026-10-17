@@ -15,11 +15,11 @@ there to check. Return it as a message, not a new file in the repo.
 
 ## Ready or not
 
-`Status: ready` only when **every required critic has passed** and `REVIEW.md` says so. The required
-set is `critic-loop`'s default seven, plus `critic-decision` for a decision video, plus
-`critic-grounding` for a video that shows code, output or captures, plus anything in `critics.md` or
-`local/`. A critic dropped from `video.json` is still required: list it as `removed from video.json
-by <who>`. A critic `not run` or `declined` makes the hand-back `not ready`.
+`Status: ready` only when **every critic in the video's review plan has passed** (`npm run critics --
+<folder>` lists them) and `REVIEW.md` says so. The plan always includes the floor: `critic-accuracy`,
+`critic-decision` for a decision video, and `critic-grounding` for a video that shows code, output or
+captures. A critic the person's own plan left out is listed as `not in the plan (<who chose it>)`; a
+floor critic is never left out. A critic `not run` or `declined` makes the hand-back `not ready`.
 
 ```
 Status: ready
