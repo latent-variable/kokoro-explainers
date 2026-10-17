@@ -23,7 +23,8 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
 | `bin/` | The pipeline: `voice`, `build`, `render`, `make`, `review`, `new`, `doctor` |
-| `kit/` | The page and timeline every video shares |
+| `kit/` | The page, base styles and timeline every video shares |
+| `themes/` | Shared themes (`shipshow`, `paper`); a client's goes in `local/themes/` |
 | `template/` | What `npm run new` copies |
 | `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
 
@@ -34,6 +35,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 | `explainer-video` | Make or update a video. You are the builder |
 | `critic-loop` | Judge a video with fresh critics, fix, repeat until they pass; add a new critic |
 | `tailor` | Record how one person wants their explainers, in `local/` |
+| `theme` | Make a theme, usually from a client's brand |
 | `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision` | Be one critic, when the loop assigns you |
 
 ## What is expected
@@ -89,7 +91,7 @@ A change to `bin/`, `kit/` or `template/` is validated by running `make` and `re
 |---|---|
 | `script/01-intro.txt`, `02-...` | One file per scene, read aloud in file-name order. A sentence ends at `.`, `!` or `?` and a space |
 | `scenes.html` | One `<section data-scene="01-intro">` per script file, a `<style>` for the look, optionally a `<script>` |
-| `video.json` | `title`, `voice`, `speed`, `say`, `audience`, `critics`; optional `lead`, `gap`, `tail` (seconds of pause) |
+| `video.json` | `title`, `voice`, `speed`, `theme`, `flair`, `say`, `audience`, `critics`; optional `lead`, `gap`, `tail` (seconds of pause), `seed` |
 | `sources.md` | Every claim the video makes, with its source |
 | `critics.md` | This video's own bar, applied by every critic |
 | `brief.md` | A decision video's handoff from the agent that asked for it |
@@ -97,14 +99,32 @@ A change to `bin/`, `kit/` or `template/` is validated by running `make` and `re
 
 **Cues.** An element with `data-cue` arrives when the voice reaches that word:
 `data-cue="Kokoro"` (the first word starting "Kokoro" in that scene), `data-cue="model#2"`
-(the second), `data-cue="+0.3"` (0.3 s into the scene). `data-anim` is `up` (default), `fade`,
-`pop`, `left`, `right` or `grow`. The build stops on a word the scene never says, and warns
-when a bare word occurs more than once. A `<script>` in `scenes.html` runs after the shared
+(the second), `data-cue="+0.3"` (0.3 s into the scene). The build stops on a word the scene
+never says, and warns when a bare word occurs more than once. `data-anim` picks the entrance
+(the theme's `--entrance` when absent): `up`, `fade`, `pop`, `left`, `right`, `grow`, `zoom`,
+`blur`, and `type` (letter by letter), `draw` (an SVG's strokes draw themselves), `count` (the
+number in the text counts up), `highlight` (a marker sweeps under text already shown),
+`stagger` (children in turn), `pulse` (pops, then beats). A `<script>` in `scenes.html` runs after the shared
 timeline and may add GSAP tweens to `tl`; each cued element's time is its `data-at`.
 
 **Voice.** `af_heart` is the default; `npx hyperframes tts --list` shows the rest. Non-English
 voices need `espeak-ng` system-wide. `say` maps a written word to what Kokoro is told to say
 (`"HyperFrames": "Hyper Frames"`); captions keep the written form.
+
+**Look.** A theme is `themes/<name>/theme.css` (or `local/themes/<name>/`, which wins): a
+`:root` of tokens for colour, type, spacing, shape, captions and motion; `themes/shipshow`
+lists them all. Fonts and images sit beside it and are copied to `assets/theme/`, relative
+`url()`s rewritten (`bin/lib.mjs`, `themeCss`). Most specific wins: `--theme`, then
+`video.json`, then `local/config.json`, then `shipshow`. `kit/base.css` draws the canvas,
+captions and the `ss-` pieces from the tokens; a scene's own styles should use the tokens
+too, or a theme cannot restyle it.
+
+**Motion.** Theme tokens `--transition` (`none`, `fade`, `rise`, `slide`, `zoom`, `wipe`),
+`--camera` (`none`, `push`: a slow push-in per scene), `--ambient` (`none`, `glow`, `grid`,
+`dots`), `--ambient-strength`, `--progress` (`on`, `off`) and `--entrance`. `video.json`
+`"flair"` overrides them for one video; a section's `data-transition` or `data-camera` for
+one scene. Ambient motion is seeded from the video's name (`"seed"` to change it), so a
+render is repeatable and each video moves its own way.
 
 **Speed.** A multiplier on ShipShow's base pace (Kokoro at 0.85, about 160 words a minute), not
 Kokoro's own: 1.25 by default. Pauses shrink with it. The most specific wins: `--speed` on
@@ -125,8 +145,9 @@ HyperFrames renders the page frame by frame in headless Chrome and muxes in the 
 
 ```
 bin/        voice, build, render, make, review, new, doctor, link-skills; lib.mjs is shared
-kit/        shell.html (canvas, captions, audio) and kit.js (the timeline), shared by every video
-skills/     explainer-video, critic-loop, tailor and the eight critics
+kit/        shell.html (the page), base.css (canvas, captions, ss- pieces), kit.js (timeline, effects)
+themes/     shipshow and paper; each a theme.css of tokens, plus fonts and images
+skills/     explainer-video, critic-loop, tailor, theme and the eight critics
 template/   what npm run new copies
 videos/     videos about this repo; how-it-works is the example
 docs/assets/  the README's images; the GIF is cut from out/how-it-works.mp4
@@ -145,6 +166,11 @@ local/      gitignored, per person (tailor skill)
 - **The name is ShipShow**, one word, two capitals; the repo is `latent-variable/shipshow` (renamed from kokoro-explainers 2026-10-17, and GitHub redirects the old address). A rename also changes the PR reviewer's allowlist (latent-git-agents `config/repos.json` and `tests/repo-allowlist.test.mjs`), or PRs stop being reviewed.
 - **`hyperframes lint` warns `nested_structure_needs_subcomposition` and `timeline_track_too_dense`** on every video. Advisory: each scene is one section on one track by design. Errors still block.
 - The scripts never delete files: a stale take is overwritten, never removed.
+- **Never write a literal style or script tag in a comment** inside `kit/` or `themes/`: the
+  build inlines them into the page, and `hyperframes lint` reads it as an unclosed tag (twice,
+  2026-10-17).
+- **A theme cannot restyle a hard-coded colour or font.** A scene that writes `#182033`
+  instead of `var(--card)` keeps it in every theme.
 
 ## Agent context (scope + memory)
 <!-- BEGIN agent-context (managed by ~/.agents/bin/project-sync.sh) -->

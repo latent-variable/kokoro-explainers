@@ -91,6 +91,24 @@ that gives this video its look. Each element arrives on the word that introduces
 - 28 px is the smallest text that stays legible after video compression. Keep the bottom
   180 px for captions.
 
+### Give it its own feel
+
+Information is not enough; the viewer has to want to keep watching. Each video should feel
+made for its subject, not stamped from a template.
+
+- **Theme** for the client or audience (`skills/theme`); the shipped ones are `shipshow` and
+  `paper`.
+- **Flair** in `video.json` for this video's own motion: `"flair": {"transition": "wipe",
+  "camera": "push", "ambient": "grid"}`. A section's `data-transition` changes one scene;
+  varying them keeps the cuts alive.
+- **Entrances that mean something**: `type` for a command or a name, `draw` for an arrow or a
+  line between two ideas, `count` for a number that matters, `highlight` on the phrase the
+  sentence turns on, `stagger` for a list, `pulse` for the one thing to remember. A screen
+  where nothing moves for more than about eight seconds while the voice goes on is losing
+  the viewer.
+- **One memorable moment**: a picture that is the idea (a ship leaving a storm of pull
+  requests), not a card that names it.
+
 ## 4. Make it, then the evidence
 
 ```
