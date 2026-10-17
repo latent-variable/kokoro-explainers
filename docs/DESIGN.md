@@ -426,7 +426,7 @@ requirements install). A test locks the order in, so the upgrade cannot slip beh
 **Costs.** One more pip call, and a network fetch, on every setup. `npm run setup:omnivoice` still installs with the venv's
 current pip, so an old venv needs `npm run setup` first.
 
-### D36. A plan, not a change: Claude best practices (2026-10-17)
+### D38. A plan, not a change: Claude best practices (2026-10-17)
 **Decision.** Wrote `docs/PLAN.md` from Anthropic's docs and engineering posts (read by a research agent on 2026-10-17) and
 measured facts about this repo: `AGENTS.md` is 263 lines against a 200-line yardstick, no skill description puts its trigger
 first, `agents/critic.md` is read-only only by instruction, there are no hooks, and `.claude/` is gitignored whole, so
