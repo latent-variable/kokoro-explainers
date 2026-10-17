@@ -1,1 +1,1 @@
-It shines when your agent needs your call. Mid-change, it asks: rewrite the retry logic, or patch it? It hands that question to a fresh explainer agent. Soon after, you watch both options, what each costs, and a recommendation. Then you make the call.
+Most days, you will use it when your agent needs your call. Mid-change, it asks: rewrite the retry logic, or patch it? It hands that question to a fresh explainer agent, one that did not write the code. Soon after, you watch both options, what each costs, and a recommendation. Then you make the call.

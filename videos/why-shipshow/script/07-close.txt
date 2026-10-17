@@ -1,1 +1,1 @@
-Turn the shit show into a ship show. ShipShow is open source, on GitHub. Clone it, and ask your agent for your first video.
+Turn the shit show into a ship show. ShipShow is open source, on GitHub. Clone it, follow the setup in its README, then ask your agent for a video of your last change.

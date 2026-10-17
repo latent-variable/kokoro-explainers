@@ -187,17 +187,23 @@
       const glyph = (i, step) => GLYPHS[Math.abs(Math.imul(i + 1, 2654435761) ^ Math.imul(step + 7, 40503) ^ SEED) % GLYPHS.length];
       const colour = (name, fallback) => token(name, fallback);
       Object.assign(SPECIAL, {
-        // Decodes from noise, left to right.
+        // Decodes from noise, left to right, keeping any markup inside (an <em> stays an <em>).
         scramble(el, at) {
-          const text = el.textContent, state = { p: 0 };
+          const nodes = [];
+          const walk = (n) => n.childNodes.forEach((c) => (c.nodeType === 3 ? nodes.push(c) : c.nodeType === 1 && walk(c)));
+          walk(el);
+          const texts = nodes.map((n) => n.nodeValue), total = texts.reduce((a, t) => a + t.length, 0), state = { p: 0 };
           const show = () => {
-            const shown = Math.floor(state.p * text.length), step = Math.floor(state.p * 24);
-            el.textContent = [...text].map((ch, i) => (i < shown || /\s/.test(ch) ? ch : glyph(i, step))).join("");
+            const shown = Math.floor(state.p * total), step = Math.floor(state.p * 24);
+            let i = 0;
+            nodes.forEach((n, k) => {
+              n.nodeValue = [...texts[k]].map((ch) => { const j = i++; return j < shown || /\s/.test(ch) ? ch : glyph(j, step); }).join("");
+            });
           };
           show();
           gsap.set(el, { opacity: 0 });
           tl.to(el, { opacity: 1, duration: 0.1 }, at);
-          tl.to(state, { p: 1, duration: Math.min(1.2, 0.3 + text.length * 0.03), ease: "none", onUpdate: show }, at);
+          tl.to(state, { p: 1, duration: Math.min(1.2, 0.3 + total * 0.03), ease: "none", onUpdate: show }, at);
         },
         // Arrives split into colour channels, jitters, then settles.
         glitch(el, at) {
