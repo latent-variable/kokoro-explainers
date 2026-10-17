@@ -1,12 +1,12 @@
 ---
 name: explainer-video
 description: >
-  Make or update a narrated explainer video in this repo: facts from a source of record,
-  a script, scenes, a Kokoro or OmniVoice voice, a HyperFrames render, then the critic loop until the
-  video's critics pass. Three kinds: a decision video an agent makes mid-work so a person
-  can make a call, a feature explainer (how something in a code base works), and a release
-  explainer. Load when asked for an explainer, a release video, a "video of how X works",
-  or a video to decide something, or to update one.
+  Use when asked for an explainer, a release video, a "video of how X works", or a video to decide
+  something, or to update one. Make or update a narrated explainer video in this repo: facts from
+  a source of record, a script, scenes, a Kokoro or OmniVoice voice, a HyperFrames render, then
+  the critic loop until the video's critics pass. Three kinds: a decision video an agent makes
+  mid-work so a person can make a call, a feature explainer (how something in a code base works),
+  and a release explainer.
 ---
 
 # Explainer video

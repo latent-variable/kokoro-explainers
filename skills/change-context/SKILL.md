@@ -1,12 +1,11 @@
 ---
 name: change-context
 description: >
-  Build a grounded understanding of a change, not a code base: what a diff, pull request,
-  branch or commit range does, why it was made, what behaves differently before and after,
-  what it breaks or risks, and what it left alone, every statement traced to the diff,
-  tests, description or a run. Load before explaining, reviewing or deciding about a
-  development, a PR or a release, and for the sources of a feature, decision or release
-  video.
+  Use before explaining, reviewing or deciding about a development, a PR or a release, and for the
+  sources of a feature, decision or release video. Build a grounded understanding of a change, not
+  a code base: what a diff, pull request, branch or commit range does, why it was made, what
+  behaves differently before and after, what it breaks or risks, and what it left alone, every
+  statement traced to the diff, tests, description or a run.
 ---
 
 # Change context

@@ -1,10 +1,10 @@
 ---
 name: narration-writing
 description: >
-  Write a script meant to be heard: short spoken sentences, one idea per scene, numbers and
-  names as they are said, pronunciation fixes for the Kokoro voice, and nothing a listener
-  would have to see to follow. Load when writing or revising `script/*.txt`, or when a
-  critic finds pacing, clarity or pronunciation problems in narration.
+  Use when writing or revising `script/*.txt`, or when a critic finds pacing, clarity or
+  pronunciation problems in narration. Write a script meant to be heard: short spoken sentences,
+  one idea per scene, numbers and names as they are said, pronunciation fixes for the Kokoro
+  voice, and nothing a listener would have to see to follow.
 ---
 
 # Narration writing

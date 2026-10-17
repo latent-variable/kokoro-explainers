@@ -1,12 +1,12 @@
 ---
 name: code-context
 description: >
-  Build a grounded understanding of any code base, this one or another: what it is for,
-  its functional and non-functional requirements, how its code and APIs behave, and what
-  is unknown, every statement traced to a file, test, config or observed run. Load before
-  explaining, changing, reviewing or deciding about code you have not read, when asked "how
-  does X work", "what does this API guarantee", "what are its requirements", or to produce
-  the sources for a feature or decision video.
+  Use before explaining, changing, reviewing or deciding about code you have not read, when asked
+  "how does X work", "what does this API guarantee", "what are its requirements", or to produce
+  the sources for a feature or decision video. Build a grounded understanding of any code base,
+  this one or another: what it is for, its functional and non-functional requirements, how its
+  code and APIs behave, and what is unknown, every statement traced to a file, test, config or
+  observed run.
 ---
 
 # Code context

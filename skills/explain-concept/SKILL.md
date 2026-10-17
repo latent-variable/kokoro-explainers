@@ -1,11 +1,10 @@
 ---
 name: explain-concept
 description: >
-  Turn evidenced facts into a plan a viewer can follow: who the video is for and what they
-  must be able to do afterwards, the one idea per scene, the order a newcomer needs, the
-  analogy or example for each, what to cut, and the picture that shows each idea best.
-  Load after the facts exist (`sources.md`) and before the script and scenes, for a feature,
-  decision or release video.
+  Use after the facts exist (`sources.md`) and before the script and scenes, for a feature,
+  decision or release video. Turn evidenced facts into a plan a viewer can follow: who the video
+  is for and what they must be able to do afterwards, the one idea per scene, the order a newcomer
+  needs, the analogy or example for each, what to cut, and the picture that shows each idea best.
 ---
 
 # Explain a concept

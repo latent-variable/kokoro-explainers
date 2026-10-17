@@ -156,7 +156,7 @@ pins users to it until someone bumps it, so it is omitted and the commit SHA ver
 **Facts from the docs that shaped it.** Only `name` is required, in kebab-case, and may not start
 with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
 namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
-every turn (measured: 22 skills, 7,882 characters, about 1,971 tokens), so descriptions stay short
+every turn (measured: 22 skills, 7,860 characters, about 1,965 tokens), so descriptions stay short
 and SKILL.md under 500 lines (longest 206). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
 the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
 and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
@@ -470,6 +470,21 @@ among the tools it saw, which this change did not cause (`tools` is unchanged) a
 **Not done.** A frontmatter hook to deny Bash writes outside a scratch directory (plan step 3.1's second half): whether a
 plugin-shipped agent's own hooks run is unconfirmed, so the Bash limit stays a stated one. **Costs.** A critic that needs more than 40 turns
 stops early and returns what it has; raise `maxTurns` if a longer video needs it.
+
+### D39. Descriptions put the trigger first; skills have a size ceiling; two skills pre-approve their scripts (2026-10-17; plan 1.3, 1.4, 1.6)
+**Decision.** Every skill description now starts "Use when ..." (the repo-only one after its "(Only in the ShipShow repo
+itself.)" marker), then says what the skill does. Before, 22 of 22 put "Load when ..." last. A test asserts the opening, a
+ceiling of 600 characters a description, and 20,000 characters (about 5,000 tokens) a `SKILL.md`. `critic-grounding` and
+`evidence-standard` gain `allowed-tools` for their bundled scripts (`Bash(node ${CLAUDE_SKILL_DIR}/scripts/*)` and the sibling
+skill's), so a critic is not asked to approve the same script each round.
+**Why.** Anthropic's skills docs: the trigger belongs first because the listing truncates and the description decides whether
+a skill loads; after compaction only the first 5,000 tokens of an invoked skill are kept. The largest `SKILL.md` here is
+12,593 characters, so the ceiling is headroom, not a squeeze. The descriptions got 22 characters shorter (7,860 in all).
+**Checked.** `claude plugin validate skills --strict` passes. **Not checked.** That `allowed-tools` pre-approves a script
+in a live critic run (the docs say `${CLAUDE_SKILL_DIR}` works there; no run was made), and that the new wording triggers
+the skills as well as the old: that needs the evals of plan step 5.1.
+**Costs.** A description that restates its trigger first reads as an instruction to the model that sees the listing; the
+critic skills now open "Use when the critic loop assigns you this critic" and then "Critic for ...".
 
 ## Behaviour
 

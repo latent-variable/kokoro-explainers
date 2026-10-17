@@ -1,9 +1,9 @@
 ---
 name: critic-accuracy
 description: >
-  Critic for an explainer video's truth: every claim spoken, shown or captioned must trace
-  to the video's sources.md, with names, versions, commands and code exact. Load when the
-  critic loop assigns you this critic.
+  Use when the critic loop assigns you this critic. Critic for an explainer video's truth: every
+  claim spoken, shown or captioned must trace to the video's sources.md, with names, versions,
+  commands and code exact.
 ---
 
 # Critic: accuracy

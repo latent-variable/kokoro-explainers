@@ -1,9 +1,9 @@
 ---
 name: critic-pacing
 description: >
-  Critic for an explainer video's pace: speaking rate, pauses, scene length, how long the
-  screen goes without change, and whether on-screen text stays up long enough to read.
-  Load when the critic loop assigns you this critic.
+  Use when the critic loop assigns you this critic. Critic for an explainer video's pace: speaking
+  rate, pauses, scene length, how long the screen goes without change, and whether on-screen text
+  stays up long enough to read.
 ---
 
 # Critic: pacing

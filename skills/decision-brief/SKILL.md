@@ -1,11 +1,11 @@
 ---
 name: decision-brief
 description: >
-  Write the brief that hands a decision to a fresh explainer agent: the decision in one sentence,
-  every option with what it gains and costs, doing nothing, the working agent's pick and reason,
-  an assumption it has not verified, and the code to read at an exact pin. Load when you are
-  mid-work, need a person's call, and want a decision video made; or when you receive such a
-  brief and must check it.
+  Use when you are mid-work, need a person's call, and want a decision video made; or when you
+  receive such a brief and must check it. Write the brief that hands a decision to a fresh
+  explainer agent: the decision in one sentence, every option with what it gains and costs, doing
+  nothing, the working agent's pick and reason, an assumption it has not verified, and the code to
+  read at an exact pin.
 ---
 
 # Decision brief

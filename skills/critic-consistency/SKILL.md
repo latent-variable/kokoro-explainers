@@ -1,9 +1,9 @@
 ---
 name: critic-consistency
 description: >
-  Critic for an explainer video's consistency: the same thing called the same name in
-  narration, captions and on screen, and one look and set of conventions from the first
-  scene to the last. Load when the critic loop assigns you this critic.
+  Use when the critic loop assigns you this critic. Critic for an explainer video's consistency:
+  the same thing called the same name in narration, captions and on screen, and one look and set
+  of conventions from the first scene to the last.
 ---
 
 # Critic: consistency

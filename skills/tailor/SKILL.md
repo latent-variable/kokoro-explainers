@@ -1,11 +1,11 @@
 ---
 name: tailor
 description: >
-  Record how one person wants their explainers, in their own local layer (local/, never
-  committed): a preference about depth, tone, voice, look or structure, a personal bar every
-  one of their videos must meet, or a skill of their own. Load when someone says how they
-  want explainers made for them ("open with the decision", "slower", "always show the
-  code", "never tell me what you almost got wrong"), or asks to change or forget one.
+  Use when someone says how they want explainers made for them ("open with the decision",
+  "slower", "always show the code", "never tell me what you almost got wrong"), or asks to change
+  or forget one. Record how one person wants their explainers, in their own local layer (local/,
+  never committed): a preference about depth, tone, voice, look or structure, a personal bar every
+  one of their videos must meet, or a skill of their own.
 ---
 
 # Tailor

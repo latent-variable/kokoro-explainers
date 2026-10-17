@@ -1,9 +1,9 @@
 ---
 name: critic-visuals
 description: >
-  Critic for an explainer video's imagery: legibility, contrast, layout, overlap, empty or
-  crowded frames, visual hierarchy, and whether every frame looks finished. Load when the
-  critic loop assigns you this critic.
+  Use when the critic loop assigns you this critic. Critic for an explainer video's imagery:
+  legibility, contrast, layout, overlap, empty or crowded frames, visual hierarchy, and whether
+  every frame looks finished.
 ---
 
 # Critic: visuals
