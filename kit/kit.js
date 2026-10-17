@@ -83,10 +83,12 @@
         flash: { opacity: 0, scale: 1.06, filter: "brightness(2.4)" },
       };
       const SETTLED = { opacity: 1, x: 0, y: 0, scale: 1, clipPath: "inset(0% 0% 0% 0%)", filter: "brightness(1)" };
+      // The last scene is the one that ends last on the timeline, whatever its place in the page.
       const scenes = [...document.querySelectorAll("section.scene")];
-      scenes.forEach((el, i) => {
+      const finalEnd = Math.max(...scenes.map((el) => +el.dataset.start + +el.dataset.duration));
+      scenes.forEach((el) => {
         const inner = el.querySelector(":scope > .inner"), cam = inner.querySelector(":scope > .cam");
-        const start = +el.dataset.start, dur = +el.dataset.duration, end = start + dur, last = i === scenes.length - 1;
+        const start = +el.dataset.start, dur = +el.dataset.duration, end = start + dur, last = end >= finalEnd - 0.001;
         const kind = el.dataset.transition || token("--transition", "fade");
         if (!(kind in TRANSITIONS)) throw new Error(`unknown transition ${kind}: ${Object.keys(TRANSITIONS).join(", ")}`);
         gsap.set(inner, { opacity: 0 });
