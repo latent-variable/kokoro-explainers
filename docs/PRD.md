@@ -25,9 +25,14 @@ that is checked by other agents, so the person can ship code they understand. (`
 | **An explainer agent** | A grounded way to learn a code base and turn it into a video |
 | **A critic agent** | A bar to judge against, and evidence to judge with |
 
-The hackathon is for amperium.ai. We were told the company handles significant amounts of
-multimodal data. Beyond that, what Amperium's data and users are is **open** (see *Open
-questions*).
+The hackathon is for a company the README calls amperium.ai, which does not resolve. The firm we can
+read is **Aperiam** (aperiam.vc): "the leading adtech and martech venture capital firm", with a
+ventures arm that backs adtech and martech startups, an advisory arm, an Ads arm doing "emerging tech
+orchestration for supply chain, commerce, and identity", and a marketing arm. The person who asked for
+the demo says it is now at `amperiu.vc`, which also does not resolve from here (unverified). The site says
+nothing about AI, agents or **multimodal data**; that assumption, made earlier, is not supported and is
+dropped (F19 stays open). The demo therefore speaks to an adtech company's pain: see
+`sample_application/` (F18).
 
 ## Goals
 
@@ -74,15 +79,15 @@ questions*).
 | ID | Requirement | Status |
 |---|---|---|
 | F15 | A finished video is returned with its status, next step, what was checked and what is unsure (`explain-handoff`) | done, being hardened |
-| F16 | Tokens and context per agent, subagents included, for a session (`npm run usage`) | done, **repo only**: it is not a skill, so the plugin does not ship it |
+| F16 | Tokens and context per agent, subagents included, for a session (`npm run usage`) | done, **repo only**: it ships as an inert file but is not invokable from the plugin; output tokens are as recorded in the transcript and may undercount |
 
 ### Ship and extend
 
 | ID | Requirement | Status |
 |---|---|---|
-| F17 | Package as a Claude Code plugin: `.claude-plugin/plugin.json` and `marketplace.json`, all skills, a `critic` agent restricted to Read, Grep, Glob, Bash and Skill and told not to write; validates (one expected warning: no `version`, deliberate) | done; the pipeline skills, `critic-loop`, the critics and `tailor` need a clone (open question 3); known packaging limits in DESIGN D13 |
-| F18 | A vendored sample application to test the skills on (`sample_application/`, microblog) | done |
-| F19 | Take multimodal inputs (images, audio, video, documents) as evidence for a video | **open**: depends on Amperium's data |
+| F17 | Package as a Claude Code plugin: `.claude-plugin/plugin.json` and `marketplace.json`, all skills, a `critic` agent with Read, Grep, Glob, Bash and Skill that is told not to write (not enforced); validates (one expected warning: no `version`, deliberate) | done. Standalone in any repo: `code-context`, `change-context`, `evidence-standard`. The rest produce an artifact only the pipeline consumes (a brief, a plan, a script, a hand-back) or judge one, and need this repo cloned (open question 3). Packaging limits in DESIGN D13 |
+| F18 | A sample application that makes the problem recognisable: `sample_application/`, a toy ad-spend pacer built by three agents in one day, each change correct for its task, with a bug only their interaction shows, a replayable git history and the hand-off notes a manager would have received | done |
+| F19 | Take multimodal inputs (images, audio, video, documents) as evidence for a video | **open**: nothing we can read says the company has multimodal data |
 | F20 | Per-person preferences and private videos stay local (`tailor`, `local/`) | done in this repo; elsewhere a skill checks `local/` is ignored and uses `.git/info/exclude` |
 | F21 | Run code to verify a claim without harm: a sandbox script, a faithful scratch copy, no network, writes confined (`evidence-standard`) | done on macOS; Linux untested |
 | F22 | Scaffold and diagnose: `npm run new` from `template/`, `npm run doctor` for what the machine lacks, a draft render mode | done |
@@ -96,12 +101,12 @@ questions*).
 | N3 | **Independence.** The builder never judges its own video; critics are fresh agents | `critic-loop` | done |
 | N4 | **Public-safe.** A private code base's details never reach this public repo | `local/` is gitignored; `evidence-standard`, *Where the result goes* | done |
 | N5 | **Safe to run.** Reading a code base does not change it, spend money or send data out | `evidence-standard`, `scripts/sandbox-run.sh` (DESIGN D9) | done on macOS, tested; refuses elsewhere; reads are not confined and it is not a defence against hostile code |
-| N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 21 skills, 7,408 characters (about 1,850 tokens) of names and descriptions; longest SKILL.md 139 lines | done; re-measure when a skill is added |
+| N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 21 skills, 7,408 characters (about 1,850 tokens) of names and descriptions; longest SKILL.md 142 lines (a test checks these figures against the tree) | done |
 | N7 | **Reproducible.** A voice take is cached by text, voice and speed; generated files are gitignored | `assets/voice/*.key` | done |
 | N8 | **Observable.** Token and context use is readable per agent | `npm run usage` | done |
-| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (13 tests; the sandbox test runs on macOS only) | done; 2 tests need `npm install` |
+| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (19 tests; the sandbox and capture tests run on macOS only, the CI docs check only on a pull request) | done; 2 tests need `npm install` |
 | N10 | **Portable.** The pipeline is tested on macOS; CI runs the unit tests on Linux (`ubuntu-latest`) | `README.md`, `.github/workflows/ci.yml` | open: pipeline on Linux untried |
-| N11 | **Attribution.** The vendored sample is MIT with its licence kept; Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its standard licence | `sample_application/LICENSE`, `README.md` | done |
+| N11 | **Attribution.** The sample is original (its `SOURCE.md` says what it is and is not based on); Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its standard licence | `sample_application/SOURCE.md`, `README.md` | done |
 | N12 | **Reviewable.** Every change is a pull request with CI and an automated review; a rename changes the reviewer's allowlist | `AGENTS.md`, traps | done |
 
 ## Out of scope for now
@@ -114,16 +119,18 @@ questions*).
 
 - A fresh agent, given a code base and a question, produces a context in which a second agent
   can verify every line without asking the first.
-- A video about the sample app passes all of its critics, and `REVIEW.md` shows the rounds.
+- A video about the sample app (`sample_application/`) passes all of its critics, and `REVIEW.md` shows the
+  rounds. The video answers the question a developer asks the morning after: which of three correct-looking
+  changes made the Tokyo campaign spend 181% of its budget, and is anything else wrong.
 - Planted defects (a hidden behaviour change, a wrong brief claim, a fabricated output) are
   caught by the skills' own method rather than by luck. The red-team record is in
   [`skills/REVIEW.md`](../skills/REVIEW.md).
-- The plugin installs from a marketplace and its skills run in a repo that is not this one.
+- The plugin installs from a marketplace and its standalone skills (`code-context`, `change-context`, `evidence-standard`) run in a repo that is not this one: **partly met**, since the video skills need this repo cloned.
 
 ## Open questions
 
-1. What is Amperium's multimodal data (modalities, volume, domain), and what must a video of it
-   show? F19 waits on this.
+1. What is the company's data and product, and is the firm at `aperiam.vc`, `amperiu.vc` or the README's
+   `amperium.ai`? Nothing readable mentions multimodal data; F19 waits on an answer.
 2. Does the hackathon prompt require a particular deliverable or judging criterion?
 3. Should the video pipeline (Kokoro, about 340 MB, HyperFrames and Chrome, about 190 MB, a Python
    environment) be installed by the plugin, for example under `${CLAUDE_PLUGIN_DATA}`, or stay a repo the

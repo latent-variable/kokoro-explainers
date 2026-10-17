@@ -2,5 +2,15 @@
   "title": "My explainer",
   "voice": "af_heart",
   "speed": 0.8,
-  "say": {}
+  "say": {},
+  "audience": "Who watches, what they already know, and what they can do after: one or two sentences.",
+  "critics": [
+    "critic-accuracy",
+    "critic-clarity",
+    "critic-pacing",
+    "critic-sync",
+    "critic-visuals",
+    "critic-consistency",
+    "critic-engagement"
+  ]
 }

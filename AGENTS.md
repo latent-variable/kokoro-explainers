@@ -74,9 +74,9 @@ the work, not paperwork after it:
 | `docs/DESIGN.md` | How it fits together, the decision log, observable behaviour, how the design was tested | You make a design decision, change how something behaves, reverse an earlier choice, or learn a trap |
 
 **Update them in the same change as the code, skill or doc that moved them**, before you commit.
-A change that touches `bin/`, `kit/`, `template/`, a skill, the critics or the plugin layout
-and leaves both files untouched needs a reason in the commit message ("no requirement or
-decision changed").
+A change to `bin/`, `kit/`, `template/`, a skill, the critics, the plugin layout, CI, `package.json`
+or the README that leaves both files without a real change needs `docs: no change - <reason>` (a reason
+of ten characters or more) in the PR title or the last commit message.
 
 - A new decision is a new entry at the end of the log: number, date, decision, why, what it
   costs. Never rewrite a past entry; supersede it with a new one that names it.
@@ -88,9 +88,11 @@ decision changed").
   source you read. What you do not know goes in the PRD's open questions, not in a guess.
 - When you add or rename a skill, list it in the skills table above and in the PRD.
 - `npm test` fails if either file is missing or empty, if this section's heading is gone, if a skill
-  is missing from the skills table or the PRD, if a critic is missing from `docs/assets/critics.svg`,
-  or, in CI on a pull request, if `bin/`, `kit/`, `template/`, `skills/`, `agents/` or
-  `.claude-plugin/` changed and neither doc did (a commit message line `docs: no change` overrides it).
+  is missing from the skills table or the PRD, if a critic is missing from `docs/assets/critics.svg`, if
+  a number the docs quote (skills, characters of descriptions, longest `SKILL.md`, tests, critics) is not
+  the tree's, or, in CI on a pull request, if code, skills, the plugin, CI, `package.json` or the README
+  changed and the docs got no real change (whitespace and the `Last reviewed` date do not count) and no
+  `docs: no change - <reason>`. It makes a stale number loud, not a stale claim: read the docs you touch.
 - **Bump nothing by hand in `plugin.json`:** it has no `version`, so the commit SHA versions the plugin.
 
 ## Set up
@@ -169,8 +171,9 @@ kit/        shell.html (canvas, captions, audio) and kit.js (the timeline), shar
 skills/     the explainer and development skills, critic-loop, tailor and the nine critics
 template/   what npm run new copies
 videos/     videos about this repo; how-it-works is the example
-skills/critic-grounding/scripts/  check-excerpt.mjs, the excerpt check (run through the skill)
-sample_application/  a vendored sample app (microblog, MIT) the skills are tested on; see its SOURCE.md
+skills/critic-grounding/scripts/  excerpt.mjs and check-excerpt.mjs, the excerpt check (run through the skill)
+skills/evidence-standard/scripts/  sandbox-run.sh, capture.mjs, verify-vendored.sh (run through the skill)
+sample_application/  pacer-demo, a toy ad-spend pacer built by three agents in a day: the Aperiam demo (README, history/, agents/; ANSWER.md is a spoiler)
 docs/        PRD.md and DESIGN.md (kept current); assets/ holds the README's images; the GIF is cut from out/how-it-works.mp4
 test/       sentence splitting, pronunciation swaps, cue and caption timing, skill links, usage counting, the excerpt checker, the sandbox runner, the docs rule
 local/      gitignored, per person (tailor skill)
@@ -182,7 +185,7 @@ local/      gitignored, per person (tailor skill)
 - **`requirements.txt` pins phonemizer.** kokoro-onnx 0.6.1 needs `EspeakWrapper.set_data_path`, which phonemizer 3.3 lacks. Bump the two together and run `npm run doctor`.
 - **espeak-ng fails when its data path is 160 characters or longer** (measured 2026-10-17: 159 works, 160 fails). It reports a missing `.../site-packages//phontab`, not a path error. A venv deep in a temp or worktree path hits this; `doctor` checks the length.
 - **No speech recognition, on purpose.** `hyperframes transcribe` built whisper.cpp and then timed out downloading its model after six minutes. Timing comes from voicing each sentence separately (`bin/voice.mjs`), so a word inside a sentence is placed by its share of the letters. Do not add an ASR step to fix a cue a few hundred milliseconds off; split the sentence or use `data-cue="+seconds"`.
-- **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts every later take's number, so they re-voice; that costs about a second each.
+- **Takes are cached by text, voice and speed** in `assets/voice/<scene>-<n>.key`. Inserting a sentence shifts the number of every later sentence in that scene (numbering restarts per scene), so those re-voice; the cost per take has not been measured.
 - **Generated files are gitignored** (`videos/*/assets/`, `review/`, `index.html`, `meta.json`, `timing.json`). Never commit audio, frames or renders.
 - **The name is ShipShow**, one word, two capitals; the repo is `latent-variable/shipshow` (renamed from kokoro-explainers 2026-10-17, and GitHub redirects the old address). A rename also changes the PR reviewer's allowlist (latent-git-agents `config/repos.json` and `tests/repo-allowlist.test.mjs`), or PRs stop being reviewed.
 - **`hyperframes lint` warns `nested_structure_needs_subcomposition` and `timeline_track_too_dense`** on every video. Advisory: each scene is one section on one track by design. Errors still block.

@@ -56,13 +56,14 @@ Give each critic objectives and evidence, never a procedure. How it looks is its
 ```
 You are a critic for an explainer video. Review it yourself; do not delegate.
 Load and follow skills/<critic>/SKILL.md. Judge only what that skill covers.
-Evidence, in videos/<name>/:
+Evidence, in <video dir> (videos/<name>/ or local/videos/<name>/):
   review/packet.md      the script with timings, pauses, cues, reading times
   review/frames/        stills after each cue and at each scene end (contact-sheet*.jpg)
   sources.md            the ground truth; a claim not supported here is a finding
   critics.md            this video's own bar, if present: it applies to you too
   video.json            who the video is for, its voice and speed
   brief.md              for a decision video: the decision as the working agent framed it
+  code at pin: <path>   the code base at the pin <sha>, so a claim can be re-checked (a throwaway copy)
   local/preferences.md, local/critics.md (repo root)   the person's own taste and bar, if present
 scenes.html and script/ are the source; read them only to point a fix at a line.
 Return only the JSON below. Stop when your skill's criteria are covered.
@@ -98,7 +99,7 @@ Return only the JSON below. Stop when your skill's criteria are covered.
 - `assets` is optional: a critic that checks shown evidence (`critic-grounding`) returns one row
   per asset it checked, so the loop can see what was verified and how.
 
-Save each one as `videos/<name>/review/round-<n>/<critic>.json`.
+Save each one as `<video dir>/review/round-<n>/<critic>.json`.
 
 ## The loop
 
@@ -117,8 +118,8 @@ Save each one as `videos/<name>/review/round-<n>/<critic>.json`.
    three rounds, two critics contradict each other, or a round only finds problems in the
    previous round's fixes.
 
-Then write `videos/<name>/REVIEW.md`: each round, each critic's verdict, what was fixed,
-what was declined and why. It is committed with the video, so anyone can see the bar it
+Then write `<video dir>/REVIEW.md`: each round, each critic's verdict, what was fixed,
+what was declined and why. It is committed with the video when the video is in `videos/` (one in `local/` is not committed), so anyone can see the bar it
 cleared.
 
 ## A new critic

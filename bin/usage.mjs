@@ -1,11 +1,13 @@
 // Token and context use of a Claude Code session and the subagents it spawned, read from the
-// session transcripts Claude Code already writes under ~/.claude/projects/.
+// session transcripts Claude Code already writes under ~/.claude/projects/. Output tokens are as
+// recorded in the transcript, which may undercount a call that was still streaming when it was logged.
 //   node bin/usage.mjs [session id | transcript path] [--json]
 // With no argument: the newest session of this repo. Context is the prompt size of one API
 // call (fresh + cache-written + cache-read input tokens); "peak" is the largest of them.
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { REPO } from "./lib.mjs";
 
 const projects = process.env.CLAUDE_PROJECTS_DIR || join(homedir(), ".claude", "projects");
@@ -60,7 +62,10 @@ export function findSession(arg, repo = REPO) {
 const k = (n) => (n >= 1e6 ? (n / 1e6).toFixed(2) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "k" : String(n));
 const secs = (a) => (a.first && a.last ? Math.round((Date.parse(a.last) - Date.parse(a.first)) / 1000) : 0);
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run as a script, also from a path with a space or through a symlink: compare real paths, never URLs.
+let entry = false;
+try { entry = process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)); } catch { entry = false; }
+if (entry) {
   const args = process.argv.slice(2), json = args.includes("--json");
   const file = findSession(args.find((a) => !a.startsWith("--")));
   const agents = readSession(file);

@@ -32,7 +32,9 @@ result goes. In short:
    write the one-line `absent:` form. Never pad. Tagged evidence lines are not capped, so cut breadth
    before you cut a malformed-input check or the backing of a universal claim. The minimum for an
    API is one row per route: its auth, its malformed-body outcome, and the test that covers it; a
-   shared line for identical routes states the search that shows they are identical.
+   shared line for identical routes states the search that shows they are identical. A cell the code
+   cannot settle reads `unknown (library): run <what>`; "no test in <file> exercises <dir>" is one summary
+   line beside the per-row `untested`.
 
 ## What a good context covers
 
@@ -70,6 +72,8 @@ Trace the real path from entry point to effect. Prefer to *run* it over reading 
 malformed inputs to check (`evidence-standard`) and mark each outcome `[ran]` or `[read]` with
 "not run". Trace which layer an error handler or a check lives in before you claim it applies
 everywhere: a blueprint handler does not see routing errors; a form check does not guard an API.
+Compare each validation rule across every entry point (a rule in a form but not in the API or the
+model is a bypass), and name the handler layer for each error status (`evidence-standard`).
 Also list what does **not** happen (a push, a notification, a cache, a fan-out), each as an
 `absent:` line, and say which test covers each traced path or that none does.
 

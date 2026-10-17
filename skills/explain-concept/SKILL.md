@@ -44,19 +44,25 @@ omission from an oversight.
   delivers it), the correction is for a viewer who holds that framing; a viewer who never assumed it
   gets the real mechanism with a stake line first. Where it applies, scene 1 corrects it as a
   concrete example ("Ben posts; nothing is sent to Ana"), and the title uses the real mechanism.
-  Before any scene says "nothing else happens", list the write path's listeners, events, signals and
-  hooks (a post that is also indexed for search is still a post that is not sent to a follower), and
-  cite each as `absent:` or `present:` in `sources.md`. The person is told in the plan's first line
+  Say "the word is not in the code" when that is what the search found, not "there is no such thing":
+  the concept may exist under another name (the home page is functionally the timeline). Before any
+  scene says "nothing else happens", list the write path's listeners, events, signals and hooks (a post
+  that is also indexed for search is still a post that is not sent to a follower), and cite each as
+  `absent:`, `present:` or `present, conditional on <config>` in `sources.md`. The person is told in the plan's first line
   and in the hand-back.
 - The last scene says what to do next, and makes the outcome reachable: for a feature or change
   video it names the entry points the viewer would open (a feature has a write path and a read path),
   with their literals on screen, and the video shows at least one real excerpt, the part the
   narration explained. A spoken alias (`glossary`) always has its literal on screen.
 - **The scene that carries the central mechanism shows the real lines doing the work**, each cued as
-  it is named, and says how the viewer can check the claim themselves (the test that exercises it
-  is the runnable example). A script that is true but could be written without reading the code
-  teaches nothing. Keep something changing on screen about every 6 to 8 seconds; `critic-pacing`
-  holds the limit.
+  it is named, and says in a clause what each construct the viewer would need to change the code does
+  (what `isouter` or `group_by` is for). A script that is true but could be written without reading the
+  code teaches nothing. Say how the viewer can check the claim themselves (the test that exercises it is
+  the runnable example); that may sit in the last scene.
+- **State a cost or a limit** of the design, or that none was found (`sources.md` says so).
+- Keep something changing on screen while the voice goes on: split a scene or add a thing worth naming
+  rather than a filler cue. The packet's *Stillness* table shows each scene's longest still stretch;
+  `critic-pacing` holds the limit.
 - A newcomer's order often runs: the problem, the idea, one worked example, how it goes
   wrong or what it costs, then what to do.
 
@@ -76,8 +82,10 @@ picture by what the idea *is*, not by what is easy to draw:
 | Something abstract | One concrete example before the general statement |
 
 Real code, commands and output beat a paraphrase of them, but only the lines being named:
-narrow shown code to them and cue each as it is spoken, so the voice points at the screen.
-Anything shown must be in `sources.md`, copied from the pin it names, never retyped.
+narrow shown code to them, as whole contiguous lines with a `…` line for each gap and the file and line
+numbers on screen, and cue each as it is spoken, so the voice points at the screen. Anything shown must
+be in `sources.md`, copied from the pin it names, never retyped (`explainer-video`, step 1; the critic
+checks it with a script).
 
 **What the kit renders natively:** entrances on a cue (`up`, `fade`, `pop`, `left`, `right`,
 `grow`). Exit, swap, arrows, line highlight and counters need a custom `<script>` in

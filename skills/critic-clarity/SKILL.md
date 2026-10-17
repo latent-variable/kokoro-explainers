@@ -26,6 +26,11 @@ with no rewind; the frames for what they see alongside it.
   something unexplained for more than a scene.
 - **major:** time spent on what this viewer does not need, while something they need is
   thin. Name both.
+- **major:** spoken aliases (`glossary`) that the viewer is never told map to the names they will meet
+  when they open the code, so the video teaches a vocabulary the code does not use.
+- **major:** the scene that carries the central mechanism shows code the viewer could not read in the
+  time it is up, or never says what the constructs they would need to change do.
+- **major:** the design's cost or limit is neither stated nor said to be absent from the sources.
 - **minor:** a sentence that is hard to follow by ear: long, nested, or with the point at
   the end.
 

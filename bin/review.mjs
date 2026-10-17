@@ -8,16 +8,15 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { HF, REPO, config, die, round, run, videoDir } from "./lib.mjs";
+import { READ_CODE_TPS, READ_WPS, readingSeconds, stillStretches, words } from "./measure.mjs";
 
 const SETTLE = 0.8;         // a still this long after a cue, once its entrance has finished
-const READ_WPS = 3.3;       // words a viewer reads per second (about 200 a minute) while listening
 
 const dir = videoDir(process.argv[2]);
 const cfg = config(dir);
 for (const f of ["timing.json", "index.html"]) if (!existsSync(join(dir, f))) die(`no ${f} yet: npm run make first`);
 const timing = JSON.parse(readFileSync(join(dir, "timing.json"), "utf8"));
 const html = readFileSync(join(dir, "index.html"), "utf8");
-const words = (s) => (s.match(/[A-Za-z0-9][\w'.-]*/g) || []).length;
 
 /** The text inside the element whose opening tag starts at `i`, nested tags of its kind included. */
 function elementText(i) {
@@ -82,11 +81,16 @@ for (const s of timing.scenes) {
   out.push("");
 }
 out.push("## Pauses", "", "Silence before each sentence, and after the last.", "", md(pauses.map((p) => [p.at, p.length, p.between]), ["at (s)", "seconds", "between"]), "");
-out.push("## Cues", "", `Each element that arrives on a word: when it lands, what is being said then, and how long it stays up. Reading time assumes ${READ_WPS} words a second; "short" means it leaves before a viewer could read it while listening.`, "");
+out.push("## Cues", "", `Each element that arrives on a word: when it lands, what is being said then, and how long it stays up. Reading time assumes ${READ_WPS} words a second for prose and ${READ_CODE_TPS} identifier tokens a second for code; "short" means it leaves before a viewer could read it while listening.`, "");
 out.push(md(cues.map((c) => {
-  const need = round(words(c.text) / READ_WPS);
+  const need = round(readingSeconds(c.text));
   return [c.at, c.scene, `\`${c.cue}\``, c.text.slice(0, 90), c.saying, `${c.up} s${c.up < need ? ` (short: needs ${need})` : ""}`];
 }), ["at (s)", "scene", "cue", "on screen", "being said", "stays up"]), "");
+out.push("## Stillness", "", "The longest stretch of each scene in which nothing new appears: the scene's start, each cue and its end are the moments something changes.", "");
+out.push(md(timing.scenes.map((sc) => {
+  const st = stillStretches(sc, cues.filter((c) => c.scene === sc.id).map((c) => c.at));
+  return [sc.id, round(st.seconds), `${round(st.from)} s to ${round(st.to)} s`];
+}), ["scene", "longest still stretch (s)", "between"]), "");
 out.push("## Frames", "", `In \`review/frames/\`, ${frames.length} stills; ${sheets.map((f) => `\`${f}\``).join(", ")} show them together.`, "");
 const near = (t) => cues.filter((c) => Math.abs(c.at + SETTLE - t) < 0.01).map((c) => `after \`${c.cue}\``).join(", ") || "scene end";
 out.push(md(frames.map((f) => {

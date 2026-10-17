@@ -51,11 +51,12 @@ gap to report. **Why.** A video that teaches a developer something false is wors
 plans its steps is its own business. **Why.** A method rule is friction the next model has to
 work around. **Consequence.** Who builds, who judges, and where facts come from stay fixed for
 every agent. Round-two red-teaming found several of our skills still prescribing method
-(templates, fixed order); those are being marked as suggestions. Source: `AGENTS.md`.
+(templates, fixed order); those were marked as suggestions in round three, and round four found the
+alias rule and the 0.8 starting speed each stated in several places (D15, D16). Source: `AGENTS.md`.
 
 ### D5. This repo is public (2026-10-17)
 **Decision.** A video about another code base goes in `local/videos/`; a decision video always
-does. Only this repo's own videos and the vendored sample live in `videos/`. **Why.** A private
+does. Only this repo's own videos and the sample app's live in `videos/`. **Why.** A private
 code base's details must not reach a public repo. **Superseded in part.** An earlier draft of
 `evidence-standard` routed any public, licensed code to `videos/`; the red team showed it clashed
 with `AGENTS.md` (round 2), so the rule is the narrower one above.
@@ -99,14 +100,15 @@ Sources: <https://medium.com/@Koukyosyumei/how-claude-code-and-codex-sandbox-unt
 **Decision.** `npm run usage` reads `~/.claude/projects/<repo>/<session>.jsonl` and its
 `subagents/agent-*.jsonl`, counting each API call once (a call is streamed over several lines).
 **Why.** Nothing to instrument, and it covers subagents. **Consequence.** It depends on Claude
-Code's transcript format; `CLAUDE_PROJECTS_DIR` points it elsewhere. A test covers the
-counting.
+Code's transcript format; `CLAUDE_PROJECTS_DIR` points it elsewhere. Output tokens are as recorded in the
+transcript and may undercount a call still streaming when it was logged. A test covers the counting on a
+synthetic file and on a content-free fixture cut from a real subagent transcript (14 lines, 8 calls); the
+script also runs from a path with a space or a symlink (it used to print nothing and exit 0 there).
 
-### D11. A vendored sample application (2026-10-17)
-**Decision.** `sample_application/` is Miguel Grinberg's microblog (MIT, upstream commit in
-its `SOURCE.md`), unmodified, with its `.git` removed. **Why.** A familiar domain, about 1,800
-lines, and real engineering to find: a token API, a read-time timeline, a background-job queue,
-optional search and translation. Used as the target for the red-team rounds.
+### D11. A sample application to test the skills on (2026-10-17; replaced by D21)
+**Decision.** `sample_application/` was Miguel Grinberg's microblog (MIT), vendored unmodified with its
+`.git` removed: familiar, about 1,800 lines, real engineering to find. It served as the target of the first
+four red-team rounds. **Superseded by D21**, which replaces it.
 
 ### D12. Merge, do not rebase, a long-lived branch (2026-10-17)
 **Decision.** `main`'s rename to ShipShow and its README and `AGENTS.md` rewrite were merged
@@ -127,7 +129,7 @@ pins users to it until someone bumps it, so it is omitted and the commit SHA ver
 with `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or equal a reserved name. Skills load
 namespaced as `/<plugin>:<skill>`. An enabled plugin's skill names and descriptions sit in context
 every turn (measured: 21 skills, 7,408 characters, about 1,850 tokens), so descriptions stay short
-and SKILL.md under 500 lines (longest 139). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
+and SKILL.md under 500 lines (longest 142). A bundled script is found with `${CLAUDE_SKILL_DIR}`, so
 the scripts live inside their skills, not in `bin/`. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill
 and agent bodies, hooks and MCP configs, but is not exported to Bash-tool commands. A `CLAUDE.md` at
 a plugin root is not loaded as context. A plugin runs with the user's privileges.
@@ -135,8 +137,8 @@ a plugin root is not loaded as context. A plugin runs with the user's privileges
 not to write. Bash can write, so it is told, not enforced; the sandbox script is the enforcement for
 anything it runs. `critic-loop` names `shipshow:critic` for Claude Code.
 **Known limits, not fixed.**
-- `source: "./"` copies every tracked file: 142 files, about 520 KB, of which `skills/`, `agents/` and
-  the manifests are about 103 KB. The rest (the sample app, videos, docs, tests, `package-lock.json`)
+- `source: "./"` copies every tracked file: 101 files, about 509 KB as of this commit (not checked by a
+  test), of which `skills/`, `agents/` and the manifests are about 127 KB. The rest (the sample app, videos, docs, tests, `package-lock.json`)
   is dead weight in the user's plugin cache. A plugin in a subdirectory would fix it, but the skills,
   `npm run skills` and this repo's conventions live at the root; that restructuring is deferred.
 - A `bin/` at a plugin root is the reserved executables directory: its files go on the Bash tool's
@@ -152,6 +154,9 @@ anything it runs. `critic-loop` names `shipshow:critic` for Claude Code.
   is gitignored only here, so they check and use `.git/info/exclude`). `explainer-video`, `critic-loop`,
   the nine critics (they judge `review/packet.md`) and `tailor` need this repo cloned and set up.
   `repo-context` is for this repo only.
+- The root has a `package.json` and a lockfile, so an install may try to install Node dependencies into
+  the plugin cache (the docs describe runtime dependencies; whether `devDependencies` such as
+  `hyperframes` are installed is untested).
 **Open.** The Kokoro and HyperFrames pipeline (a 340 MB model, about 190 MB of Chrome, a Python
 virtual environment) is not installed by the plugin (PRD, open question 3). Sources:
 <https://code.claude.com/docs/en/plugins>, <https://code.claude.com/docs/en/skills>,
@@ -198,21 +203,28 @@ judges whether the pick still holds, `critic-decision` sees the code at the pin,
 the full required critic set, defined in `explain-handoff`.
 
 ### D18. The offline tree hash exists (2026-10-17; supersedes the open item in D7)
-**Decision.** `sample_application/SOURCE.md` records the upstream commit's tree hash
-(`2c6e850f...`, from `gh api`) and a read-only recipe that reproduces it from this repo's own
-objects, so "unmodified" is checkable with no network. **Checked:** it prints the same hash from any
-directory, writes no object into `.git` (loose objects 365 before and after, with a tree that
-needed a new one), and reports uncommitted edits. Running the recipe verbatim found two bugs in it
-(a `git write-tree` that wrote into `.git`; a diff check that ran against the temporary index).
+**Decision.** A vendored directory's `SOURCE.md` records the upstream commit's tree hash, and
+`skills/evidence-standard/scripts/verify-vendored.sh <dir> <hash>` checks it offline: it rebuilds the
+directory's committed tree (without `SOURCE.md`) from this repo's own objects, compares it, and fails on
+edits and on untracked files. It writes no object into `.git` (tested by counting objects) and works from
+any directory in the repo. **History.** It was first a recipe in the microblog's `SOURCE.md`; running that
+verbatim found two bugs (a `git write-tree` that wrote into `.git`, and a diff check run against the
+temporary index), and round four showed it printed "no uncommitted edits" while an untracked file existed.
+It is now a script with tests.
 
 ### D19. Decidable checks are scripts, and every recipe in a skill is run as written (2026-10-17)
 **Decision.** Where a check is decidable it is code with tests, not prose: the excerpt check
-(`skills/critic-grounding/scripts/check-excerpt.mjs`) and the sandbox runner (D9). **Why.** Round three
-found a blocking bug in the first excerpt script (a path with a space or a symlink printed nothing
-and exited 0, a false pass), plus blank-line, empty-input, ambiguity and indentation defects, and
-found that recipes I had put in skills were wrong when run literally (`|| stop`, `git grep -E` with
-`\b`, a diff check against the wrong index). **Consequence.** A script fails closed: no segments, a
-missing `--ranges`, a bad path or bad input never exits 0. The test for each reported bug is in
+(`skills/critic-grounding/scripts/`: `excerpt.mjs` and the CLI `check-excerpt.mjs`), the sandbox runner
+(D9), `capture.mjs` (record and verify a capture; the sidecar is the SHA-256 of the whole file, so a changed
+exit code is caught too) and `verify-vendored.sh` (D18). **Why.** Round three found a blocking bug in the
+first excerpt script (a path with a space or a symlink printed nothing and exited 0, a false pass) plus
+blank-line, empty-input, ambiguity and indentation defects; round four found that segments were not checked
+against each other (a statement could be shown inside a block it is not in), that piping the script to node
+exited 0 silently, and that large inputs crashed. Several recipes I had put in skills were wrong when run
+literally (`|| stop`, `git grep -E` with `\b`, a diff check against the wrong index, a sandbox that let
+`pbcopy` and `defaults write` through, a recorder that read a command's own exit 3 as a refusal).
+**Consequence.** A script fails closed: no segments, a missing `--ranges`, a bad path or bad input never
+exits 0, and the CLI has no entry-point guard to fail silently. Each reported bug has a test in
 `test/pipeline.test.mjs`. A command written into a skill is run verbatim before it ships.
 
 ### D20. Judges are Sonnet only here (2026-10-17)
@@ -222,6 +234,45 @@ six Opus agents were rejected at once with HTTP 429 (a configured limit of one r
 (<https://arxiv.org/html/2410.21819v1>) and the red-team record is evidence of what a Sonnet attacker
 finds, not proof. `critic-loop` still recommends a stronger model for a public release "where the
 account allows it".
+
+### D21. The sample is a pacing service built by three agents in one day (2026-10-17; replaces D11)
+**Decision.** `sample_application/` is `pacer-demo`, a toy ad-spend pacer of about 150 lines of
+dependency-free Node, written for this demo and not Aperiam's code. Three agents each take one task: budget
+pacing, batched ledger writes, and EUR and JPY campaigns. Each is correct for its task and each gets its
+tests green; the morning after, the same traffic gives a US campaign 111% of budget, a EUR one 93% and a
+yen one 181%, and no note says why. **Why.** The goal is a problem a developer who manages many agents would
+recognise ("that could have been me"). Aperiam describes itself as an adtech and martech investor with an
+Ads arm doing "technology orchestration" and portfolio companies it helps grow; budget pacing is a
+plausible service for one of them, and an overspend nobody can explain is a familiar one. The earlier
+assumption that the company handles multimodal data is not supported by its site and is dropped.
+**Design.** The bug is in the interaction, not in any change: pacing compares USD cents with a budget in the
+campaign's own minor units (yen have none, so a 15,000-yen budget is read as $150); the throughput agent's
+batching makes pacing read stale spend, and it edited the older tests to `flushEvery: 1`; the currency agent's
+note says pacing needs no change; the one test that would catch it is marked `todo`. Real history: five
+commits as patches, replayable (`history/replay.sh`) and checked by a test; the three hand-off notes each hold
+one confident claim that turns out false; `ANSWER.md` is a labelled spoiler. **Why zero dependencies.** The
+microblog needed Flask and an install the skills' safe-running rules forbid, so no agent could run anything;
+this runs with `node --test`. **Checked** by a root test: the tests pass with one `todo`, the scenario prints
+the documented percentages, and the README table matches.
+
+### D22. The docs rule is structural and count-driven (2026-10-17; supersedes the wording in D4 and the
+first form of the docs test)
+**Decision.** `npm test` checks that both docs have content, that every skill is in the `AGENTS.md` table and
+the PRD, every critic is in `critics.svg`, the plugin names match, and that the numbers the docs quote (skills,
+characters of descriptions, longest `SKILL.md`, test count, the number of critics) are the tree's. In CI, a
+change to `bin/`, `kit/`, `template/`, `skills/`, `agents/`, `.claude-plugin/`, `.github/`, `package.json` or
+`README.md` needs a docs change with a real changed line (whitespace and the `Last reviewed` date do not count),
+or `docs: no change - <reason>` in the PR title or last commit. **Why.** The round-four auditor met the first
+form in letter while docs rotted: a trailing space satisfied it, an override on any commit passed, reversing a
+decision with its entry untouched passed. **Still not caught:** a docs change that is real but wrong; the rule
+makes a stale number loud, not a stale claim.
+
+### D23. The packet measures stillness and counts code in tokens (2026-10-17)
+**Decision.** `bin/measure.mjs` holds the two measurements the review packet makes about on-screen time.
+Reading time for code counts identifier tokens (`Author.followers.of_type` is three) at 1.5 a second instead
+of words at 3.3, because a five-line query counted as 9 words passed the "short" check while taking about ten
+seconds to read; a new *Stillness* table gives each scene's longest stretch with nothing new on screen.
+`critic-pacing` holds the limit, so the number lives in one place.
 
 ## Behaviour
 
@@ -236,16 +287,23 @@ What an agent or person observes. Each line is checkable against the cited file.
   word.
 - `render` writes `out/<name>.mp4`; `make` chains voice, build, lint and render.
 - `review` writes `review/packet.md` (words a minute while speaking, every pause, every cue's
-  time and reading time) and `review/frames/`. The packet measures; the critics judge.
+  time and reading time, with code counted in tokens, the longest still stretch of each scene) and
+  `review/frames/`. The packet measures; the critics judge.
 - `usage` prints, per agent, API calls, input, output, cache-write and cache-read tokens,
   peak and last context, wall time and model, and a total; `--json` for data.
 - `critic-grounding` runs `check-excerpt.mjs <source> <excerpt> --ranges ...`: exit 0 and `ok: true`
   only when every `…`-separated segment is consecutive source lines (blank lines ignored, relative
-  indentation and text exact) at the stated lines; exit 1 on a mismatch, an empty excerpt or an
+  indentation and text exact) at the stated lines and the segments sit at the same relative depth as in
+  the source; exit 1 on a mismatch, an empty excerpt or an
   ambiguous or wrong range; exit 2 on bad usage or input. It lists each gap with a preview and flags
   guards, branches, decorators and early exits.
-- `sandbox-run.sh <dir> <cmd>` runs with no network and writes confined to `<dir>`, or refuses (exit 3)
-  where it cannot sandbox, and exits 2 on bad usage.
+- `sandbox-run.sh <dir> <cmd>` runs with no network, writes confined to `<dir>`, the clipboard and
+  preference daemons denied, and credential folders unreadable; it refuses (exit 3) where it cannot sandbox
+  and exits 2 for `$HOME`, `/`, a directory holding `.git`, or bad usage.
+- `capture.mjs record <dir> <file> -- <cmd>` writes a header, a `---` line and the raw output plus a
+  `.sha256` of the whole file, and keeps the command's own exit code; `verify` exits 0 matching, 1 altered,
+  2 unsupported (no sidecar). `verify-vendored.sh <dir> <hash>` prints MATCH only for the upstream tree with
+  no edits and no untracked files.
 - Scripts never delete files. Generated files are gitignored. The kit renders entrances on a
   cue (`up`, `fade`, `pop`, `left`, `right`, `grow`); exit, swap, arrows, highlight and counters
   need a custom `<script>`.
@@ -267,9 +325,9 @@ What an agent or person observes. Each line is checkable against the cited file.
 
 ## How the design was tested
 
-The new skills were red-teamed twice by five fresh adversarial agents each, planting defects of
-their own choosing in a sample app and then attacking the skills. Round one: all five failed
-the skills, and neither planted behaviour change nor planted wrong claim was caught by the
-method. Round two: all five still failed, with fewer blocking findings and the traps caught more
-often. The findings, what changed, and what is still open are in
-[`skills/REVIEW.md`](../skills/REVIEW.md).
+The skills and scripts were red-teamed by fresh adversarial agents, six per round, who planted defects of
+their own choosing in a sample app and then attacked the skills, the scripts and these docs. Each round's
+findings, what changed, and what is still open are in [`skills/REVIEW.md`](../skills/REVIEW.md); the
+rounds so far found fewer blocking problems each time and caught more planted defects by the skills' own
+method, while each fix exposed the next layer. Every judge was Sonnet (D20). The numbers belong in that
+file, not here.

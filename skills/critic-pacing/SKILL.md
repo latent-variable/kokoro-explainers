@@ -12,7 +12,9 @@ description: >
 said (`critic-clarity`) or whether a cue matches its word (`critic-sync`).
 
 **Evidence:** `review/packet.md` measures most of this: words a minute per scene, every
-pause, every cue's time and how long its text stays up against its reading time.
+pause, every cue's time and how long its text stays up against its reading time (code is
+counted in identifier tokens, at a slower reading speed than prose), and the *Stillness*
+table, the longest stretch of each scene in which nothing new appears.
 
 ## Criteria
 

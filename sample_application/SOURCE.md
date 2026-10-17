@@ -1,30 +1,30 @@
-# Sample application: microblog
+# Source: pacer-demo
 
-Vendored, unmodified, as the target for the explainer skills (`code-context`,
-`change-context`, `explain-concept`).
+Written for the ShipShow demo, 2026-10-17: original code, MIT licensed like this repository. It is **not**
+Aperiam's code, nothing here claims Aperiam runs a pacer, and the figures are fixed demo values.
 
-- Upstream: https://github.com/miguelgrinberg/microblog
-- Commit: a975ef64864354867c88e0ed3a17ba7d17dca752 (2025-04-06)
-- License: MIT (see `LICENSE`)
-- What it is: a Twitter-like microblogging web app (Flask Mega-Tutorial, 2024 edition).
+## What it is based on
 
-## Verify it is unmodified, offline
+Aperiam's own description of itself, read on 2026-10-17 at <https://www.aperiam.vc/> and in text pasted by
+the person who asked for this demo:
 
-The upstream commit's tree hash is `2c6e850f2babd3e23d75154a6b0c64cd5d19aa20` (from
-`gh api repos/miguelgrinberg/microblog/git/commits/<commit>`, checked 2026-10-17). This directory,
-without this file, hashes to the same tree. The recipe is read-only (it writes no object into
-`.git`, checked by counting objects before and after) and works from any directory:
+- "Aperiam is the leading adtech and martech venture capital firm."
+- AperiamVentures: "Invests in and scales ad tech and mar tech startups."
+- Aperiam Advisory: strategic consulting for brands, agencies and tech companies.
+- Aperiam Ads: "Emerging tech orchestration for supply chain, commerce, and identity."
+- Aperiam Marketing: corporate marketing for portfolio companies and partners.
+- Services "for brands" include "adtech and martech stack design, digital transformation, and digital
+  marketing optimization".
 
-```
-cd "$(git rev-parse --show-toplevel)" || exit 1
-GITDIR=$(git rev-parse --absolute-git-dir)
-export GIT_INDEX_FILE=$(mktemp -u) GIT_OBJECT_DIRECTORY=$(mktemp -d) GIT_ALTERNATE_OBJECT_DIRECTORIES="$GITDIR/objects"
-git read-tree HEAD:sample_application && git update-index --force-remove SOURCE.md
-git write-tree          # must print 2c6e850f2babd3e23d75154a6b0c64cd5d19aa20
-unset GIT_INDEX_FILE GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES
-git diff --quiet HEAD -- sample_application ':!sample_application/SOURCE.md' && echo "no uncommitted edits"
-```
+The site says nothing about AI, agents or multimodal data, and `aperiam.vc/aperiam-ads` returned 404 on the
+same day. `amperium.ai`, named in this repository's README, does not resolve.
 
-It checks the committed tree only; the last line covers edits in the working tree. Cite lines
-against this repo's HEAD (what `git show HEAD:sample_application/<path>` resolves); the upstream
-commit above is what the code is.
+**Name and domain.** The person who asked for this demo says the firm is now at `amperiu.vc`. On 2026-10-17
+neither `amperiu.vc` nor `amperium.vc` resolved from the machine that fetched the pages, so the quotes
+above are from `aperiam.vc` and nothing here has been checked against the new address. The demo's code
+does not depend on the name.
+
+## Verify the history
+
+`sh history/replay.sh` builds a temporary repo from `history/0001` to `0005` and prints its path.
+`test/history.test.mjs` checks that it reproduces exactly the files in this folder.

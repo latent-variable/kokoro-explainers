@@ -24,15 +24,20 @@ Follow `evidence-standard` (tags, pins, safe running, where it goes). For a chan
 2. **Intent comes from people; behaviour comes from code.** The PR description, linked issues,
    commit messages and review comments say *why*; the diff, tests and runs say *what*. If none of
    them states a reason, write `Why: not stated (checked, empty: <sources>; unreachable:
-   <sources>)` over those five. A message that names only the feature ("mute") states no reason.
+   <sources>)` over those four. A message that names only the feature ("mute") states no reason.
    Do not infer a motive. A commit message that misdescribes or under-describes its diff is a
    finding: `Finding: commit <sha> says "<msg>"; the diff changes <behaviour>`.
-3. **A commit's label is a claim, not evidence.** Read every hunk of every commit in the range,
-   merge commits included. Set aside only hunks that are provably behaviour-neutral, and list each
-   with its reason. Changed defaults, limits, ordering, comparison and boolean flips, exception
-   types and status codes are never neutral; list them on their own. Then reconcile: every hunk of
-   the range diff is accounted for by some commit's own diff, and one that no commit accounts for
-   (a change made inside a merge) is a Finding.
+3. **A commit's label is a claim, not evidence.** Read every hunk of every commit in the range. Set aside
+   only hunks that are provably behaviour-neutral, and list each with its reason. Changed defaults,
+   limits, ordering, comparison and boolean flips, exception types and status codes are never neutral;
+   list them on their own. **A merge commit's own change is the hunks that match neither parent**, which
+   is what a conflict resolution decides: for every merge in the range (`git rev-list --merges
+   base..head`) run `git show --cc <merge>`; a line marked in both columns (`++`, `--`) is the merge's own,
+   a line marked in one column came from one side. List each merge-made value as a Finding with its
+   resolved value, unless a message states it. (`git log -p -m` shows the merge's whole diff against one
+   parent, which makes every changed value look accounted for.) Then reconcile: each hunk of the range
+   diff equals the value the last commit that touched that line added, or a merge's own resolution; a
+   value that no commit's added lines and no merge resolution produced is a Finding.
 4. **Every behavioural claim is a before and an after**, each with evidence; a new thing is absent
    at base, a removed one absent at head, each says how that was searched, and a thing added and
    then undone inside the range is recorded as both.
@@ -78,29 +83,37 @@ Follow `evidence-standard` (tags, pins, safe running, where it goes). For a chan
 ## Reading the change
 
 For a PR: `gh pr view <n> --json title,body,commits,files,reviews` and `gh pr diff <n>` (say "gh
-unavailable" if it is). For a range: `git rev-parse` for both ends and `git merge-base`, then **both**
-`git log -p -m <base>..<head>` (`-m` shows a merge commit's own changes against each parent, which a
-plain `git log -p` leaves out) and `git diff <base>...<head>`. The range diff squashes commits and
-hides what a label disguises, and what was added and then reverted; the per-commit read hides what no
-single commit shows. Reconcile the two (rule 3). For a release: the release page, the changelog at the
-new tag and the pull requests it lists (`explainer-video`). Read the tests with the code.
+unavailable" if it is). For a range: `git rev-parse` for both ends, `git merge-base`, and `git rev-list
+--reverse <base>..<head>` for the `Commits:` list (full SHAs; side-branch commits of a merge are in it),
+then **all three** of `git log -p <base>..<head>` for each commit, `git show --cc <merge>` for each merge
+(rule 3), and `git diff <base>...<head>`. The range diff squashes commits and hides what a label disguises
+and what was added and then reverted; the per-commit read hides what no single commit shows, and a
+merge's own resolution hides in a diff against one parent. Reconcile them (rule 3). Write `${sha}:path`,
+not `$sha:path`, in zsh. For a release: the release page, the changelog at the new tag and the pull
+requests it lists (`explainer-video`). Read the tests with the code.
 
 ## Form
 
 `context.md`, or the video's `sources.md` when it feeds a video (where it goes: `evidence-standard`).
 The change in two sentences, the pinned ends (`Base / Head / Merge-base / Commits`), then tagged
-lines in `evidence-standard`'s formats, then Findings and Open questions. Added and removed things
-are absence claims, so they carry the search; add the compatibility mark and `tested:` to any
-behavioural line:
+lines in `evidence-standard`'s formats, then Findings and Open questions. Added and removed things are absence claims, so they carry the search and
+are `[ran]` where a command produced it; add the compatibility mark and `tested:` to any behavioural
+line. The marks: `[breaking]` callers must change; `[additive]` a new capability, nothing existing
+changes; `[behaviour]` the same interface gives a different result, default or limit (say who is
+affected); `[internal]` nothing a caller can observe. When unsure, do not choose `[internal]`.
 
 ```
-[read] added: <thing>. absent at <base>: git grep -n <term> <base> -- <path> -> none; present <path>:<line> (head)   [additive]   tested: <path>:<line> | untested
-[read] removed: <thing>. present <path>:<line> (base); absent at <head>: git grep -n <term> <head> -> none   [breaking]
-[read] <before>, now <after>. <path>:<line> (base), <path>:<line> (head)   [breaking|additive|internal]   tested: <path>:<line> | untested
-[read] added in <sha1>, removed in <sha2>: <thing>; net at head: <what remains>
-[read] test "<name>" <path>:<line>: <old assertion> (base) -> <new assertion> (head); widens | narrows | moves
+[ran]  added: <thing>; absent at <base>: $ git grep -n <term> <base> -- <path> -> none; present <path>:<line> (head)   [additive]   tested: <path>:<line> | untested
+[ran]  removed: <thing>; present <path>:<line> (base); absent at <head>: $ git grep -n <term> <head> -- <path> -> none   [breaking]   tested: <path>:<line> | untested
+[read] <before>, now <after>. <path>:<line> (base), <path>:<line> (head)   [breaking|additive|behaviour|internal]   tested: <path>:<line> | untested
+[read] added in <sha1>, removed in <sha2>: <thing>; net at head: <what remains>   tested: ... | untested
+[read] merge <sha>: resolved <thing> to <value>; parents had <value1> and <value2>   [behaviour]
+[read] test "<name>" <path>:<line>: <old assertion> (base) -> <new assertion> (head) | removed; widens | narrows | moves
 [ran]  <claim>. $ <command> (<copy>, copy of <pin>, <date>, <tool version>, exit <n>) -> <output>
 ```
+
+One line per assertion for a changed test, so a weakened and a deleted assertion in one test are both
+recorded.
 
 ## Handing it on
 

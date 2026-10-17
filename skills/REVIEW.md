@@ -28,21 +28,23 @@ paths, the sentence splitter, the `or stop` recipe, the unportable `\b` in `git 
 
 Findings are blocking / major / minor.
 
-| Skill group | Round 1 | Round 2 | Round 3 |
-|---|---|---|---|
-| `code-context`, `evidence-standard` | 0 / 6 / 7 | 0 / 7 / 5 | 0 / 6 / 4 (16 claims checked, 5 wrong) |
-| `change-context` | 1 / 4 / 3 | 0 / 3 / 4 | 0 / 1 / 6 (10 traps planted, 10 caught, 9 by the skill's own method) |
-| `explain-concept`, `narration-writing`, `glossary` | 0 / 7 / 4 | 0 / 2 / 5 | 0 / 1 / 8 |
-| `decision-brief`, `explain-handoff`, `critic-decision` | 0 / 6 / 4 | 0 / 6 / 6 | 0 / 7 / 6 (5 planted, 3 surfaced by the skill text) |
-| `critic-grounding` and its script | 2 / 6 / 1 | 0 / 7 / 3 | **1** / 10 / 4 (5 planted, 3 caught; 8 script bugs) |
-| docs and plugin packaging (new in round 3) | | | 0 / 5 / 9 (62 statements checked, 13 wrong) |
+| Skill group | Round 1 | Round 2 | Round 3 | Round 4 |
+|---|---|---|---|---|
+| `code-context`, `evidence-standard` | 0 / 6 / 7 | 0 / 7 / 5 | 0 / 6 / 4 | 0 / 2 / 9 (34 commands run, 4 wrong) |
+| `change-context` | 1 / 4 / 3 | 0 / 3 / 4 | 0 / 1 / 6 | 0 / 1 / 6 (11 traps, 11 caught, 10 by the method) |
+| `explain-concept`, `narration-writing`, `glossary` | 0 / 7 / 4 | 0 / 2 / 5 | 0 / 1 / 8 | 0 / 3 / 6 |
+| `decision-brief`, `explain-handoff`, `critic-decision` | 0 / 6 / 4 | 0 / 6 / 6 | 0 / 7 / 6 | 0 / 4 / 5 (7 planted, 6 surfaced by the text) |
+| `critic-grounding` and its scripts | 2 / 6 / 1 | 0 / 7 / 3 | 1 / 10 / 4 | 0 / 2 / 6 (8 planted, 7 caught by the text; 2 script false passes, 2 sandbox escapes) |
+| docs and plugin packaging | | | 0 / 5 / 9 | 0 / 3 / 11 (94 statements checked, 13 wrong) |
 
-Planted defects, by what caught them: round 1 caught none of the behaviour changes or wrong claims by
-the skills' method; round 2 caught the `change-context` traps and 3 of 4 grounding defects; round 3
-caught all 10 `change-context` traps (9 by the method) and 3 of 5 decision defects. The one blocking
-finding in round 3 was in a script, not a skill. The major counts have not fallen for the decision and
-grounding groups: each fix exposes the next layer, and several round-3 findings were bugs in recipes I
-added in round 2. That is the main lesson (DESIGN D19).
+Planted defects, by what caught them: round 1 caught none of the behaviour changes or wrong claims by the
+skills' method; round 2 the `change-context` traps and 3 of 4 grounding defects; round 3 all 10
+`change-context` traps (9 by the method) and 3 of 5 decision defects; round 4 11 of 11 and 10 by the
+method, 6 of 7 decision defects, and 7 of 8 grounding defects by the text. Blocking findings: 3, 0, 1, 0.
+The major counts for the decision and grounding groups fell in round 4 for the first time; the explain
+group did not (a builder following every skill literally still produces a weak video, and the rules and
+the critics disagreed about aliases). Each fix still exposes the next layer, and many round-3 and round-4
+findings were bugs in recipes and scripts added the round before: the main lesson (DESIGN D19).
 
 ## What round 1 changed
 
@@ -101,18 +103,40 @@ followed.
 | The docs rule was satisfiable in letter (emptied docs, deleted section, an incidental mention all passed) | A stronger test (content, heading, skill in table and PRD, critic in `critics.svg`, plugin names) and a CI check on pull requests; both paths exercised |
 | Plugin: the critic agent could not load its skill; the `version` pin; `bin/` at the plugin root; a 520 KB copy; overclaimed read-only | Agent gets the Skill tool and `${CLAUDE_PLUGIN_ROOT}` paths; no `version`; the rest documented as known limits in DESIGN D13 with what works outside a clone |
 
-## Still open after round 3
+## What round 4 found, and what changed
 
-- Linux sandbox commands (`bwrap --unshare-net`) are not tested here; the script refuses off macOS.
-- `critic-grounding`'s rendered-frames check has no mechanical method: it is "viewed".
-- The plugin ships every tracked file (about 520 KB) and a `bin/` at its root; restructuring into a
-  subdirectory is deferred (DESIGN D13). Cross-skill references under the `/shipshow:` namespace are
-  untested.
-- The decision skills still depend on prose a builder can satisfy without evidence; only the claim-ID
+| Finding | Change |
+|---|---|
+| The excerpt check compared each segment alone, so a statement could be shown inside a block it is not in; piping the script to node exited 0 silently; a 200,000-line input crashed; a source holding a marker-shaped line false-failed | Segments are compared against each other for depth; the CLI is a separate file with no entry guard (`excerpt.mjs` is the library); size is capped and the loop is linear-ish with early exit; a `--marker` option and a warning; tests for each |
+| The sandbox let `pbcopy` and `defaults write` through and left token files readable; it accepted `$HOME` as the scratch directory | `mach-lookup` denials, more credential paths, refuses `$HOME`, `/` and a `.git`; tests, with the clipboard test restoring the person's clipboard if it ever leaks |
+| The capture format and its hash were undefined; a mismatch had no severity | `capture.mjs record` and `verify` (sidecar is the SHA-256 of the whole file); a mismatch is blocking, a missing sidecar is `unsupported`; tests. A first design hashed only the output, so a changed exit code passed: the test caught it |
+| The vendored-tree recipe printed "no uncommitted edits" with an untracked file present | `verify-vendored.sh` with tests, including the untracked case; the recipe lives in a script |
+| The evil-merge case: `git log -p -m` shows the merge's whole diff against one parent, so every changed value looked accounted for | `git show --cc <merge>` isolates the values that match neither parent; the reconcile step is defined; reproduced on a real evil merge first |
+| A limit search gave a false "absent" (the cap is written `min(..., 100)`); route enumeration missed `@bp.get`; the archive comparison could not match | Multi-vocabulary search recipe and a wider enumeration, run on the sample; exact `ls-tree` against `find` comparison; the clone form preferred |
+| Decision skills: the must-speak list contradicted the video length; "overruled claims the pick depended on" could not be filled honestly; the critic could not reach the code at the pin; the brief wrote into the target repo | `Pick rests on` in the brief makes the hand-back's overruled line mechanical; what the pick rests on is spoken, the rest may be a table row; the critic brief carries `code at pin: <path>`; an explicit output root, never inside the code base read |
+| Builders were never told the excerpt rules the critic enforces; the alias exemption let a script of nothing but aliases pass three critics; the central scene could show unreadable code | `explainer-video` and `explain-concept` state the marker, ranges, gutter and two-pin rules; aliases only for sound-alike or ambiguous names, each tied to its literal by a spoken sentence, meaning still checked; the central scene explains each construct and a cost or limit is stated; `critic-clarity` checks both |
+| The packet counted `Author.followers.of_type(Follower)` as one word and had no static-gap column | `bin/measure.mjs`: code counted in tokens at a slower speed, and a *Stillness* table; tested and run end to end |
+| `bin/usage.mjs` printed nothing and exited 0 from a path with a space or a symlink | Real-path comparison; a test that runs it from both; a content-free fixture cut from a real subagent transcript |
+| The docs rule was met in letter by a trailing space or an override on any commit; counts and the critic wording were stale; the "works in any repo" claim was overstated | Structural, count-driven rule (DESIGN D22); only three skills claimed standalone; critic described as "told, not enforced"; figures refreshed |
+| The sample (microblog) needed an install the safe-running rules forbid, and did not speak to the company | Replaced by a dependency-free ad-spend pacer built by three agents in one day (DESIGN D21) |
+
+## Still open after round 4
+
+- Linux sandbox commands (`bwrap --unshare-net`) are not tested here; the sandbox script refuses off macOS.
+- `critic-grounding`'s rendered-frames check has no mechanical method: it is "viewed", and the excerpt
+  check does not see absolute indentation, tabs against spaces, a hidden marker, or an unmarked cut at the
+  start or end.
+- The sandbox is not a defence against hostile code: other reads are not confined, and any daemon not
+  listed in its profile is reachable.
+- The plugin ships every tracked file and has a `bin/` and a `package.json` at its root; whether an install
+  runs `npm install` is untested (DESIGN D13).
+- Decision skills still depend on prose a builder can satisfy without evidence; only the claim-ID
   reconciliation is a candidate for a script.
-- The kit cannot highlight a line, draw an arrow, or exit and swap an element.
-- No Opus judge (the workspace is Sonnet-only), and no round-3 re-run after these fixes yet.
+- The kit cannot highlight a line, draw an arrow, or exit and swap an element; there is no per-scene
+  speed, so an outlier scene is fixed by merging or splitting sentences.
+- The red-team rounds ran against microblog; the new sample (`pacer-demo`) has had only the round-5 check below.
+- No Opus judge (the workspace is Sonnet-only).
 
-## Round 4
+## Round 5
 
-Pending: fresh agents on the fixes above.
+Pending: fresh agents on the round-four fixes and on the new sample.

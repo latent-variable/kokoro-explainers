@@ -40,14 +40,14 @@ to a fresh explainer agent, so the video is made by one that has not absorbed it
    decision in one sentence, numbered claims, each option with its gains and costs, what it would
    pick and why, one assumption it has not verified, and the pin to read the code at. It states what
    it knows; it does not script the video.
-2. **It starts a fresh agent** with this skill and the brief. Facts come from the code at that
-   worktree, never from the brief alone: the brief can be wrong, the code is the ground truth.
+2. **It starts a fresh agent** with this skill and the brief. Facts come from the code at the pin in a
+   throwaway copy (`evidence-standard`), never from the brief alone: the brief can be wrong, the code is the ground truth.
 3. **The explainer agent builds the video**, quick size: one to two minutes and three to five scenes
    for a simple call, ending on the options and a recommendation. `critic-decision` joins the
-   critics. When the must-speak list (every option's gains and costs, each contradiction and added
-   cost, the unverified assumptions, the default if nobody decides, the pick and its reason) will not
-   fit, run to three minutes, or show the options in an on-screen table with a spoken summary and put
-   the full list in the hand-back; `critic-pacing`'s scene-length limit still holds.
+   critics. The video speaks the decision, each option's gains and costs, what the pick rests on, every
+   contradiction and added cost, and the default if nobody decides; the rest of the brief-versus-code list
+   may be rows of an on-screen table, with the full list in the hand-back. When even that will not fit,
+   run to three minutes; `critic-pacing`'s scene-length limit still holds.
 4. **It hands back** with `explain-handoff`: status, the MP4's path, the pick, and what the code
    overruled or could not settle. The person watches, decides, and the working agent carries on.
 
@@ -61,10 +61,13 @@ checks against, so a claim that is not in it does not go in the video.
   requests, the docs. For a GitHub release:
   `gh release view <tag> -R <owner>/<repo>`, `gh api repos/<owner>/<repo>/compare/<old>...<new>`,
   the project's `CHANGELOG.md` at the new tag.
-- **The claims the video will make**, one line each, with the link that supports it.
-- **Where each shown asset came from**: for every code excerpt, command, output or capture
-  on screen, the commit and the command or file it was taken from (`critic-grounding` checks
-  it). Copy it from the source; never retype it.
+- **The claims the video will make**, one line each, tagged and pinned (`evidence-standard`: two pins
+  for vendored code), with the link that supports it.
+- **Where each shown asset came from**: for every code excerpt, command, output or capture on screen,
+  the pin and the file with its line range, or the command and its capture file (`critic-grounding`
+  checks it). Copy it from the source; never retype it. A shown excerpt is whole contiguous lines, a
+  line holding only `…` marks each gap, `sources.md` lists the lines each gap omits, and the file name
+  and the line numbers are on screen. Make a capture with `evidence-standard`'s `capture.mjs`.
 - **Brief vs code** (decision video): each claim of the brief checked against the code, result
   and `path:line` (`decision-brief`).
 - **What you left out and why**, so a critic can tell an omission from an oversight.

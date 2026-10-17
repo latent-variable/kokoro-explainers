@@ -20,9 +20,11 @@ can be hard to hear. Write for the ear, then check it against the clock.
   roughly 190 words a minute at speed 1.0 and scenes vary by about plus or minus 10% at one speed, so
   start `speed` at **0.8** (the template's and `AGENTS.md`'s starting point) and adjust it from the
   packet's per-scene words a minute, not from a formula. The packet's rate is speech-only, so cutting
-  words does not change it: adjust `speed` first, and reword only a scene that is the outlier at the
-  speed that suits the rest (a clause-heavy sentence tends to read faster per word than a short one;
-  that is untested here).
+  words does not change it: adjust `speed` first. `video.json` has one `speed` for the whole video, so
+  a scene that is still the outlier is fixed by merging or splitting its sentences (rate varies with
+  sentence length and what is in it: digits and identifiers read slowly), not by padding. The 0.8
+  start was derived from this repo's own packets (176 to 209 words a minute at 1.0), not measured on
+  new audio.
 - **Length is set by words.** A scene `critic-pacing` calls too long holds two ideas: cut words
   or split it.
 - **What is said matches what is shown**, when it is shown. Name a thing as it appears, and
@@ -40,7 +42,8 @@ can be hard to hear. Write for the ear, then check it against the clock.
   character borders it, so `{"models.py": "the models file"}` also turns `app/models.py` into
   `app/the models file`. It changes the voiced text but not the caption, and the cue arithmetic and
   the packet's word count use the written text. Use it for one-meaning words, never for a name that
-  appears inside a path.
+  appears inside a path or that begins a longer phrase in the same script (`index` also rewrites
+  `the index route` and `index.html`).
 - **A cue is placed on a word.** `data-cue` matches the start of a spoken word across the whole
   scene, not one sentence, so `follow` also matches `follower` and `followed`. Use `word#n` or a
   distinctive word; the build warns when a bare word occurs twice in its scene. Cue a literal on a
@@ -56,8 +59,9 @@ can be hard to hear. Write for the ear, then check it against the clock.
 - Numbers as they are said: "version two point four", "about two hundred milliseconds",
   "three of the five". Round to what a listener can hold; the exact figure goes on screen.
 - Avoid homophones and look-alikes that can mislead by ear, and long strings of nouns. Avoid
-  abbreviations with a full stop ("e.g.", "i.e."): a sentence ends at a full stop and a space, so
-  they split the sentence.
+  abbreviations with a full stop ("e.g.", "i.e.", "a.k.a."): a sentence ends at a full stop and a
+  space, so they split the sentence. A closing quote after a full stop blocks the split (one long take
+  with estimated cues), and an ellipsis splits mid-thought.
 - A pause is a comma or a sentence end. `lead`, `gap` and `tail` in `video.json` set the
   silences; do not pad text to make them.
 - Do not announce structure ("in this section we will see"). Open on the point, and say why it

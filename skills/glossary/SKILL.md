@@ -41,6 +41,10 @@ script is cheaper than finding a conflict in round three; revise it when the pla
   which, because a verbatim excerpt cannot be renamed. A spoken alias is followed, in a later scene,
   by the literal being said or tied to it on screen. Every file or function named aloud has an alias
   entry.
+- **Aliases are for sound-alike or ambiguous names only**, not for every identifier. Each alias is tied to
+  its literal by one spoken sentence ("the reader, which the code calls `follower_id`"), so the viewer
+  who opens the editor finds the name. An alias is a second spoken name for a concept the screen shows,
+  so the Terms entry lists it and a critic still checks that it means what the code means.
 - **A word the source lacks is a decision.** If the brief's own word ("timeline") is absent
   from the code, the glossary says so, the video's title and `video.json` use the real mechanism, and
   the one corrective mention of the missing word is exempt from the ban list.

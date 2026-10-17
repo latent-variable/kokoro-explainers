@@ -33,8 +33,11 @@ file: a false line in `sources.md` that is spoken but not shown is yours, and no
 it. A defect in shown code, a command or output is reported by `critic-grounding`; cite it ("see
 grounding") and do not duplicate it.
 
-A **spoken alias** recorded in `sources.md` *Terms*, with its literal on screen at the same cue
-(`glossary`), is not a naming, caption or sync mismatch.
+A **spoken alias** recorded in `sources.md` *Terms* for a sound-alike or ambiguous name, tied to its
+literal by a spoken sentence, with the literal on screen at the same cue (`glossary`), is not a naming,
+caption or sync mismatch. Its meaning is still checked: an alias that does not mean what the code means
+is a finding. The one corrective mention of a word the code lacks (`glossary`, *A word the source
+lacks*) is not a naming conflict either.
 
 Never propose adding a fact the sources lack: report the gap and say not to fabricate.
 
