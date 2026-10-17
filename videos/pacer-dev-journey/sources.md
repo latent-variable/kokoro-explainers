@@ -16,7 +16,7 @@ conclusions below against the code and the runs; the video does not quote it.
 ## Claims
 Tags: `[read]` read at the pin, `[ran]` run in a copy of the pin.
 
-- **C1** `[ran]` The morning after: US 111%, EU 93%, Tokyo 181% of a budget worth $100 each. `review/scenario-before.txt:8-10`.
+- **C1** `[ran]` The morning after (who noticed is not in the sources, and the video does not say): US 111%, EU 93%, Tokyo 181% of a budget worth $100 each. `review/scenario-before.txt:8-10`.
 - **C2** `[read]` The three hand-off notes say: pacing "is exact: a campaign never serves past its budget" (`sample_application/agents/pacing.md:11`); "No change to what pacing or the dashboard sees" (`agents/throughput.md:11`); "pacing needs no change: it already compares spend with the daily budget" (`agents/currency.md:12`). Every test passed when they were written: "All 3 tests pass", "All 5 tests pass", "All 8 tests pass".
 - **C3** `[read]` Pacing compares `ledger.spent(campaign.id)` with `campaign.dailyBudget`. `src/pacing.mjs:3`.
 - **C4** `[read]` `ledger.spent` is in USD cents (`src/ledger.mjs:1`); `dailyBudget` is in the campaign's own minor units, whole yen for JPY (`src/campaign.mjs:1-2`).
@@ -30,8 +30,8 @@ Tags: `[read]` read at the pin, `[ran]` run in a copy of the pin.
 - **C16** `[read]` The contract test and the overspend scenario were added by the reviewer, not by one of the three agents: the patch is from `reviewer` (`sample_application/history/0005-Add-the-overspend-scenario-and-a-budget-contract-tes.patch:2`). None of the three agents' own tests runs the campaigns together (C10 and `agents/*.md`).
 - **C11** `[ran]` The contract test runs the three campaigns together; USD passes, EUR and JPY fail and are marked `todo`, so the suite stays green. `review/tests-before.txt:9,15,37`. EUR spent 9,331 of 10,000 cents (under); JPY 18,081 (over): `review/tests-before.txt:21,43`.
 - **C12** `[ran]` With the fix (below) the same scenario ends at 100% for all three: US 10,003 USD, EU 9,203 EUR, Tokyo 15,005 JPY. `review/scenario-after.txt:8-10`. The few cents over: `[inferred]` they are one impression, since the check happens before the cost is added (`src/engine.mjs:7-8`).
-- **C13** `[ran]` The fix is two changes: pacing compares against `minorToUsdCents(campaign.dailyBudget, campaign.currency)`, and `spent` adds the records still in the buffer. `review/fix-diff.txt:22-25,38-39`. With the `todo` marks removed the contract test passes, 3 of 3: `review/tests-after.txt:9,15,21,29,33` (the fixed scratch copy, `todo` option deleted from `test/budget-contract.test.mjs`).
-- **C14** `[inferred]` Each note was true for its own task; the failures live in the interaction, and nobody owned the whole. Basis: C2 to C11.
+- **C13** `[ran]` The fix is two changes: pacing compares against `minorToUsdCents(campaign.dailyBudget, campaign.currency)`, and `spent` adds the records still in the buffer. `review/fix-diff.txt:22-25,38-39`. With the `todo` marks removed the contract test passes, 3 of 3: `review/tests-after.txt:9,15,21,29,33` (the fixed scratch copy, with the `{ todo: c.currency === "USD" ? false : "fails today" }` option deleted from line 27 of `test/budget-contract.test.mjs`; without that edit the same command gives 1 pass and 2 todo).
+- **C14** `[inferred]` Each agent tested its own task and it passed (C2); the failures live in the interaction between the changes, and nobody owned the whole. Basis: C2 to C11. The video does not say the notes were true: two were not (C7, C4).
 
 ## Shown assets
 | Where | Shows | From |

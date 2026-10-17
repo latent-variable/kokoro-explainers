@@ -1,0 +1,10 @@
+# command: ["node","scenario/overspend.mjs"]
+# dir: "/tmp/pacer-scratch/base/sample_application"
+# pin: "dbb7e0070f66dabd670b98ff9bb4d415ed2a3c69"
+# date: 2026-10-17T21:23:30.419Z
+# exit: 0
+---
+campaign          budget        spent        of budget   served
+US retargeting    10,000 USD    11,088 USD    111%        1584   (budget is $100.00)
+EU prospecting    9,200 EUR     8,585 EUR     93%         1333   (budget is $100.00)
+Tokyo launch      15,000 JPY    27,122 JPY    181%        2583   (budget is $100.00)

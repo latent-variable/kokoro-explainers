@@ -1,0 +1,251 @@
+{
+  "window": {
+    "from": "2026-10-17T21:23:38Z",
+    "to": "2026-10-17T22:17:46.481Z"
+  },
+  "note": "delta of npm run usage between the two snapshots; every agent that existed before is subtracted, new agents (critics, the research agent) are counted whole. Output tokens may undercount a call still streaming when logged.",
+  "total": {
+    "calls": 160,
+    "input": 338,
+    "output": 120631,
+    "cacheWrite": 1619420,
+    "cacheRead": 25661986
+  },
+  "builder": {
+    "name": "main",
+    "model": "claude-sonnet-5-5",
+    "calls": 71,
+    "input": 160,
+    "output": 105432,
+    "cacheWrite": 563754,
+    "cacheRead": 21640050,
+    "peakContext": 965646,
+    "new": false
+  },
+  "agents": [
+    {
+      "name": "main",
+      "model": "claude-sonnet-5-5",
+      "calls": 71,
+      "input": 160,
+      "output": 105432,
+      "cacheWrite": 563754,
+      "cacheRead": 21640050,
+      "peakContext": 965646,
+      "new": false,
+      "role": "builder (this session: the video, docs/PLAN.md, the critic loop, PR work)"
+    },
+    {
+      "name": "a16aba74",
+      "model": "claude-sonnet-5-5",
+      "calls": 4,
+      "input": 8,
+      "output": 744,
+      "cacheWrite": 64403,
+      "cacheRead": 134721,
+      "peakContext": 64405,
+      "new": true,
+      "role": "critic-consistency r1"
+    },
+    {
+      "name": "a1a77a30",
+      "model": "claude-haiku-5-5",
+      "calls": 9,
+      "input": 18,
+      "output": 53,
+      "cacheWrite": 140473,
+      "cacheRead": 807100,
+      "peakContext": 140475,
+      "new": true,
+      "role": "research for docs/PLAN.md (not part of the video)"
+    },
+    {
+      "name": "a280cfb1",
+      "model": "claude-sonnet-5-5",
+      "calls": 2,
+      "input": 4,
+      "output": 362,
+      "cacheWrite": 45813,
+      "cacheRead": 28999,
+      "peakContext": 45815,
+      "new": true,
+      "role": "critic-pacing r2"
+    },
+    {
+      "name": "a3c2935b",
+      "model": "claude-sonnet-5-5",
+      "calls": 3,
+      "input": 6,
+      "output": 628,
+      "cacheWrite": 51280,
+      "cacheRead": 74725,
+      "peakContext": 51282,
+      "new": true,
+      "role": "critic-clarity r2"
+    },
+    {
+      "name": "a4129038",
+      "model": "claude-sonnet-5-5",
+      "calls": 4,
+      "input": 8,
+      "output": 782,
+      "cacheWrite": 52335,
+      "cacheRead": 122288,
+      "peakContext": 52337,
+      "new": true,
+      "role": "critic-engagement r1"
+    },
+    {
+      "name": "a523485f",
+      "model": "claude-sonnet-5-5",
+      "calls": 2,
+      "input": 4,
+      "output": 19,
+      "cacheWrite": 43933,
+      "cacheRead": 28978,
+      "peakContext": 43935,
+      "new": true,
+      "role": "critic-pacing r1"
+    },
+    {
+      "name": "a551fd74",
+      "model": "claude-sonnet-5-5",
+      "calls": 8,
+      "input": 16,
+      "output": 2144,
+      "cacheWrite": 71461,
+      "cacheRead": 360155,
+      "peakContext": 71463,
+      "new": true,
+      "role": "critic-visuals r2"
+    },
+    {
+      "name": "a8f0faa3",
+      "model": "claude-sonnet-5-5",
+      "calls": 5,
+      "input": 10,
+      "output": 436,
+      "cacheWrite": 64132,
+      "cacheRead": 194339,
+      "peakContext": 64134,
+      "new": true,
+      "role": "critic-accuracy r2"
+    },
+    {
+      "name": "a9a785af",
+      "model": "claude-sonnet-5-5",
+      "calls": 3,
+      "input": 6,
+      "output": 373,
+      "cacheWrite": 52929,
+      "cacheRead": 73633,
+      "peakContext": 52931,
+      "new": true,
+      "role": "critic-clarity r1"
+    },
+    {
+      "name": "a9ef380c",
+      "model": "claude-sonnet-5-5",
+      "calls": 4,
+      "input": 8,
+      "output": 3305,
+      "cacheWrite": 64383,
+      "cacheRead": 131349,
+      "peakContext": 64385,
+      "new": true,
+      "role": "critic-sync r1"
+    },
+    {
+      "name": "aade54c6",
+      "model": "claude-sonnet-5-5",
+      "calls": 14,
+      "input": 28,
+      "output": 737,
+      "cacheWrite": 68687,
+      "cacheRead": 714157,
+      "peakContext": 68689,
+      "new": true,
+      "role": "critic-grounding r1"
+    },
+    {
+      "name": "ac12384f",
+      "model": "claude-sonnet-5-5",
+      "calls": 4,
+      "input": 8,
+      "output": 1496,
+      "cacheWrite": 67177,
+      "cacheRead": 132629,
+      "peakContext": 67179,
+      "new": true,
+      "role": "critic-sync r2"
+    },
+    {
+      "name": "ac5e5235",
+      "model": "claude-sonnet-5-5",
+      "calls": 6,
+      "input": 12,
+      "output": 389,
+      "cacheWrite": 65958,
+      "cacheRead": 263088,
+      "peakContext": 65960,
+      "new": true,
+      "role": "critic-accuracy r1"
+    },
+    {
+      "name": "ac721ea5",
+      "model": "claude-sonnet-5-5",
+      "calls": 4,
+      "input": 8,
+      "output": 1096,
+      "cacheWrite": 56979,
+      "cacheRead": 113825,
+      "peakContext": 56981,
+      "new": true,
+      "role": "critic-visuals r1"
+    },
+    {
+      "name": "ae232bd7",
+      "model": "claude-sonnet-5-5",
+      "calls": 14,
+      "input": 28,
+      "output": 1729,
+      "cacheWrite": 85423,
+      "cacheRead": 764680,
+      "peakContext": 85425,
+      "new": true,
+      "role": "critic-grounding r2"
+    },
+    {
+      "name": "aeb6faad",
+      "model": "claude-sonnet-5-5",
+      "calls": 3,
+      "input": 6,
+      "output": 906,
+      "cacheWrite": 60300,
+      "cacheRead": 77270,
+      "peakContext": 60302,
+      "new": true,
+      "role": "critic-consistency r2"
+    }
+  ],
+  "critics": {
+    "count": 15,
+    "calls": 80,
+    "input": 160,
+    "output": 15146,
+    "cacheWrite": 915193,
+    "cacheRead": 3214836
+  },
+  "research_agent": {
+    "name": "a1a77a30",
+    "model": "claude-haiku-5-5",
+    "calls": 9,
+    "input": 18,
+    "output": 53,
+    "cacheWrite": 140473,
+    "cacheRead": 807100,
+    "peakContext": 140475,
+    "new": true,
+    "role": "research for docs/PLAN.md (not part of the video)"
+  }
+}
