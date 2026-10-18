@@ -121,7 +121,8 @@ checks it and voices one word.
 | `npm run review -- <folder>` | The critics' evidence: `review/packet.md` and `review/frames/` (`--frames scenes` for fewer stills) |
 | `npm run critics -- <folder>` | The video's critic plan: critics, models, rounds, severity, and a rough time and token estimate (`--preset`, `--rounds`, `--until`, `--model`, `--final`, `--frames`, `--rerun`, `--critics`, `--json`) |
 | `npm run skills` | Link new skills in `skills/` or `local/skills/` into `.claude/skills/` |
-| `npm run usage` | Tokens and context per agent for the newest Claude Code session of this repo, subagents included (`-- <session id>` for another, `-- --json` for data); read from `~/.claude/projects/`, or from `CLAUDE_PROJECTS_DIR` |
+| `npm run usage` | Tokens and context per agent for the newest Claude Code session of this repo, subagents included (`-- <session id>` for another, `-- --json` for data, `-- --since <ISO time>` for one task's share); read from `~/.claude/projects/`, or from `CLAUDE_PROJECTS_DIR` |
+| `npm run results -- <folder> [start]` | A video's `results/` folder from what exists: `start` marks the beginning of the run; the next call writes `run.json`, `usage-delta.json` (tokens since the start, subagents included), `critic-rounds.json` (findings by critic and severity from `review/round-N/`), `run.md`, and copies the hashed captures. A file you wrote yourself is never overwritten: the new one lands beside it as `*.generated.*` |
 | `claude plugin validate .` | The two manifests only (`plugin.json`, `marketplace.json`); `claude plugin validate skills` and `agents` look at components but only warn on a broken one, so a test parses every `SKILL.md` and `agents/critic.md` front matter. One warning is expected (no `version`, on purpose: the commit SHA versions the plugin); `--strict` fails on it |
 | `npm test` | No Kokoro needed; CI runs only this |
 

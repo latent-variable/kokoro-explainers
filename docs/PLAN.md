@@ -14,6 +14,7 @@ were measured on the same day.
 | 3.1 read-only critic (Write, Edit, NotebookEdit denied; the Bash hook is not done), 3.2 `maxTurns` and an explicit model | done: DESIGN D40, checked with a headless run |
 | 1.3 trigger-first descriptions | tried and reverted: it lowered triggering (evidence standard 19/21 to 6/16); DESIGN D41 |
 | 1.4 size ceiling (as a test), 1.6 `allowed-tools` | done: DESIGN D41 |
+| 0.2 `bin/results.mjs` and `usage --since`; 2.6 dropped (usage.mjs reads the transcripts already) | done: DESIGN D42, `test/results.test.mjs` |
 | everything else | not started |
 
 ## What the repo looks like today (measured)

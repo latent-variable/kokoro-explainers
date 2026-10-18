@@ -21,6 +21,7 @@
     "make": "node bin/make.mjs",
     "review": "node bin/review.mjs",
     "usage": "node bin/usage.mjs",
+    "results": "node bin/results.mjs",
     "critics": "node bin/critics.mjs",
     "skills": "node bin/link-skills.mjs",
     "test": "node --test test/*.test.mjs",
