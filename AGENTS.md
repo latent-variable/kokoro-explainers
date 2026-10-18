@@ -20,7 +20,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Path | What |
 |---|---|
-| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the `critic` agent (Read, Grep, Glob, Bash and Skill; told not to write, not enforced). Validate with `claude plugin validate .` (one expected warning: no `version`) |
+| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the `critic` agent (Read, Grep, Glob, Bash and Skill; Write, Edit and NotebookEdit denied, `maxTurns` 40, Sonnet by default; Bash can still write, so it is told to use a temporary directory). Validate with `claude plugin validate .` (one expected warning: no `version`) |
 | `docs/PRD.md`, `docs/DESIGN.md` | The requirements, and the design decisions and behaviour. Kept current (*Docs that stay current*) |
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
@@ -29,6 +29,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 | `themes/` | Shared themes (`shipshow`, `paper`, `launch`, `buildday`); a client's goes in `local/themes/` |
 | `template/` | What `npm run new` copies |
 | `examples/` | Fictional code bases for example videos: `ledgerly`, the invoicing API behind `videos/invoice-leak` |
+| `.claude/settings.json`, `.claude/hooks/` | The project's Claude Code hooks and read denials (tracked; `.claude/skills/` is the generated skill links and is not) |
 | `local/` | Gitignored, per person: `preferences.md`, `critics.md`, `skills/`, and `videos/` about code that is not this repo's |
 
 ## Skills
@@ -243,6 +244,7 @@ local/      gitignored, per person (tailor skill)
 - **Generated files are gitignored** (`videos/*/assets/`, `review/`, `index.html`, `meta.json`, `timing.json`). Never commit audio, frames or renders.
 - **The name is ShipShow**, one word, two capitals; the repo is `latent-variable/shipshow` (renamed from kokoro-explainers 2026-10-17, and GitHub redirects the old address). A rename also changes the PR reviewer's allowlist (latent-git-agents `config/repos.json` and `tests/repo-allowlist.test.mjs`), or PRs stop being reviewed.
 - **`hyperframes lint` warns `nested_structure_needs_subcomposition` and `timeline_track_too_dense`** on every video. Advisory: each scene is one section on one track by design. Errors still block.
+- **Project hooks enforce the no-delete rule** (`.claude/settings.json`, `.claude/hooks/`, DESIGN D39): the Bash guard refuses `rm`, `find -delete` and the git commands that discard work, the file guard refuses `sample_application/src/` and recorded runs, and the Stop hook runs `npm test`. A person overrides on purpose with `SHIPSHOW_ALLOW_DESTRUCTIVE=1` or `SHIPSHOW_EDIT_SAMPLE=1`. Move things aside with `mv` instead.
 - The scripts never delete files: a stale take is overwritten, never removed.
 - **Never write a literal style or script tag in a comment** inside `kit/` or `themes/`: the
   build inlines them into the page, and `hyperframes lint` reads it as an unclosed tag (twice,

@@ -87,8 +87,8 @@ critic in the plan it starts a **new** agent, on the plan's model:
 
 - **Claude Code:** the Agent tool with a fresh agent, never a fork (a fork inherits the builder's
   context, and with it the builder's bias), with the plan's model. In the ShipShow plugin that is
-  `subagent_type: "shipshow:critic"`, which has Read, Grep, Glob, Bash and Skill and is told not to write
-  (not enforced); elsewhere a general-purpose agent. A judge from the builder's own model family shares
+  `subagent_type: "shipshow:critic"`, which has Read, Grep, Glob, Bash and Skill, cannot Write or Edit, is told to keep
+  Bash to a temporary directory, stops after 40 turns, and defaults to Sonnet (the plan's `model` overrides it); elsewhere a general-purpose agent. A judge from the builder's own model family shares
   its blind spots, so say which model judged.
 - **Codex:** `codex exec --sandbox read-only` from an empty folder, with the frames passed as
   `-i <absolute path>` and the brief on stdin.

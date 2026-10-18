@@ -454,6 +454,42 @@ project settings and rules cannot be committed. Nothing in the plan is done.
 cost or critic agreement is recorded. **Costs.** None yet; each step names how to tell it worked and the unconfirmed items
 to check first (plugin-shipped agent hooks, how a missing `version` resolves).
 
+### D39. Project hooks enforce the rules that were only prose (2026-10-17; plan steps 2.0 to 2.3, 2.7 of `docs/PLAN.md`)
+**Decision.** `.claude/settings.json` and `.claude/hooks/` are tracked (`.gitignore` ignores only `.claude/skills/`, the links
+`npm install` makes, and `.claude/settings.local.json`). Three hooks: **`guard-bash`** (PreToolUse on Bash) refuses `rm`,
+`unlink`, `shred`, `find -delete`, and the git commands that discard or rewrite work (`restore`, `clean`, `reset --hard`,
+`checkout --`, `branch -D`, `stash drop`, a force push), looking inside `sudo`, `xargs`, `bash -c`, `$( )` and backticks;
+**`protect-files`** (PreToolUse on Edit and Write) refuses `sample_application/src/` (the bugs are the demo), the recorded runs
+beside their SHA-256 and `package-lock.json`; **`stop-tests`** (Stop) runs `npm test` if the session changed anything the tests
+cover and exits 2 on a failure, once: `stop_hook_active` lets the second stop through, so an unfixable failure cannot loop.
+`permissions.deny` keeps `.env*` and `local/voices/` unread (a clone is somebody's voice). A person overrides on purpose with
+`SHIPSHOW_ALLOW_DESTRUCTIVE=1` or `SHIPSHOW_EDIT_SAMPLE=1`.
+**Why.** CLAUDE.md is advisory and hooks are enforced (Anthropic's memory and permissions docs); the repo's hard rules were prose
+plus CI. **Checked** by `test/hooks.test.mjs`, which feeds each hook payloads on stdin: 21 refused commands, 16 allowed ones,
+the override, bad input.
+**Found by using it.** The hook was live in the session that wrote it and, on its first run, refused a pull-request body
+(a heredoc whose markdown had `rm` in backticks): it read backticks as command substitution everywhere. A heredoc body with a
+quoted delimiter is now text, and substitutions are looked for only outside single quotes (an unquoted heredoc and double
+quotes still run them, so `"`rm x`"` is refused, correctly).
+**Costs.** The guard reads the command string, not what the shell will do: a script that deletes inside itself, or a command
+built from a variable, gets through; it is a seatbelt, not a sandbox (`sandbox-run.sh` is that). `npm test` needs `ffmpeg`
+(`doctor` says), and a machine without it hears about it at every first stop. Hooks run in the person's session and are
+loaded when it starts.
+
+### D40. The critic cannot Write or Edit, and stops after 40 turns (2026-10-17; supersedes the critic agent paragraph of D13)
+**Decision.** `agents/critic.md` adds `disallowedTools: ["Write", "Edit", "NotebookEdit"]`, `maxTurns: 40` and `model: sonnet`
+(was `inherit`). The loop's `model` dial still overrides the agent's model, so a person who asks for another judge gets it.
+D13 said the critic was "told, not enforced"; the writing tools are now enforced, Bash is not (it can still redirect or
+`mv`), and the agent is still told to work in a temporary directory. `maxTurns` is above the most a critic used in two rounds
+of `videos/pacer-dev-journey` (20 tool calls, a grounding critic) so it stops a runaway, not a careful run.
+**Checked.** `claude plugin validate .` and `validate agents --strict` pass; a test asserts the three fields and that no writing
+tool is in `tools`; and a headless run (`claude --plugin-dir . -p`, asked to write a file through the `shipshow:critic` agent)
+reported it had no Write or Edit tool and created nothing. That agent also listed only Read, Bash and Skill: Grep and Glob were not
+among the tools it saw, which this change did not cause (`tools` is unchanged) and was not investigated.
+**Not done.** A frontmatter hook to deny Bash writes outside a scratch directory (plan step 3.1's second half): whether a
+plugin-shipped agent's own hooks run is unconfirmed, so the Bash limit stays a stated one. **Costs.** A critic that needs more than 40 turns
+stops early and returns what it has; raise `maxTurns` if a longer video needs it.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
