@@ -16,7 +16,11 @@ were measured on the same day.
 | 1.4 size ceiling (as a test), 1.6 `allowed-tools` | done: DESIGN D41 |
 | 0.2 `bin/results.mjs` and `usage --since`; 2.6 dropped (usage.mjs reads the transcripts already) | done: DESIGN D42, `test/results.test.mjs` |
 | 5.1 evals, 5.2 with and without the plugin, 5.3 several runs | done: DESIGN D43, `evals/`, `test/evals.test.mjs`; 5.4 (a person labels critic findings) and 5.5 (CI) not done |
-| everything else | not started |
+| 4.1 clean-machine install, 4.2 `bin/` on the PATH, 4.3 version from the commit | done: DESIGN D44 (installs three ways; `bin/` not on the PATH; version is the SHA) |
+| 1.1 shorten `AGENTS.md`, 1.2 path-scoped rules | declined: DESIGN D45 (the owner put the reference there on purpose; other agents read only that file) |
+| 6.1 lint the packet | done, smaller than planned: DESIGN D46 (a linter beside `critic-pacing`, which was 10% of the loop's tokens) |
+| 1.5 `disable-model-invocation`, 5.5 CI evals | declined or left out: DESIGN D47; 5.4 (a person labels findings) needs a person; 6.2 to 6.4 not started |
+| the rest of the plan | not started |
 
 ## What the repo looks like today (measured)
 

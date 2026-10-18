@@ -183,8 +183,8 @@ script fixes held, then found more in the same scripts, one of them blocking.
 - `critic-grounding`'s rendered-frames check is "viewed"; the excerpt check does not see absolute indentation,
   tabs against spaces, a hidden marker or an unmarked cut at either end; a closed stdout is undetectable.
 - `capture.mjs` proves integrity, not provenance; only re-running does.
-- The plugin ships every tracked file, has a `bin/` and a `package.json` at its root, and was never installed on a
-  clean machine (D13).
+- The plugin ships every tracked file and has a `bin/` and a `package.json` at its root. It was installed from an empty
+  config on 2026-10-17 (DESIGN D44): it works, `bin/` is not put on the PATH, and the version is the commit SHA.
 - The decision skills still rely on prose a builder can satisfy without evidence.
 
 ## Round 7

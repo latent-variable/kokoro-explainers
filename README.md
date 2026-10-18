@@ -42,7 +42,7 @@ https://github.com/user-attachments/assets/5421baa1-c54d-4151-8cf4-6e5e20be889e
 claude plugin install shipshow --marketplace latent-variable/shipshow
 ```
 
-Needs Claude Code 2.1.275 or later, and works once this is on `main`. Three skills work in any repository: `code-context`, `change-context` and `evidence-standard`. The rest (briefs, plans, scripts, hand-backs, `explainer-video`, `critic-loop` and the critics) feed or judge the video pipeline, which needs this repo cloned and set up as below.
+Needs Claude Code 2.1.275 or later (tried from an empty config on 2.1.302, 2026-10-17: it installs, and a fresh session sees all 22 skills and the `shipshow:critic` agent). Three skills work in any repository: `code-context`, `change-context` and `evidence-standard`. The rest (briefs, plans, scripts, hand-backs, `explainer-video`, `critic-loop` and the critics) feed or judge the video pipeline, which needs this repo cloned and set up as below.
 
 ## Set it up
 
