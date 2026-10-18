@@ -22,6 +22,7 @@
     "review": "node bin/review.mjs",
     "usage": "node bin/usage.mjs",
     "results": "node bin/results.mjs",
+    "lint-packet": "node bin/lint-packet.mjs",
     "evals": "claude plugin eval . --no-publish --trust-plugin --model sonnet --judge-model sonnet -j 4 --max-cost-usd 15",
     "critics": "node bin/critics.mjs",
     "skills": "node bin/link-skills.mjs",
