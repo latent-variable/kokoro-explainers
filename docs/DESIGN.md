@@ -490,6 +490,24 @@ among the tools it saw, which this change did not cause (`tools` is unchanged) a
 plugin-shipped agent's own hooks run is unconfirmed, so the Bash limit stays a stated one. **Costs.** A critic that needs more than 40 turns
 stops early and returns what it has; raise `maxTurns` if a longer video needs it.
 
+### D41. Descriptions keep what the skill is first and "Load when ..." last; a size ceiling; two skills pre-approve their scripts (2026-10-17; plan 1.3, 1.4, 1.6)
+**Decision.** The 22 descriptions stay as they were: what the skill does, then "Load when ...". A test asserts that each says when to
+load, a ceiling of 600 characters a description, and 20,000 characters (about 5,000 tokens) a `SKILL.md`. `critic-grounding` and
+`evidence-standard` gain `allowed-tools` for their bundled scripts (`Bash(node ${CLAUDE_SKILL_DIR}/scripts/*)` and the sibling
+skill's), so a critic is not asked to approve the same script each round.
+**What was tried and dropped.** Plan step 1.3 said to put the trigger first ("Use when ...", Anthropic's skills docs). It was
+rewritten, then measured with the `evals/` suite (trigger cases, natural phrasing, no skill named, Sonnet): trigger-first, 22 skills,
+**lowered** triggering. The evidence standard fired 19 of 21 runs on the old text and 6 of 16 on the rewrite; `narration-writing` 18
+of 21 against 7 of 16; `change-context` 14 of 21 against 4 of 16. Keeping the old order and changing only "Load" to "Use" on 11 skills
+gave 1 of 8 for the evidence standard, and trigger-first with "Load" gave 0 of 8: both the order and the verb mattered, in a
+way no reasoning here predicted. `critic-loop` and `decision-brief` fired 8 of 8 on every variant. Runs are few (5 to 8 a cell) and
+single-model, but the gap is the size of the effect, not of the noise (the same old text scored 8 of 8 and 6 of 8 on two runs).
+**Why keep the measurement.** The rewrite was done on a docs recommendation and would have shipped; the suite caught it. Lesson:
+a change to what triggers a skill is checked with the evals (the next PR in this stack, `evals/`), not argued.
+**Not checked.** That `allowed-tools` pre-approves a script in a live critic run. `trigger-code-context` fired 0 of every run on
+every variant: a question about a pasted snippet is answered without the skill, whatever the wording.
+**Costs.** The descriptions are not shorter than before (7,882 characters with names, about 1,971 tokens).
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.

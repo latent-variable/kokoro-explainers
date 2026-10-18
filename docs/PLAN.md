@@ -12,6 +12,8 @@ were measured on the same day.
 | 0.1 results folder per video | done by hand for `videos/pacer-dev-journey` (PR #20); 0.2 automates it |
 | 2.0 commit project settings, 2.1 Bash guard, 2.2 protect files, 2.3 Stop hook, 2.7 read denials | done: DESIGN D39, `test/hooks.test.mjs` |
 | 3.1 read-only critic (Write, Edit, NotebookEdit denied; the Bash hook is not done), 3.2 `maxTurns` and an explicit model | done: DESIGN D40, checked with a headless run |
+| 1.3 trigger-first descriptions | tried and reverted: it lowered triggering (evidence standard 19/21 to 6/16); DESIGN D41 |
+| 1.4 size ceiling (as a test), 1.6 `allowed-tools` | done: DESIGN D41 |
 | everything else | not started |
 
 ## What the repo looks like today (measured)

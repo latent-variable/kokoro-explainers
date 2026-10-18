@@ -5,6 +5,7 @@ description: >
   what to pin it to when there is no commit, how to run code without harm, how to state that
   something is absent, and where the result goes. Load with `code-context`, `change-context`,
   `decision-brief` or `critic-grounding`, or whenever you write or check a line of evidence.
+allowed-tools: Bash(sh ${CLAUDE_SKILL_DIR}/scripts/*) Bash(node ${CLAUDE_SKILL_DIR}/scripts/*)
 ---
 
 # Evidence standard
