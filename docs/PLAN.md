@@ -15,6 +15,7 @@ were measured on the same day.
 | 1.3 trigger-first descriptions | tried and reverted: it lowered triggering (evidence standard 19/21 to 6/16); DESIGN D41 |
 | 1.4 size ceiling (as a test), 1.6 `allowed-tools` | done: DESIGN D41 |
 | 0.2 `bin/results.mjs` and `usage --since`; 2.6 dropped (usage.mjs reads the transcripts already) | done: DESIGN D42, `test/results.test.mjs` |
+| 5.1 evals, 5.2 with and without the plugin, 5.3 several runs | done: DESIGN D43, `evals/`, `test/evals.test.mjs`; 5.4 (a person labels critic findings) and 5.5 (CI) not done |
 | everything else | not started |
 
 ## What the repo looks like today (measured)
