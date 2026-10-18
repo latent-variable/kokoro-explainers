@@ -1130,6 +1130,11 @@ test("every skill and the critic agent has well-formed front matter: `claude plu
   assert.equal(a.name, "critic");
   assert.match(a.text, /^tools:\s*\[.*"Skill".*\]/m, "agents/critic.md must list the Skill tool, which it needs to load a critic skill");
   assert.match(a.text, /^description:\s*\S/m);
+  // the critic never writes (Bash still can, so it is also told): the denied tools, a turn cap, and a default model
+  assert.match(a.text, /^disallowedTools:\s*\[[^\]]*"Write"[^\]]*"Edit"[^\]]*"NotebookEdit"[^\]]*\]/m, "agents/critic.md must deny Write, Edit and NotebookEdit");
+  assert.ok(!/^tools:.*"(Write|Edit|NotebookEdit)"/m.test(a.text), "agents/critic.md must not allow a writing tool");
+  assert.ok(Number(a.text.match(/^maxTurns:\s*(\d+)/m)?.[1]) >= 20, "agents/critic.md needs a maxTurns of at least 20 (a grounding critic uses about 20 tool calls)");
+  assert.match(a.text, /^model:\s*sonnet$/m, "the critic defaults to Sonnet; the loop's model dial overrides it");
 });
 
 test("critics: a video still carrying the template's placeholder audience is warned about", () => {

@@ -20,7 +20,7 @@ The skills in `skills/` are the team's baseline. Each person tailors on top of t
 
 | Path | What |
 |---|---|
-| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the `critic` agent (Read, Grep, Glob, Bash and Skill; told not to write, not enforced). Validate with `claude plugin validate .` (one expected warning: no `version`) |
+| `.claude-plugin/`, `agents/` | The Claude Code plugin: `plugin.json`, `marketplace.json`, and the `critic` agent (Read, Grep, Glob, Bash and Skill; Write, Edit and NotebookEdit denied, `maxTurns` 40, Sonnet by default; Bash can still write, so it is told to use a temporary directory). Validate with `claude plugin validate .` (one expected warning: no `version`) |
 | `docs/PRD.md`, `docs/DESIGN.md` | The requirements, and the design decisions and behaviour. Kept current (*Docs that stay current*) |
 | `skills/` | Every skill. `npm install` links them into `.claude/skills/` for Claude Code; other agents read them here |
 | `videos/<name>/` | One video: `script/`, `scenes.html`, `video.json`, `sources.md`, `critics.md`, `REVIEW.md` |
