@@ -51,8 +51,8 @@ export function readingQueue(items, sceneEnd) {
 
 // How long an entrance takes to finish, so a still taken "after the cue" is of the finished state: a number that
 // counts up, a pulse and typing run past the default settle time (kit/kit.js).
-export const DEFAULT_SETTLE = 0.8;
-export const ENTRANCE_SETTLE = { count: 1.4, pulse: 1.4, type: 1.4 };
+const DEFAULT_SETTLE = 0.8;
+const ENTRANCE_SETTLE = { count: 1.4, pulse: 1.4, type: 1.4 };
 export const settleFor = (anim) => ENTRANCE_SETTLE[anim] ?? DEFAULT_SETTLE;
 
 /**
