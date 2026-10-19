@@ -51,7 +51,7 @@ export function flag(name, argv = process.argv) {
 const localDir = () => process.env.SHIPSHOW_LOCAL || join(REPO, "local");
 
 /** This person's settings, local/config.json (tailor skill): {speed, voice, theme}. */
-export function localConfig() {
+function localConfig() {
   const p = join(localDir(), "config.json");
   return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : {};
 }
@@ -78,7 +78,7 @@ export function themeCss(name, videoFolder) {
 }
 
 /** video.json "flair": a video's own motion, over its theme's. */
-export const FLAIR = { transition: ["none", "fade", "rise", "slide", "zoom", "wipe", "flash"], entrance: null, camera: ["none", "push"], ambient: ["none", "glow", "grid", "dots", "stars", "horizon"], "ambient-strength": null, progress: ["on", "off"] };
+const FLAIR = { transition: ["none", "fade", "rise", "slide", "zoom", "wipe", "flash"], entrance: null, camera: ["none", "push"], ambient: ["none", "glow", "grid", "dots", "stars", "horizon"], "ambient-strength": null, progress: ["on", "off"] };
 export function flairCss(flair = {}) {
   const lines = Object.entries(flair).map(([k, v]) => {
     if (!(k in FLAIR)) die(`video.json flair has "${k}"; it takes ${Object.keys(FLAIR).join(", ")}`);
@@ -97,7 +97,7 @@ export function seedFor(name) {
 
 // The optional OmniVoice engine (bin/omnivoice.py): which model, and the built-in voices.
 export const OMNI = JSON.parse(readFileSync(join(REPO, "bin", "omnivoice-voices.json"), "utf8"));
-export const OMNI_SPEEDS = [1.0, 1.3];  // the range it was tested at; mlx-audio's own pace at 1.0 is about BASE_WPM
+const OMNI_SPEEDS = [1.0, 1.3];  // the range it was tested at; mlx-audio's own pace at 1.0 is about BASE_WPM
 
 /** A voice for the omnivoice engine: a clone (local/voices/<name>.wav, and <name>.txt beside it
  *  with the words spoken in the clip) or a built-in one. `identity` is what a take was made from,
@@ -256,7 +256,7 @@ export function outName(dir) {
 // specifically wins: a flag on bin/critics.mjs, then video.json "review", then the person's
 // local/config.json "review", then the preset (a decision video's default is quick).
 export const BASE_CRITICS = ["critic-accuracy", "critic-clarity", "critic-pacing", "critic-sync", "critic-visuals", "critic-consistency", "critic-engagement"];
-export const TASTE_CRITICS = ["critic-clarity", "critic-visuals", "critic-engagement"];
+const TASTE_CRITICS = ["critic-clarity", "critic-visuals", "critic-engagement"];
 // The builder judges how much a video matters and records it in video.json "importance"
 // (skills/critic-loop, *How much review*); each level picks a preset.
 export const IMPORTANCE = { low: "quick", normal: "standard", high: "thorough" };
