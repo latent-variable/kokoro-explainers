@@ -5,7 +5,7 @@ in the same change (`AGENTS.md`, *Docs that stay current*). How it is built and 
 [DESIGN.md](DESIGN.md). Dates are absolute. Status is one of **done**, **in progress**,
 **planned**, **open**.
 
-Last reviewed: 2026-10-17 (after red-team round 6 and the merge with main).
+Last reviewed: 2026-10-18 (after red-team round 6 and the merge with main).
 
 ## Problem
 
@@ -113,7 +113,7 @@ dropped (F19 stays open). The sample therefore speaks to an adtech company's pai
 | N6 | **Cheap to carry.** Each skill's name and description count toward context on every turn once installed, so descriptions stay short and bodies stay under 500 lines | Measured 2026-10-17: 22 skills, 7,882 characters (about 1,971 tokens) of names and descriptions; longest SKILL.md 206 lines (a test checks these figures against the tree) | done |
 | N7 | **Reproducible.** A voice take is cached by text, voice and speed; generated files are gitignored | `assets/voice/*.key` | done |
 | N8 | **Observable.** Token and context use is readable per agent | `npm run usage` | done |
-| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (50 tests; the sandbox and capture tests run on macOS only, the CI docs check only on a pull request) | done; 3 tests need `npm install` (the build cue test, the bare-cue warning and the flair test) |
+| N9 | **Tested without Kokoro.** `npm test` runs with no voice model; it is the only thing CI runs | `test/` (50 tests; the sandbox and capture tests run on macOS only, the CI docs check only on a pull request) | done; 7 tests need `npm install` (the cue-and-caption timing test, the caption function-word test, the bare-cue warning test, the flair test, both OmniVoice tests and the `hold` test) |
 | N10 | **Portable.** The pipeline is tested on macOS; CI runs the unit tests on Linux (`ubuntu-latest`) | `README.md`, `.github/workflows/ci.yml` | open: pipeline on Linux untried |
 | N11 | **Attribution.** The sample is original (its `SOURCE.md` says what it is and is not based on); Kokoro-82M and HyperFrames are Apache 2.0; GSAP is under its standard licence | `sample_application/SOURCE.md`, `README.md` | done |
 | N12 | **Reviewable.** Every change is a pull request with CI and an automated review; a rename changes the reviewer's allowlist | `AGENTS.md`, traps | done |
