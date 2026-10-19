@@ -3,7 +3,7 @@
 //   node bin/critics.mjs <folder> [--preset quick|standard|thorough] [--rounds 2] [--until major]
 //                        [--model sonnet] [--final opus|none] [--frames cues|scenes]
 //                        [--rerun failed|touched|all] [--critics a,b,c] [--json]
-import { config, die, reviewPlan, videoDir } from "./lib.mjs";
+import { config, reviewPlan, videoDir } from "./lib.mjs";
 
 const dir = videoDir(process.argv[2]);
 const cfg = config(dir);

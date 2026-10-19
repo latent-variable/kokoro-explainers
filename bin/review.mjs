@@ -8,7 +8,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { BASE_SPM, BASE_WPM, HF, REPO, config, die, reviewPlan, round, run, syllables, videoDir } from "./lib.mjs";
-import { READ_CODE_TPS, READ_WPS, newReadingText, readingQueue, readingSeconds, settleFor, stillStretches, words } from "./measure.mjs";
+import { READ_CODE_TPS, READ_WPS, newReadingText, readingQueue, settleFor, stillStretches, words } from "./measure.mjs";
 
 
 const dir = videoDir(process.argv[2]);
