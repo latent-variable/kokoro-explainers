@@ -14,7 +14,7 @@ const ENTITIES = { "&lt;": "<", "&gt;": ">", "&amp;": "&", "&quot;": '"', "&#39;
 const decode = (s) => s.replace(/&(?:lt|gt|amp|quot|apos|nbsp|rarr|#39);/g, (m) => ENTITIES[m] ?? m).replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)));
 const attr = (tag, name) => (tag.match(new RegExp(`\\b${name}="([^"]*)"`)) || [])[1] || "";
 
-export function extractExcerpts(html) {
+function extractExcerpts(html) {
   const out = [];
   const open = /<(\w+)\b[^>]*\bclass="[^"]*\bss-code\b[^"]*"[^>]*>/g;
   let m;
