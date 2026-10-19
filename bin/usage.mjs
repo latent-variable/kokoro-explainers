@@ -13,7 +13,7 @@ import { REPO } from "./lib.mjs";
 const projects = process.env.CLAUDE_PROJECTS_DIR || join(homedir(), ".claude", "projects");
 
 // One agent's transcript: sum usage per API call (a call can span several lines).
-export function readTranscript(file) {
+function readTranscript(file) {
   const calls = new Map();
   let first = null, last = null, model = null, bad = 0;
   for (const line of readFileSync(file, "utf8").split("\n")) {
@@ -52,7 +52,7 @@ export function readSession(file) {
   return agents;
 }
 
-export function findSession(arg, repo = REPO) {
+function findSession(arg, repo = REPO) {
   // a path to a transcript file is used as it is; anything else is a session id prefix
   if (arg && existsSync(resolve(arg)) && statSync(resolve(arg)).isFile()) return resolve(arg);
   const dir = join(projects, resolve(repo).replace(/[^A-Za-z0-9]/g, "-"));
