@@ -7,7 +7,7 @@
 // guard, branch, decorator, early exit or default whose absence changes what the excerpt appears to do.
 // Not checked: absolute indentation, tabs against spaces (tabs count as four spaces), and an unmarked
 // cut at the start or end of the excerpt; the stated range and the frame show those.
-export const MAX_EXCERPT_LINES = 5000;
+const MAX_EXCERPT_LINES = 5000;
 const FLAG = /^\s*@|\b(if|elif|else|try|except|catch|finally|return|raise|throw|assert|default|switch|case|guard|unless|abort|exit|continue|break|while|for|with|await|yield|and|or|not)\b|[!=<>]=|[<>]/;
 const lines = (t) => t.replace(/^﻿/, "").split(/\r\n|\r|\n/);
 const indentOf = (l) => l.match(/^[ \t]*/)[0].replace(/\t/g, "    ").length;
@@ -25,7 +25,7 @@ export function parseRanges(s) {
 }
 
 /** The marker is a line holding only `…` (or a custom text), optionally behind a comment mark. */
-export function markerPattern({ marker = "…", asciiMarkers = false } = {}) {
+function markerPattern({ marker = "…", asciiMarkers = false } = {}) {
   const core = asciiMarkers ? `(?:${esc(marker)}|\\.\\.\\.)` : esc(marker);
   return new RegExp(`^\\s*(?:(?:#|//|--|/\\*|\\*|<!--)\\s*)?${core}\\s*(?:\\*/|-->)?\\s*$`);
 }
