@@ -26,7 +26,7 @@ function writeNoFollow(path, data) {
 }
 const sha = (buf) => createHash("sha256").update(buf).digest("hex");
 
-export function split(buf) {
+function split(buf) {
   const at = buf.indexOf(DELIM);
   if (at < 0) return null;
   return { header: buf.subarray(0, at).toString("utf8"), output: buf.subarray(at + DELIM.length) };
@@ -34,14 +34,14 @@ export function split(buf) {
 
 // Header values are JSON-encoded, so a newline or a `---` in a command or a path cannot forge a header line,
 // the delimiter, or an exit status; the command is the argv array, so its quoting is not lost.
-export function build({ command, dir, pin, date, exit, output }) {
+function build({ command, dir, pin, date, exit, output }) {
   const header = [`# command: ${JSON.stringify(command)}`, `# dir: ${JSON.stringify(dir)}`, `# pin: ${JSON.stringify(pin || "unknown")}`, `# date: ${date}`, `# exit: ${exit}`].join("\n");
   return Buffer.concat([Buffer.from(header + DELIM), output]);
 }
 
 // `ok` means the file matches its sidecar: integrity, not provenance. Anyone can write a capture and its
 // sidecar, so a critic still re-runs the command (skills/critic-grounding).
-export function verify(file) {
+function verify(file) {
   if (!existsSync(file)) return { code: 2, message: `no capture at ${file}` };
   if (!existsSync(`${file}.sha256`)) return { code: 2, message: `no sidecar ${file}.sha256: the capture cannot be checked (unsupported)` };
   let buf, expected;
