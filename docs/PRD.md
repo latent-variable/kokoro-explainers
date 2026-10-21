@@ -5,7 +5,7 @@ in the same change (`AGENTS.md`, *Docs that stay current*). How it is built and 
 [DESIGN.md](DESIGN.md). Dates are absolute. Status is one of **done**, **in progress**,
 **planned**, **open**.
 
-Last reviewed: 2026-10-18 (after red-team round 6 and the merge with main).
+Last reviewed: 2026-10-21 (after the code excerpt label behavior was reviewed).
 
 ## Problem
 
