@@ -5,7 +5,7 @@ in the same change (`AGENTS.md`, *Docs that stay current*). How it is built and 
 [DESIGN.md](DESIGN.md). Dates are absolute. Status is one of **done**, **in progress**,
 **planned**, **open**.
 
-Last reviewed: 2026-10-18 (after red-team round 6 and the merge with main).
+Last reviewed: 2026-10-21 (after the code excerpt label behavior was reviewed).
 
 ## Problem
 
@@ -72,7 +72,7 @@ dropped (F19 stays open). The sample therefore speaks to an adtech company's pai
 |---|---|---|
 | F11 | Fresh critic agents judge a video; the builder never judges (`critic-loop`) | done |
 | F12 | Nine critics, one skill each: `critic-accuracy`, `critic-clarity`, `critic-pacing`, `critic-sync`, `critic-visuals`, `critic-consistency`, `critic-engagement`, `critic-decision`, `critic-grounding` | done |
-| F13 | A critic can verify that shown code and output match the source: a scripted excerpt check, capture files with a recomputable hash, and a per-asset table (`critic-grounding`) | done, being hardened |
+| F13 | A critic can verify that shown code and output match the source: a scripted excerpt check, capture files with a recomputable hash, a visible source file and range label, and a per-asset table (`critic-grounding`) | done, being hardened |
 | F14 | A review packet gives critics measurements and frames (`npm run review`) | done |
 
 ### Hand it back and see the cost

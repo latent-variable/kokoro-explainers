@@ -55,6 +55,7 @@ body { background: var(--bg); overflow: hidden; }
 .ss-chip { padding: 20px 34px; background: var(--card); border: var(--border) solid var(--line); border-radius: calc(var(--radius) * 0.8); font-size: 40px; font-weight: 600; }
 .ss-chip.hot { border-color: var(--accent); color: var(--accent); }
 .ss-code { font-family: var(--font-mono); font-variant-ligatures: none; white-space: pre; background: var(--code-bg); color: var(--code-ink); border: var(--border) solid var(--line); border-radius: var(--radius); }
+.ss-code[data-source]:not([data-source=""])[data-ranges]:not([data-ranges=""])::before { content: attr(data-source) " · " attr(data-ranges); display: block; font-family: var(--font-mono); font-size: 0.62em; color: var(--muted); }
 .ss-code .k { color: var(--accent-2); }
 .ss-code .s { color: var(--accent); }
 .ss-mono { font-family: var(--font-mono); font-variant-ligatures: none; }

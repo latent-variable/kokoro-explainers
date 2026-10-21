@@ -82,6 +82,7 @@ only when every row is `genuine` or `trimmed`.
   behaviour (a guard, branch, decorator, default or error path vanishes), marked or not. Each `…` has its
   omitted lines listed in `sources.md`; check that list against the real gap.
 - **major:** the on-screen label, line numbers or caption disagree with the file and range in `sources.md`.
+- **major:** an `.ss-code` block has no visible file or range label.
 - **major:** placeholder values presented as captured, or a capture that leaks a secret, private data, an
   absolute path or username, or a development default shown as if real.
 - **major:** an asset captured at a different commit or environment (OS, language or dependency version)
