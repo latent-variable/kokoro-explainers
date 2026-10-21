@@ -38,9 +38,10 @@ any video without editing it.
    `rise` or `zoom`, a drifting `glow`. The motion tokens are the defaults; a video's flair
    can still change them.
 5. **Check it on a real video.** `npm run make -- videos/how-it-works --theme <name> --draft`,
-   then `npm run review` and look at the contact sheets. `npm run check` must pass every
-   contrast check; a brand colour that fails on its background stays for accents and
-   borders, never for body text.
+   then `npm run review -- videos/how-it-works` and look at the contact sheets.
+   `npm run check -- videos/how-it-works` must pass every contrast check; a brand colour
+   that fails on its background stays for accents and borders, never for body text.
 
-**Done** when the demo video in the new theme passes `check`, the contact sheets look like
-the brand to someone who knows it, and `critic-visuals` finds nothing blocking.
+**Done** when the demo video in the new theme passes `npm run check -- videos/how-it-works`,
+the contact sheets look like the brand to someone who knows it, and `critic-visuals` finds
+nothing blocking.
