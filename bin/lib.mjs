@@ -255,7 +255,7 @@ export function outName(dir) {
 // The critic loop's dials (skills/critic-loop). A preset sets them all; anything set more
 // specifically wins: a flag on bin/critics.mjs, then video.json "review", then the person's
 // local/config.json "review", then the preset (a decision video's default is quick).
-export const BASE_CRITICS = ["critic-accuracy", "critic-clarity", "critic-pacing", "critic-sync", "critic-visuals", "critic-consistency", "critic-engagement"];
+const BASE_CRITICS = ["critic-accuracy", "critic-clarity", "critic-pacing", "critic-sync", "critic-visuals", "critic-consistency", "critic-engagement"];
 const TASTE_CRITICS = ["critic-clarity", "critic-visuals", "critic-engagement"];
 // The builder judges how much a video matters and records it in video.json "importance"
 // (skills/critic-loop, *How much review*); each level picks a preset.
