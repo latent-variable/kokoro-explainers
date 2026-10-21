@@ -445,6 +445,15 @@ syllables a minute times the speed), where a published example decision video li
 code), the caption tokens a theme can set, the layout (`examples/`, all four videos) and the voice credit for `eve`.
 **Costs.** None known.
 
+### D38. Code excerpts show their source and range in the shared kit (2026-10-21)
+**Decision.** `kit/base.css` renders `.ss-code`'s `data-source` and `data-ranges` in a `::before` label. The
+label stays outside the code node so `extract-excerpts.mjs` can validate only the excerpt text; the grounding critic
+reports a major finding when the rendered file or range label is absent. **Why.** The explainer skill described a
+gutter that the kit did not render, leaving the shown code without attribution. **Costs.** Code scenes must provide
+both attributes, and the shared theme tokens determine the label's typography and color. Sources: issue #46;
+`kit/base.css`, `skills/explainer-video/SKILL.md`, `skills/critic-grounding/SKILL.md` and
+`skills/critic-grounding/scripts/extract-excerpts.mjs`.
+
 ## Behaviour
 
 What an agent or person observes. Each line is checkable against the cited file.
